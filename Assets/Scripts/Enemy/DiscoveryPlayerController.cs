@@ -12,40 +12,44 @@ public class DiscoveryPlayerController : MonoBehaviour
     public float VisionFieldAngle;
     [Header("Playerを見つけられる範囲")]
     public float PlayerDiscoveryRange;
+    [Header("Playerを見つけた時追いかけるスピード")]
+    public float SpeedWhenDiscoveried;
 
     //特定のレイヤーオブジェクトのみで視野判定を行っていくための設定
     public List<string> layer_mask_lists = new List<string>{ "Player", "Object" };
     //プレイヤーが自分の視界から外れている間の時間
     public float SightOutPlayerTime = 1;
     //プレイヤーを視認しているかどうか
-    public bool SightningPlayer_1;
-    public bool SightningPlayer_2;
+    public bool SightningPlayer;
     private int layerMask;
     private GameObject Player;
     private Transform PlayersHeadTransform;
-    private FollowObjectByNameNav follow_object_nav;
+    private FollowObjectByNav follow_object_nav;
+    private PlayerStatus player_status;
     private RaycastHit raycast_hit;
     //プレイヤーが見つけられる範囲以内にいるかどうか。
     private bool InsidePlayer;
     private Vector3 direction;
     private Vector3 DefaultPos;
+    private float ToPlayerDistance;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
     // Start is called before the first frame update
     void Start()
     {
-        Player = PlayerController.instance.gameObject;
-        PlayersHeadTransform = PlayerController.instance.Head;
+        player_status = PlayerStatus.instance;
+
+        Player = player_status.gameObject;
+        PlayersHeadTransform = player_status.Head;
         layerMask = LayerMask.GetMask(layer_mask_lists.ToArray());
         DefaultPos = this.transform.position;
-        follow_object_nav = this.gameObject.GetComponent<FollowObjectByNameNav>();
+        follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
     }
 
     // Update is called once per frame
     void Update()
     {
         direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
-
         if (Vector3.Distance(Player.transform.position, this.transform.transform.position) <= PlayerDiscoveryRange)
             InsidePlayer = true;
         else
@@ -54,7 +58,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             DiscoveryPlayer(true);
         }
-        if (DiscoveryPlayerNow && !SightningPlayer_1)
+        if (DiscoveryPlayerNow && !SightningPlayer)
         {
             //敵に見つかっているかつ視認状態がfalseならば
             //時間を計り、ある程度の時間がたったら追いかけるのをやめる
@@ -64,7 +68,7 @@ public class DiscoveryPlayerController : MonoBehaviour
                 Debug.Log("時間経過しましたよ");
                 DiscoveryPlayer(false);
                 //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
-                follow_object_nav.ChaseToTargetSet(true, DefaultPos);
+                follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
                 SightOutPlayerTimeNow = 0;
             }
 
@@ -89,24 +93,24 @@ public class DiscoveryPlayerController : MonoBehaviour
                     {
                         Debug.Log("Playerが敵に見つかりました！");
                         //プレイヤーを視認しているナウ。
-                        SightningPlayer_1 = true;
+                        SightningPlayer = true;
                         //即見つかる判定ではある。
                         DiscoveryPlayerNow = true;
                     }
                 }
                 else
                 {
-                    SightningPlayer_1 = false;
+                    SightningPlayer = false;
                 }
             }
             else {
-                SightningPlayer_1 = false;
+                SightningPlayer = false;
             }
             Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.red);
         }
         else
         {
-            SightningPlayer_1 = false;
+            SightningPlayer = false;
         }
     }
     private void DiscoveryPlayer(bool _discovery)
@@ -116,11 +120,11 @@ public class DiscoveryPlayerController : MonoBehaviour
         DiscoveryPlayerNow = _discovery;
         if (_discovery)
         {
-            follow_object_nav.ChaseToTargetSet(true, Player.transform.position);
+            follow_object_nav.ChaseToTargetSet(true, Player.transform.position, SpeedWhenDiscoveried);
         }
         else
         {
-            follow_object_nav.ChaseToTargetSet(true, DefaultPos);
+            follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
         }
     }
     private void OnDrawGizmos()

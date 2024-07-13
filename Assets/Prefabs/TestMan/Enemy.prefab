@@ -149,11 +149,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8600115054240522585}
+      addedObject: {fileID: 3900953358839829992}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3900953358839829992}
+      addedObject: {fileID: 3901689712144423909}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8600115054240522585}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
         type: 3}
       insertIndex: -1
@@ -187,11 +191,46 @@ MonoBehaviour:
   EyePosition: {fileID: 2948438880129194380}
   VisionFieldAngle: 30
   PlayerDiscoveryRange: 10
+  SpeedWhenDiscoveried: 3
   layer_mask_lists:
   - Player
   - Object
   SightOutPlayerTime: 10
   SightningPlayer: 0
+  SightOutPlayerTimeNow: 0
+--- !u!114 &3900953358839829992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6297832481982226207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d120e34e6c9d034aaa2512000d58ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChaseToTargetMode: 0
+  ChaseTargetPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &3901689712144423909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6297832481982226207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65e66ba283ab2ed45aab6edf764ceaba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ArriveSoundPlaceWaitTimeToReturnNow: 0
+  MoveToSoundPlaceNow: 0
+  ArriveSoundPlaceWaitTimeToReturn: 3
+  RealizeSoundPlayerRunDistance: 10
+  RealizeSoundPlayerWalkDistance: 5
+  RealizeSoundPlayerCrouchWalkDistance: 1
+  RealizeSpeedWhenWalk: 2
 --- !u!195 &8600115054240522585
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -214,20 +253,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &3900953358839829992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6297832481982226207}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d120e34e6c9d034aaa2512000d58ac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ChaseToTargetMode: 0
-  ChaseTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &1451237389554831672
 Rigidbody:
   m_ObjectHideFlags: 0
