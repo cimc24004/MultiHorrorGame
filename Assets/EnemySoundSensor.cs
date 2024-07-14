@@ -46,17 +46,16 @@ public class EnemySoundSensor : MonoBehaviour
     {
         //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
         ToPlayerDistance = Vector3.Distance(this.transform.position, Player.transform.position);
+        ToSoundPlaceDistance = follow_object_nav.ToTargetPosDistance;
         if (discovery_player_controller.DiscoveryPlayerNow)
         {
             MoveToSoundPlaceNow = false;
             return;
         }
-        ToSoundPlaceDistance = Vector3.Distance(this.transform.position, SoundPlacePosition);
         if (MoveToSoundPlaceNow)
         {
             //今音がなっている場所に向かっている場合
-            Debug.Log(ToSoundPlaceDistance);
-            if(ToSoundPlaceDistance <= 1f)
+            if(follow_object_nav.ArrivedTarget)
             {
                 //音が鳴った位置に到着し終えた場合 少し時間を待ってから元の位置に戻るようにする。
                 ArriveSoundPlaceWaitTimeToReturnNow += Time.deltaTime;
