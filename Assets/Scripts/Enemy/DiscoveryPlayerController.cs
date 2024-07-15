@@ -16,8 +16,10 @@ public class DiscoveryPlayerController : MonoBehaviour
     public float SpeedWhenDiscoveried;
 
     //特定のレイヤーオブジェクトのみで視野判定を行っていくための設定
+    [Header("視認できるオブジェクトのレイヤー")]
     public List<string> layer_mask_lists = new List<string>{ "Player", "Object" };
     //プレイヤーが自分の視界から外れている間の時間
+    [Header("プレイヤーが敵の視界から外れている間の追いかけるのを諦めるまでの時間")]
     public float SightOutPlayerTime = 1;
     //プレイヤーを視認しているかどうか
     public bool SightningPlayer;
@@ -68,6 +70,7 @@ public class DiscoveryPlayerController : MonoBehaviour
                 Debug.Log("時間経過しましたよ");
                 DiscoveryPlayer(false);
                 //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
+                //今はデフォルト位置に戻る設定にしているが近くの徘徊ルートに行くという設定する予定。
                 follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
                 SightOutPlayerTimeNow = 0;
             }

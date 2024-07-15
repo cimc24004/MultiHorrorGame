@@ -21,7 +21,6 @@ public class PlayerMoveScript : MonoBehaviour
     private InputAction MoveAction;
     private InputAction RunChangeAction;
     private InputAction CrouchChangeAction;
-
     private TimeManager time_manager;
     private PlayerStatus player_status;
     // Start is called before the first frame update
