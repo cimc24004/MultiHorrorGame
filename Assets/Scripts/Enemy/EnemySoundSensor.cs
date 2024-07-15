@@ -13,6 +13,7 @@ public class EnemySoundSensor : MonoBehaviour
     private Vector3 DefaultPosition;
     //プレイヤーとの距離
     private float ToPlayerDistance;
+    private Animator enemy_anim;
     private float ToSoundPlaceDistance;
     //音が鳴った先の場所
     private Vector3 SoundPlacePosition;
@@ -38,6 +39,7 @@ public class EnemySoundSensor : MonoBehaviour
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         player_status = PlayerStatus.instance;
         Player = player_status.gameObject;
+        enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
     }
 
@@ -65,6 +67,7 @@ public class EnemySoundSensor : MonoBehaviour
 
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
                     follow_object_nav.ChaseToTargetSet(true, DefaultPosition, RealizeSpeedWhenWalk);
+                    
                     MoveToSoundPlaceNow = false;
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 }
@@ -130,7 +133,6 @@ public class EnemySoundSensor : MonoBehaviour
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
             follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
-            
             SoundPlacePosition = TargetPos;
 
             MoveToSoundPlaceNow = true;

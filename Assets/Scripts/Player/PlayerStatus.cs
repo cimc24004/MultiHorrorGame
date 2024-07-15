@@ -16,6 +16,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
     }
     public PlayerMoveState player_move_state;
     public float MoveSpeed;
+    //今隠れているかどうか
+    public bool HidingNow;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,5 +29,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
     {
         
     }
-
+    public void StopEvent()
+    {
+        //MoveSpeed=0でなかったら押し入れとかに隠れたときにずーと敵が待っているバグが生じる為。
+        this.MoveSpeed = 0;
+    }
 }

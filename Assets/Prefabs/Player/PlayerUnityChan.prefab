@@ -5790,6 +5790,8 @@ GameObject:
   - component: {fileID: 4640989651405648362}
   - component: {fileID: 5005781273623164305}
   - component: {fileID: 6936642782527425598}
+  - component: {fileID: 7228379173649806129}
+  - component: {fileID: 364072651999732485}
   m_Layer: 6
   m_Name: PlayerUnityChan
   m_TagString: Player
@@ -5876,8 +5878,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7525078627656951602}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: c15d59733e63f0948b107e0b7f543d4d, type: 3}
+  m_Controller: {fileID: 9100000, guid: b52bd7175c7e0f441a6c19387e742795, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -5902,7 +5904,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RunSpeed: 7
   WalkSpeed: 3
+  CrouchSpeed: 1
   NowSpeed: 0
+  CrouchNow: 0
   DirectionCamera: {fileID: 0}
 --- !u!114 &5005781273623164305
 MonoBehaviour:
@@ -5950,6 +5954,73 @@ MonoBehaviour:
   Head: {fileID: 3717271372266253696}
   player_move_state: 0
   MoveSpeed: 0
+  HidingNow: 0
+--- !u!114 &7228379173649806129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc3f89ba2e5db3748b4bff116142829a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &364072651999732485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4544edc37b8d5994487819d8652389f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4640989651405648362}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  StopEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4640989651405648362}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6936642782527425598}
+        m_TargetAssemblyTypeName: PlayerStatus, Assembly-CSharp
+        m_MethodName: StopEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7660362891355367674
 GameObject:
   m_ObjectHideFlags: 0
