@@ -32,7 +32,6 @@ public class FollowObjectByNav : MonoBehaviour
         }
         //navmeshagentによる動きを停止。 動きはrigidbodyで行いnavmeshagentは探索結果のみを用いる。
         nav_mesh_agent.updatePosition = false;
-        nav_mesh_agent.updateRotation = false;
     }
 
     // Update is called once per frame
@@ -48,9 +47,9 @@ public class FollowObjectByNav : MonoBehaviour
         if (ChaseToTargetMode)
         {
             //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
-            nav_mesh_agent.SetDestination(ChaseTargetPosition);
             ToNextPointPosDistance = Vector3.Distance(NavmeshNextPos, this.transform.position);
             PosGetByFinder(ChaseTargetPosition);
+            //nav_mesh_agent.updateRotation = true;
 
             if (nav_mesh_agent.path.corners.Length == 2 && ToTargetPosDistance <= 2)
                 //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
@@ -67,11 +66,16 @@ public class FollowObjectByNav : MonoBehaviour
         else
         {
             //ArrivedTarget = false;
+            //nav_mesh_agent.updateRotation = false;
         }
     }
     private void FixedUpdate()
     {
-        if(ArrivedTarget)
+        if (ChaseToTargetMode)
+        {
+            nav_mesh_agent.SetDestination(ChaseTargetPosition);
+        }
+        if (ArrivedTarget)
         {
             //ターゲットの位置に到着した。場合はストップする。 
             rigid.velocity = Vector3.zero;
