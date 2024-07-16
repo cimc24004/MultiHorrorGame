@@ -40,8 +40,7 @@ public class FollowObjectByNav : MonoBehaviour
         //追いかけるターゲットと自分との距離
         ToTargetPosDistance = Vector3.Distance(ChaseTargetPosition, this.transform.position);
         //steeringTargetは今向かっている中継地点のことでその中継地点と自分自身との差ベクトルを単位ベクトル化して向かっている場所へ向きを向ける。
-        Vector3 forward = (NavmeshNextPos - this.transform.position).normalized;
-        this.transform.forward = new Vector3(forward.x, 0, forward.z);
+
 
 
         if (ChaseToTargetMode)
@@ -71,6 +70,8 @@ public class FollowObjectByNav : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        Vector3 forward = (NavmeshNextPos - this.transform.position).normalized;
+        this.transform.forward = new Vector3(forward.x, 0, forward.z);
         if (ChaseToTargetMode)
         {
             nav_mesh_agent.SetDestination(ChaseTargetPosition);
@@ -85,6 +86,7 @@ public class FollowObjectByNav : MonoBehaviour
             //ターゲットの位置に到着していない場合は
             if (ChaseToTargetMode && ToNextPointPosDistance > 0f)
             {
+
                 rigid.velocity = (NavmeshNextPos - this.transform.position).normalized * speed;
             }
             else
