@@ -7941,7 +7941,7 @@ Transform:
   m_GameObject: {fileID: 394867631}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -14.41}
+  m_LocalPosition: {x: 0, y: 0, z: -13.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9827,7 +9827,7 @@ PrefabInstance:
     - target: {fileID: 8600115054240522585, guid: 81b5a706c8944c74bb8539ba18ee056f,
         type: 3}
       propertyPath: m_Speed
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8600115054240522585, guid: 81b5a706c8944c74bb8539ba18ee056f,
         type: 3}
@@ -9843,6 +9843,11 @@ PrefabInstance:
         type: 3}
       propertyPath: avoidancePriority
       value: 57
+      objectReference: {fileID: 0}
+    - target: {fileID: 8600115054240522585, guid: 81b5a706c8944c74bb8539ba18ee056f,
+        type: 3}
+      propertyPath: m_ObstacleAvoidanceType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8613696349726508115, guid: 81b5a706c8944c74bb8539ba18ee056f,
         type: 3}
@@ -16422,15 +16427,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950833554}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.49156582, y: 0.5082942, z: 0.49156594, w: 0.5082943}
-  m_LocalPosition: {x: 3.356, y: 0.902, z: -16.878138}
+  m_LocalRotation: {x: -0.4950025, y: 0.50494796, z: 0.49500263, w: 0.504948}
+  m_LocalPosition: {x: 3.3537886, y: 0.90331936, z: -16.878138}
   m_LocalScale: {x: 1.7727094, y: 1.8051947, z: 0.11730001}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1928227806}
   - {fileID: 99232762}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -88.083, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: -88.861, y: 89.999, z: 0.001}
 --- !u!114 &1950833556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16783,6 +16788,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 23800000, guid: 840b06fb360438543b6ec24884d49455,
         type: 2}
+    - target: {fileID: 471832638289037914, guid: 91b1fc6d1afd42a42bf70121201ff949,
+        type: 3}
+      propertyPath: m_GenerateLinks
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5380589198379214899, guid: 91b1fc6d1afd42a42bf70121201ff949,
         type: 3}
       propertyPath: m_Name
