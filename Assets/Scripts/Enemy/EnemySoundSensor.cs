@@ -31,7 +31,7 @@ public class EnemySoundSensor : MonoBehaviour
     public float RealizeSoundPlayerCrouchWalkDistance;
     [Space]
     [Header("音が鳴ったさきのポイント移動する速さ")]
-    public float RealizeSpeedWhenWalk;
+    public float WalkSpeedWhenRealizeSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -66,7 +66,7 @@ public class EnemySoundSensor : MonoBehaviour
                     //ある程度時間がたったので
 
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
-                    follow_object_nav.ChaseToTargetSet(true, DefaultPosition, RealizeSpeedWhenWalk);
+                    follow_object_nav.ChaseToTargetSet(true, DefaultPosition, WalkSpeedWhenRealizeSound);
                     
                     MoveToSoundPlaceNow = false;
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
@@ -89,7 +89,7 @@ public class EnemySoundSensor : MonoBehaviour
                     Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, RealizeSpeedWhenWalk);
+                        SoundSeonsor(Player.transform.position, WalkSpeedWhenRealizeSound);
                         MoveToSoundPlaceNow = true;
                     }
                 }
@@ -103,7 +103,7 @@ public class EnemySoundSensor : MonoBehaviour
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, RealizeSpeedWhenWalk);
+                        SoundSeonsor(Player.transform.position, WalkSpeedWhenRealizeSound);
                         MoveToSoundPlaceNow = true;
                     }
                 }
@@ -117,7 +117,7 @@ public class EnemySoundSensor : MonoBehaviour
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, RealizeSpeedWhenWalk);
+                        SoundSeonsor(Player.transform.position, WalkSpeedWhenRealizeSound);
                         MoveToSoundPlaceNow = true;
                     }
                 }

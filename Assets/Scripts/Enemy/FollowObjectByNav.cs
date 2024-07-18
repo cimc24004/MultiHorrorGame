@@ -19,6 +19,8 @@ public class FollowObjectByNav : MonoBehaviour
     private Vector3 ChaseTargetPosition;
     private float ToNextPointPosDistance;
     private Vector3 NavmeshNextPos;
+    //フレームごとにNavmeshのSetDestinationを行うのはCPUに負担を大きく掛けるため一定時間ごとに更新する。
+    private float NavmeshSetDestinationWhileTimeNow = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -71,7 +73,12 @@ public class FollowObjectByNav : MonoBehaviour
     {
         if (ChaseToTargetMode)
         {
-            nav_mesh_agent.SetDestination(ChaseTargetPosition);
+            NavmeshSetDestinationWhileTimeNow += Time.deltaTime;
+            if (NavmeshSetDestinationWhileTimeNow > 0.5f)
+            {
+                nav_mesh_agent.SetDestination(ChaseTargetPosition);
+                NavmeshSetDestinationWhileTimeNow = 0;
+            }
 
             Vector3 direction = (nav_mesh_agent.steeringTarget - transform.position).normalized;
 
@@ -81,6 +88,10 @@ public class FollowObjectByNav : MonoBehaviour
                 Quaternion lookRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
             }
+        }
+        else
+        {
+            NavmeshSetDestinationWhileTimeNow = 0;
         }
         if (ArrivedTarget)
         {

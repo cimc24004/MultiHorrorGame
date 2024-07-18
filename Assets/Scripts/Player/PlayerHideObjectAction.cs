@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerHideObjectAction : MonoBehaviour
 {
+    //プレイヤーが隠れるアクション
     private PlayerInput player_input;
     private bool ColHideObject;
     private TargetHideObject target_hide_object;
@@ -35,7 +36,7 @@ public class PlayerHideObjectAction : MonoBehaviour
                 //ColHideObjectは隠れられるオブジェクトに触れてるかのチェックをしてから隠れる。
                 Hide();
 
-                //隠れている最中はプレイヤーの物理演算を無視してかつコライダーも実質無効にする。
+                //隠れている最中はプレイヤーの物理演算を無視してかつisTriggerも実質無効にする。
                 player_status.HidingNow = true;
             }
             else if(player_status.HidingNow)
@@ -45,6 +46,7 @@ public class PlayerHideObjectAction : MonoBehaviour
             }
         }
     }
+    //隠すときは隠れられるオブジェクトのTargetHideObjectスクリプトのHideTarget関数を実行すればよい。
     private void Hide()
     {
         target_hide_object.HideTarget(this.gameObject);
@@ -75,7 +77,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         }
         else if(hide_type_target_object == TargetHideObject.HideType.FaceDown)
         {
-            //うつ伏せタイプなら
+            //うつ伏せタイプならうつ伏せアニメーションを流す。
             player_anim.SetBool("FaceDown", true);
         }
     }
@@ -85,6 +87,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         if(other.gameObject.tag == "HideActionObject")
         {
             target_hide_object = other.gameObject.GetComponent<TargetHideObject>();
+            //隠れるプレイヤーの状態タイプを取得
             hide_type_target_object = target_hide_object.hide_type;
             ColHideObject = true;
         }

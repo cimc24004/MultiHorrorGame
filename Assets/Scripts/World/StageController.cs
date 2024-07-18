@@ -6,8 +6,9 @@ public class StageController : Singleton<StageController>
 {
     public CursorLockMode DefaultCursorLockMode;
     public string NowSceneName;
-    //ステージごとに配置するコントローラー
-    
+    //カーソルのロックはステージごとに違う可能性がある(GameOverやGameStart画面などではLockはしておかない)
+    //なのでステージごとに配置するコントローラーを分けている。
+
     // Start is called before the first frame update
     void Start()
     {

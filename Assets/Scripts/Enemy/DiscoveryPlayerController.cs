@@ -14,16 +14,16 @@ public class DiscoveryPlayerController : MonoBehaviour
     public float PlayerDiscoveryRange;
     [Header("Playerを見つけた時追いかけるスピード")]
     public float SpeedWhenDiscoveried;
-
-    //特定のレイヤーオブジェクトのみで視野判定を行っていくための設定
     [Header("視認できるオブジェクトのレイヤー")]
-    public List<string> layer_mask_lists = new List<string>{ "Player", "Object" };
+    public LayerMask layerMask;
+    //特定のレイヤーオブジェクトのみで視野判定を行っていくための設定
+    //public List<string> layer_mask_lists = new List<string>{ "Player", "Object" };
     //プレイヤーが自分の視界から外れている間の時間
     [Header("プレイヤーが敵の視界から外れている間の追いかけるのを諦めるまでの時間")]
     public float SightOutPlayerTime = 1;
     //プレイヤーを視認しているかどうか
     public bool SightningPlayer;
-    private int layerMask;
+
     private GameObject Player;
     private Transform PlayersHeadTransform;
     private FollowObjectByNav follow_object_nav;
@@ -43,7 +43,6 @@ public class DiscoveryPlayerController : MonoBehaviour
 
         Player = player_status.gameObject;
         PlayersHeadTransform = player_status.Head;
-        layerMask = LayerMask.GetMask(layer_mask_lists.ToArray());
         DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
     }
@@ -81,14 +80,13 @@ public class DiscoveryPlayerController : MonoBehaviour
             SightOutPlayerTimeNow = 0;
         }
 
-
         if (Vector3.Angle(direction, EyePosition.forward) <= VisionFieldAngle && InsidePlayer)
         {
             //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
-            if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,layerMask))
+            if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, layerMask))
             {
                 //Raycastをプレイヤーにとりあえず飛ばす。
-
+                Debug.Log("raycast_hit_name??: " + raycast_hit.collider.gameObject.name + "    " + "raycast_hit_layer::" + raycast_hit.collider.gameObject.layer);
                 if (!ObstacleLayers.Contains(LayerMask.LayerToName(raycast_hit.collider.gameObject.layer)))
                 {
                     //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
