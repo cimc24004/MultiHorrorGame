@@ -67,10 +67,12 @@ public class DiscoveryPlayerController : MonoBehaviour
             if (SightOutPlayerTimeNow > SightOutPlayerTime)
             {
                 Debug.Log("時間経過しましたよ");
-                DiscoveryPlayer(false);
                 //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
                 //今はデフォルト位置に戻る設定にしているが近くの徘徊ルートに行くという設定する予定。
-                follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
+                DiscoveryPlayer(false);
+
+
+                //follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
                 SightOutPlayerTimeNow = 0;
             }
 
@@ -125,6 +127,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         }
         else
         {
+            //デフォルトの場所に戻るようにしている。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
             follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
         }
     }

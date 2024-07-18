@@ -19,8 +19,6 @@ public class FollowObjectByNav : MonoBehaviour
     private Vector3 ChaseTargetPosition;
     private float ToNextPointPosDistance;
     private Vector3 NavmeshNextPos;
-    //フレームごとにNavmeshのSetDestinationを行うのはCPUに負担を大きく掛けるため一定時間ごとに更新する。
-    private float NavmeshSetDestinationWhileTimeNow = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -73,12 +71,9 @@ public class FollowObjectByNav : MonoBehaviour
     {
         if (ChaseToTargetMode)
         {
-            NavmeshSetDestinationWhileTimeNow += Time.deltaTime;
-            if (NavmeshSetDestinationWhileTimeNow > 0.5f)
-            {
-                nav_mesh_agent.SetDestination(ChaseTargetPosition);
-                NavmeshSetDestinationWhileTimeNow = 0;
-            }
+            nav_mesh_agent.SetDestination(ChaseTargetPosition);
+
+
 
             Vector3 direction = (nav_mesh_agent.steeringTarget - transform.position).normalized;
 
@@ -91,7 +86,6 @@ public class FollowObjectByNav : MonoBehaviour
         }
         else
         {
-            NavmeshSetDestinationWhileTimeNow = 0;
         }
         if (ArrivedTarget)
         {
@@ -115,7 +109,9 @@ public class FollowObjectByNav : MonoBehaviour
     }
     public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed)
     {
-        //この関数は外部から使用する。 targetの位置をセットする為の関数
+        //この関数は外部から使用する。 targetの位置をセットする為の関数 
+        //_SetDestinationOnceとは SetDestinationを何回もやってると重くなるのでプレイヤーなど動くもの以外は
+        //一回だけ探索ゴールを設定するようにしておく。 軽量化のため。
         this.ChaseToTargetMode = _mode;
         this.speed = _speed;
         this.ChaseTargetPosition = _position;
