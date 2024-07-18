@@ -24,7 +24,6 @@ public class FollowObjectByNav : MonoBehaviour
     {
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
         rigid = this.gameObject.GetComponent<Rigidbody>();
-
         //デフォルトでは探索結果の0番目を指定する
         if (nav_mesh_agent.path.corners.Length >= 1)
         {
@@ -74,7 +73,6 @@ public class FollowObjectByNav : MonoBehaviour
             nav_mesh_agent.SetDestination(ChaseTargetPosition);
 
 
-
             Vector3 direction = (nav_mesh_agent.steeringTarget - transform.position).normalized;
 
             // 回転する方向を計算
@@ -97,7 +95,6 @@ public class FollowObjectByNav : MonoBehaviour
             //ターゲットの位置に到着していない場合は
             if (ChaseToTargetMode && ToNextPointPosDistance > 0f)
             {
-
                 rigid.velocity = (NavmeshNextPos - this.transform.position).normalized * speed;
             }
             else

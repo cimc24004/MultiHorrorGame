@@ -12,10 +12,13 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
     private bool InSoundRange;
     private SoundObjectEventWithEnemySensor sound_object_event_with_sensor;
     private EnemySoundSensor enemy_sound_sensor;
+    private EnemyStatus enemy_status;
+    private bool once;
     // Start is called before the first frame update
     void Start()
     {
         enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
+        enemy_status = this.gameObject.GetComponent<EnemyStatus>();
     }
 
     // Update is called once per frame
@@ -28,9 +31,13 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
             if (sound_object_event_with_sensor.enemy_sound_sensor_mode)
             {
                 //SoundObject(非常ベルや投擲アイテム)の音がなっている最中ならば
-                enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.WalkSpeedWhenRealizeSound);
+                enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.SpeedRunWhenRealizeSound);
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+                
             }
+
         }
+
     }
 
     private void OnTriggerEnter(Collider other)

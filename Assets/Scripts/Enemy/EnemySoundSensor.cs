@@ -9,6 +9,7 @@ public class EnemySoundSensor : MonoBehaviour
     private FollowObjectByNav follow_object_nav;
     private GameObject Player;
     private PlayerStatus player_status;
+    private EnemyStatus enemy_status;
     public float ArriveSoundPlaceWaitTimeToReturnNow;
     private Vector3 DefaultPosition;
     //プレイヤーとの距離
@@ -30,8 +31,12 @@ public class EnemySoundSensor : MonoBehaviour
     [Header("プレイヤーがしゃがみ歩きしてるとき")]
     public float RealizeSoundPlayerCrouchWalkDistance;
     [Space]
-    [Header("音が鳴ったさきのポイント移動する速さ")]
-    public float WalkSpeedWhenRealizeSound;
+    [Header("音が鳴ったさきのポイント歩き移動する速さ")]
+    public float SpeedWalkWhenRealizeSound = 1;
+    [Header("音が鳴ったさきのポイント走り移動する速さ")]
+    public float SpeedRunWhenRealizeSound = 4;
+    [Header("探すのをあきらめて戻るときの歩く速さ")]
+    public float SpeedWhenReturn = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +44,7 @@ public class EnemySoundSensor : MonoBehaviour
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         player_status = PlayerStatus.instance;
         Player = player_status.gameObject;
+        enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
     }
@@ -66,11 +72,14 @@ public class EnemySoundSensor : MonoBehaviour
                     //ある程度時間がたったので
 
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
-                    follow_object_nav.ChaseToTargetSet(true, DefaultPosition, WalkSpeedWhenRealizeSound);
-                    
+                    follow_object_nav.ChaseToTargetSet(true, DefaultPosition, SpeedWhenReturn);
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                     MoveToSoundPlaceNow = false;
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 }
+            }
+            else
+            {
             }
         }
         else
@@ -89,7 +98,8 @@ public class EnemySoundSensor : MonoBehaviour
                     Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, WalkSpeedWhenRealizeSound);
+                        SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                         MoveToSoundPlaceNow = true;
                     }
                 }
@@ -103,7 +113,9 @@ public class EnemySoundSensor : MonoBehaviour
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, WalkSpeedWhenRealizeSound);
+                        SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+
                         MoveToSoundPlaceNow = true;
                     }
                 }
@@ -117,7 +129,9 @@ public class EnemySoundSensor : MonoBehaviour
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, WalkSpeedWhenRealizeSound);
+                        SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+
                         MoveToSoundPlaceNow = true;
                     }
                 }
@@ -133,6 +147,7 @@ public class EnemySoundSensor : MonoBehaviour
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
             follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
+            Debug.Log("enemy_status.enemy_move_state=EnemyStatus.EnemyMoveState.Run");
             SoundPlacePosition = TargetPos;
 
             MoveToSoundPlaceNow = true;

@@ -628,6 +628,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2204745625150836465}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2973514301039058238}
   m_SourcePrefab: {fileID: 100100000, guid: f49ccc93b38f3504e95989cbc0641ae0, type: 3}
 --- !u!1 &6297832481982226207 stripped
 GameObject:
@@ -695,7 +699,9 @@ MonoBehaviour:
   RealizeSoundPlayerRunDistance: 10
   RealizeSoundPlayerWalkDistance: 5
   RealizeSoundPlayerCrouchWalkDistance: 1
-  WalkSpeedWhenRealizeSound: 2
+  SpeedWalkWhenRealizeSound: 1
+  SpeedRunWhenRealizeSound: 4
+  SpeedWhenReturn: 1
 --- !u!54 &1451237389554831672
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -757,6 +763,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a246c2b2a29eece429eb2eb31f71ced8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2973514301039058238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6297832481982226207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e242665cfecc294cb8c270b1c5e1368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy_move_state: 0
 --- !u!4 &6642165046326052261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f49ccc93b38f3504e95989cbc0641ae0,

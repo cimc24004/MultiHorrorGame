@@ -34,6 +34,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private Vector3 direction;
     private Vector3 DefaultPos;
     private float ToPlayerDistance;
+    private EnemyStatus enemy_status;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
     // Start is called before the first frame update
@@ -45,6 +46,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         PlayersHeadTransform = player_status.Head;
         DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
+        enemy_status = this.gameObject.GetComponent<EnemyStatus>();
     }
 
     // Update is called once per frame
@@ -123,11 +125,16 @@ public class DiscoveryPlayerController : MonoBehaviour
         DiscoveryPlayerNow = _discovery;
         if (_discovery)
         {
+            if (!follow_object_nav.ArrivedTarget)
+            {
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+            }
             follow_object_nav.ChaseToTargetSet(true, Player.transform.position, SpeedWhenDiscoveried);
         }
         else
         {
             //デフォルトの場所に戻るようにしている。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
+            enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
             follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
         }
     }
