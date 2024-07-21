@@ -5560,7 +5560,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7648397909547668605}
-  - component: {fileID: 3750012017029687228}
   m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
@@ -5583,20 +5582,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 597350177767367547}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3750012017029687228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6896717333779151944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7934eec7168211a4084206f3eec041e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnGround: 0
-  Distance: 0.1
 --- !u!1 &6905848125824678305
 GameObject:
   m_ObjectHideFlags: 0
@@ -5871,7 +5856,7 @@ GameObject:
   - component: {fileID: 364072651999732485}
   - component: {fileID: 8233352425753280259}
   - component: {fileID: 7887030601854502301}
-  - component: {fileID: 5305650069254919304}
+  - component: {fileID: 2587244323056998579}
   m_Layer: 6
   m_Name: PlayerUnityChan
   m_TagString: Player
@@ -5948,9 +5933,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.10891782
-  m_Height: 0.8954506
+  m_Height: 1.538292
   m_Direction: 1
-  m_Center: {x: 0.0034548044, y: 1.09793, z: 0.0067066103}
+  m_Center: {x: 0.0034548044, y: 0.77578396, z: 0.0067066103}
 --- !u!95 &3709143509871936015
 Animator:
   serializedVersion: 5
@@ -5984,6 +5969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def0de1343d5bc449a0294d95ecd7b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveDirection: {x: 0, y: 0, z: 0}
   RunSpeed: 7
   WalkSpeed: 3
   CrouchSpeed: 1
@@ -6125,29 +6111,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityMultiplier: 300
   gravity: {x: 0, y: 0, z: 0}
---- !u!136 &5305650069254919304
-CapsuleCollider:
+--- !u!114 &2587244323056998579
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7525078627656951602}
-  m_Material: {fileID: 13400000, guid: dab814c542e7e4d43ac5f922d71ad88a, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.072838366
-  m_Height: 0.68204814
-  m_Direction: 1
-  m_Center: {x: 0.007161632, y: 0.3160241, z: 0.0037021637}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8d359d754d848d49a31043e61347f63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slopeForceRayLength: 0.1
+  slopeForce: 0
+  Angle: 0
 --- !u!1 &7660362891355367674
 GameObject:
   m_ObjectHideFlags: 0

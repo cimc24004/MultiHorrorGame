@@ -6,6 +6,7 @@ public class PlayerMoveScript : MonoBehaviour
 {
     //プレイヤー移動スクリプト
     private Rigidbody rigid;
+    public Vector3 MoveDirection;
     public float RunSpeed = 3;
     public float WalkSpeed = 1;
     public float CrouchSpeed = 1;
@@ -79,7 +80,8 @@ public class PlayerMoveScript : MonoBehaviour
         if(MoveKeyValue.magnitude != 0)
         {
             this.transform.localRotation = Quaternion.Euler(0, DirectionCamera.transform.rotation.eulerAngles.y, 0);
-            rigid.velocity = ((this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x)) * NowSpeed;
+            MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
+            rigid.velocity = MoveDirection * NowSpeed;
             player_status.MoveSpeed = rigid.velocity.magnitude;
         }
         else
