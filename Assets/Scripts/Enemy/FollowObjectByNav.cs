@@ -95,7 +95,8 @@ public class FollowObjectByNav : MonoBehaviour
             //ターゲットの位置に到着していない場合は
             if (ChaseToTargetMode && ToNextPointPosDistance > 0f)
             {
-                rigid.velocity = (NavmeshNextPos - this.transform.position).normalized * speed;
+                Vector3 target = (NavmeshNextPos - this.transform.position).normalized;
+                rigid.velocity = target * speed;
             }
             else
             {

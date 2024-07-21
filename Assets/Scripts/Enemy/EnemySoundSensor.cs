@@ -147,7 +147,6 @@ public class EnemySoundSensor : MonoBehaviour
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
             follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
-            Debug.Log("enemy_status.enemy_move_state=EnemyStatus.EnemyMoveState.Run");
             SoundPlacePosition = TargetPos;
 
             MoveToSoundPlaceNow = true;
