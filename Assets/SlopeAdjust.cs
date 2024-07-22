@@ -5,20 +5,8 @@ using UnityEngine;
 public class SlopeAdjust : MonoBehaviour
 {
     public float slopeForceRayLength;
-    private Rigidbody rb;
     public float Angle;
     private RaycastHit hit;
-
-    private void Start()
-    {
-        //rb = this.gameObject.GetComponent<Rigidbody>();
-        //player_status = this.gameObject.GetComponent<PlayerStatus>();
-        //custom_gravity = this.gameObject.GetComponent<CustomGravity>();
-    }
-    void FixedUpdate()
-    {
-
-    }
 
     public bool OnSlope()
     {
