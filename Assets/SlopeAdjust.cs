@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SlopeAdjust : MonoBehaviour
 {
+    //ÉXÉçÅ[Év
     public float slopeForceRayLength;
     public float Angle;
     private RaycastHit hit;
