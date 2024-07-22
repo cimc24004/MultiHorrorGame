@@ -24,9 +24,11 @@ public class PlayerMoveScript : MonoBehaviour
     private InputAction CrouchChangeAction;
     private TimeManager time_manager;
     private PlayerStatus player_status;
+    private SlopeAdjust slope_adjust;
     // Start is called before the first frame update
     void Start()
     {
+        slope_adjust = this.gameObject.GetComponent<SlopeAdjust>();
         rigid = this.gameObject.GetComponent<Rigidbody>();
         NowSpeed = WalkSpeed;
         player_input = this.gameObject.GetComponent<PlayerInput>();
@@ -81,6 +83,14 @@ public class PlayerMoveScript : MonoBehaviour
         {
             this.transform.localRotation = Quaternion.Euler(0, DirectionCamera.transform.rotation.eulerAngles.y, 0);
             MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
+            if (slope_adjust.OnSlope())
+            {
+                MoveDirection = slope_adjust.GetSlopeMoveDirection(MoveDirection);
+            }
+            else
+            {
+
+            }
             rigid.velocity = MoveDirection * NowSpeed;
             player_status.MoveSpeed = rigid.velocity.magnitude;
         }

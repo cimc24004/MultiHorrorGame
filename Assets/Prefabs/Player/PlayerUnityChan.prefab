@@ -5560,6 +5560,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7648397909547668605}
+  - component: {fileID: 6955976748352181139}
   m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
@@ -5582,6 +5583,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 597350177767367547}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6955976748352181139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6896717333779151944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e33b034a136f54f4199afd31c713e7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Distance: 0.1
+  custom_gravity: {fileID: 7887030601854502301}
 --- !u!1 &6905848125824678305
 GameObject:
   m_ObjectHideFlags: 0
@@ -6111,6 +6126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityMultiplier: 300
   gravity: {x: 0, y: 0, z: 0}
+  Direction: {x: 0, y: -1, z: 0}
 --- !u!114 &2587244323056998579
 MonoBehaviour:
   m_ObjectHideFlags: 0
