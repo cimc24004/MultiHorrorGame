@@ -5577,7 +5577,7 @@ Transform:
   m_GameObject: {fileID: 6896717333779151944}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.004, z: 0}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5909,7 +5909,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7525078627656951602}
   serializedVersion: 4
-  m_Mass: 10
+  m_Mass: 0.0000001
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -6126,7 +6126,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityMultiplier: 300
   gravity: {x: 0, y: 0, z: 0}
-  Direction: {x: 0, y: -1, z: 0}
 --- !u!114 &2587244323056998579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6139,8 +6138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d359d754d848d49a31043e61347f63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slopeForceRayLength: 0.1
-  slopeForce: 0
+  slopeForceRayLength: 1
   Angle: 0
 --- !u!1 &7660362891355367674
 GameObject:
@@ -6761,8 +6759,9 @@ GameObject:
   m_Component:
   - component: {fileID: 232217543605583228}
   - component: {fileID: 5792832899677088043}
+  - component: {fileID: 9187394712909114214}
   m_Layer: 6
-  m_Name: ItemThrowControlelr
+  m_Name: ItemController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6802,6 +6801,47 @@ MonoBehaviour:
   player_input: {fileID: 5005781273623164305}
   StartFiringPos: {fileID: 860238112311082304}
   ThrowFirstSpeed: 8
+--- !u!114 &9187394712909114214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8435485924296425593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5474c600774f5ca438f23585dee8bad4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: belonging_items
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[ItemStatus, Assembly-CSharp],[System.Int32,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[ItemStatus, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &8472654440700255590
 GameObject:
   m_ObjectHideFlags: 0
