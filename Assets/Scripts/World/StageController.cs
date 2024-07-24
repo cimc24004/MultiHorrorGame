@@ -13,7 +13,8 @@ public class StageController : Singleton<StageController>
     void Start()
     {
         Cursor.lockState = DefaultCursorLockMode;
-        Cursor.visible = false;
+        if(DefaultCursorLockMode != CursorLockMode.None)
+            Cursor.visible = false;
         NowSceneName = SceneManager.GetActiveScene().name;
     }
 

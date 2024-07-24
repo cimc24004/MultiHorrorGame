@@ -4,6 +4,9 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 public class ItemBelongingsController : SerializedMonoBehaviour
 {
+    //アイテム持ち物コントローラー 
+
+    //持っているアイテムの情報。
     public Dictionary<ItemStatus, int> belonging_items = new Dictionary<ItemStatus, int>();
     // Start is called before the first frame update
     void Start()
@@ -16,6 +19,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     {
         
     }
+    //アイテムをこのコントローラーに追加する関数 外部から実行する。　主にCrossHairEvent.csから
     [Button]
     public void ItemAddToBelonging(ItemStatus item_status)
     {
@@ -30,6 +34,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             belonging_items[item_status] = BelongingCountNow;
         }
     }
+    //コントローラーにあるアイテム所持品からアイテムを消費する関数。
     [Button]
     public void ItemUseFromBelonging(ItemStatus item_status)
     {
