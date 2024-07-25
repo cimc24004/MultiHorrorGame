@@ -8,4 +8,8 @@ public class ItemUI : MonoBehaviour
     public Image ItemIcon;
     public Text ItemCountText;
     public ItemBelongingsController item_belonging_controller;
+    public void OnClick()
+    {
+        Debug.Log("OnClicked-----: ");
+    }
 }
