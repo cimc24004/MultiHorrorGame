@@ -4,9 +4,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerHideObjectAction : MonoBehaviour
 {
+    public bool HideAction;
     //プレイヤーが隠れるアクション
-    private PlayerInput player_input;
-    private bool ColHideObject;
     private TargetHideObject target_hide_object;
     private PlayerStatus player_status;
     private CharactorMovePermit charactor_move_permit;
@@ -14,24 +13,34 @@ public class PlayerHideObjectAction : MonoBehaviour
     private Rigidbody player_rigid;
     private Animator player_anim;
     private Collider player_collider;
+    private PlayerInput player_input;
     // Start is called before the first frame update
     void Start()
     {
         player_status = this.gameObject.GetComponent<PlayerStatus>();
-        player_input = this.gameObject.GetComponent<PlayerInput>();
         player_rigid = this.gameObject.GetComponent<Rigidbody>();
         player_collider = this.gameObject.GetComponent<Collider>();
         player_anim = this.gameObject.GetComponent<Animator>();
         charactor_move_permit = this.gameObject.GetComponent<CharactorMovePermit>();
+        player_input = this.gameObject.GetComponent<PlayerInput>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //隠れるキーを押したら
-        if (player_input.currentActionMap["HideAction"].triggered)
+        if (player_status.HidingNow)
         {
-            if (!player_status.HidingNow && ColHideObject)
+            //隠れている状態でRaycastActionキーをおした場合　隠れるオブジェクトから抜けるようにする。
+            if (player_input.currentActionMap["RaycastAction"].triggered)
+            {
+                target_hide_object = null;
+                HideAction = true;
+            }
+        }
+        //隠れるキーを押したら
+        if (HideAction)
+        {
+            if (!player_status.HidingNow )
             {
                 //ColHideObjectは隠れられるオブジェクトに触れてるかのチェックをしてから隠れる。
                 Hide();
@@ -44,6 +53,7 @@ public class PlayerHideObjectAction : MonoBehaviour
                 UnHide();
                 player_status.HidingNow = false;
             }
+            HideAction = false;
         }
     }
     //隠すときは隠れられるオブジェクトのTargetHideObjectスクリプトのHideTarget関数を実行すればよい。
@@ -81,23 +91,29 @@ public class PlayerHideObjectAction : MonoBehaviour
             player_anim.SetBool("FaceDown", true);
         }
     }
+    public void TargetHideObjectSet(GameObject TargetObject)
+    {
+        //CrossHairEvent.csから実行する。 隠れる対称のオブジェクト(おしいれとか机とか)を取得し、そのHideTypeを取得。
+        target_hide_object = TargetObject.GetComponent<TargetHideObject>();
+        hide_type_target_object = target_hide_object.hide_type;
+    }
 
-    private void OnCollisionEnter(Collision other)
-    {
-        if(other.gameObject.tag == "HideActionObject")
-        {
-            target_hide_object = other.gameObject.GetComponent<TargetHideObject>();
-            //隠れるプレイヤーの状態タイプを取得
-            hide_type_target_object = target_hide_object.hide_type;
-            ColHideObject = true;
-        }
-    }
-    private void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject.tag == "HideActionObject" && !player_status.HidingNow)
-        {
-            target_hide_object = null;
-            ColHideObject = false;
-        }
-    }
+    //private void OnCollisionEnter(Collision other)
+    //{
+    //    if(other.gameObject.tag == "HideActionObject")
+    //    {
+    //        target_hide_object = other.gameObject.GetComponent<TargetHideObject>();
+    //        //隠れるプレイヤーの状態タイプを取得
+    //        hide_type_target_object = target_hide_object.hide_type;
+    //        ColHideObject = true;
+    //    }
+    //}
+    //private void OnCollisionExit(Collision other)
+    //{
+    //    if (other.gameObject.tag == "HideActionObject" && !player_status.HidingNow)
+    //    {
+    //        target_hide_object = null;
+    //        ColHideObject = false;
+    //    }
+    //}
 }
