@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-
+using DG.Tweening;
 using Sirenix.OdinInspector;
 public class ItemMenuController : SerializedMonoBehaviour
 {
@@ -31,12 +31,17 @@ public class ItemMenuController : SerializedMonoBehaviour
     private void Start()
     {
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
-        player_input.currentActionMap["ItemSelectNumber"].performed += ctx => print(ctx.ReadValue<float>());
+        player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
+        
     }
     private void Update()
     {
         //ホイールの値を取得する。
         scroll_value_float = player_input.currentActionMap["ItemSelectWheel"].ReadValue<float>();
+
+        Debug.Log(player_input.currentControlScheme);
+
+
         //ホイールの値を1,-1,0で返すようにする為のやつ。
         if (scroll_value_float > 0) scroll_value = 1;
         else if (scroll_value_float == 0) scroll_value = 0;
@@ -125,7 +130,8 @@ public class ItemMenuController : SerializedMonoBehaviour
     public void ItemMenuHide()
     {
         Debug.Log("ItemMenuHide()()()()U)(");
-        ItemCanvasGroup.alpha = 0;
+        //ItemCanvasGroup.alpha = 0;
+        ItemCanvasGroup.DOFade(0, 0.1f).SetEase(Ease.Linear).SetLink(this.gameObject);
     }
     public void ItemSelect(int ItemIndex)
     {
@@ -161,18 +167,29 @@ public class ItemMenuController : SerializedMonoBehaviour
         //item_statusを参照してitem_belongings_controllerのアイテムを使用する関数を実行。
         item_belongings_controller.ItemUseFromBelonging(item_status);
     }
-
-    private void SetItemByKeyValue(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    private void OnNumbericKeyPressed(InputAction.CallbackContext context)
     {
-
-        int numKeyValue; // the number key value we want from this keypress
-
-        int.TryParse(ctx.control.name, out numKeyValue);
-        // Warning! If ctx.control.name can't parse as an int, numKeyValue will be 0
-
-        Debug.Log("int value of keypress is: " + numKeyValue);
-
-        // Now do something with the key value ...
+        Debug.Log("KeyName:::::" + context.control.displayName);
+        int numberKey = Int32.Parse(context.control.displayName);
+        int ChildCount = ItemGroup.transform.childCount;
+        if(ChildCount > 0)
+        {
+            if (numberKey != 0)
+            {
+                if (numberKey < ChildCount)
+                {
+                    ItemSelect(numberKey - 1);
+                }
+                else
+                {
+                    ItemSelect(ChildCount - 1);
+                }
+            }
+            else if (numberKey == 0)
+            {
+                ItemSelect(ChildCount - 1);
+            }
+        }
 
     }
 }
