@@ -11,6 +11,7 @@ public class EnemyStatus : MonoBehaviour
         Run
     }
     public EnemyMoveState enemy_move_state;
+    public GameObject FaceExpandingCamera;
     private FollowObjectByNav follow_object_by_nav;
     private Rigidbody rigid;
     private Animator anim;
@@ -25,6 +26,7 @@ public class EnemyStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("ENemyMoveMode: : " + enemy_move_state.ToString());
         if(enemy_move_state == EnemyMoveState.Run)
         {
             anim.SetFloat("MoveY", 1);

@@ -35,6 +35,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private Vector3 DefaultPos;
     private float ToPlayerDistance;
     private EnemyStatus enemy_status;
+    private CameraEnemyFaceExpanding camera_enemy_face_expanding;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
     // Start is called before the first frame update
@@ -46,6 +47,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         PlayersHeadTransform = player_status.Head;
         DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
+        camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
     }
 
@@ -60,6 +62,14 @@ public class DiscoveryPlayerController : MonoBehaviour
         if (DiscoveryPlayerNow)
         {
             DiscoveryPlayer(true);
+            //見つかっている状態でプレイヤーの位置に到着したら
+            if (follow_object_nav.ArrivedTarget)
+            {
+                //敵の顔がドアップ。恐怖演出
+                //プレイヤーを殺す。
+                player_status.DeadEvent(this.gameObject);
+            }
+
         }
         if (DiscoveryPlayerNow && !SightningPlayer)
         {
@@ -129,6 +139,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             {
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
             }
+
             follow_object_nav.ChaseToTargetSet(true, Player.transform.position, SpeedWhenDiscoveried);
         }
         else

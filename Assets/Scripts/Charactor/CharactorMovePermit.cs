@@ -6,10 +6,11 @@ public class CharactorMovePermit : MonoBehaviour
 {
     public UnityEvent MoveEvent;
     public UnityEvent StopEvent;
+    private Rigidbody rigid;
     // Start is called before the first frame update
     void Start()
     {
-        
+        rigid = this.gameObject.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -24,5 +25,6 @@ public class CharactorMovePermit : MonoBehaviour
     public void Stop()
     {
         StopEvent.Invoke();
+        rigid.velocity = Vector3.zero;
     }
 }

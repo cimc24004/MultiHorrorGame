@@ -116,7 +116,30 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             belonging_items.Remove(item_status);
         }
     }
-
+    public bool ExistsItems()
+    {
+        //一つでもアイテムを持っていたらtrueを返すやつ。
+        if(belonging_items.Count > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public bool ExistItemUIItemStatusByFind(ItemStatus item_status)
+    {
+        //アイテムメニューに指定したItemStatusが存在しない場合。
+        if (belonging_item_uis.ContainsKey(item_status))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     private void SetItemStatusToItemMenu(ItemStatus item_status)
     {
         //アイテム数が減ったとき。 アイテム数が増えた時(すでに持っている場合の時だけ)に実行する関数

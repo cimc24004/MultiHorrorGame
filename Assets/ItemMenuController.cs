@@ -25,6 +25,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     private float scroll_value_float;
     private ItemBelongingsController item_belongings_controller;
     private int scroll_value;
+    private ItemStatus NowSelect_item_status;
     public float WaitHideTimeNow;
     public bool ItemMenuShowUpNow;
     public bool ItemMenuShowUpCommand;
@@ -81,7 +82,13 @@ public class ItemMenuController : SerializedMonoBehaviour
             if (player_input.currentActionMap["ItemUse"].triggered)
             {
                 //アイテム使用ボタンを押したらアイテムを使用する関数を実行。
-                ItemUseFromMenu(NowSelectItemUIObject);
+                if (item_belongings_controller.ExistsItems())
+                {
+                    if (item_belongings_controller.ExistItemUIItemStatusByFind(NowSelect_item_status))
+                    {
+                        ItemUseFromMenu(NowSelectItemUIObject);
+                    }
+                }
             }
             if (scroll_value != 0)
             {
@@ -144,7 +151,9 @@ public class ItemMenuController : SerializedMonoBehaviour
         
         //今洗濯しているやつをButtonコンポーネントで取得し、選択する。
         NowSelectItemUIObject.gameObject.GetComponent<Button>().Select();
-        
+
+        //選択しているアイテムステータスも取得しておく。
+        NowSelect_item_status = NowSelectItemUIObject.GetComponent<ItemUI>().item_status;
         //変数にIndexも入れておくよ。
         NowItemSelectIndexX = ItemIndex;
 
