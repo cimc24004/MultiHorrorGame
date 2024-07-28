@@ -24,9 +24,9 @@ public class EnemyStatus : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        Debug.Log("ENemyMoveMode: : " + enemy_move_state.ToString());
+        Debug.Log("EnemyMoveMode: : " + enemy_move_state.ToString());
         if(enemy_move_state == EnemyMoveState.Run)
         {
             anim.SetFloat("MoveY", 1);
@@ -40,6 +40,10 @@ public class EnemyStatus : MonoBehaviour
         }
         if (follow_object_by_nav.ArrivedTarget)
         {
+            if(enemy_move_state == EnemyMoveState.Walk)
+            {
+                Debug.Log("EnemyMoveStateÇÃWalkÇ©ÇÁStopÇ…êÿÇËë÷ÇÌÇÈèuä‘");
+            }
             enemy_move_state = EnemyMoveState.Stop;
         }
     }

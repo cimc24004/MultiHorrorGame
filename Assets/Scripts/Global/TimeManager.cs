@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TimeManager : SingleTonDontDestory<TimeManager>
 {
-    private float time_now;
     public float deltaTime;
     // Start is called before the first frame update
     void Start()
@@ -18,14 +17,5 @@ public class TimeManager : SingleTonDontDestory<TimeManager>
         this.deltaTime = Time.deltaTime;
     }
 
-    public bool TimeCountDown(float time)
-    {
-        time_now += Time.deltaTime;
-        if (time_now > time)
-        {
-            time_now = 0;
-            return true;
-        }
-        return false;
-    }
+
 }

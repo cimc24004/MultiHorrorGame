@@ -16,9 +16,11 @@ public class FollowObjectByNav : MonoBehaviour
     private Rigidbody rigid;
     [HideInInspector]
     public float ToTargetPosDistance;
-    private Vector3 ChaseTargetPosition;
+    [HideInInspector]
+    public Vector3 ChaseTargetPosition;
     private float ToNextPointPosDistance;
     private Vector3 NavmeshNextPos;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -64,23 +66,25 @@ public class FollowObjectByNav : MonoBehaviour
         else
         {
             //ArrivedTarget = false;
+
         }
     }
     private void FixedUpdate()
     {
+        Vector3 direction = (nav_mesh_agent.steeringTarget - transform.position).normalized;
+
+        // ‰ñ“]‚·‚é•ûŒü‚ðŒvŽZ
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
+        }
         if (ChaseToTargetMode)
         {
             nav_mesh_agent.SetDestination(ChaseTargetPosition);
 
 
-            Vector3 direction = (nav_mesh_agent.steeringTarget - transform.position).normalized;
 
-            // ‰ñ“]‚·‚é•ûŒü‚ðŒvŽZ
-            if (direction != Vector3.zero)
-            {
-                Quaternion lookRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
-            }
         }
         else
         {

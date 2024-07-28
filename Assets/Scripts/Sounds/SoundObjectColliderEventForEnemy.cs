@@ -33,6 +33,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
             if (sound_object_event_with_sensor.enemy_sound_sensor_mode)
             {
                 //SoundObject(非常ベルや投擲アイテム)の音がなっている最中ならば
+                //enemy_sound_sensor.ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.SpeedRunWhenRealizeSound);
                 if (!follow_object_by_nav.ArrivedTarget)
                 {
@@ -40,6 +41,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
                 }
 
             }
+
 
         }
 

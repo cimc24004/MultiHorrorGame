@@ -15,10 +15,10 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
 
 
     [Header("音を慣らしておく時間 ")]
-    public float EnemySoundPlayingTime = 5;
+    public float SoundPlayingTime = 5;
     [Header("音がなり終えたあとに実行する関数")]
     public UnityEvent SoundStopEvent;
-    private float EnemySoundPlayingTimeNow = 0;
+    private float SoundPlayingTimeNow = 0;
     private AudioSource audio_source;
 
     // Start is called before the first frame update
@@ -31,22 +31,18 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
         if (enemy_sound_sensor_mode)
         {
             //ある程度時間がたったら音声停止。
-            EnemySoundPlayingTimeNow += Time.deltaTime;
+            SoundPlayingTimeNow += TimeManager.instance.deltaTime;
 
-            if(EnemySoundPlayingTimeNow > EnemySoundPlayingTime)
+            if(SoundPlayingTimeNow > SoundPlayingTime)
             {
                 SensorSoundStop();
                 SoundStopEvent.Invoke();
-                EnemySoundPlayingTimeNow = 0;
+                SoundPlayingTimeNow = 0;
             }
         }
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
 
-    }
     public void SensorSoundPlay()
     {
         //音を鳴らすと同時にenemy_sound_sensor_modeもtrueにする。

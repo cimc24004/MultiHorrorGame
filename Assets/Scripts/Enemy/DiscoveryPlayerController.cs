@@ -31,7 +31,8 @@ public class DiscoveryPlayerController : MonoBehaviour
     private RaycastHit raycast_hit;
     //プレイヤーが見つけられる範囲以内にいるかどうか。
     private bool InsidePlayer;
-    private Vector3 direction;
+    [HideInInspector]
+    public Vector3 direction;
     private Vector3 DefaultPos;
     private float ToPlayerDistance;
     private EnemyStatus enemy_status;
@@ -63,12 +64,6 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
-            if (follow_object_nav.ArrivedTarget)
-            {
-                //敵の顔がドアップ。恐怖演出
-                //プレイヤーを殺す。
-                player_status.DeadEvent(this.gameObject);
-            }
 
         }
         if (DiscoveryPlayerNow && !SightningPlayer)

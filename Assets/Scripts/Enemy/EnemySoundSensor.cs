@@ -20,6 +20,7 @@ public class EnemySoundSensor : MonoBehaviour
     private Vector3 SoundPlacePosition;
     //音が鳴った場所に移動しているNow
     public bool MoveToSoundPlaceNow;
+
     [Header("音がなった場所についた後戻るまで判断する時間。")]
     public float ArriveSoundPlaceWaitTimeToReturn;
     [Header("プレイヤーの状態によって音に気づく距離を変える。")]
@@ -37,6 +38,7 @@ public class EnemySoundSensor : MonoBehaviour
     public float SpeedRunWhenRealizeSound = 4;
     [Header("探すのをあきらめて戻るときの歩く速さ")]
     public float SpeedWhenReturn = 1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,9 +50,15 @@ public class EnemySoundSensor : MonoBehaviour
         enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
     }
-
+    private void Update()
+    {
+        if(follow_object_nav.ArrivedTarget && MoveToSoundPlaceNow)
+        {
+            ArriveSoundPlaceWaitTimeToReturnNow += TimeManager.instance.deltaTime;
+        }
+    }
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
         ToPlayerDistance = Vector3.Distance(this.transform.position, Player.transform.position);
@@ -66,7 +74,6 @@ public class EnemySoundSensor : MonoBehaviour
             if(follow_object_nav.ArrivedTarget)
             {
                 //音が鳴った位置に到着し終えた場合 少し時間を待ってから元の位置に戻るようにする。
-                ArriveSoundPlaceWaitTimeToReturnNow += Time.deltaTime;
                 if(ArriveSoundPlaceWaitTimeToReturnNow >= ArriveSoundPlaceWaitTimeToReturn)
                 {
                     //ある程度時間がたったので
@@ -84,8 +91,10 @@ public class EnemySoundSensor : MonoBehaviour
         }
         else
         {
+            follow_object_nav.ArrivedTarget = false;
             ArriveSoundPlaceWaitTimeToReturnNow = 0;
         }
+        Debug.Log("EnemyMoveStateじゃないけどさ MoveToSoundPlaceNow?? = " + MoveToSoundPlaceNow);
 
         //ここからはプレイヤーの足音がなったときの話。
         if (player_status.MoveSpeed != 0)

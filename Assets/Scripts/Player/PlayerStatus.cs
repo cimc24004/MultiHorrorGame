@@ -45,6 +45,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
         //恐怖演出用のイベントを実行。
         CameraEnemyFaceExpanding camera_enemy_face_expanding = KilledMeEnemy.GetComponent<CameraEnemyFaceExpanding>();
         camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
+        this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
         player_move_permit.Stop();
+
     }
 }

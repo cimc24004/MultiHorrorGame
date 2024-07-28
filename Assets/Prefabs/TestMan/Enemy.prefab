@@ -811,6 +811,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4014676743130251851}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7064805668712989872}
   m_SourcePrefab: {fileID: 100100000, guid: f49ccc93b38f3504e95989cbc0641ae0, type: 3}
 --- !u!1 &6297832481982226207 stripped
 GameObject:
@@ -842,6 +846,7 @@ MonoBehaviour:
     m_Bits: 72
   SightOutPlayerTime: 10
   SightningPlayer: 0
+  direction: {x: 0, y: 0, z: 0}
   SightOutPlayerTimeNow: 0
 --- !u!114 &3900953358839829992
 MonoBehaviour:
@@ -860,6 +865,7 @@ MonoBehaviour:
   StoppingDistance: 0.5
   ArrivedTarget: 0
   ToTargetPosDistance: 0
+  ChaseTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &3901689712144423909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -992,6 +998,22 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   FaceExpandingCameraObj: {fileID: 5592505765189875211}
+--- !u!114 &7064805668712989872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6297832481982226207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layer_mask:
+    serializedVersion: 2
+    m_Bits: 64
+  StartPos: {fileID: 2948438880129194380}
 --- !u!4 &6642165046326052261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f49ccc93b38f3504e95989cbc0641ae0,

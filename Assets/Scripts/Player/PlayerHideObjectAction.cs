@@ -33,7 +33,7 @@ public class PlayerHideObjectAction : MonoBehaviour
             //隠れている状態でRaycastActionキーをおした場合　隠れるオブジェクトから抜けるようにする。
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {
-                target_hide_object = null;
+                //target_hide_object = null;
                 HideAction = true;
             }
         }
