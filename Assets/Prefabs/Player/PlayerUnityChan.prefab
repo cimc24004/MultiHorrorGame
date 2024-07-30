@@ -2591,6 +2591,37 @@ Transform:
   - {fileID: 6905978888132410861}
   m_Father: {fileID: 4260180228961967199}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3063576512722082522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5153810754235229518}
+  m_Layer: 0
+  m_Name: CrouchHeadPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5153810754235229518
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3063576512722082522}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.925, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 597350177767367547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3068705479943131239
 GameObject:
   m_ObjectHideFlags: 0
@@ -2707,6 +2738,37 @@ Transform:
   - {fileID: 1861739540334280700}
   - {fileID: 3568150837656622107}
   m_Father: {fileID: 4229860514574664151}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3140152148580920116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6421989448975070222}
+  m_Layer: 0
+  m_Name: StandHeadPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6421989448975070222
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3140152148580920116}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.362, z: -0.008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 597350177767367547}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3206949040147889961
 GameObject:
@@ -3410,37 +3472,6 @@ Transform:
   - {fileID: 3556003166177313861}
   - {fileID: 4181311153086643938}
   m_Father: {fileID: 4263142495333027507}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4492348984035152741
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7157415797390016706}
-  m_Layer: 6
-  m_Name: LookPos
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7157415797390016706
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4492348984035152741}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.8, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 597350177767367547}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4614699918103850801
 GameObject:
@@ -5863,12 +5894,13 @@ Transform:
   m_Children:
   - {fileID: 3717271372266253696}
   - {fileID: 2555125989957557455}
-  - {fileID: 7157415797390016706}
   - {fileID: 4730444925870360574}
   - {fileID: 232217543605583228}
   - {fileID: 248200135143771960}
   - {fileID: 7648397909547668605}
   - {fileID: 129471188415106537}
+  - {fileID: 5153810754235229518}
+  - {fileID: 6421989448975070222}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &8915872745540889268
@@ -5930,7 +5962,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7525078627656951602}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: c15d59733e63f0948b107e0b7f543d4d, type: 3}
+  m_Avatar: {fileID: 9000000, guid: d6dad0fb52ba12f458cc7ffb66882391, type: 3}
   m_Controller: {fileID: 9100000, guid: b52bd7175c7e0f441a6c19387e742795, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -6005,10 +6037,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Head: {fileID: 3717271372266253696}
+  CrouchHeadPos: {fileID: 5153810754235229518}
+  StandHeadPos: {fileID: 6421989448975070222}
   Dead: 0
   player_move_state: 0
   MoveSpeed: 0
   HidingNow: 0
+  MoveX: 0
+  MoveY: 0
+  virtual_camera: {fileID: 0}
 --- !u!114 &7228379173649806129
 MonoBehaviour:
   m_ObjectHideFlags: 0

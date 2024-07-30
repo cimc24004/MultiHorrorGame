@@ -44,7 +44,9 @@ public class PlayerMoveScript : MonoBehaviour
     void Update()
     {
         MoveKeyValue = MoveAction.ReadValue<Vector2>();
-        if(player_status.player_move_state == PlayerStatus.PlayerMoveState.Run || player_status.player_move_state == PlayerStatus.PlayerMoveState.Walk)
+        player_status.MoveY = MoveKeyValue.y;
+        player_status.MoveX = MoveKeyValue.x;
+        if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Run || player_status.player_move_state == PlayerStatus.PlayerMoveState.Walk)
         {
             if (RunChangeAction.IsPressed())
             {
@@ -65,12 +67,14 @@ public class PlayerMoveScript : MonoBehaviour
             {
                 //‚µ‚á‚ª‚Þ
                 player_status.player_move_state = PlayerStatus.PlayerMoveState.Crouch;
+                player_status.CrouchStandCameraPosChange(true);
                 NowSpeed = CrouchSpeed;
                 CrouchNow = true;
             }
             else
             {
                 player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                player_status.CrouchStandCameraPosChange(false);
                 NowSpeed = WalkSpeed;
                 CrouchNow = false;
             }

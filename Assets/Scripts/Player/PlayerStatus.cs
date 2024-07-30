@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Cinemachine;
+using DG.Tweening;
 public class PlayerStatus : Singleton<PlayerStatus>
 {
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
     public Transform Head;
+    public Transform CrouchHeadPos;
+    public Transform StandHeadPos;
+
     //死んだかどうか
     public bool Dead;
     //プレイヤーの移動状態 (走る 歩く しゃがむ)
@@ -13,25 +17,53 @@ public class PlayerStatus : Singleton<PlayerStatus>
     {
         Run,
         Walk,
-        Crouch,
-        Idle
+        Crouch
+        
     }
     public PlayerMoveState player_move_state;
     public float MoveSpeed;
     //今隠れているかどうか
     public bool HidingNow;
 
+    public float MoveX;
+    public float MoveY;
+
     private CharactorMovePermit player_move_permit;
+    private Animator anim;
+    private bool Crouch;
+    public CinemachineVirtualCamera virtual_camera;
+    private CinemachineTransposer cinemachine_transposer;
     // Start is called before the first frame update
     void Start()
     {
         player_move_permit = this.gameObject.GetComponent<CharactorMovePermit>();
-
+        anim = this.gameObject.GetComponent<Animator>();
+        cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if(player_move_state == PlayerMoveState.Crouch)
+        {
+            Crouch = true;
+            Debug.Log("HeadPosChangeCrouch");
+            //CameraPosChange(CrouchHeadPos.position, StandHeadPos.position);
+        }
+        else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
+        {
+            Crouch = false;
+            //CameraPosChange(StandHeadPos.position, CrouchHeadPos.position);
+        }
+        if (player_move_state == PlayerMoveState.Walk)
+        {
+            MoveX /= 2;
+            MoveY /= 2;
+        }
+        anim.SetBool("Crouch", Crouch);
+        anim.SetFloat("MoveY", MoveY);
+        anim.SetFloat("MoveX", MoveX);
     }
     public void StopEvent()
     {
@@ -43,10 +75,25 @@ public class PlayerStatus : Singleton<PlayerStatus>
         //プレイヤーが死ぬときのイベント。
         Debug.Log("あなたは死にました！");
         //恐怖演出用のイベントを実行。
+        anim.SetBool("AppearentDeath", true);
+        MoveX = 0;
+        MoveY = 0;
         CameraEnemyFaceExpanding camera_enemy_face_expanding = KilledMeEnemy.GetComponent<CameraEnemyFaceExpanding>();
         camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
+
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
         player_move_permit.Stop();
 
+    }
+    public void CrouchStandCameraPosChange(bool Crouch)
+    {
+        if (Crouch)
+        {
+            cinemachine_transposer.m_FollowOffset = (CrouchHeadPos.position - Head.position);
+        }
+        else
+        {
+            cinemachine_transposer.m_FollowOffset = Vector3.zero;
+        }
     }
 }
