@@ -28,6 +28,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public float MoveX;
     public float MoveY;
 
+    private float offsetY;
     private CharactorMovePermit player_move_permit;
     private Animator anim;
     private bool Crouch;
@@ -44,7 +45,6 @@ public class PlayerStatus : Singleton<PlayerStatus>
     // Update is called once per frame
     void Update()
     {
-
         if(player_move_state == PlayerMoveState.Crouch)
         {
             Crouch = true;
@@ -89,11 +89,30 @@ public class PlayerStatus : Singleton<PlayerStatus>
     {
         if (Crouch)
         {
-            cinemachine_transposer.m_FollowOffset = (CrouchHeadPos.position - Head.position);
+            offsetY = 0;
+            DOTween.To(
+                () => offsetY,
+                num => offsetY = num,
+                (CrouchHeadPos.position.y - Head.position.y),
+                0.2f
+            ).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+                Debug.Log("offsetY: : ???? " + offsetY);
+                cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
+            });
+
         }
         else
         {
-            cinemachine_transposer.m_FollowOffset = Vector3.zero;
+            offsetY = (CrouchHeadPos.position.y - Head.position.y);
+
+            DOTween.To(
+                () => offsetY,
+                num => offsetY = num,
+                0,
+                0.2f
+            ).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+                cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
+            });
         }
     }
 }
