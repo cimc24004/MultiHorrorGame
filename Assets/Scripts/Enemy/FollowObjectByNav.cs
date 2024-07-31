@@ -51,7 +51,7 @@ public class FollowObjectByNav : MonoBehaviour
             ToNextPointPosDistance = Vector3.Distance(NavmeshNextPos, this.transform.position);
             PosGetByFinder(ChaseTargetPosition);
 
-            if (nav_mesh_agent.path.corners.Length == 2 && ToTargetPosDistance <= StoppingDistance)
+            if (!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance)
                 //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
                 ArrivedTarget = true;
             else

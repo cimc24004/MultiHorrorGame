@@ -50,6 +50,12 @@ public class CrossHairEvent : MonoBehaviour
                     player_hide_object_action.HideAction = true;
                     player_hide_object_action.TargetHideObjectSet(hit.collider.gameObject);
                 }
+                if(hit.collider.gameObject.tag == "Door")
+                {
+                    Debug.Log("Doorƒjƒqƒbƒg");
+                    DoorOpenCloseController door_open_close_controlelr = hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
+                    door_open_close_controlelr.the_door_controller.DoorOpenClosedChangeByStatus();
+                }
             }
 
         }

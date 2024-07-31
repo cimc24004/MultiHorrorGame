@@ -89,6 +89,7 @@ public class PlayerMoveScript : MonoBehaviour
             MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
             if (slope_adjust.OnSlope())
             {
+                Debug.Log("Onslope------Ç»ÇÃÇ≈ÅAMoveDirectionì¡ï éwíËÅB");
                 MoveDirection = slope_adjust.GetSlopeMoveDirection(MoveDirection);
             }
             else
