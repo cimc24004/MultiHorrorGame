@@ -9,9 +9,12 @@ public class ItemStatus : SerializedScriptableObject
     {
         Consumable, //消耗品(カギとか)
         CanThrow, //投げられるもん
-        Equip //装備品(懐中電灯とか)
+        Equip, //装備品(懐中電灯とか)
+        Key //扉を開けるための鍵
     }
     public ItemType item_type;
-    public Sprite MenuSprite;
-    public string ItemName;
+    [Required] public Sprite MenuSprite;
+    [Required] public string ItemName;
+    [Header("ワールド上に置くアイテムのオブジェクトのこと。")]
+     public GameObject ItemObjectPrefab;
 }

@@ -33,14 +33,12 @@ public class ItemMenuController : SerializedMonoBehaviour
     {
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
         player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
-        
     }
     private void Update()
     {
         //ホイールの値を取得する。
         scroll_value_float = player_input.currentActionMap["ItemSelectWheel"].ReadValue<float>();
 
-        Debug.Log(player_input.currentControlScheme);
 
 
         //ホイールの値を1,-1,0で返すようにする為のやつ。
@@ -49,7 +47,6 @@ public class ItemMenuController : SerializedMonoBehaviour
         else scroll_value = -1;
         
 
-        Debug.Log("VECTOR X : " + scroll_value);
         
         //アイテムを1個以上持っていた場合は？
         if (ItemGroup.transform.childCount > 0)
@@ -86,6 +83,8 @@ public class ItemMenuController : SerializedMonoBehaviour
                 {
                     if (item_belongings_controller.ExistItemUIItemStatusByFind(NowSelect_item_status))
                     {
+                        //選択しているアイテムがあったらアイテムを使用する。
+                        Debug.Log("NowSelectItemUIObject: " + NowSelectItemUIObject);
                         ItemUseFromMenu(NowSelectItemUIObject);
                     }
                 }
@@ -95,7 +94,7 @@ public class ItemMenuController : SerializedMonoBehaviour
                 Debug.Log("scroll_value:::::: ??" + scroll_value);
                 //スクロールしている最中なのであれば アイテムをセレクトします。
                 
-                ItemSelect(NowItemSelectIndexX);
+                ItemSelectByIndex(NowItemSelectIndexX);
 
 
                 ItemMenuShowUpCommand = true;
@@ -104,8 +103,6 @@ public class ItemMenuController : SerializedMonoBehaviour
             {
                 ItemMenuShowUpCommand = false;
             }
-            Debug.Log("ItemMenuShowUpNow: " + ItemMenuShowUpNow);
-            Debug.Log("ItemMenuShowUpCommand: " + ItemMenuShowUpCommand);
             if (ItemMenuShowUpNow)
             {
                 //アイテムメニューを表示
@@ -140,7 +137,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         //ItemCanvasGroup.alpha = 0;
         ItemCanvasGroup.DOFade(0, 0.1f).SetEase(Ease.Linear).SetLink(this.gameObject);
     }
-    public void ItemSelect(int ItemIndex)
+    public void ItemSelectByIndex(int ItemIndex)
     {
         //アイテムをセレクトする時の関数。(セレクトしている状態を示すUIやindex、SelectNowGameObjectを更新する。)
         Debug.Log("EventSystem.current.???: " + EventSystem.current.currentSelectedGameObject);
@@ -148,14 +145,20 @@ public class ItemMenuController : SerializedMonoBehaviour
         //現在セレクトしているオブジェクトを引数のItemIndexによって取得。 
         //GetChildで何番目のオブジェクトを取得するというコード。
         NowSelectItemUIObject = ItemGroup.transform.GetChild(ItemIndex).gameObject;
-        
+        CommonItemSelect(NowSelectItemUIObject);
+    }
+    public void ItemSelectByObject(GameObject TargetSelectObj)
+    {
+        CommonItemSelect(TargetSelectObj);
+    }
+    private void CommonItemSelect(GameObject selectObj)
+    {
         //今洗濯しているやつをButtonコンポーネントで取得し、選択する。
         NowSelectItemUIObject.gameObject.GetComponent<Button>().Select();
-
         //選択しているアイテムステータスも取得しておく。
         NowSelect_item_status = NowSelectItemUIObject.GetComponent<ItemUI>().item_status;
         //変数にIndexも入れておくよ。
-        NowItemSelectIndexX = ItemIndex;
+        NowItemSelectIndexX = selectObj.transform.GetSiblingIndex();
 
         ItemMenuShowUpNow = true;
         //この時間を0にしておくことで選択したら非表示するまでの時間を伸ばせる。
@@ -164,17 +167,44 @@ public class ItemMenuController : SerializedMonoBehaviour
     private void ItemUseFromMenu(GameObject item_ui_obj)
     {
         //アイテムメニューからアイテムを使う関数。
-        ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
-        ItemStatus item_status = item_ui.item_status;
-        //ItemStatusをItemUIクラスから取得する。
 
+        ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
+        //ItemStatusをItemUIクラスから取得する。
+        ItemStatus item_status = item_ui.item_status;
+
+        int item_ui_index = item_ui_obj.transform.GetSiblingIndex();
         //ItemSelect関数はIndexを指定しなければならないのでGetSiblingIndex(今子オブジェクトの中では何番目にいるのかを教えてくれるやつ)
-                                                           //を使用してindexを取得。
-        
-        ItemSelect(item_ui_obj.transform.GetSiblingIndex());
+        //を使用してindexを取得。
+        //アイテムを使用したときはアイテムをセレクトする。
+        ItemSelectByIndex(item_ui_index);
 
         //item_statusを参照してitem_belongings_controllerのアイテムを使用する関数を実行。
         item_belongings_controller.ItemUseFromBelonging(item_status);
+        
+        if (!item_belongings_controller.belonging_items.ContainsKey(item_status))
+        {
+            //消費したアイテムがすでに存在しなかったら？？
+            //選択していたアイテムの一つ前のアイテムを選択する。
+            //一つ前のアイテムがなかった場合(アイテム数が1個だけのとき)は0番目を選択しておく。
+
+            //アイテムが消される前に実行されてしまうのでこのようなコードにしてる。
+            if(item_belongings_controller.belonging_items.Count > 0)
+            {
+                Debug.Log("item_ui_indexの値: " + item_ui_index);
+                if ((item_ui_index - 1) >= 0)
+                {
+                    Debug.Log("item_ui_index-1 >= 0");
+                    ItemSelectByIndex(item_ui_index - 1);
+                }
+                else if ((item_ui_index) == 0)
+                {
+                    Debug.Log("item_ui_index==0");
+                    ItemSelectByIndex(1);
+                }
+            }
+
+
+        }
     }
     private void OnNumbericKeyPressed(InputAction.CallbackContext context)
     {
@@ -187,16 +217,16 @@ public class ItemMenuController : SerializedMonoBehaviour
             {
                 if (numberKey < ChildCount)
                 {
-                    ItemSelect(numberKey - 1);
+                    ItemSelectByIndex(numberKey - 1);
                 }
                 else
                 {
-                    ItemSelect(ChildCount - 1);
+                    ItemSelectByIndex(ChildCount - 1);
                 }
             }
             else if (numberKey == 0)
             {
-                ItemSelect(ChildCount - 1);
+                ItemSelectByIndex(ChildCount - 1);
             }
         }
 

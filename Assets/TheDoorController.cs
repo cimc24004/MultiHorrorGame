@@ -4,7 +4,10 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 public class TheDoorController : SerializedMonoBehaviour
 {
+    //子要素に存在するドアたちをListとして登録し、一気に開ける。　一気に閉めるとかを実装する為のやつ。
+    //一つだけでいいなら一つだけでも入れる。
     [Header("ドアごとについているDoorOpenCloseControllerスクリプトをセット。")]
+    [RequiredListLength(1, null)]
     public List<DoorOpenCloseController> door_open_close_controllers;
     public enum DoorType
     {
@@ -19,13 +22,17 @@ public class TheDoorController : SerializedMonoBehaviour
         Opened
     }
     public DoorStatus door_status;
+    [Header("キーが必要なドアかどうか。")]
+    public bool NeededKey;
+
+    [HideInInspector]
     public bool OpenedClosedCompletedAnimation = true;
-    public bool OpenedClosedCompleted = true;
+    private bool OpenedClosedCompleted = true;
 
     private float CompletedWaitTimeNow;
-    private void Start()
-    {
-    }
+    [ShowIf("NeededKey")]
+    [Required] public OpenPermitByKeyController open_permit_by_key_controller;
+
     private void Update()
     {
         if (OpenedClosedCompletedAnimation)
@@ -43,6 +50,13 @@ public class TheDoorController : SerializedMonoBehaviour
     {
         //ドアをステータスによって変化させる。
         //空いている状態なら閉める。　開いている状態なら開ける。
+
+        //鍵が必要なドアならまず鍵をこのドアに使ったかどうかを判定。 使ってなかったらreturn; 開けないよ。
+        if (NeededKey)
+        {
+            if (!open_permit_by_key_controller.OpenPermit) return;
+        }
+
         //開けてる閉めてるアニメーション再生中ならこのアクションを実行しない。
         if (!OpenedClosedCompleted) return;
         if (door_status == DoorStatus.Opened)
@@ -52,6 +66,14 @@ public class TheDoorController : SerializedMonoBehaviour
         {
             DoorsOpen();
         }   
+    }
+    public void DoorOpenDOPermit()
+    {
+        open_permit_by_key_controller.OpenPermit = true;
+    }
+    public bool DoorOpenPermitCheck()
+    {
+        return open_permit_by_key_controller.OpenPermit;
     }
     private void DoorsOpen()
     {

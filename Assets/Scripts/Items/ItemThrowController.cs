@@ -29,18 +29,16 @@ public class ItemThrowController : MonoBehaviour
         this.transform.forward = new Vector3(camera.transform.forward.x, camera.transform.forward.y, camera.transform.forward.z);
         
 
-        //アイテム使うボタンを押したらということにしておく今は。
-        if (player_input.currentActionMap["ItemUse"].triggered)
-            ThrowStart(itemPrefab, this.transform.forward);
     }
-    public void ThrowStart(GameObject throw_obj, Vector3 ThrowForward)
+    public void ThrowStart(GameObject throw_obj)
     {
+        //ItmeMenuController.csから実行する。
         //ThrowForward => 投げる方向のこと。　今回は自分の方向を設定している。(Cameraの向きを参照している。)
 
         //投げるためのオブジェクト(Prefab)を生成。
         GameObject obj = Instantiate(throw_obj, StartFiringPos.position, Quaternion.identity);
         //水平投射を行う為スクリプトを参照しの初速度を設定して発射。
         HorizontalProjectile horizontal_projectile = obj.GetComponent<HorizontalProjectile>();
-        horizontal_projectile.Throw(ThrowFirstSpeed, ThrowForward);
+        horizontal_projectile.Throw(ThrowFirstSpeed, this.transform.forward);
     }
 }

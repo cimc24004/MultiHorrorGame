@@ -26,7 +26,6 @@ public class EnemyStatus : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Debug.Log("EnemyMoveMode: : " + enemy_move_state.ToString());
         if(enemy_move_state == EnemyMoveState.Run)
         {
             anim.SetFloat("MoveY", 1);

@@ -26,11 +26,15 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     //ItemGroupの子要素として追加する。
     public Transform ItemGroup;
 
+    public CrossHairEvent cross_hair_event;
     private ItemMenuController item_menu_controller;
+    private ItemThrowController item_throw_controller;
+
     // Start is called before the first frame update
     void Start()
     {
         item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
+        item_throw_controller = this.gameObject.GetComponent<ItemThrowController>();
     }
 
     //アイテムをこのコントローラーに追加する関数 外部から実行する。　主にCrossHairEvent.csから
@@ -74,7 +78,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
 
             //アイテムを拾ったらアイテムUIを選択するようにする。
             Debug.Log(item_ui_obj.gameObject);
-            item_menu_controller.ItemSelect(item_ui_obj.transform.GetSiblingIndex());
+            item_menu_controller.ItemSelectByIndex(item_ui_obj.transform.GetSiblingIndex());
         }
         else
         {
@@ -87,34 +91,63 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             BelongingCountNow += 1;
 
             belonging_items[_item_status] = BelongingCountNow;
-
+            Debug.Log("SetItemStatusToItemMenu アイテムメニューにアイテムが存在する");
             SetItemStatusToItemMenu(_item_status);
 
             //アイテムを拾ったらアイテムUIを選択するようにする。
-            item_menu_controller.ItemSelect(belonging_item_uis[_item_status].ItemUIs.transform.GetSiblingIndex());
+            item_menu_controller.ItemSelectByIndex(belonging_item_uis[_item_status].ItemUIs.transform.GetSiblingIndex());
         }
     }
     //コントローラーにあるアイテム所持品からアイテムを消費する関数。
     [Button]
     public void ItemUseFromBelonging(ItemStatus item_status)
     {
-        
+        Debug.Log("ItemUseFromBelonging-----");
         int BelongingCountNow = belonging_items[item_status];
         //アイテムを使用するので   所持数を減らす。
-        BelongingCountNow -= 1;
-        belonging_items[item_status] = BelongingCountNow;
 
-        //使用したらItemMenuにあるこのアイテムUIの情報を更新。
-        if (BelongingCountNow > 0)
+        //アイテムのタイプによって、アイテムを使用したときにイベントを発生させる。
+        if (item_status.item_type == ItemStatus.ItemType.CanThrow)
         {
-            SetItemStatusToItemMenu(item_status);
+            //投げるタイプのアイテムならば投げます。
+            item_throw_controller.ThrowStart(item_status.ItemObjectPrefab);
+            
+            //使用したらItemMenuにあるこのアイテムUIの情報を更新。
+            ItemUse(BelongingCountNow, item_status);
         }
-        else
+        else if (item_status.item_type == ItemStatus.ItemType.Consumable)
         {
-            //所持数が0になったらアイテムメニューから消す。
-            SetItemStatusToItemMenu(item_status);
-            belonging_items.Remove(item_status);
+            //消費アイテムなら
+            ItemUse(BelongingCountNow, item_status);
+
         }
+        else if (item_status.item_type == ItemStatus.ItemType.Equip)
+        {
+            //装備アイテムなら(懐中電灯など)
+
+        }
+        else if (item_status.item_type == ItemStatus.ItemType.Key)
+        {
+            Debug.Log("RaycasstedObj: " + cross_hair_event.RaycasstedObj);
+            if(cross_hair_event.RaycasstedObj != null)
+            {
+                if (cross_hair_event.RaycasstedObj.tag == "Door")
+                {
+                    //鍵アイテムを使用ボタンを押すとまずクロスヘアからのレイキャストがドアに当たっているかを確認し、
+                    //そのドアのThedoorControllerを取得。 そしてNeedKeyがTrueでかつ、OpenPermitがfalseの時だけ鍵を使用する。
+                    //要はドアの鍵は必要。かつドアの鍵がすでに空いていた場合は鍵を消費。
+                    DoorOpenCloseController door_open_close_controller = cross_hair_event.RaycasstedObj.GetComponent<DoorOpenCloseController>();
+                    TheDoorController the_door_controller = door_open_close_controller.the_door_controller;
+                    if (the_door_controller.NeededKey && !the_door_controller.DoorOpenPermitCheck())
+                    {
+                        the_door_controller.DoorOpenDOPermit();
+                        ItemUse(BelongingCountNow, item_status);
+                    }
+                }
+            }
+
+        }
+
     }
     public bool ExistsItems()
     {
@@ -138,6 +171,22 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         else
         {
             return false;
+        }
+    }
+    private void  ItemUse(int BelongingCountNow, ItemStatus item_status)
+    {
+        BelongingCountNow -= 1;
+        belonging_items[item_status] = BelongingCountNow;
+
+        if (BelongingCountNow > 0)
+        {
+            SetItemStatusToItemMenu(item_status);
+        }
+        else
+        {
+            //所持数が0になったらアイテムメニューから消す。
+            SetItemStatusToItemMenu(item_status);
+            belonging_items.Remove(item_status);
         }
     }
     private void SetItemStatusToItemMenu(ItemStatus item_status)

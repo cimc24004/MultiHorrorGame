@@ -94,7 +94,6 @@ public class EnemySoundSensor : MonoBehaviour
             follow_object_nav.ArrivedTarget = false;
             ArriveSoundPlaceWaitTimeToReturnNow = 0;
         }
-        Debug.Log("EnemyMoveStateじゃないけどさ MoveToSoundPlaceNow?? = " + MoveToSoundPlaceNow);
 
         //ここからはプレイヤーの足音がなったときの話。
         if (player_status.MoveSpeed != 0)

@@ -8,8 +8,8 @@ using Sirenix.OdinInspector;
 public class DoorOpenCloseController : SerializedMonoBehaviour
 {
     private Vector3 DefaultPosition;
-    public Transform ToOpenPos;
-    public TheDoorController the_door_controller;
+    [Required]public Transform ToOpenPos;
+    [Required] public TheDoorController the_door_controller;
     public float duration = 0.3f;
 
     public UnityEvent OpenCompleted;
