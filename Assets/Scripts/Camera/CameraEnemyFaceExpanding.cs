@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 public class CameraEnemyFaceExpanding : SerializedMonoBehaviour
 {
     //敵に見つかって触れた時に敵の顔がドアップになる。 恐怖演出
-    public GameObject FaceExpandingCameraObj;
+    [Required]public GameObject FaceExpandingCameraObj;
     private Animator anim;
     // Start is called before the first frame update
     void Start()
@@ -29,6 +29,7 @@ public class CameraEnemyFaceExpanding : SerializedMonoBehaviour
     [Button]
     public void FaceExpandingUnActive()
     {
+        //カメラオフにする。
         FaceExpandingCameraObj.SetActive(false);
         anim.SetBool("KubiSinu", false);
     }
