@@ -10,6 +10,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public Transform CrouchHeadPos;
     public Transform StandHeadPos;
 
+    public PlayerHideObjectAction player_hide_object_action;
     //éÄÇÒÇæÇ©Ç«Ç§Ç©
     public bool Dead;
     //ÉvÉåÉCÉÑÅ[ÇÃà⁄ìÆèÛë‘ (ëñÇÈ ï‡Ç≠ ÇµÇ·Ç™Çﬁ)
@@ -24,9 +25,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public float MoveSpeed;
     //ç°âBÇÍÇƒÇ¢ÇÈÇ©Ç«Ç§Ç©
     public bool HidingNow;
-
     public float MoveX;
     public float MoveY;
+
 
     private float offsetY;
     private CharactorMovePermit player_move_permit;
@@ -40,6 +41,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
         player_move_permit = this.gameObject.GetComponent<CharactorMovePermit>();
         anim = this.gameObject.GetComponent<Animator>();
         cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
+        player_hide_object_action = this.gameObject.GetComponent<PlayerHideObjectAction>();
     }
 
     // Update is called once per frame
@@ -61,6 +63,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
             MoveX /= 2;
             MoveY /= 2;
         }
+
         anim.SetBool("Crouch", Crouch);
         anim.SetFloat("MoveY", MoveY);
         anim.SetFloat("MoveX", MoveX);
@@ -78,6 +81,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
         anim.SetBool("AppearentDeath", true);
         MoveX = 0;
         MoveY = 0;
+        
+        player_hide_object_action.HidingPermit = true;
+
         CameraEnemyFaceExpanding camera_enemy_face_expanding = KilledMeEnemy.GetComponent<CameraEnemyFaceExpanding>();
         camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
 

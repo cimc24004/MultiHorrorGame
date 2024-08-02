@@ -10,7 +10,7 @@ public class FollowObjectByNav : MonoBehaviour
     public bool ChaseToTargetMode;
     public float speed;
     //ターゲットの位置と自分との距離がStoppingDistance以内であれば停止する。
-    public float StoppingDistance = 2;
+    public float StoppingDistance = 0.5f;
     //追いかけるtargetに到着したかどうか
     public bool ArrivedTarget;
     private Rigidbody rigid;
@@ -19,6 +19,8 @@ public class FollowObjectByNav : MonoBehaviour
     [HideInInspector]
     public Vector3 ChaseTargetPosition;
     private float ToNextPointPosDistance;
+    [HideInInspector]
+    public float DefaultStoppingDistance;
     private Vector3 NavmeshNextPos;
     
     // Start is called before the first frame update
@@ -26,6 +28,7 @@ public class FollowObjectByNav : MonoBehaviour
     {
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
         rigid = this.gameObject.GetComponent<Rigidbody>();
+        this.DefaultStoppingDistance = StoppingDistance;
         //デフォルトでは探索結果の0番目を指定する
         if (nav_mesh_agent.path.corners.Length >= 1)
         {

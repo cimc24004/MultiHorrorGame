@@ -13,6 +13,7 @@ public class EnemyStatus : MonoBehaviour
     public EnemyMoveState enemy_move_state;
     public GameObject FaceExpandingCamera;
     private FollowObjectByNav follow_object_by_nav;
+    private DiscoveryPlayerController discovery_player_controller;
     private Rigidbody rigid;
     private Animator anim;
     // Start is called before the first frame update
@@ -20,13 +21,15 @@ public class EnemyStatus : MonoBehaviour
     {
         rigid = this.gameObject.GetComponent<Rigidbody>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
+        discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         anim = this.gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(enemy_move_state == EnemyMoveState.Run)
+
+        if (enemy_move_state == EnemyMoveState.Run)
         {
             anim.SetFloat("MoveY", 1);
         }else if(enemy_move_state == EnemyMoveState.Walk)
@@ -39,11 +42,8 @@ public class EnemyStatus : MonoBehaviour
         }
         if (follow_object_by_nav.ArrivedTarget)
         {
-            if(enemy_move_state == EnemyMoveState.Walk)
-            {
-                Debug.Log("EnemyMoveStateÇÃWalkÇ©ÇÁStopÇ…êÿÇËë÷ÇÌÇÈèuä‘");
-            }
             enemy_move_state = EnemyMoveState.Stop;
         }
+
     }
 }

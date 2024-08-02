@@ -21,13 +21,19 @@ public class DiscoveryPlayerController : MonoBehaviour
     //プレイヤーが自分の視界から外れている間の時間
     [Header("プレイヤーが敵の視界から外れている間の追いかけるのを諦めるまでの時間")]
     public float SightOutPlayerTime = 1;
+
+    [Header("プレイヤーを追いかけるのをあきらめた後、戻るときの歩く速さ。")]
+    public float SppedWhenReturned = 1;
     //プレイヤーを視認しているかどうか
     public bool SightningPlayer;
+    //プレイヤーが隠れた時に敵はその隠れた所を見ているかどうか。
+    private bool SightningPlayerWhenHidePlayer;
 
     private GameObject Player;
     private Transform PlayersHeadTransform;
     private FollowObjectByNav follow_object_nav;
     private PlayerStatus player_status;
+    private Animator anim;
     private RaycastHit raycast_hit;
     //プレイヤーが見つけられる範囲以内にいるかどうか。
     private bool InsidePlayer;
@@ -43,7 +49,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     void Start()
     {
         player_status = PlayerStatus.instance;
-
+        anim = this.gameObject.GetComponent<Animator>();
         Player = player_status.gameObject;
         PlayersHeadTransform = player_status.Head;
         DefaultPos = this.transform.position;
@@ -56,7 +62,8 @@ public class DiscoveryPlayerController : MonoBehaviour
     void Update()
     {
         direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
-        if (Vector3.Distance(Player.transform.position, this.transform.transform.position) <= PlayerDiscoveryRange)
+        ToPlayerDistance = Vector3.Distance(Player.transform.position, this.transform.position);
+        if (ToPlayerDistance <= PlayerDiscoveryRange)
             InsidePlayer = true;
         else
             InsidePlayer = false;
@@ -66,9 +73,12 @@ public class DiscoveryPlayerController : MonoBehaviour
             //見つかっている状態でプレイヤーの位置に到着したら
 
         }
+
         if (DiscoveryPlayerNow && !SightningPlayer)
         {
-            //敵に見つかっているかつ視認状態がfalseならば
+            //敵に見つかっているかつプレイヤーが見えてなかったら
+
+
             //時間を計り、ある程度の時間がたったら追いかけるのをやめる
             SightOutPlayerTimeNow += TimeManager.instance.deltaTime;
             if (SightOutPlayerTimeNow > SightOutPlayerTime)
@@ -89,6 +99,24 @@ public class DiscoveryPlayerController : MonoBehaviour
             SightOutPlayerTimeNow = 0;
         }
 
+
+        if (SightningPlayer)
+        {
+            if (player_status.HidingNow)
+            {
+                //視認しているかつ隠れてる場合は隠れてること知ってるよー　変数をTrueに。
+                SightningPlayerWhenHidePlayer = true;
+            }
+        }
+        if (SightningPlayerWhenHidePlayer)
+        {
+            if (ToPlayerDistance <= 2)
+            {
+                //隠れてることがバレていた場合はこの関数を実行。
+                player_status.player_hide_object_action.GetCoughtWhenHidingByEnemy(this.gameObject);
+                this.SightningPlayerWhenHidePlayer = false;
+            }
+        }
         if (Vector3.Angle(direction, EyePosition.forward) <= VisionFieldAngle && InsidePlayer)
         {
             //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
@@ -122,6 +150,28 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             SightningPlayer = false;
         }
+
+        if (DiscoveryPlayerNow && !SightningPlayerWhenHidePlayer)
+        {
+            if(!SightningPlayer)
+            {
+                if (player_status.HidingNow)
+                {
+                    //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
+                    follow_object_nav.StoppingDistance = 4;
+                }
+                else
+                {
+                    //それ以外ならデフォルトのストップ距離にしておく。
+                    follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
+                }
+            }
+        }
+        else
+        {
+            follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
+        }
+
     }
     private void DiscoveryPlayer(bool _discovery)
     {
@@ -141,7 +191,8 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             //デフォルトの場所に戻るようにしている。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
             enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-            follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
+            follow_object_nav.ArrivedTarget = false;
+            follow_object_nav.ChaseToTargetSet(true, DefaultPos, SppedWhenReturned);
         }
     }
     private void OnDrawGizmos()

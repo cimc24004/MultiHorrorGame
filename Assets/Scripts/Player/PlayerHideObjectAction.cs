@@ -5,11 +5,12 @@ using UnityEngine.InputSystem;
 public class PlayerHideObjectAction : MonoBehaviour
 {
     public bool HideAction;
+    public bool HidingPermit = true;
     //プレイヤーが隠れるアクション
     private TargetHideObject target_hide_object;
     private PlayerStatus player_status;
     private CharactorMovePermit charactor_move_permit;
-    private TargetHideObject.HideType hide_type_target_object;
+    public TargetHideObject.HideType hide_type_target_object;
     private Rigidbody player_rigid;
     private Animator player_anim;
     private Collider player_collider;
@@ -28,6 +29,14 @@ public class PlayerHideObjectAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!HidingPermit)
+        {
+            if (player_status.HidingNow)
+            {
+                UnHide();
+            }
+            return;
+        }
         if (player_status.HidingNow)
         {
             //隠れている状態でRaycastActionキーをおした場合　隠れるオブジェクトから抜けるようにする。
@@ -46,12 +55,10 @@ public class PlayerHideObjectAction : MonoBehaviour
                 Hide();
 
                 //隠れている最中はプレイヤーの物理演算を無視してかつisTriggerも実質無効にする。
-                player_status.HidingNow = true;
             }
             else if(player_status.HidingNow)
             {
                 UnHide();
-                player_status.HidingNow = false;
             }
             HideAction = false;
         }
@@ -64,6 +71,8 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_collider.isTrigger = true;
         PlayerDeformedByHideType();
         charactor_move_permit.Stop();
+
+        player_status.HidingNow = true;
     }
     private void UnHide()
     {
@@ -72,6 +81,9 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_collider.isTrigger = false;
         player_anim.SetBool("FaceDown", false);
         charactor_move_permit.Move();
+
+        player_status.HidingNow = false;
+
     }
     private void PlayerDeformedByHideType()
     {
@@ -97,23 +109,23 @@ public class PlayerHideObjectAction : MonoBehaviour
         target_hide_object = TargetObject.GetComponent<TargetHideObject>();
         hide_type_target_object = target_hide_object.hide_type;
     }
-
-    //private void OnCollisionEnter(Collision other)
-    //{
-    //    if(other.gameObject.tag == "HideActionObject")
-    //    {
-    //        target_hide_object = other.gameObject.GetComponent<TargetHideObject>();
-    //        //隠れるプレイヤーの状態タイプを取得
-    //        hide_type_target_object = target_hide_object.hide_type;
-    //        ColHideObject = true;
-    //    }
-    //}
-    //private void OnCollisionExit(Collision other)
-    //{
-    //    if (other.gameObject.tag == "HideActionObject" && !player_status.HidingNow)
-    //    {
-    //        target_hide_object = null;
-    //        ColHideObject = false;
-    //    }
-    //}
+    
+    public void GetCoughtWhenHidingByEnemy(GameObject _SightningEnemy)
+    {
+        //隠れている時 もし敵に隠れてることが知られていたら。
+        Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
+        if (hide_type_target_object == TargetHideObject.HideType.FaceDown)
+        {
+            //机の下に隠れるタイプだった場合は下をのぞくアニメーションをつけてからHidingPermitをFalseにする。
+            Debug.Log("FacedownnnnnnnNByEnemyyyy");
+            enemy_anim.SetTrigger("LayLookDown");
+            //↑のアニメーションが終了したら、プレイヤー殺す関数 DeadEventを発生させる。
+        }
+        else
+        {
+            //押し入れに隠れるタイプとかロッカーに隠れるタイプだったらいきなり敵がドアを開けてくるアニメーション的なことをすればいい。
+            this.HidingPermit = false;
+            player_status.DeadEvent(_SightningEnemy);
+        }
+    }
 }

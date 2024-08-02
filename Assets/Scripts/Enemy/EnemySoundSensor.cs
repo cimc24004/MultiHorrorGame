@@ -71,10 +71,13 @@ public class EnemySoundSensor : MonoBehaviour
         if (MoveToSoundPlaceNow)
         {
             //今音がなっている場所に向かっている場合
+
+
             if(follow_object_nav.ArrivedTarget)
             {
+
                 //音が鳴った位置に到着し終えた場合 少し時間を待ってから元の位置に戻るようにする。
-                if(ArriveSoundPlaceWaitTimeToReturnNow >= ArriveSoundPlaceWaitTimeToReturn)
+                if (ArriveSoundPlaceWaitTimeToReturnNow >= ArriveSoundPlaceWaitTimeToReturn)
                 {
                     //ある程度時間がたったので
 
@@ -104,10 +107,11 @@ public class EnemySoundSensor : MonoBehaviour
                 if (ToPlayerDistance <= RealizeSoundPlayerRunDistance)
                 {
                     Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
+                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
-                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                         MoveToSoundPlaceNow = true;
                     }
                 }
@@ -119,10 +123,11 @@ public class EnemySoundSensor : MonoBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
+                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
-                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                         MoveToSoundPlaceNow = true;
                     }
@@ -135,10 +140,11 @@ public class EnemySoundSensor : MonoBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
+                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+
                     if (!MoveToSoundPlaceNow)
                     {
-                        SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
-                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                         MoveToSoundPlaceNow = true;
                     }

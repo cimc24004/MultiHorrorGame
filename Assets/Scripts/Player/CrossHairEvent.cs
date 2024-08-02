@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class CrossHairEvent : MonoBehaviour
 {
-    //^‚ñ’†‚ÌƒNƒƒXƒwƒA‚©‚çƒŒƒCƒLƒƒƒXƒg‚ğ”ò‚Î‚µ‚»‚ê‚ª•¨‘Ì‚É“–‚½‚Á‚½‚Æ‚«‚É”­¶‚³‚¹‚éƒCƒxƒ“ƒgB
+    //ï¿½^ï¿½ñ’†‚ÌƒNï¿½ï¿½ï¿½Xï¿½wï¿½Aï¿½ï¿½ï¿½çƒŒï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Î‚ï¿½ï¿½ï¿½ï¿½ê‚ªï¿½ï¿½ï¿½Ì‚É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½É”ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½B
     public LayerMask TargetLayerMaskViewToPoint;
     public ItemBelongingsController item_belonging_controller;
     public PlayerInput player_input;
     public PlayerHideObjectAction player_hide_object_action;
     public GameObject Player;
-    //ƒNƒƒXƒwƒA‚©‚ç”ò‚Î‚·ƒŒƒCƒLƒƒƒXƒg‚Ì‹——£B
+    //ï¿½Nï¿½ï¿½ï¿½Xï¿½wï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Î‚ï¿½ï¿½ï¿½ï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½Ì‹ï¿½ï¿½ï¿½ï¿½B
     public float RaycastDistance = 3;
 
     Camera MainCamera;
@@ -25,7 +25,7 @@ public class CrossHairEvent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //ƒJƒƒ‰‚Ì’†‰›‚©‚çƒŒƒCƒLƒƒƒXƒg‚ğ”ò‚Î‚·B
+        //ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ì’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½çƒŒï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Î‚ï¿½ï¿½B
         Ray ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.green);
         if (Physics.Raycast(ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
@@ -34,27 +34,26 @@ public class CrossHairEvent : MonoBehaviour
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {
 
-                //ƒŒƒCƒLƒƒƒXƒg‚ª‰½‚©•¨‚É“–‚½‚Á‚½ê‡B
+                //ï¿½ï¿½ï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½B
 
-                //•¨‚É“–‚½‚Á‚Ä‚»‚Ì‚ÉƒNƒŠƒbƒN‚·‚é‚Æ‚¢‚ë‚¢‚ëƒCƒxƒ“ƒg‚ğÀsB
-                //ƒAƒCƒeƒ€‚ğ“üè‚·‚éB ”à‚ğŠJ‚¯‚éB Š÷‚É‰B‚ê‚é‚È‚Ç‚ÌƒCƒxƒ“ƒg‚ğ‘‚­B
-
+                //ï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ìï¿½ï¿½ÉƒNï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ë‚¢ï¿½ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½sï¿½B
+                //ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è‚·ï¿½ï¿½B ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½B ï¿½ï¿½ï¿½É‰Bï¿½ï¿½ï¿½È‚Ç‚ÌƒCï¿½xï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
                 if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item"))
                 {
-                    //‚»‚Ì—áƒLƒƒƒXƒg‚É“–‚½‚Á‚½•¨‚ªƒAƒCƒeƒ€‚È‚ç‚Î@ƒAƒCƒeƒ€‚ğæ“¾B
+                    //ï¿½ï¿½ï¿½Ì—ï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½È‚ï¿½Î@ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½B
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
                     item_object.ItemGet(item_belonging_controller);
                     Destroy(item_object.gameObject);
                 }
-                if(raycast_hit.collider.gameObject.tag == "HideActionObject")
+                if (raycast_hit.collider.gameObject.tag == "HideActionObject")
                 {
-                    //‰B‚ê‚éƒIƒuƒWƒFƒNƒg‚ÉƒŒƒCƒLƒƒƒXƒg‚ª“–‚½‚Á‚Ä‚½‚ç ‰B‚ê‚éƒAƒNƒVƒ‡ƒ“ÀsB
+                    //ï¿½Bï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½Éƒï¿½ï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ ï¿½Bï¿½ï¿½ï¿½Aï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½B
                     player_hide_object_action.HideAction = true;
                     player_hide_object_action.TargetHideObjectSet(raycast_hit.collider.gameObject);
                 }
                 if(raycast_hit.collider.gameObject.tag == "Door")
                 {
-                    //ƒhƒA‚ğƒNƒŠƒbƒN‚µ‚½‚çƒhƒA‚ğŠJ‚¯‚éB
+                    //ï¿½hï¿½Aï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½hï¿½Aï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½B
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     TheDoorController the_door_controller = door_open_close_controlelr.the_door_controller;
                     the_door_controller.DoorOpenClosedChangeByStatus();
