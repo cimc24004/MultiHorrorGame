@@ -73,7 +73,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             //見つかっている状態でプレイヤーの位置に到着したら
 
         }
-
+        anim.SetBool("PlayerHidingNow", player_status.HidingNow);
         if (DiscoveryPlayerNow && !SightningPlayer)
         {
             //敵に見つかっているかつプレイヤーが見えてなかったら
@@ -112,7 +112,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             if (ToPlayerDistance <= 2)
             {
-                //隠れてることがバレていた場合はこの関数を実行。
+                //隠れてることがバレていてかつ近くにいたら場合はこの関数を実行。
                 player_status.player_hide_object_action.GetCoughtWhenHidingByEnemy(this.gameObject);
                 this.SightningPlayerWhenHidePlayer = false;
             }

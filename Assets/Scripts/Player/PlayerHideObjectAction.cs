@@ -31,10 +31,6 @@ public class PlayerHideObjectAction : MonoBehaviour
     {
         if (!HidingPermit)
         {
-            if (player_status.HidingNow)
-            {
-                UnHide();
-            }
             return;
         }
         if (player_status.HidingNow)
@@ -64,7 +60,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         }
     }
     //隠すときは隠れられるオブジェクトのTargetHideObjectスクリプトのHideTarget関数を実行すればよい。
-    private void Hide()
+    public void Hide()
     {
         target_hide_object.HideTarget(this.gameObject);
         player_rigid.isKinematic = true;
@@ -74,7 +70,7 @@ public class PlayerHideObjectAction : MonoBehaviour
 
         player_status.HidingNow = true;
     }
-    private void UnHide()
+    public void UnHide()
     {
         target_hide_object.UnHideTarget(this.gameObject);
         player_rigid.isKinematic = false;
@@ -114,6 +110,9 @@ public class PlayerHideObjectAction : MonoBehaviour
     {
         //隠れている時 もし敵に隠れてることが知られていたら。
         Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
+        //敵にバレているかつ近くにいる最中なら、そこからもう出られないようにする。
+        this.HidingPermit = false;
+
         if (hide_type_target_object == TargetHideObject.HideType.FaceDown)
         {
             //机の下に隠れるタイプだった場合は下をのぞくアニメーションをつけてからHidingPermitをFalseにする。
@@ -124,7 +123,10 @@ public class PlayerHideObjectAction : MonoBehaviour
         else
         {
             //押し入れに隠れるタイプとかロッカーに隠れるタイプだったらいきなり敵がドアを開けてくるアニメーション的なことをすればいい。
-            this.HidingPermit = false;
+            if (player_status.HidingNow)
+            {
+                UnHide();
+            }
             player_status.DeadEvent(_SightningEnemy);
         }
     }

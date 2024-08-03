@@ -22,7 +22,10 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //机に隠れてるの見つけたーアニメーションが終わったらプレイヤーを殺す。
-        player_status.player_hide_object_action.HidingPermit = false;
+        if (player_status.HidingNow)
+        {
+            player_status.player_hide_object_action.UnHide();
+        }
         player_status.DeadEvent(animator.gameObject);
     }
 

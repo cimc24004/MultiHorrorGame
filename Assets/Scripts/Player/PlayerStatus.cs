@@ -71,6 +71,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public void StopEvent()
     {
         //MoveSpeed=0でなかったら押し入れとかに隠れたときにずーと敵が待っているバグが生じる為。
+        this.player_move_state = PlayerMoveState.Walk;
+        this.MoveX = 0;
+        this.MoveY = 0;
         this.MoveSpeed = 0;
     }
     public void DeadEvent(GameObject KilledMeEnemy)

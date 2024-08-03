@@ -21,17 +21,7 @@ public class TargetHideObject : MonoBehaviour
     [Header("‰B‚ê‚éƒ^ƒCƒv")]
     [Header("Stand: —§‚Á‚½ó‘Ô \n Crouch: À‚Á‚½ó‘Ô \n FaceDown: ‚¤‚Â•š‚¹ó‘Ô")]
     public HideType hide_type;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void HideTarget(GameObject Target)
     {
         Target.transform.position = HideBeyondPos.transform.position;
