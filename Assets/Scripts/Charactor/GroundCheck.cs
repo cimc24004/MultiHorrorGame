@@ -8,9 +8,6 @@ public class GroundCheck : MonoBehaviour
     private RaycastHit raycast_hit;
     public CustomGravity custom_gravity;
     public bool OnGround;
-    //public SlopeAdjust slope_adjust;
-    public CharacterController character_controller;
-    public 
     // Start is called before the first frame update
     void Start()
     {
@@ -20,40 +17,15 @@ public class GroundCheck : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //if(Physics.Raycast(this.transform.position, Vector3.down,out raycast_hit, Distance))
-        //{
-        //    custom_gravity.enabled = false;
-        //}
-        //else
-        //{
-        //    custom_gravity.enabled = true;
-        //}
-
-        //if (!slope_adjust.OnSlope())
-        //{
-        //    custom_gravity.enabled = !OnGround;
-        //}
-        //else
-        //{
-        //    custom_gravity.enabled = false;
-        //}
-        if (!character_controller.isGrounded)
+        if (Physics.Raycast(this.transform.position, Vector3.down, out raycast_hit, Distance))
         {
-            character_controller.Move(new Vector3(character_controller.velocity.x, -10, character_controller.velocity.z) * Time.deltaTime);
+            OnGround = true;
         }
+        else
+        {
+            OnGround = false;
+        }
+        custom_gravity.enabled = !OnGround;
     }
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    if(other.gameObject.layer == LayerMask.NameToLayer("Object"))
-    //    {
-    //        OnGround = true;
-    //    }
-    //}
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if(other.gameObject.layer == LayerMask.NameToLayer("Object"))
-    //    {
-    //        OnGround = false;
-    //    }
-    //}
+
 }

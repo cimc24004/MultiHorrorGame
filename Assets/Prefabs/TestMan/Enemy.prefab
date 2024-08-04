@@ -117,6 +117,53 @@ CapsuleCollider:
   m_Height: 1.85
   m_Direction: 1
   m_Center: {x: 0, y: 2.76, z: 0}
+--- !u!1 &2729492909830749095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8096901945056723659}
+  - component: {fileID: 2890737162683516754}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8096901945056723659
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2729492909830749095}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6642165046326052261}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2890737162683516754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2729492909830749095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e33b034a136f54f4199afd31c713e7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Distance: 0.2
+  custom_gravity: {fileID: 508701361520440152}
+  OnGround: 0
 --- !u!1 &5494648295616348797
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,9 +383,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.19
-  m_Height: 2
+  m_Height: 1.9570813
   m_Direction: 1
-  m_Center: {x: 0, y: 0.026230216, z: 0}
+  m_Center: {x: 0, y: 0.047689557, z: 0}
 --- !u!1001 &6604261223447568974
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -774,6 +821,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 806171518959043618}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f49ccc93b38f3504e95989cbc0641ae0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8096901945056723659}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
         type: 3}
@@ -931,7 +982,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 6297832481982226207}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.29
+  m_Radius: 0.31
   m_Speed: 10
   m_Acceleration: 10
   avoidancePriority: 50
@@ -940,8 +991,8 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.8
-  m_BaseOffset: 0
+  m_Height: 1.74
+  m_BaseOffset: -0.05
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
 --- !u!114 &2204745625150836465
@@ -982,7 +1033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f39e05581981d4409c30981902b5855, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityMultiplier: 10
+  gravityMultiplier: 100
   UseCharacterController: 0
   gravity: {x: 0, y: 0, z: 0}
 --- !u!114 &4014676743130251851

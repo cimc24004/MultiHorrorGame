@@ -5822,7 +5822,6 @@ GameObject:
   - component: {fileID: 7228379173649806129}
   - component: {fileID: 364072651999732485}
   - component: {fileID: 8233352425753280259}
-  - component: {fileID: 2587244323056998579}
   - component: {fileID: 2751979431404878738}
   - component: {fileID: 4125387271911036982}
   m_Layer: 6
@@ -5889,9 +5888,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDirection: {x: 0, y: 0, z: 0}
-  RunSpeed: 7
-  WalkSpeed: 3
-  CrouchSpeed: 1
+  RunSpeed: 3
+  WalkSpeed: 1
+  CrouchSpeed: 0.2
   NowSpeed: 0
   CrouchNow: 0
   DirectionCamera: {fileID: 0}
@@ -6026,20 +6025,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7525078627656951602}
   m_Enabled: 1
---- !u!114 &2587244323056998579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7525078627656951602}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8d359d754d848d49a31043e61347f63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slopeForceRayLength: 1
-  Angle: 0
 --- !u!143 &2751979431404878738
 CharacterController:
   m_ObjectHideFlags: 0
@@ -6061,7 +6046,7 @@ CharacterController:
   serializedVersion: 3
   m_Height: 1.66
   m_Radius: 0.26
-  m_SlopeLimit: 45
+  m_SlopeLimit: 60
   m_StepOffset: 0.3
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0
