@@ -14,6 +14,7 @@ public class PlayerHideObjectAction : MonoBehaviour
     private Rigidbody player_rigid;
     private Animator player_anim;
     private Collider player_collider;
+    private CharacterController player_character_controller;
     private PlayerInput player_input;
     // Start is called before the first frame update
     void Start()
@@ -22,6 +23,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_rigid = this.gameObject.GetComponent<Rigidbody>();
         player_collider = this.gameObject.GetComponent<Collider>();
         player_anim = this.gameObject.GetComponent<Animator>();
+        player_character_controller = this.gameObject.GetComponent<CharacterController>();
         charactor_move_permit = this.gameObject.GetComponent<CharactorMovePermit>();
         player_input = this.gameObject.GetComponent<PlayerInput>();
     }
@@ -49,7 +51,6 @@ public class PlayerHideObjectAction : MonoBehaviour
             {
                 //ColHideObjectは隠れられるオブジェクトに触れてるかのチェックをしてから隠れる。
                 Hide();
-
                 //隠れている最中はプレイヤーの物理演算を無視してかつisTriggerも実質無効にする。
             }
             else if(player_status.HidingNow)
@@ -63,8 +64,10 @@ public class PlayerHideObjectAction : MonoBehaviour
     public void Hide()
     {
         target_hide_object.HideTarget(this.gameObject);
-        player_rigid.isKinematic = true;
-        player_collider.isTrigger = true;
+        //player_rigid.isKinematic = true;
+        //player_collider.isTrigger = true;
+        player_character_controller.enabled = false;
+        //player_collider.isTrigger = true;
         PlayerDeformedByHideType();
         charactor_move_permit.Stop();
 
@@ -73,8 +76,9 @@ public class PlayerHideObjectAction : MonoBehaviour
     public void UnHide()
     {
         target_hide_object.UnHideTarget(this.gameObject);
-        player_rigid.isKinematic = false;
-        player_collider.isTrigger = false;
+        //player_rigid.isKinematic = false;
+        player_character_controller.enabled = true;
+        //player_collider.isTrigger = false;
         player_anim.SetBool("FaceDown", false);
         charactor_move_permit.Move();
 

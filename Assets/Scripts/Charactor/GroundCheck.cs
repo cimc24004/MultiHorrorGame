@@ -8,7 +8,9 @@ public class GroundCheck : MonoBehaviour
     private RaycastHit raycast_hit;
     public CustomGravity custom_gravity;
     public bool OnGround;
-    public SlopeAdjust slope_adjust;
+    //public SlopeAdjust slope_adjust;
+    public CharacterController character_controller;
+    public 
     // Start is called before the first frame update
     void Start()
     {
@@ -27,27 +29,31 @@ public class GroundCheck : MonoBehaviour
         //    custom_gravity.enabled = true;
         //}
 
-        if (!slope_adjust.OnSlope())
+        //if (!slope_adjust.OnSlope())
+        //{
+        //    custom_gravity.enabled = !OnGround;
+        //}
+        //else
+        //{
+        //    custom_gravity.enabled = false;
+        //}
+        if (!character_controller.isGrounded)
         {
-            custom_gravity.enabled = !OnGround;
-        }
-        else
-        {
-            custom_gravity.enabled = false;
-        }
-    }
-    private void OnTriggerStay(Collider other)
-    {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Object"))
-        {
-            OnGround = true;
+            character_controller.Move(new Vector3(character_controller.velocity.x, -10, character_controller.velocity.z) * Time.deltaTime);
         }
     }
-    private void OnTriggerExit(Collider other)
-    {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Object"))
-        {
-            OnGround = false;
-        }
-    }
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if(other.gameObject.layer == LayerMask.NameToLayer("Object"))
+    //    {
+    //        OnGround = true;
+    //    }
+    //}
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if(other.gameObject.layer == LayerMask.NameToLayer("Object"))
+    //    {
+    //        OnGround = false;
+    //    }
+    //}
 }

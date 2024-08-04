@@ -27,7 +27,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     //プレイヤーを視認しているかどうか
     public bool SightningPlayer;
     //プレイヤーが隠れた時に敵はその隠れた所を見ているかどうか。
-    private bool SightningPlayerWhenHidePlayer;
+    public bool SightningPlayerWhenHidePlayer;
 
     private GameObject Player;
     private Transform PlayersHeadTransform;
@@ -36,7 +36,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private Animator anim;
     private RaycastHit raycast_hit;
     //プレイヤーが見つけられる範囲以内にいるかどうか。
-    private bool InsidePlayer;
+    public bool InsidePlayer;
     [HideInInspector]
     public Vector3 direction;
     private Vector3 DefaultPos;

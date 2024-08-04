@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 public class PlayerMoveScript : MonoBehaviour
 {
     //プレイヤー移動スクリプト
-    private Rigidbody rigid;
+    //private Rigidbody rigid;
+    private CharacterController character_controller;
     public Vector3 MoveDirection;
     public float RunSpeed = 3;
     public float WalkSpeed = 1;
@@ -24,12 +25,11 @@ public class PlayerMoveScript : MonoBehaviour
     private InputAction CrouchChangeAction;
     private TimeManager time_manager;
     private PlayerStatus player_status;
-    private SlopeAdjust slope_adjust;
     // Start is called before the first frame update
     void Start()
     {
-        slope_adjust = this.gameObject.GetComponent<SlopeAdjust>();
-        rigid = this.gameObject.GetComponent<Rigidbody>();
+        //rigid = this.gameObject.GetComponent<Rigidbody>();
+        character_controller = this.gameObject.GetComponent<CharacterController>();
         NowSpeed = WalkSpeed;
         player_input = this.gameObject.GetComponent<PlayerInput>();
         MoveAction = player_input.currentActionMap["Move"];
@@ -87,21 +87,13 @@ public class PlayerMoveScript : MonoBehaviour
         {
             this.transform.localRotation = Quaternion.Euler(0, DirectionCamera.transform.rotation.eulerAngles.y, 0);
             MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
-            if (slope_adjust.OnSlope())
-            {
-                Debug.Log("Onslope------なので、MoveDirection特別指定。");
-                MoveDirection = slope_adjust.GetSlopeMoveDirection(MoveDirection);
-            }
-            else
-            {
 
-            }
-            rigid.velocity = MoveDirection * NowSpeed;
-            player_status.MoveSpeed = rigid.velocity.magnitude;
+            character_controller.Move(MoveDirection * NowSpeed * Time.deltaTime);
+            player_status.MoveSpeed = NowSpeed;
         }
         else
         {
-            rigid.velocity = Vector3.zero;
+            character_controller.Move(new Vector3(0, character_controller.velocity.y, 0) * Time.deltaTime);
             player_status.MoveSpeed = 0;
         }
     }

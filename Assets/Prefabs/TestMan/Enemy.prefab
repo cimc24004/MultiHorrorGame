@@ -335,8 +335,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.37
-  m_Height: 1.7975397
+  m_Radius: 0.19
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.026230216, z: 0}
 --- !u!1001 &6604261223447568974
@@ -847,9 +847,12 @@ MonoBehaviour:
   SpeedWhenDiscoveried: 3
   layerMask:
     serializedVersion: 2
-    m_Bits: 72
+    m_Bits: 4168
   SightOutPlayerTime: 10
+  SppedWhenReturned: 1
   SightningPlayer: 0
+  SightningPlayerWhenHidePlayer: 0
+  InsidePlayer: 0
   direction: {x: 0, y: 0, z: 0}
   SightOutPlayerTimeNow: 0
 --- !u!114 &3900953358839829992
@@ -870,6 +873,7 @@ MonoBehaviour:
   ArrivedTarget: 0
   ToTargetPosDistance: 0
   ChaseTargetPosition: {x: 0, y: 0, z: 0}
+  DefaultStoppingDistance: 0
 --- !u!114 &3901689712144423909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -979,6 +983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityMultiplier: 10
+  UseCharacterController: 0
   gravity: {x: 0, y: 0, z: 0}
 --- !u!114 &4014676743130251851
 MonoBehaviour:

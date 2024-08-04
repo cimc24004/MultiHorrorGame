@@ -14,7 +14,7 @@ public class FollowObjectByNav : MonoBehaviour
     //追いかけるtargetに到着したかどうか
     public bool ArrivedTarget;
     private Rigidbody rigid;
-    [HideInInspector]
+    //[HideInInspector]
     public float ToTargetPosDistance;
     [HideInInspector]
     public Vector3 ChaseTargetPosition;
@@ -42,7 +42,7 @@ public class FollowObjectByNav : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //nav_mesh_agent.updateRotation = true;
+
         //追いかけるターゲットと自分との距離
         ToTargetPosDistance = Vector3.Distance(ChaseTargetPosition, this.transform.position);
 
@@ -53,12 +53,18 @@ public class FollowObjectByNav : MonoBehaviour
             //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
             ToNextPointPosDistance = Vector3.Distance(NavmeshNextPos, this.transform.position);
             PosGetByFinder(ChaseTargetPosition);
-
-            if (!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance)
+            if (ToTargetPosDistance <= StoppingDistance)
+            {
                 //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
+                Debug.Log("!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance");
                 ArrivedTarget = true;
+
+            }
             else
+            {
                 ArrivedTarget = false;
+
+            }
 
             if (ArrivedTarget)
             {
@@ -74,16 +80,19 @@ public class FollowObjectByNav : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Vector3 direction = (nav_mesh_agent.steeringTarget - transform.position).normalized;
 
-        // 回転する方向を計算
-        if (direction != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
-        }
         if (ChaseToTargetMode)
         {
+
+            // 回転する方向を計算
+            Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
+            Debug.Log(nav_mesh_agent.steeringTarget);
+            if (direction != Vector3.zero)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
+            }
+
             nav_mesh_agent.SetDestination(ChaseTargetPosition);
 
 
