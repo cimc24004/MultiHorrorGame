@@ -24,8 +24,12 @@ public class EnemyEventObjectRaycast : MonoBehaviour
             if(raycast_hit.collider.gameObject.tag == "Door")
             {
                 //ドアに触れた場合はドアを開けるようにする。
-                DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
-                door_open_close_controlelr.the_door_controller.DoorOpenClosedChangeByStatus();
+                DoorOpenCloseController door_open_close_controller = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
+                TheDoorController the_door_controller = door_open_close_controller.the_door_controller;
+                if (the_door_controller.door_status == TheDoorController.DoorStatus.Closed)
+                {
+                    the_door_controller.DoorOpenClosedChangeByStatus();
+                }
             }
         }
     }
