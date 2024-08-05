@@ -6,7 +6,8 @@ using DG.Tweening;
 public class PlayerStatus : Singleton<PlayerStatus>
 {
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
-    public Transform Head;
+    public Transform CameraRoot;
+    public Transform HeadPos;
     public Transform CrouchHeadPos;
     public Transform StandHeadPos;
 
@@ -102,25 +103,30 @@ public class PlayerStatus : Singleton<PlayerStatus>
             DOTween.To(
                 () => offsetY,
                 num => offsetY = num,
-                (CrouchHeadPos.position.y - Head.position.y),
+                (CrouchHeadPos.position.y - StandHeadPos.position.y),
                 0.2f
-            ).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+            ).SetEase(Ease.Linear).OnUpdate(() => {
                 Debug.Log("offsetY: : ???? " + offsetY);
                 cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
+            }).OnComplete(() => {
+                HeadPos.transform.position = CrouchHeadPos.transform.position;
             });
 
         }
         else
         {
-            offsetY = (CrouchHeadPos.position.y - Head.position.y);
+            offsetY = (CrouchHeadPos.position.y - StandHeadPos.position.y);
 
             DOTween.To(
                 () => offsetY,
                 num => offsetY = num,
                 0,
                 0.2f
-            ).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+            ).SetEase(Ease.Linear).OnUpdate(() => {
+                Debug.Log("offsetY: : ???? " + offsetY);
                 cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
+            }).OnComplete(() => {
+                HeadPos.transform.position = StandHeadPos.transform.position;
             });
         }
     }

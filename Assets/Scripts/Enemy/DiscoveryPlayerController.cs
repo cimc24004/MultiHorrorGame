@@ -51,7 +51,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         player_status = PlayerStatus.instance;
         anim = this.gameObject.GetComponent<Animator>();
         Player = player_status.gameObject;
-        PlayersHeadTransform = player_status.Head;
+        PlayersHeadTransform = player_status.HeadPos;
         DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
@@ -117,7 +117,8 @@ public class DiscoveryPlayerController : MonoBehaviour
                 this.SightningPlayerWhenHidePlayer = false;
             }
         }
-        if (Vector3.Angle(direction, EyePosition.forward) <= VisionFieldAngle && InsidePlayer)
+        Debug.Log("Angle: " + Vector3.Angle(direction, EyePosition.forward));
+        if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= VisionFieldAngle && InsidePlayer)
         {
             //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
             if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, layerMask))
@@ -144,12 +145,12 @@ public class DiscoveryPlayerController : MonoBehaviour
             else {
                 SightningPlayer = false;
             }
-            Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.red);
         }
         else
         {
             SightningPlayer = false;
         }
+        Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.green);
 
         if (DiscoveryPlayerNow && !SightningPlayerWhenHidePlayer)
         {

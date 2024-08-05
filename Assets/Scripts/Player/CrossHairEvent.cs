@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Profiling;
 public class CrossHairEvent : MonoBehaviour
 {
     //�^�񒆂̃N���X�w�A���烌�C�L���X�g���΂����ꂪ���̂ɓ��������Ƃ��ɔ���������C�x���g�B
@@ -15,11 +16,13 @@ public class CrossHairEvent : MonoBehaviour
 
     Camera MainCamera;
     private RaycastHit raycast_hit;
+    private CustomSampler custom_sampler;
     public GameObject RaycasstedObj;
     // Start is called before the first frame update
     void Start()
     {
         MainCamera = Camera.main;
+        custom_sampler = CustomSampler.Create("アイテムを拾う。");
     }
 
     // Update is called once per frame

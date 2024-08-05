@@ -5338,6 +5338,37 @@ Transform:
   - {fileID: 2356586976388253184}
   m_Father: {fileID: 1656373862180544486}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6721010705612086162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5050057720297079474}
+  m_Layer: 0
+  m_Name: HeadPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5050057720297079474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6721010705612086162}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.34, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 597350177767367547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6748139023521550718
 GameObject:
   m_ObjectHideFlags: 0
@@ -5852,6 +5883,7 @@ Transform:
   - {fileID: 129471188415106537}
   - {fileID: 5153810754235229518}
   - {fileID: 6421989448975070222}
+  - {fileID: 5050057720297079474}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &3709143509871936015
@@ -5937,10 +5969,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f9060845084564fadc0211d4e8da22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Head: {fileID: 3717271372266253696}
+  CameraRoot: {fileID: 3717271372266253696}
+  HeadPos: {fileID: 5050057720297079474}
   CrouchHeadPos: {fileID: 5153810754235229518}
   StandHeadPos: {fileID: 6421989448975070222}
-  player_hide_object_action: {fileID: 0}
+  player_hide_object_action: {fileID: 7228379173649806129}
   Dead: 0
   player_move_state: 0
   MoveSpeed: 0
@@ -6370,7 +6403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3717271372266253696}
   m_Layer: 6
-  m_Name: HeadObj
+  m_Name: CameraRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

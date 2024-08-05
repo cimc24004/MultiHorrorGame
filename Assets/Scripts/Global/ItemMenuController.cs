@@ -33,6 +33,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     {
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
         player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
+
     }
     private void Update()
     {
