@@ -93,7 +93,7 @@ public class PlayerMoveScript : MonoBehaviour
         }
         else
         {
-            character_controller.Move(new Vector3(0, character_controller.velocity.y, 0));
+            character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
             player_status.MoveSpeed = 0;
         }
     }
