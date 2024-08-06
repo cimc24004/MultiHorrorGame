@@ -9,6 +9,7 @@ public class EnemySoundSensor : MonoBehaviour
     private FollowObjectByNav follow_object_nav;
     private GameObject Player;
     private PlayerStatus player_status;
+    private EnemyRoutingController enemy_routing_controller;
     private EnemyStatus enemy_status;
     public float ArriveSoundPlaceWaitTimeToReturnNow;
     private Vector3 DefaultPosition;
@@ -49,6 +50,7 @@ public class EnemySoundSensor : MonoBehaviour
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
+        enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
     }
     private void Update()
     {
@@ -82,7 +84,10 @@ public class EnemySoundSensor : MonoBehaviour
                     //ある程度時間がたったので
 
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
-                    follow_object_nav.ChaseToTargetSet(true, DefaultPosition, SpeedWhenReturn);
+                    //enemy_routing_controller.RoutingMovePermit = true;
+                    enemy_routing_controller.PermitFunction(true);
+                    enemy_routing_controller.NextRouteSet(enemy_routing_controller.NearRouteObject);
+                    //follow_object_nav.ChaseToTargetSet(true, DefaultPosition, SpeedWhenReturn);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                     MoveToSoundPlaceNow = false;
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
@@ -156,13 +161,14 @@ public class EnemySoundSensor : MonoBehaviour
 
     public void SoundSeonsor(Vector3 TargetPos, float _speed)
     {
+        enemy_routing_controller.PermitFunction(false);
+        enemy_routing_controller.RoutingMovePermit = false;
         //どこからか音鳴らすときこの関数を呼ぶ。 例(プレイヤーの足音や非常ベルの音をならす関数などで)
         if (!discovery_player_controller.DiscoveryPlayerNow)
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
             follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
             SoundPlacePosition = TargetPos;
-
             MoveToSoundPlaceNow = true;
 
         }

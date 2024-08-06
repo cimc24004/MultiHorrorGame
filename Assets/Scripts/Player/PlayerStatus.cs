@@ -10,6 +10,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public Transform HeadPos;
     public Transform CrouchHeadPos;
     public Transform StandHeadPos;
+    public Transform FaceDownHeadPos;
 
     public PlayerHideObjectAction player_hide_object_action;
     //Ž€‚ñ‚¾‚©‚Ç‚¤‚©
@@ -52,12 +53,10 @@ public class PlayerStatus : Singleton<PlayerStatus>
         {
             Crouch = true;
             Debug.Log("HeadPosChangeCrouch");
-            //CameraPosChange(CrouchHeadPos.position, StandHeadPos.position);
         }
         else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
         {
             Crouch = false;
-            //CameraPosChange(StandHeadPos.position, CrouchHeadPos.position);
         }
         if (player_move_state == PlayerMoveState.Walk)
         {
@@ -109,6 +108,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
                 Debug.Log("offsetY: : ???? " + offsetY);
                 cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
             }).OnComplete(() => {
+                Debug.Log("OnCompletedd--------------------------");
                 HeadPos.transform.position = CrouchHeadPos.transform.position;
             });
 

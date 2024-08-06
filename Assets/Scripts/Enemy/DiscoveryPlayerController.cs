@@ -43,6 +43,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private float ToPlayerDistance;
     private EnemyStatus enemy_status;
     private CameraEnemyFaceExpanding camera_enemy_face_expanding;
+    private EnemyRoutingController enemy_routing_controller;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
     // Start is called before the first frame update
@@ -56,6 +57,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
+        enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
     }
 
     // Update is called once per frame
@@ -190,10 +192,11 @@ public class DiscoveryPlayerController : MonoBehaviour
         }
         else
         {
-            //デフォルトの場所に戻るようにしている。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
+            //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
             enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
             follow_object_nav.ArrivedTarget = false;
-            follow_object_nav.ChaseToTargetSet(true, DefaultPos, SppedWhenReturned);
+            enemy_routing_controller.PermitFunction(true);
+            enemy_routing_controller.NextRouteSet(enemy_routing_controller.NearRouteObject);
         }
     }
     private void OnDrawGizmos()

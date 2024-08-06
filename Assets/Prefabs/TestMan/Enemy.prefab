@@ -846,6 +846,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2186932918719813782}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5937354999368225528}
   m_SourcePrefab: {fileID: 100100000, guid: f49ccc93b38f3504e95989cbc0641ae0, type: 3}
 --- !u!1 &6297832481982226207 stripped
 GameObject:
@@ -1023,6 +1027,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2120
   StartPos: {fileID: 8226045757836116494}
+  RaycastDistance: 1
 --- !u!114 &2116970780758721539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1066,6 +1071,34 @@ CharacterController:
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0.03, y: 0.77, z: -0.01}
+--- !u!114 &5937354999368225528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6297832481982226207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4695cbbb645358547b8df649759c0c50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  WaitToMoveNextPointTime: 0
+  NextRouteObject: {fileID: 0}
+  ReverseIndexChange: 0
+  ArrivedNextRouteMode: 1
+  RoutingMovePermit: 1
+  RouteIndexNow: 0
+  NearRouteObject: {fileID: 0}
 --- !u!4 &6642165046326052261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f49ccc93b38f3504e95989cbc0641ae0,

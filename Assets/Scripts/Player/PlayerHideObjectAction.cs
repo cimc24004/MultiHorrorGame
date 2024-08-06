@@ -33,6 +33,7 @@ public class PlayerHideObjectAction : MonoBehaviour
     {
         if (!HidingPermit)
         {
+            HideAction = false;
             return;
         }
         if (player_status.HidingNow)
@@ -64,6 +65,8 @@ public class PlayerHideObjectAction : MonoBehaviour
     public void Hide()
     {
         target_hide_object.HideTarget(this.gameObject);
+        player_status.HeadPos.position = player_status.FaceDownHeadPos.position;
+        player_status.CameraRoot.position = player_status.FaceDownHeadPos.position;
         //player_rigid.isKinematic = true;
         //player_collider.isTrigger = true;
         player_character_controller.enabled = false;
@@ -79,6 +82,8 @@ public class PlayerHideObjectAction : MonoBehaviour
         //player_rigid.isKinematic = false;
         player_character_controller.enabled = true;
         //player_collider.isTrigger = false;
+        player_status.HeadPos.position = player_status.StandHeadPos.position;
+        player_status.CameraRoot.position = player_status.StandHeadPos.position;
         player_anim.SetBool("FaceDown", false);
         charactor_move_permit.Move();
 
