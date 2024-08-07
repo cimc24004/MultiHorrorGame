@@ -56,7 +56,6 @@ public class FollowObjectByNav : MonoBehaviour
             if (!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance)
             {
                 //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
-                Debug.Log("!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance");
                 ArrivedTarget = true;
 
             }
@@ -94,19 +93,17 @@ public class FollowObjectByNav : MonoBehaviour
             }
 
             nav_mesh_agent.SetDestination(ChaseTargetPosition);
-
-
+            if (ArrivedTarget)
+            {
+                character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
+            }
 
         }
         else
         {
         }
-        if (ArrivedTarget)
-        {
-            //ターゲットの位置に到着した。場合はストップする。 
-            character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
-        }
-        else
+
+        if(!ArrivedTarget)
         {
             //ターゲットの位置に到着していない場合は
             if (ChaseToTargetMode && ToNextPointPosDistance > 0f)
@@ -118,7 +115,7 @@ public class FollowObjectByNav : MonoBehaviour
             else
             {
                 //rigid.velocity = Vector3.zero;
-                character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
+                //character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
             }
         }
 

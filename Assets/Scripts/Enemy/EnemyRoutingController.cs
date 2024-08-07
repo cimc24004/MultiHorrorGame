@@ -25,6 +25,8 @@ public class EnemyRoutingController : SerializedMonoBehaviour
 
     //いちばん近いRoute
     public GameObject NearRouteObject;
+
+    public bool ArrivedTarget;
     // Start is called before the first frame update
     void Start()
     {
@@ -81,7 +83,10 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         {
             //まだ到着していない最中でしたら
             ToNextRouteDistance = Vector3.Distance(NextRouteObject.transform.position, this.transform.position);
-            if (ToNextRouteDistance <= 1)
+            if (follow_object_by_nav.ArrivedTarget) ArrivedTarget = true;
+            //FollowObjectByNavがArrivedtargetになったら　これは一フレームだけしかTrueにならないので、継続させるために
+            //ArrivedTarget変数を宣言しておいて、そこに収納しておく。。
+            if (ArrivedTarget)
             {
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //いま向かっているルートに到着したら少し待ってから次のルートにいく。
@@ -89,13 +94,19 @@ public class EnemyRoutingController : SerializedMonoBehaviour
                 if(WaitToMoveNextPointTimeNow > WaitToMoveNextPointTime)
                 {
                     ArrivedNextRouteMode = true;
+                    ArrivedTarget = false;
                     WaitToMoveNextPointTimeNow = 0;
                 }
             }
             else
             {
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                ArrivedTarget = false;
             }
+        }
+        else
+        {
+            ArrivedTarget = false;
         }
 
     }
@@ -113,7 +124,13 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             RoutingMovePermit = false;
         }
     }
-
+    public void NearRouteSet()
+    {
+        //いちばん近く(仮)のルートをセットする関数
+        this.PermitFunction(true);
+        if (this.NearRouteObject == null) this.NextRouteObject = stage_routings.Routings[RouteIndexNow];
+        this.NextRouteSet(this.NearRouteObject);
+    }
     [Button]
     public void NextRouteSet(GameObject _NextRouteObject = null)
     {

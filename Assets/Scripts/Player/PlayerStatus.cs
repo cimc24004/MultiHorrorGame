@@ -32,7 +32,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
 
 
     private float offsetY;
-    private CharactorMovePermit player_move_permit;
+    private CharacterMovePermit player_move_permit;
     private Animator anim;
     private bool Crouch;
     public CinemachineVirtualCamera virtual_camera;
@@ -40,7 +40,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     // Start is called before the first frame update
     void Start()
     {
-        player_move_permit = this.gameObject.GetComponent<CharactorMovePermit>();
+        player_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         anim = this.gameObject.GetComponent<Animator>();
         cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
         player_hide_object_action = this.gameObject.GetComponent<PlayerHideObjectAction>();

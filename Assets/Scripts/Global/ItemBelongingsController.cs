@@ -111,7 +111,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         {
             //投げるタイプのアイテムならば投げます。
             item_throw_controller.ThrowStart(item_status.ItemObjectPrefab);
-            
+            item_throw_controller.item_status = item_status;
             //使用したらItemMenuにあるこのアイテムUIの情報を更新。
             ItemUse(BelongingCountNow, item_status);
         }

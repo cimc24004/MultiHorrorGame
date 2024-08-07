@@ -12,8 +12,12 @@ public class HorizontalProjectile : MonoBehaviour
     public bool OnGround;
     //投げてから地面についたときのUnityイベント
     public UnityEvent OnGroundEvent;
+    //投げてから敵に触れたときのUnityイベント
+    public UnityEvent HitEnemyEvent;
     //初速度
     public float FirstSpeed = 1;
+
+    public ItemThrowController item_throw_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,17 +49,26 @@ public class HorizontalProjectile : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Ground" && throw_now)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Object") && throw_now)
         {
             OnGroundEvent.Invoke();
             OnGround = true;
         }
+        if(other.gameObject.tag == "Enemy")
+        {
+            item_throw_controller.EnemyThrowCollisionEvent(other.gameObject);
+            HitEnemyEvent.Invoke();
+        }
     }
     private void OnCollisionExit(Collision other)
     {
-        if (other.gameObject.tag == "Ground" && throw_now)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Object") && throw_now)
         {
             OnGround = false;
+        }
+        if(other.gameObject.tag == "Enemy")
+        {
+
         }
     }
 }

@@ -85,8 +85,7 @@ public class EnemySoundSensor : MonoBehaviour
 
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
                     //enemy_routing_controller.RoutingMovePermit = true;
-                    enemy_routing_controller.PermitFunction(true);
-                    enemy_routing_controller.NextRouteSet(enemy_routing_controller.NearRouteObject);
+                    enemy_routing_controller.NearRouteSet();
                     //follow_object_nav.ChaseToTargetSet(true, DefaultPosition, SpeedWhenReturn);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                     MoveToSoundPlaceNow = false;

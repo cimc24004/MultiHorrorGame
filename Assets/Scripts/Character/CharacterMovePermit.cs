@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class CharactorMovePermit : MonoBehaviour
+public class CharacterMovePermit : MonoBehaviour
 {
     public UnityEvent MoveEvent;
     public UnityEvent StopEvent;

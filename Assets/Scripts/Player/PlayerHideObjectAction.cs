@@ -9,7 +9,7 @@ public class PlayerHideObjectAction : MonoBehaviour
     //プレイヤーが隠れるアクション
     private TargetHideObject target_hide_object;
     private PlayerStatus player_status;
-    private CharactorMovePermit charactor_move_permit;
+    private CharacterMovePermit charactor_move_permit;
     public TargetHideObject.HideType hide_type_target_object;
     private Rigidbody player_rigid;
     private Animator player_anim;
@@ -24,7 +24,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_collider = this.gameObject.GetComponent<Collider>();
         player_anim = this.gameObject.GetComponent<Animator>();
         player_character_controller = this.gameObject.GetComponent<CharacterController>();
-        charactor_move_permit = this.gameObject.GetComponent<CharactorMovePermit>();
+        charactor_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         player_input = this.gameObject.GetComponent<PlayerInput>();
     }
 

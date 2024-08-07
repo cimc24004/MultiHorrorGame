@@ -119,7 +119,6 @@ public class DiscoveryPlayerController : MonoBehaviour
                 this.SightningPlayerWhenHidePlayer = false;
             }
         }
-        Debug.Log("Angle: " + Vector3.Angle(direction, EyePosition.forward));
         if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= VisionFieldAngle && InsidePlayer)
         {
             //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
@@ -195,8 +194,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
             enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
             follow_object_nav.ArrivedTarget = false;
-            enemy_routing_controller.PermitFunction(true);
-            enemy_routing_controller.NextRouteSet(enemy_routing_controller.NearRouteObject);
+            enemy_routing_controller.NearRouteSet();
         }
     }
     private void OnDrawGizmos()
