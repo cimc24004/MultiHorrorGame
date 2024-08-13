@@ -12,6 +12,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public Transform StandHeadPos;
     public Transform FaceDownHeadPos;
 
+    public CrossHairEvent cross_hair_event;
     public PlayerHideObjectAction player_hide_object_action;
     //Ž€‚ñ‚¾‚©‚Ç‚¤‚©
     public bool Dead;
