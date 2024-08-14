@@ -44,6 +44,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private EnemyStatus enemy_status;
     private CameraEnemyFaceExpanding camera_enemy_face_expanding;
     private EnemyRoutingController enemy_routing_controller;
+    private TimeManager time_manager;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
     // Start is called before the first frame update
@@ -57,6 +58,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
+        time_manager = TimeManager.instance;
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
     }
 
@@ -73,7 +75,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
-
+            enemy_routing_controller.PermitFunction(false);
         }
         anim.SetBool("PlayerHidingNow", player_status.HidingNow);
         if (DiscoveryPlayerNow && !SightningPlayer)
@@ -82,12 +84,17 @@ public class DiscoveryPlayerController : MonoBehaviour
 
 
             //時間を計り、ある程度の時間がたったら追いかけるのをやめる
-            SightOutPlayerTimeNow += TimeManager.instance.deltaTime;
+            SightOutPlayerTimeNow += time_manager.deltaTime;
             if (SightOutPlayerTimeNow > SightOutPlayerTime)
             {
                 Debug.Log("時間経過しましたよ");
                 //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
                 //今はデフォルト位置に戻る設定にしているが近くの徘徊ルートに行くという設定する予定。
+                //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                follow_object_nav.ArrivedTarget = false;
+                enemy_routing_controller.NearRouteSet();
+
                 DiscoveryPlayer(false);
 
 
@@ -191,10 +198,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         }
         else
         {
-            //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
-            enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-            follow_object_nav.ArrivedTarget = false;
-            enemy_routing_controller.NearRouteSet();
+
         }
     }
     private void OnDrawGizmos()

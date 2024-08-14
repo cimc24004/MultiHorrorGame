@@ -16,6 +16,7 @@ public class EnemySoundSensor : MonoBehaviour
     //プレイヤーとの距離
     private float ToPlayerDistance;
     private Animator enemy_anim;
+    private TimeManager time_manager;
     private float ToSoundPlaceDistance;
     //音が鳴った先の場所
     private Vector3 SoundPlacePosition;
@@ -50,18 +51,20 @@ public class EnemySoundSensor : MonoBehaviour
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
+        time_manager = TimeManager.instance;
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
     }
     private void Update()
     {
-        if(follow_object_nav.ArrivedTarget && MoveToSoundPlaceNow)
+        if (follow_object_nav.ArrivedTarget && MoveToSoundPlaceNow)
         {
-            ArriveSoundPlaceWaitTimeToReturnNow += TimeManager.instance.deltaTime;
+            ArriveSoundPlaceWaitTimeToReturnNow += time_manager.deltaTime;
         }
     }
     // Update is called once per frame
     void FixedUpdate()
     {
+
         //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
         ToPlayerDistance = Vector3.Distance(this.transform.position, Player.transform.position);
         ToSoundPlaceDistance = follow_object_nav.ToTargetPosDistance;
@@ -85,9 +88,10 @@ public class EnemySoundSensor : MonoBehaviour
 
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
                     //enemy_routing_controller.RoutingMovePermit = true;
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                     enemy_routing_controller.NearRouteSet();
                     //follow_object_nav.ChaseToTargetSet(true, DefaultPosition, SpeedWhenReturn);
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                    Debug.Log("NearRouteSet 帰るところです！");
                     MoveToSoundPlaceNow = false;
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 }
@@ -161,7 +165,6 @@ public class EnemySoundSensor : MonoBehaviour
     public void SoundSeonsor(Vector3 TargetPos, float _speed)
     {
         enemy_routing_controller.PermitFunction(false);
-        enemy_routing_controller.RoutingMovePermit = false;
         //どこからか音鳴らすときこの関数を呼ぶ。 例(プレイヤーの足音や非常ベルの音をならす関数などで)
         if (!discovery_player_controller.DiscoveryPlayerNow)
         {

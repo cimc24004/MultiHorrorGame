@@ -26,6 +26,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     private ItemBelongingsController item_belongings_controller;
     private int scroll_value;
     private ItemStatus NowSelect_item_status;
+    private TimeManager time_manager;
     public float WaitHideTimeNow;
     public bool ItemMenuShowUpNow;
     public bool ItemMenuShowUpCommand;
@@ -33,7 +34,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     {
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
         player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
-
+        time_manager = TimeManager.instance;
     }
     private void Update()
     {
@@ -111,7 +112,7 @@ public class ItemMenuController : SerializedMonoBehaviour
                 if (!ItemMenuShowUpCommand)
                 {
                     //アイテムメニュー表示モードがずーとfalseでそれが10秒間続いてしまったらメニューを閉じる。
-                    WaitHideTimeNow += TimeManager.instance.deltaTime;
+                    WaitHideTimeNow += time_manager.deltaTime;
                     if (WaitHideTimeNow > 10)
                     {
                         //アイテムメニューを非表示。

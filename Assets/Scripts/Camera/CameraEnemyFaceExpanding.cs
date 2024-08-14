@@ -24,13 +24,13 @@ public class CameraEnemyFaceExpanding : SerializedMonoBehaviour
     {
         //カメラをオンにする。 Priorityを決めているのでメインカメラよりこのカメラが必ず描画される。
         FaceExpandingCameraObj.SetActive(true);
-        anim.SetBool("KubiSinu", true);
+        anim.SetBool("KillPlayer", true);
     }
     [Button]
     public void FaceExpandingUnActive()
     {
         //カメラオフにする。
         FaceExpandingCameraObj.SetActive(false);
-        anim.SetBool("KubiSinu", false);
+        anim.SetBool("KillPlayer", false);
     }
 }

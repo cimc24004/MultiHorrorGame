@@ -46,6 +46,21 @@ public class PlayerMoveScript : MonoBehaviour
         MoveKeyValue = MoveAction.ReadValue<Vector2>();
         player_status.MoveY = MoveKeyValue.y;
         player_status.MoveX = MoveKeyValue.x;
+
+        if (MoveKeyValue.magnitude != 0)
+        {
+            this.transform.localRotation = Quaternion.Euler(0, DirectionCamera.transform.rotation.eulerAngles.y, 0);
+            MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
+
+            character_controller.Move(MoveDirection * time_manager.deltaTime * NowSpeed);
+            player_status.MoveSpeed = NowSpeed;
+        }
+        else
+        {
+            character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.fixedDeltaTime, 0));
+            player_status.MoveSpeed = 0;
+        }
+
         if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Run || player_status.player_move_state == PlayerStatus.PlayerMoveState.Walk)
         {
             if (RunChangeAction.IsPressed())
@@ -83,18 +98,6 @@ public class PlayerMoveScript : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if(MoveKeyValue.magnitude != 0)
-        {
-            this.transform.localRotation = Quaternion.Euler(0, DirectionCamera.transform.rotation.eulerAngles.y, 0);
-            MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
 
-            character_controller.Move(MoveDirection * Time.deltaTime * NowSpeed);
-            player_status.MoveSpeed = NowSpeed;
-        }
-        else
-        {
-            character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
-            player_status.MoveSpeed = 0;
-        }
     }
 }

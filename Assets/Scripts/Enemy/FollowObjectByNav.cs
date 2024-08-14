@@ -16,19 +16,22 @@ public class FollowObjectByNav : MonoBehaviour
     //private Rigidbody rigid;
     //[HideInInspector]
     public float ToTargetPosDistance;
-    [HideInInspector]
+    //[HideInInspector]
     public Vector3 ChaseTargetPosition;
-    private float ToNextPointPosDistance;
+    private Vector3 Move;
     [HideInInspector]
     public float DefaultStoppingDistance;
     private Vector3 NavmeshNextPos;
+    private TimeManager time_manager;
     private CharacterController character_controller;
+    private Vector3 Vector3Move;
     // Start is called before the first frame update
     void Start()
     {
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
         //rigid = this.gameObject.GetComponent<Rigidbody>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
+        time_manager = TimeManager.instance;
         this.DefaultStoppingDistance = StoppingDistance;
         //デフォルトでは探索結果の0番目を指定する
         if (nav_mesh_agent.path.corners.Length >= 1)
@@ -47,17 +50,18 @@ public class FollowObjectByNav : MonoBehaviour
         //追いかけるターゲットと自分との距離
         ToTargetPosDistance = Vector3.Distance(ChaseTargetPosition, this.transform.position);
 
-
         if (ChaseToTargetMode)
         {
             //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
-            ToNextPointPosDistance = Vector3.Distance(NavmeshNextPos, this.transform.position);
             PosGetByFinder(ChaseTargetPosition);
+            
+            nav_mesh_agent.SetDestination(ChaseTargetPosition);
+
+
             if (!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance)
             {
                 //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
                 ArrivedTarget = true;
-
             }
             else
             {
@@ -68,22 +72,26 @@ public class FollowObjectByNav : MonoBehaviour
             if (ArrivedTarget)
             {
                 //ターゲットの位置に到着したらChaseToTargetModeはFalseにしてリセット
+                Vector3Move = Vector3.down * character_controller.velocity.y * time_manager.deltaTime;
+                Debug.Log("ooooiiiiiiiiiiiiiiiiidownnnnnnn: " + Vector3.down);
                 ChaseToTargetMode = false;
             }
+            else
+            {
+                //ターゲットの位置に到着していない場合は
+                Vector3 target = (NavmeshNextPos - this.transform.position).normalized;
+                Vector3Move = target * speed * time_manager.deltaTime;
+            }
+            Debug.Log("character_controller.Move()   Vector3Move: " + Vector3Move);
+            character_controller.Move(Vector3Move);
         }
-        else
-        {
-            //ArrivedTarget = false;
 
-        }
+
     }
     private void FixedUpdate()
     {
-
         if (ChaseToTargetMode)
         {
-
-            // 回転する方向を計算
             Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
             Debug.Log(nav_mesh_agent.steeringTarget);
             if (direction != Vector3.zero)
@@ -91,33 +99,8 @@ public class FollowObjectByNav : MonoBehaviour
                 Quaternion lookRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
             }
-
-            nav_mesh_agent.SetDestination(ChaseTargetPosition);
-            if (ArrivedTarget)
-            {
-                character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
-            }
-
-        }
-        else
-        {
         }
 
-        if(!ArrivedTarget)
-        {
-            //ターゲットの位置に到着していない場合は
-            if (ChaseToTargetMode && ToNextPointPosDistance > 0f)
-            {
-                Vector3 target = (NavmeshNextPos - this.transform.position).normalized;
-                //rigid.velocity = target * speed;
-                character_controller.Move(target * speed * Time.deltaTime);
-            }
-            else
-            {
-                //rigid.velocity = Vector3.zero;
-                //character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.deltaTime, 0));
-            }
-        }
 
     }
     public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed)
@@ -140,9 +123,7 @@ public class FollowObjectByNav : MonoBehaviour
         {
             NavmeshNextPos = target_pos;
         }
-        if (ToNextPointPosDistance <= 0f)
-        {
-        }
+
         nav_mesh_agent.nextPosition = this.transform.position;
 
     }

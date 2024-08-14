@@ -20,18 +20,19 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
     public UnityEvent SoundStopEvent;
     private float SoundPlayingTimeNow = 0;
     private AudioSource audio_source;
-
+    private TimeManager time_manager;
     // Start is called before the first frame update
     void Start()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
+        time_manager = TimeManager.instance;
     }
     private void Update()
     {
         if (enemy_sound_sensor_mode)
         {
             //‚ ‚é’ö“xŽžŠÔ‚ª‚½‚Á‚½‚ç‰¹º’âŽ~B
-            SoundPlayingTimeNow += TimeManager.instance.deltaTime;
+            SoundPlayingTimeNow += time_manager.deltaTime;
 
             if(SoundPlayingTimeNow > SoundPlayingTime)
             {

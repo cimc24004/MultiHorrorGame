@@ -14,27 +14,27 @@ public class EnemyStatus : MonoBehaviour
     public GameObject FaceExpandingCamera;
     private FollowObjectByNav follow_object_by_nav;
     private DiscoveryPlayerController discovery_player_controller;
-    private Rigidbody rigid;
     private Animator anim;
     private CharacterMovePermit character_move_permit;
+    private TimeManager time_manager;
     private EnemyRoutingController enemy_routing_controller;
     public bool StopEnemyByPlayerNow;
     private float StopEnemyByPlayerTimeNow;
     // Start is called before the first frame update
     void Start()
     {
-        rigid = this.gameObject.GetComponent<Rigidbody>();
         character_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
         anim = this.gameObject.GetComponent<Animator>();
+        time_manager = TimeManager.instance;
     }
     private void Update()
     {
         if (StopEnemyByPlayerNow)
         {
-            StopEnemyByPlayerTimeNow -= TimeManager.instance.deltaTime;
+            StopEnemyByPlayerTimeNow -= time_manager.deltaTime;
             Debug.Log("StopEnemyByPlayerTimeNow: " + StopEnemyByPlayerTimeNow);
             if(StopEnemyByPlayerTimeNow <= 0)
             {

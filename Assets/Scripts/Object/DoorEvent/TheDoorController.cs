@@ -28,16 +28,19 @@ public class TheDoorController : SerializedMonoBehaviour
     [HideInInspector]
     public bool OpenedClosedCompletedAnimation = true;
     private bool OpenedClosedCompleted = true;
-
+    private TimeManager time_manager;
     private float CompletedWaitTimeNow;
     [ShowIf("NeededKey")]
     [Required] public OpenPermitByKeyController open_permit_by_key_controller;
-
+    private void Start()
+    {
+        time_manager = TimeManager.instance;
+    }
     private void Update()
     {
         if (OpenedClosedCompletedAnimation)
         {
-            CompletedWaitTimeNow += TimeManager.instance.deltaTime;
+            CompletedWaitTimeNow += time_manager.deltaTime;
             if(CompletedWaitTimeNow > 0.3f)
             {
                 OpenedClosedCompleted = true;

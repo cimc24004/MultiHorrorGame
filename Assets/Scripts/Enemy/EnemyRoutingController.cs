@@ -8,6 +8,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     private FollowObjectByNav follow_object_by_nav;
     private EnemyStatus enemy_status;
     private float WaitToMoveNextPointTimeNow;
+    private TimeManager time_manager;
 
     private float ToNextRouteDistance;
     [Header("次のポイントまで移動するまで少し待つその時間")]
@@ -34,6 +35,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         stage_routings = StageController.instance.gameObject.GetComponent<StageRoutings>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
+        time_manager = TimeManager.instance;
 
     }
 
@@ -88,9 +90,10 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             //ArrivedTarget変数を宣言しておいて、そこに収納しておく。。
             if (ArrivedTarget)
             {
+                Debug.Log("!ArrivedNextRouteMode && ArrivedTarget=true");
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //いま向かっているルートに到着したら少し待ってから次のルートにいく。
-                WaitToMoveNextPointTimeNow += TimeManager.instance.deltaTime;
+                WaitToMoveNextPointTimeNow += time_manager.deltaTime;
                 if(WaitToMoveNextPointTimeNow > WaitToMoveNextPointTime)
                 {
                     ArrivedNextRouteMode = true;
@@ -127,6 +130,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     public void NearRouteSet()
     {
         //いちばん近く(仮)のルートをセットする関数
+        follow_object_by_nav.ArrivedTarget = false;
         this.PermitFunction(true);
         if (this.NearRouteObject == null) this.NextRouteObject = stage_routings.Routings[RouteIndexNow];
         this.NextRouteSet(this.NearRouteObject);
