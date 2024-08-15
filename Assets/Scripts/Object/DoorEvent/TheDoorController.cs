@@ -28,13 +28,17 @@ public class TheDoorController : SerializedMonoBehaviour
     [HideInInspector]
     public bool OpenedClosedCompletedAnimation = true;
     private bool OpenedClosedCompleted = true;
+    private PlayerStatus player_status;
     private TimeManager time_manager;
+    private NoticedUIController noticed_ui_controller;
     private float CompletedWaitTimeNow;
     [ShowIf("NeededKey")]
     [Required] public OpenPermitByKeyController open_permit_by_key_controller;
     private void Start()
     {
+        player_status = PlayerStatus.instance;
         time_manager = TimeManager.instance;
+        noticed_ui_controller = player_status.noticed_ui_controller;
     }
     private void Update()
     {
@@ -47,7 +51,6 @@ public class TheDoorController : SerializedMonoBehaviour
                 CompletedWaitTimeNow = 0;
             }
         }
-
     }
     public void DoorOpenClosedChangeByStatus()
     {
@@ -57,7 +60,12 @@ public class TheDoorController : SerializedMonoBehaviour
         //鍵が必要なドアならまず鍵をこのドアに使ったかどうかを判定。 使ってなかったらreturn; 開けないよ。
         if (NeededKey)
         {
-            if (!open_permit_by_key_controller.OpenPermit) return;
+
+            if (!open_permit_by_key_controller.OpenPermit) {
+                //鍵がかかっている
+                noticed_ui_controller.Notice("鍵がかかっている", NoticedUIController.NoticeStatus.NeedKey);                
+                return;
+            }
         }
 
         //開けてる閉めてるアニメーション再生中ならこのアクションを実行しない。

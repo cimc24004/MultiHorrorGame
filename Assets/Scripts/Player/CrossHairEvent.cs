@@ -78,6 +78,7 @@ public class CrossHairEvent : MonoBehaviour
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     TheDoorController the_door_controller = door_open_close_controlelr.the_door_controller;
                     the_door_controller.DoorOpenClosedChangeByStatus();
+
                 }
 
             }

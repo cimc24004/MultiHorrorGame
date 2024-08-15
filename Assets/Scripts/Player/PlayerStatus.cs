@@ -14,6 +14,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
 
     public CrossHairEvent cross_hair_event;
     public PlayerHideObjectAction player_hide_object_action;
+
+    public NoticedUIController noticed_ui_controller;
     //€‚ñ‚¾‚©‚Ç‚¤‚©
     public bool Dead;
     //ƒvƒŒƒCƒ„[‚ÌˆÚ“®ó‘Ô (‘–‚é •à‚­ ‚µ‚á‚ª‚Ş)

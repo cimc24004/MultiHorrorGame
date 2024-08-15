@@ -29,12 +29,15 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     public CrossHairEvent cross_hair_event;
     private ItemMenuController item_menu_controller;
     private ItemThrowController item_throw_controller;
-
+    private PlayerStatus player_status;
+    private NoticedUIController noticed_ui_controller;
     // Start is called before the first frame update
     void Start()
     {
+        player_status = PlayerStatus.instance;
         item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
         item_throw_controller = this.gameObject.GetComponent<ItemThrowController>();
+        noticed_ui_controller = player_status.noticed_ui_controller;
     }
 
     //アイテムをこのコントローラーに追加する関数 外部から実行する。　主にCrossHairEvent.csから
@@ -141,6 +144,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
                     if (the_door_controller.NeededKey && !the_door_controller.DoorOpenPermitCheck())
                     {
                         the_door_controller.DoorOpenDOPermit();
+                        noticed_ui_controller.Notice("鍵が開いた", NoticedUIController.NoticeStatus.UsedKey);
                         ItemUse(BelongingCountNow, item_status);
                     }
                 }

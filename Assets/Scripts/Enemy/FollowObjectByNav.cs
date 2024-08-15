@@ -43,7 +43,7 @@ public class FollowObjectByNav : MonoBehaviour
         }
         //navmeshagentによる動きを停止。 動きはrigidbodyで行いnavmeshagentは探索結果のみを用いる。
         nav_mesh_agent.updatePosition = false;
-        nav_mesh_agent.updateRotation = true;
+        nav_mesh_agent.updateRotation = false;
     }
 
     // Update is called once per frame
@@ -54,12 +54,7 @@ public class FollowObjectByNav : MonoBehaviour
         ToTargetPosDistance = Math.Round(Vector3.Distance(ChaseTargetPosition, this.transform.position), 1, MidpointRounding.ToEven);
         PosGetByFinder(ChaseTargetPosition);
         nav_mesh_agent.SetDestination(ChaseTargetPosition);
-        Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
-        //if (direction != Vector3.zero)
-        //{
-        //    Quaternion lookRotation = Quaternion.LookRotation(direction * Time.deltaTime);
-        //    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
-        //}
+
         if (ChaseToTargetMode)
         {
 
@@ -102,7 +97,12 @@ public class FollowObjectByNav : MonoBehaviour
 
             //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
             //nav_mesh_agent.velocity = character_controller.velocity;
-
+            Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
+            if (direction != Vector3.zero)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(direction * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
+            }
         }
         character_controller.Move(Vector3Move * Time.fixedDeltaTime);
 
