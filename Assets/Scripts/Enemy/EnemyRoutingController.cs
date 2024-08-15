@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using System;
 public class EnemyRoutingController : SerializedMonoBehaviour
 {
     private StageRoutings stage_routings;
@@ -10,7 +11,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     private float WaitToMoveNextPointTimeNow;
     private TimeManager time_manager;
 
-    private float ToNextRouteDistance;
+    public float ToNextRouteDistance;
     [Header("次のポイントまで移動するまで少し待つその時間")]
     public float WaitToMoveNextPointTime;
     [Header("徘徊の歩くスピード")]
@@ -84,8 +85,9 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         if (!ArrivedNextRouteMode)
         {
             //まだ到着していない最中でしたら
-            ToNextRouteDistance = Vector3.Distance(NextRouteObject.transform.position, this.transform.position);
-            if (follow_object_by_nav.ArrivedTarget) ArrivedTarget = true;
+            ToNextRouteDistance = (float)Math.Round(Vector3.Distance(NextRouteObject.transform.position, this.transform.position), 1);
+            //if (follow_object_by_nav.ArrivedTarget) ArrivedTarget = true;
+            if (ToNextRouteDistance <= follow_object_by_nav.StoppingDistance) ArrivedTarget = true;
             //FollowObjectByNavがArrivedtargetになったら　これは一フレームだけしかTrueにならないので、継続させるために
             //ArrivedTarget変数を宣言しておいて、そこに収納しておく。。
             if (ArrivedTarget)

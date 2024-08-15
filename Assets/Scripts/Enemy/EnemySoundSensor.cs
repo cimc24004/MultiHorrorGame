@@ -17,7 +17,7 @@ public class EnemySoundSensor : MonoBehaviour
     private float ToPlayerDistance;
     private Animator enemy_anim;
     private TimeManager time_manager;
-    private float ToSoundPlaceDistance;
+    private double ToSoundPlaceDistance;
     //‰¹‚ª–Â‚Á‚½æ‚ÌêŠ
     private Vector3 SoundPlacePosition;
     //‰¹‚ª–Â‚Á‚½êŠ‚ÉˆÚ“®‚µ‚Ä‚¢‚éNow

@@ -949,7 +949,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.44
-  m_BaseOffset: -0.05
+  m_BaseOffset: -0.03
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &2204745625150836465
@@ -991,7 +991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f39e05581981d4409c30981902b5855, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityMultiplier: 100
+  gravityMultiplier: 10
   UseCharacterController: 1
   gravity: {x: 0, y: 0, z: 0}
 --- !u!114 &4014676743130251851
@@ -1069,12 +1069,12 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.55
+  m_Height: 1.5
   m_Radius: 0.22
-  m_SlopeLimit: 45
-  m_StepOffset: 0.8
+  m_SlopeLimit: 60
+  m_StepOffset: 0.3
   m_SkinWidth: 0.0001
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0
   m_Center: {x: 0.03, y: 0.77, z: -0.01}
 --- !u!114 &5937354999368225528
 MonoBehaviour:
