@@ -52,8 +52,9 @@ public class TheDoorController : SerializedMonoBehaviour
             }
         }
     }
-    public void DoorOpenClosedChangeByStatus()
+    public void DoorOpenClosedChangeByStatus(GameObject EventActionMan)
     {
+        //EventActionMan: この関数を行った実行人物(プレイヤーや敵など)
         //ドアをステータスによって変化させる。
         //空いている状態なら閉める。　開いている状態なら開ける。
 
@@ -63,7 +64,14 @@ public class TheDoorController : SerializedMonoBehaviour
 
             if (!open_permit_by_key_controller.OpenPermit) {
                 //鍵がかかっている
-                noticed_ui_controller.Notice("鍵がかかっている", NoticedUIController.NoticeStatus.NeedKey);                
+                if(EventActionMan.tag == "Player")
+                {
+                    noticed_ui_controller.Notice("鍵がかかっている", NoticedUIController.NoticeStatus.NeedKey);
+                }
+                else if(EventActionMan.tag == "Enemy")
+                {
+                    //ドアを破壊するとかを作ればいい。
+                }
                 return;
             }
         }

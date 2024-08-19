@@ -6,8 +6,18 @@ using DG.Tweening;
 public class CanCheckActionUIController : SerializedMonoBehaviour
 {
     //調べることができることを示すための画像を表示させるためのコントローラー
+    [Header("CanCheckUIを複数個指定したい場合はtrueにする")]
+    public bool multiple;
+
+    [HideIf("multiple", true)]
     [Required]
     public GameObject CanCheckUICanvas;
+
+    [ShowIf("multiple", true)]
+    [Required]
+    public List<GameObject> CanCheckUICanvases;
+
+
     private PlayerStatus player_status;
     public bool CollideredToPlayer;
     private GameObject Player;
@@ -26,26 +36,47 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
         {
             if(Player != null)
             {
-                TargetImage.transform.DODynamicLookAt(player_status.HeadPos.transform.position, 0.3f);
             }
         }
     }
     [Button]
     public void DoDisplay()
     {
-        CanCheckUICanvas.SetActive(true);
+        if (multiple)
+        {
+            foreach(GameObject canvas in CanCheckUICanvases)
+            {
+                canvas.SetActive(true);
+            }
+        }
+        else
+        {
+            CollideredToPlayer = true;
+            CanCheckUICanvas.SetActive(true);
+        }
     }
     [Button]
     public void DoHide()
     {
-        CanCheckUICanvas.SetActive(false);
+        if (multiple)
+        {
+            foreach (GameObject canvas in CanCheckUICanvases)
+            {
+                canvas.SetActive(false);
+            }
+        }
+        else
+        {
+            CollideredToPlayer = false;
+            CanCheckUICanvas.SetActive(false);
+
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Player")
         {
-            CollideredToPlayer = true;
             DoDisplay();
         }
     }
@@ -54,7 +85,6 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
-            CollideredToPlayer = false;
             DoHide();        
         }
     }

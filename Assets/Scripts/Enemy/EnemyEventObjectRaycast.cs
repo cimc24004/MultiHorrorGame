@@ -28,7 +28,7 @@ public class EnemyEventObjectRaycast : MonoBehaviour
                 TheDoorController the_door_controller = door_open_close_controller.the_door_controller;
                 if (the_door_controller.door_status == TheDoorController.DoorStatus.Closed)
                 {
-                    the_door_controller.DoorOpenClosedChangeByStatus();
+                    the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
                 }
             }
         }

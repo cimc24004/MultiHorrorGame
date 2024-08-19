@@ -37,7 +37,7 @@ public class CrossHairEvent : MonoBehaviour
 
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
-                raycast_hit.collider.gameObject.tag == "Door")
+                raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer")
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = true;
@@ -52,7 +52,6 @@ public class CrossHairEvent : MonoBehaviour
             {
 
                 //���C�L���X�g���������ɓ��������ꍇ�B
-
                 //���ɓ������Ă��̎��ɃN���b�N����Ƃ��낢��C�x���g�����s�B
                 //�A�C�e������肷��B �����J����B ���ɉB���Ȃǂ̃C�x���g�������B
                 if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item"))
@@ -63,6 +62,7 @@ public class CrossHairEvent : MonoBehaviour
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
                     item_object.ItemGet(item_belonging_controller);
                     Destroy(item_object.gameObject);
+                    return;
                 }
                 if (raycast_hit.collider.gameObject.tag == "HideActionObject")
                 {
@@ -70,17 +70,25 @@ public class CrossHairEvent : MonoBehaviour
 
                     player_hide_object_action.HideAction = true;
                     player_hide_object_action.TargetHideObjectSet(raycast_hit.collider.gameObject);
+                    return;
+
                 }
-                if(raycast_hit.collider.gameObject.tag == "Door")
+                if (raycast_hit.collider.gameObject.tag == "Door")
                 {
                     //�h�A���N���b�N������h�A���J����B
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     TheDoorController the_door_controller = door_open_close_controlelr.the_door_controller;
-                    the_door_controller.DoorOpenClosedChangeByStatus();
+                    the_door_controller.DoorOpenClosedChangeByStatus(Player);
+                    return;
 
                 }
-
+                if (raycast_hit.collider.gameObject.tag == "Drawer")
+                {
+                    DrawerOpenCloseController drawer_open_close_controller = raycast_hit.collider.gameObject.GetComponent<DrawerOpenCloseController>();
+                    drawer_open_close_controller.OpenCloseChangeEventByStatus();
+                    return;
+                }
             }
 
         }
