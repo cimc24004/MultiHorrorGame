@@ -22,10 +22,6 @@ public class StageRoutings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("-------Start---------------");
-        foreach(GameObject g in Routings) {
-            Debug.Log("g: " + g);
-        }
-        Debug.Log("-------End---------------");
+
     }
 }

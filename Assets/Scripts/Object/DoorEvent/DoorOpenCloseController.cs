@@ -7,35 +7,104 @@ using Sirenix.OdinInspector;
 
 public class DoorOpenCloseController : SerializedMonoBehaviour
 {
+
     private Vector3 DefaultPosition;
-    [Required]public Transform ToOpenPos;
+    [Header("開けるタイプを指定 SideOpen: ふすまなど Rotate: 普通のドアなど")]
+    public OpenType open_type;
+
+    [ShowIf("open_type", OpenType.SideOpen)]
+    [Required]public Transform ToOpenTransform;
+    [ShowIf("open_type", OpenType.Rotate)]
+    [Header("どのくらい開けるか")]
+    public Vector3 TargetRotateVector;
+
+    public Vector3 ToOpenVector3;
+
     [Required] public TheDoorController the_door_controller;
     public float duration = 0.3f;
 
     public UnityEvent OpenCompleted;
     public UnityEvent CloseCompleted;
+
+    public enum MoveXYZ
+    {
+        X,
+        Y,
+        Z
+    }
+    public enum OpenType
+    {
+        SideOpen,
+        Rotate
+    }
+    [ShowIf("open_type", OpenType.SideOpen)]
+    [Header("何の軸を移動するか")]
+    public MoveXYZ move_x_y_z;
+
     private void Start()
     {
         DefaultPosition = this.transform.position;
+        if (OpenType.SideOpen == open_type)
+        {
+            if (move_x_y_z == MoveXYZ.X)
+            {
+                ToOpenVector3 = new Vector3(ToOpenTransform.transform.position.x, DefaultPosition.y, DefaultPosition.z);
+
+            }
+            else if (move_x_y_z == MoveXYZ.Y)
+            {
+                ToOpenVector3 = new Vector3(DefaultPosition.x, ToOpenTransform.transform.position.y, DefaultPosition.z);
+
+            }
+            else if (move_x_y_z == MoveXYZ.Z)
+            {
+                ToOpenVector3 = new Vector3(DefaultPosition.x, DefaultPosition.y, ToOpenTransform.transform.position.z);
+
+            }
+        }
+
     }
     [Button]
     public void Open()
     {
-
-        this.transform.DOMove(ToOpenPos.transform.position, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+        if(open_type == OpenType.SideOpen)
         {
-            the_door_controller.OpenedClosedCompletedAnimation = true;
-            OpenCompleted.Invoke();
-        });
+            this.transform.DOMove(ToOpenVector3, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+            {
+                the_door_controller.OpenedClosedCompletedAnimation = true;
+                OpenCompleted.Invoke();
+            });
+        }else if(open_type == OpenType.Rotate)
+        {
+            this.transform.DORotate(TargetRotateVector, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
+                the_door_controller.OpenedClosedCompletedAnimation = true;
+                OpenCompleted.Invoke();
+            });
+
+        }
+
         //this.transform.position = ToOpenPos.position;
         //the_door_controller.OpenedClosedCompletedAnimation = true;
     }
     [Button]
     public void Close()
     {
-        this.transform.DOMove(DefaultPosition, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
-            the_door_controller.OpenedClosedCompletedAnimation = true;
-            CloseCompleted.Invoke();
-        });
+        Debug.Log("Close関数呼び出し");
+        if (open_type == OpenType.SideOpen)
+        {
+            this.transform.DOMove(DefaultPosition, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
+                the_door_controller.OpenedClosedCompletedAnimation = true;
+                CloseCompleted.Invoke();
+            });
+        }
+        else if (open_type == OpenType.Rotate)
+        {
+            this.transform.DORotate(Vector3.zero, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
+                the_door_controller.OpenedClosedCompletedAnimation = true;
+                CloseCompleted.Invoke();
+            });
+        }
+
+
     }
 }

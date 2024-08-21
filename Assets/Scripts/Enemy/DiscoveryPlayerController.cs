@@ -129,6 +129,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= VisionFieldAngle && InsidePlayer)
         {
             //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
+            Debug.Log("プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか");
             if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, layerMask))
             {
                 //Raycastをプレイヤーにとりあえず飛ばす。

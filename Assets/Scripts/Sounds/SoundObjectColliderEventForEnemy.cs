@@ -49,7 +49,6 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("other.game.Object: " + other.gameObject.tag);
         if (other.gameObject.tag == "SoundObjectRange")
         {
             sound_object_event_with_sensor = other.transform.parent.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();

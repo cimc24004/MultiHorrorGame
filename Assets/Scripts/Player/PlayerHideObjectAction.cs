@@ -64,12 +64,13 @@ public class PlayerHideObjectAction : MonoBehaviour
     //隠すときは隠れられるオブジェクトのTargetHideObjectスクリプトのHideTarget関数を実行すればよい。
     public void Hide()
     {
+        player_character_controller.enabled = false;
         target_hide_object.HideTarget(this.gameObject);
         player_status.HeadPos.position = player_status.FaceDownHeadPos.position;
         player_status.CameraRoot.position = player_status.FaceDownHeadPos.position;
         //player_rigid.isKinematic = true;
         //player_collider.isTrigger = true;
-        player_character_controller.enabled = false;
+        //player_character_controller.stepOffset = 0;
         //player_collider.isTrigger = true;
         PlayerDeformedByHideType();
         charactor_move_permit.Stop();

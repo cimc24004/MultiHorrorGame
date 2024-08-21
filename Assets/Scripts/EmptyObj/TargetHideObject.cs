@@ -21,11 +21,11 @@ public class TargetHideObject : MonoBehaviour
     [Header("‰B‚ê‚éƒ^ƒCƒv")]
     [Header("Stand: —§‚Á‚½ó‘Ô \n Crouch: À‚Á‚½ó‘Ô \n FaceDown: ‚¤‚Â•š‚¹ó‘Ô")]
     public HideType hide_type;
-
+    public Vector3 TargetObjectOfAngle;
     public void HideTarget(GameObject Target)
     {
         Target.transform.position = HideBeyondPos.transform.position;
-
+        Target.transform.rotation = Quaternion.Euler(TargetObjectOfAngle);
         SomeoneHided = true;
     }
     public void UnHideTarget(GameObject Target)
