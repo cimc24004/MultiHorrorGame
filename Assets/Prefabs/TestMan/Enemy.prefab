@@ -193,7 +193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Distance: 0.2
-  custom_gravity: {fileID: 508701361520440152}
+  custom_gravity: {fileID: 0}
   OnGround: 0
 --- !u!1 &5494648295616348797
 GameObject:
@@ -829,10 +829,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 508701361520440152}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4014676743130251851}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f49ccc93b38f3504e95989cbc0641ae0,
         type: 3}
@@ -979,21 +975,6 @@ MonoBehaviour:
   enemy_move_state: 0
   FaceExpandingCamera: {fileID: 0}
   StopEnemyByPlayerNow: 0
---- !u!114 &508701361520440152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6297832481982226207}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f39e05581981d4409c30981902b5855, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravityMultiplier: 10
-  UseCharacterController: 1
-  gravity: {x: 0, y: 0, z: 0}
 --- !u!114 &4014676743130251851
 MonoBehaviour:
   m_ObjectHideFlags: 0
