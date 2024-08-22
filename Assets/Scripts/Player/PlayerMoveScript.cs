@@ -57,7 +57,7 @@ public class PlayerMoveScript : MonoBehaviour
         }
         else
         {
-            character_controller.Move(new Vector3(0, character_controller.velocity.y * Time.fixedDeltaTime, 0));
+            character_controller.Move(Vector3.Scale(Vector3.up,character_controller.velocity) * time_manager.deltaTime);
             player_status.MoveSpeed = 0;
         }
 

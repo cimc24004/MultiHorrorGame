@@ -20,7 +20,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     //最後のルートまで言ったら0まで減らす。 デフォルトは++で増やしていく。
     public bool ReverseIndexChange;
     //RoutingNowObjectに到着したかどうか
-    public bool ArrivedNextRouteMode = true;
+    public bool ArrivedNextRouteMode = false;
     public bool RoutingMovePermit = true;
 
     public int RouteIndexNow = 0;
@@ -37,7 +37,8 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         time_manager = TimeManager.instance;
-
+        //最初にルートを設定。
+        NextRouteSet();
     }
 
     // Update is called once per frame
@@ -46,7 +47,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         if (!RoutingMovePermit) return;
         if (ArrivedNextRouteMode)
         {
-            //すでに次のルートに到着していたら
+            //すでに進んでいるルートに到着していたら
             if (stage_routings.Routings.Count > RouteIndexNow + 1)
             {
                 //次のルートにいく。

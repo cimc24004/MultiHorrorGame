@@ -88,7 +88,6 @@ public class FollowObjectByNav : MonoBehaviour
 
         }
 
-
     }
     private void FixedUpdate()
     {
@@ -100,12 +99,12 @@ public class FollowObjectByNav : MonoBehaviour
             Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
             if (direction != Vector3.zero)
             {
-                Quaternion lookRotation = Quaternion.LookRotation(direction * Time.deltaTime);
+                Quaternion lookRotation = Quaternion.LookRotation(direction * Time.fixedDeltaTime);
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
             }
         }
-        character_controller.Move(Vector3Move * Time.fixedDeltaTime);
-
+        Debug.Log("Vector3.Scale((Vector3.forward + Vector3.right), Vector3Move):" + Vector3.Scale((Vector3.forward + Vector3.right), Vector3Move));
+        character_controller.Move(Vector3.Scale((Vector3.forward + Vector3.right), Vector3Move) * Time.fixedDeltaTime);
 
     }
     public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed)
