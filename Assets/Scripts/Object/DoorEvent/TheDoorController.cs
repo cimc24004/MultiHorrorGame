@@ -25,9 +25,9 @@ public class TheDoorController : SerializedMonoBehaviour
     [Header("キーが必要なドアかどうか。")]
     public bool NeededKey;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool OpenedClosedCompletedAnimation = true;
-    private bool OpenedClosedCompleted = true;
+    public bool OpenedClosedCompleted = true;
     private PlayerStatus player_status;
     private TimeManager time_manager;
     private NoticedUIController noticed_ui_controller;

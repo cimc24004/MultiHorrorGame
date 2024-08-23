@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using System;
+using DG.Tweening;
 public class FollowObjectByNav : MonoBehaviour
 {
     //ただ追いかける為だけのクラス ここに直接イベントは書かないこと。
@@ -100,7 +101,7 @@ public class FollowObjectByNav : MonoBehaviour
             if (direction != Vector3.zero)
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction * Time.fixedDeltaTime);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.2f);
             }
         }
         Debug.Log("Vector3.Scale((Vector3.forward + Vector3.right), Vector3Move):" + Vector3.Scale((Vector3.forward + Vector3.right), Vector3Move));
