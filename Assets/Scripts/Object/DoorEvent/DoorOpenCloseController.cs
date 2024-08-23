@@ -17,8 +17,8 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [ShowIf("open_type", OpenType.Rotate)]
     [Header("‚Ç‚Ì‚­‚ç‚¢ŠJ‚¯‚é‚©")]
     public Vector3 TargetRotateVector;
-
-    public Vector3 ToOpenVector3;
+    private Vector3 DefaultRotateVector;
+    private Vector3 ToOpenVector3;
 
     [Required] public TheDoorController the_door_controller;
     public float duration = 0.3f;
@@ -44,6 +44,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     private void Start()
     {
         DefaultPosition = this.transform.position;
+        DefaultRotateVector = this.transform.rotation.eulerAngles;
         if (OpenType.SideOpen == open_type)
         {
             if (move_x_y_z == MoveXYZ.X)
@@ -99,7 +100,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         }
         else if (open_type == OpenType.Rotate)
         {
-            this.transform.DORotate(Vector3.zero, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
+            this.transform.DORotate(DefaultRotateVector, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
                 the_door_controller.OpenedClosedCompletedAnimation = true;
                 CloseCompleted.Invoke();
             });
