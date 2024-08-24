@@ -135,6 +135,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         //いちばん近く(仮)のルートをセットする関数
         follow_object_by_nav.ArrivedTarget = false;
         this.PermitFunction(true);
+        //もし近くにルートがなかった場合はRouteIndexNowのものに対して進むようにする
         if (this.NearRouteObject == null) this.NextRouteObject = stage_routings.Routings[RouteIndexNow];
         this.NextRouteSet(this.NearRouteObject);
     }
