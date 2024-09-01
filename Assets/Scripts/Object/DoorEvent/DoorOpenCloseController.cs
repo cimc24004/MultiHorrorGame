@@ -25,7 +25,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
 
     public UnityEvent OpenCompleted;
     public UnityEvent CloseCompleted;
-
+    private Collider collider;
     public enum MoveXYZ
     {
         X,
@@ -45,6 +45,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     {
         DefaultPosition = this.transform.position;
         DefaultRotateVector = this.transform.rotation.eulerAngles;
+        collider = this.gameObject.GetComponent<Collider>();
         if (OpenType.SideOpen == open_type)
         {
             if (move_x_y_z == MoveXYZ.X)
@@ -77,8 +78,11 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
             });
         }else if(open_type == OpenType.Rotate)
         {
-            this.transform.DORotate(TargetRotateVector, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
+            this.transform.DORotate(TargetRotateVector, duration, RotateMode.Fast).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+                collider.isTrigger = true;
+            }).OnComplete(() => {
                 the_door_controller.OpenedClosedCompletedAnimation = true;
+                collider.isTrigger = false;
                 OpenCompleted.Invoke();
             });
 
@@ -100,8 +104,11 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         }
         else if (open_type == OpenType.Rotate)
         {
-            this.transform.DORotate(DefaultRotateVector, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
+            this.transform.DORotate(DefaultRotateVector, duration, RotateMode.Fast).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+                collider.isTrigger = true;
+            }).OnComplete(() => {
                 the_door_controller.OpenedClosedCompletedAnimation = true;
+                collider.isTrigger = false;
                 CloseCompleted.Invoke();
             });
         }
