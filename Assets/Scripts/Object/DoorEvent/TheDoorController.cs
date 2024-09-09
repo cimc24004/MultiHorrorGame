@@ -9,13 +9,8 @@ public class TheDoorController : SerializedMonoBehaviour
     [Header("ドアごとについているDoorOpenCloseControllerスクリプトをセット。")]
     [RequiredListLength(1, null)]
     public List<DoorOpenCloseController> door_open_close_controllers;
-    public enum DoorType
-    {
-        Husuma,
-        Shoji
-    }
 
-    public DoorType door_type;
+
 
     public enum DoorStatus{
         Closed,
