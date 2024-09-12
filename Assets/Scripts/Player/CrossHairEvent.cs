@@ -85,7 +85,7 @@ public class CrossHairEvent : MonoBehaviour
                 }
                 if (raycast_hit.collider.gameObject.tag == "Drawer")
                 {
-                    DrawerOpenCloseController drawer_open_close_controller = raycast_hit.collider.gameObject.GetComponent<DrawerOpenCloseController>();
+                    ItemBoxOpenCloseController drawer_open_close_controller = raycast_hit.collider.gameObject.GetComponent<ItemBoxOpenCloseController>();
                     drawer_open_close_controller.OpenCloseChangeEventByStatus();
                     return;
                 }

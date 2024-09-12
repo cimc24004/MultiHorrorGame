@@ -43,9 +43,8 @@ public class FollowObjectByNav : MonoBehaviour
             NavmeshNextPos = nav_mesh_agent.path.corners[0];
         }
         //navmeshagentによる動きを停止。 動きはrigidbodyで行いnavmeshagentは探索結果のみを用いる。
-        nav_mesh_agent.updatePosition = false;
+        nav_mesh_agent.updatePosition = true;
         nav_mesh_agent.updateRotation = false;
-        nav_mesh_agent.updateUpAxis = false;
     }
 
     // Update is called once per frame
@@ -87,7 +86,6 @@ public class FollowObjectByNav : MonoBehaviour
             }
 
 
-
         }
 
     }
@@ -107,8 +105,8 @@ public class FollowObjectByNav : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
             }
         }
-        character_controller.Move(Vector3.Scale((Vector3.forward + Vector3.right), Vector3Move) * Time.fixedDeltaTime);
-
+        nav_mesh_agent.velocity = character_controller.velocity;
+        character_controller.Move(new Vector3(Vector3Move.x * Time.fixedDeltaTime, 0, Vector3Move.z * Time.fixedDeltaTime));
     }
     public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed)
     {
