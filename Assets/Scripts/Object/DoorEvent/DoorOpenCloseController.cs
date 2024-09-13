@@ -17,7 +17,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [ShowIf("open_type", OpenType.Rotate)]
     [Header("‚Ç‚Ì‚­‚ç‚¢ŠJ‚¯‚é‚©")]
     public Vector3 TargetRotateVector;
-    private Vector3 DefaultRotateVector;
+    public Vector3 DefaultRotateVector;
     private Vector3 ToOpenVector3;
 
     [Required] public TheDoorController the_door_controller;
@@ -44,7 +44,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     private void Start()
     {
         DefaultPosition = this.transform.position;
-        DefaultRotateVector = this.transform.rotation.eulerAngles;
+        DefaultRotateVector = this.transform.localEulerAngles;
         collider = this.gameObject.GetComponent<Collider>();
         if (OpenType.SideOpen == open_type)
         {
@@ -66,6 +66,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         }
 
     }
+
     [Button]
     public void Open()
     {
@@ -78,7 +79,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
             });
         }else if(open_type == OpenType.Rotate)
         {
-            this.transform.DORotate(TargetRotateVector, duration, RotateMode.Fast).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+            this.transform.DOLocalRotate(TargetRotateVector, duration, RotateMode.Fast).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
                 collider.isTrigger = true;
             }).OnComplete(() => {
                 the_door_controller.OpenedClosedCompletedAnimation = true;
@@ -104,7 +105,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         }
         else if (open_type == OpenType.Rotate)
         {
-            this.transform.DORotate(DefaultRotateVector, duration, RotateMode.Fast).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
+            this.transform.DOLocalRotate(DefaultRotateVector, duration, RotateMode.Fast).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
                 collider.isTrigger = true;
             }).OnComplete(() => {
                 the_door_controller.OpenedClosedCompletedAnimation = true;

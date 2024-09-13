@@ -950,6 +950,101 @@ Transform:
   - {fileID: 846074149891837963}
   m_Father: {fileID: 1671817231544234582}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1078492948074394915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1914920510957265801}
+  - component: {fileID: 1006481973216887112}
+  - component: {fileID: 3405539092467252807}
+  - component: {fileID: 4162097728764799033}
+  m_Layer: 0
+  m_Name: GroundCheckController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1914920510957265801
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078492948074394915}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 597350177767367547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1006481973216887112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078492948074394915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e33b034a136f54f4199afd31c713e7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Distance: 0.1
+  OnGround: 0
+  RaycastStartTransform: {fileID: 0}
+  GroundedTagName: 
+  GroundLayerMask:
+    serializedVersion: 2
+    m_Bits: 31
+  hitted_obj_collider: {fileID: 0}
+  default_hitted_obj_exclude_layers:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &3405539092467252807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078492948074394915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe6e4cba2f038b54293205b3868041a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ground_check: {fileID: 1006481973216887112}
+  Parent: {fileID: 597350177767367547}
+  test_mask:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!65 &4162097728764799033
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078492948074394915}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.1555956, y: 0.12876463, z: 0.21921444}
+  m_Center: {x: 0.005554229, y: 0.05281818, z: -0.008956432}
 --- !u!1 &1261016193895632068
 GameObject:
   m_ObjectHideFlags: 0
@@ -5918,6 +6013,7 @@ Transform:
   - {fileID: 1121756888554145600}
   - {fileID: 4262941717185561571}
   - {fileID: 5120868745284733722}
+  - {fileID: 1914920510957265801}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &3709143509871936015
@@ -5954,7 +6050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDirection: {x: 0, y: 0, z: 0}
-  RunSpeed: 3
+  RunSpeed: 2
   WalkSpeed: 1
   CrouchSpeed: 0.7
   NowSpeed: 0
@@ -6107,12 +6203,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.5
-  m_Radius: 0.3
+  m_Radius: 0.19
   m_SlopeLimit: 60
-  m_StepOffset: 0.4
+  m_StepOffset: 0.7
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 0.75, z: 0}
+  m_Center: {x: 0, y: 0.72, z: 0}
 --- !u!114 &4125387271911036982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6455,7 +6551,7 @@ Transform:
   m_GameObject: {fileID: 7867569463644096400}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.362, z: 0.217}
+  m_LocalPosition: {x: 0, y: 1.362, z: 0.058}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
