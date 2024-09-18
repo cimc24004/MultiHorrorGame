@@ -9,6 +9,8 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
 {
 
     private Vector3 DefaultPosition;
+    [Header("開けたときにトリガーを切り替えるかどうか")]
+    public bool TriggerChangeModeOpenClose = true;
     [Header("開けるタイプを指定 SideOpen: ふすまなど Rotate: 普通のドアなど")]
     public OpenType open_type;
 
@@ -83,7 +85,10 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
                 collider.isTrigger = true;
             }).OnComplete(() => {
                 the_door_controller.OpenedClosedCompletedAnimation = true;
-                collider.isTrigger = false;
+                if (TriggerChangeModeOpenClose)
+                {
+                    collider.isTrigger = false;
+                }
                 OpenCompleted.Invoke();
             });
 
@@ -106,7 +111,10 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         else if (open_type == OpenType.Rotate)
         {
             this.transform.DOLocalRotate(DefaultRotateVector, duration, RotateMode.Fast).SetEase(Ease.Linear).SetLink(this.gameObject).OnUpdate(() => {
-                collider.isTrigger = true;
+                if (TriggerChangeModeOpenClose)
+                {
+                    collider.isTrigger = true;
+                }
             }).OnComplete(() => {
                 the_door_controller.OpenedClosedCompletedAnimation = true;
                 collider.isTrigger = false;
