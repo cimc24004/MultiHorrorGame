@@ -27,7 +27,16 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
 
     public UnityEvent OpenCompleted;
     public UnityEvent CloseCompleted;
+
+    public AudioClip OpenClip;
+    public AudioClip CloseClip;
+
+    [ShowIf("open_type", OpenType.Rotate)]
+    public AudioClip CloseCompletedClip;
     private Collider collider;
+    private AudioSource audio_source;
+
+
     public enum MoveXYZ
     {
         X,
@@ -47,6 +56,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     {
         DefaultPosition = this.transform.position;
         DefaultRotateVector = this.transform.localEulerAngles;
+        audio_source = this.gameObject.GetComponent<AudioSource>();
         collider = this.gameObject.GetComponent<Collider>();
         if (OpenType.SideOpen == open_type)
         {
@@ -72,6 +82,10 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [Button]
     public void Open()
     {
+        if (OpenClip != null && audio_source != null)
+        {
+            audio_source.PlayOneShot(OpenClip);
+        }
         if(open_type == OpenType.SideOpen)
         {
             this.transform.DOMove(ToOpenVector3, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
@@ -101,6 +115,10 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     public void Close()
     {
         Debug.Log("CloseŠÖ”ŒÄ‚Ño‚µ");
+        if(CloseClip != null && audio_source != null)
+        {
+            audio_source.PlayOneShot(CloseClip);
+        }
         if (open_type == OpenType.SideOpen)
         {
             this.transform.DOMove(DefaultPosition, duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
@@ -116,6 +134,9 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
                     collider.isTrigger = true;
                 }
             }).OnComplete(() => {
+                if(CloseCompletedClip != null && audio_source != null) {
+                    audio_source.PlayOneShot(CloseCompletedClip);
+                }
                 the_door_controller.OpenedClosedCompletedAnimation = true;
                 collider.isTrigger = false;
                 CloseCompleted.Invoke();

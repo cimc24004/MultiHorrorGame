@@ -21,8 +21,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
     //ÉvÉåÉCÉÑÅ[ÇÃà⁄ìÆèÛë‘ (ëñÇÈ ï‡Ç≠ ÇµÇ·Ç™Çﬁ)
     public enum PlayerMoveState
     {
-        Run,
         Walk,
+        Run,
         Crouch
         
     }
@@ -39,6 +39,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private Animator anim;
     private bool Crouch;
     public CinemachineVirtualCamera virtual_camera;
+
+    public FootStepSoundController foot_step_sound_controller;
     private CinemachineTransposer cinemachine_transposer;
     // Start is called before the first frame update
     void Start()
@@ -65,6 +67,21 @@ public class PlayerStatus : Singleton<PlayerStatus>
         {
             MoveX /= 2;
             MoveY /= 2;
+        }
+        if(MoveSpeed != 0)
+        {
+            if (player_move_state == PlayerMoveState.Run)
+            {
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+            }
+            else if (player_move_state == PlayerMoveState.Walk)
+            {
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+            }
+        }
+        else
+        {
+            foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
         }
 
         anim.SetBool("Crouch", Crouch);
