@@ -83,7 +83,6 @@ public class PlayerStatus : Singleton<PlayerStatus>
         {
             foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
         }
-
         anim.SetBool("Crouch", Crouch);
         anim.SetFloat("MoveY", MoveY);
         anim.SetFloat("MoveX", MoveX);

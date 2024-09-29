@@ -37,7 +37,8 @@ public class CrossHairEvent : MonoBehaviour
 
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
-                raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer")
+                raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer" || 
+                raycast_hit.collider.gameObject.tag == "Light")
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = true;
@@ -88,6 +89,12 @@ public class CrossHairEvent : MonoBehaviour
                     ItemBoxOpenCloseController drawer_open_close_controller = raycast_hit.collider.gameObject.GetComponent<ItemBoxOpenCloseController>();
                     drawer_open_close_controller.OpenCloseChangeEventByStatus();
                     return;
+                }
+
+                if(raycast_hit.collider.gameObject.tag == "Light")
+                {
+                    TurningOnOffLightController turn_on_off_by_status = raycast_hit.collider.gameObject.GetComponent<TurningOnOffLightController>();
+                    turn_on_off_by_status.TurnOnOffByStatus();
                 }
             }
 
