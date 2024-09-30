@@ -66,7 +66,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 70360f780334fd1458383855522f6ed9,
         type: 3}
       propertyPath: m_Name
-      value: "\u30C9\u30A2"
+      value: "\u4E2D\u30C9\u30A2"
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 70360f780334fd1458383855522f6ed9,
         type: 3}
@@ -98,6 +98,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1793985051169983350}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 70360f780334fd1458383855522f6ed9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 934424629363707814}
   m_SourcePrefab: {fileID: 100100000, guid: 70360f780334fd1458383855522f6ed9, type: 3}
 --- !u!1 &3488778856007392197 stripped
 GameObject:
@@ -147,9 +151,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  TriggerChangeModeOpenClose: 1
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: -90, z: 0}
+  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 7939446796787829864}
   duration: 0.7
   OpenCompleted:
@@ -158,6 +164,9 @@ MonoBehaviour:
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
+  OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
+  CloseClip: {fileID: 0}
+  CloseCompletedClip: {fileID: 8300000, guid: 9ee655d456919c546b3f3b58ffd9166a, type: 3}
   move_x_y_z: 0
 --- !u!114 &7939446796787829864
 MonoBehaviour:
@@ -182,7 +191,6 @@ MonoBehaviour:
     SerializationNodes: []
   door_open_close_controllers:
   - {fileID: 2018308763956155116}
-  door_type: 0
   door_status: 0
   NeededKey: 0
   OpenedClosedCompletedAnimation: 1
@@ -204,3 +212,99 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 0
   m_Center: {x: -0.41500002, y: 0.88100004, z: -0.024}
   m_TimeToStationary: 0
+--- !u!82 &934424629363707814
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3488778856007392197}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
