@@ -8,6 +8,7 @@ public class FootStepSoundController : SerializedMonoBehaviour
     {
         Walk,
         Run,
+        Crouch,
         Stop
     }
     //足音を鳴らすためだけのスクリプト
