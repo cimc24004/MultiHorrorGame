@@ -995,7 +995,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33b034a136f54f4199afd31c713e7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Distance: 0.1
+  Distance: 0.3
   OnGround: 0
   GroundedTagName: 
   GroundLayerMask:
@@ -5959,6 +5959,7 @@ GameObject:
   - component: {fileID: 2751979431404878738}
   - component: {fileID: 4125387271911036982}
   - component: {fileID: 268458870307655331}
+  - component: {fileID: 5618495484688028428}
   m_Layer: 6
   m_Name: PlayerUnityChan
   m_TagString: Player
@@ -6030,7 +6031,7 @@ MonoBehaviour:
   MoveDirection: {x: 0, y: 0, z: 0}
   RunSpeed: 1.8
   WalkSpeed: 1
-  CrouchSpeed: 0.7
+  CrouchSpeed: 0.5
   NowSpeed: 0
   CrouchNow: 0
   DirectionCamera: {fileID: 0}
@@ -6182,9 +6183,9 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.5
-  m_Radius: 0.19
+  m_Radius: 0.15
   m_SlopeLimit: 60
-  m_StepOffset: 0.7
+  m_StepOffset: 0.5
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.72, z: 0}
@@ -6211,6 +6212,29 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7525078627656951602}
   m_Enabled: 1
+--- !u!136 &5618495484688028428
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.18
+  m_Height: 1.51
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!1 &7660362891355367674
 GameObject:
   m_ObjectHideFlags: 0

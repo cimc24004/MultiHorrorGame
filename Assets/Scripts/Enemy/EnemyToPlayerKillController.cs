@@ -34,6 +34,7 @@ public class EnemyToPlayerKillController : MonoBehaviour
                 //プレイヤーが死んでいないかつプレイヤーが見つかっていたら。
                 if (Physics.Raycast(StartPos.position, Direction, out raycast_hit, RaycastDistance, layer_mask))
                 {
+                    Debug.Log("RayCastHiTColliderGameObjecttag: " + raycast_hit.collider.gameObject);
                     //敵の目からのレイキャストを飛ばす。　プレイヤーの方向を見てるときだけ殺せるようにしておく。
                     if(raycast_hit.collider.gameObject.tag == "Player")
                     {

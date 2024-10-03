@@ -78,6 +78,10 @@ public class PlayerStatus : Singleton<PlayerStatus>
             {
                 foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
             }
+            else
+            {
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
+            }
         }
         else
         {
