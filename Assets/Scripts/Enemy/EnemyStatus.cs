@@ -10,6 +10,7 @@ public class EnemyStatus : MonoBehaviour
         Walk,
         Run
     }
+    public FootStepSoundController foot_step_sound_controller;
     public EnemyMoveState enemy_move_state;
     public GameObject FaceExpandingCamera;
     private FollowObjectByNav follow_object_by_nav;
@@ -40,6 +41,18 @@ public class EnemyStatus : MonoBehaviour
             {
                 StopEnemyByPlayerToMove();
             }
+        }
+        switch (enemy_move_state)
+        {
+            case EnemyMoveState.Walk:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                break;
+            case EnemyMoveState.Run:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                break;
+            default:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
+                break;
         }
     }
     // Update is called once per frame

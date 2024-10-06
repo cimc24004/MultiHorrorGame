@@ -5958,7 +5958,6 @@ GameObject:
   - component: {fileID: 364072651999732485}
   - component: {fileID: 2751979431404878738}
   - component: {fileID: 4125387271911036982}
-  - component: {fileID: 268458870307655331}
   - component: {fileID: 5618495484688028428}
   m_Layer: 6
   m_Name: PlayerUnityChan
@@ -6204,14 +6203,6 @@ MonoBehaviour:
   gravityMultiplier: 10
   UseCharacterController: 1
   gravity: {x: 0, y: 0, z: 0}
---- !u!81 &268458870307655331
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7525078627656951602}
-  m_Enabled: 1
 --- !u!136 &5618495484688028428
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -10068,17 +10059,17 @@ PrefabInstance:
     - target: {fileID: 4339725872412752605, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.84294343
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4339725872412752605, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5707538
+      value: 1.306
       objectReference: {fileID: 0}
     - target: {fileID: 4339725872412752605, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.20298862
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4339725872412752605, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
@@ -10117,12 +10108,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393960173864736346, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: a62172e6f7275ff4f94c17edc8dfdd0d, type: 3}
+      propertyPath: MaxDistance
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 4393960173864736346, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
-      propertyPath: m_PlayOnAwake
+      propertyPath: rolloffMode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8483580507634944193, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
