@@ -49,6 +49,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
         anim = this.gameObject.GetComponent<Animator>();
         cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
         player_hide_object_action = this.gameObject.GetComponent<PlayerHideObjectAction>();
+
     }
 
     // Update is called once per frame

@@ -45,8 +45,15 @@ public class DiscoveryPlayerController : MonoBehaviour
     private CameraEnemyFaceExpanding camera_enemy_face_expanding;
     private EnemyRoutingController enemy_routing_controller;
     private TimeManager time_manager;
+
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
+
+    private HorrorDirector horror_director;
+
+
+    private bool DiscoveriedEventOnce;
+    private bool NonDiscoveriedEventOnce;
     // Start is called before the first frame update
     void Start()
     {
@@ -60,6 +67,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         time_manager = TimeManager.instance;
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
+        horror_director = HorrorDirector.instance;
     }
 
     // Update is called once per frame
@@ -73,9 +81,25 @@ public class DiscoveryPlayerController : MonoBehaviour
             InsidePlayer = false;
         if (DiscoveryPlayerNow)
         {
+            if (!DiscoveriedEventOnce)
+            {
+                horror_director.DiscoveriedHorror();
+                DiscoveriedEventOnce = true;
+            }
+
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
             enemy_routing_controller.PermitFunction(false);
+            NonDiscoveriedEventOnce = false;
+        }
+        else
+        {
+            DiscoveriedEventOnce = false;
+            if (!NonDiscoveriedEventOnce)
+            {
+                horror_director.ResetSetting();
+                NonDiscoveriedEventOnce = true;
+            }
         }
         anim.SetBool("PlayerHidingNow", player_status.HidingNow);
         if (DiscoveryPlayerNow && !SightningPlayer)
