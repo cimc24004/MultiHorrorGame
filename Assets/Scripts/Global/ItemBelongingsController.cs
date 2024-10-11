@@ -143,8 +143,10 @@ public class ItemBelongingsController : SerializedMonoBehaviour
                     TheDoorController the_door_controller = door_open_close_controller.the_door_controller;
                     if (the_door_controller.NeededKey && !the_door_controller.DoorOpenPermitCheck())
                     {
-                        the_door_controller.DoorOpenDOPermit();
-                        noticed_ui_controller.Notice("鍵が開いた", NoticedUIController.NoticeStatus.UsedKey);
+                        //NeededKeyにチェックついてるってことは親かなにかにOpenPermitByKeyがあるので、OpenPermiByeyControllerのKeyUse関数を実行
+                        OpenPermitByKeyController open_permit_by_key_controller = the_door_controller.open_permit_by_key_controller;
+                        
+                        open_permit_by_key_controller.KeyUse();
                         ItemUse(BelongingCountNow, item_status);
                     }
                 }

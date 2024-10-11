@@ -6,5 +6,31 @@ public class OpenPermitByKeyController : MonoBehaviour
 {
     //鍵によって開けるコントローラー 鍵つきのドアにしたい場合だけこのスクリプトをアタッチ。
     public bool OpenPermit = false;
+    public AudioSource KeyAudioSource;
+    [Header("キーを使った時の音")]
+    public AudioClip KeyUsedAudioClip;
+    [Header("鍵がかかっている時の音")]
+    public AudioClip NeedKeyAudioClip;
 
+    private PlayerStatus player_status;
+    private NoticedUIController noticed_ui_controller;
+    private void Start()
+    {
+        player_status = PlayerStatus.instance;
+        noticed_ui_controller = player_status.noticed_ui_controller;
+    }
+    public void KeyUse()
+    {
+        noticed_ui_controller.Notice("鍵が開いた", NoticedUIController.NoticeStatus.UsedKey);
+        this.OpenPermit = true;
+
+        KeyAudioSource.PlayOneShot(KeyUsedAudioClip);
+    }
+
+    public void NeedKeyForPlayer()
+    {
+        noticed_ui_controller.Notice("鍵がかかっている", NoticedUIController.NoticeStatus.NeedKey);
+
+        KeyAudioSource.PlayOneShot(NeedKeyAudioClip);
+    }
 }

@@ -11,7 +11,6 @@ public class TheDoorController : SerializedMonoBehaviour
     public List<DoorOpenCloseController> door_open_close_controllers;
 
 
-
     public enum DoorStatus{
         Closed,
         Opened
@@ -25,7 +24,6 @@ public class TheDoorController : SerializedMonoBehaviour
     public bool OpenedClosedCompleted = true;
     private PlayerStatus player_status;
     private TimeManager time_manager;
-    private NoticedUIController noticed_ui_controller;
     private float CompletedWaitTimeNow;
     [ShowIf("NeededKey")]
     [Required] public OpenPermitByKeyController open_permit_by_key_controller;
@@ -33,7 +31,6 @@ public class TheDoorController : SerializedMonoBehaviour
     {
         player_status = PlayerStatus.instance;
         time_manager = TimeManager.instance;
-        noticed_ui_controller = player_status.noticed_ui_controller;
     }
     private void Update()
     {
@@ -59,10 +56,11 @@ public class TheDoorController : SerializedMonoBehaviour
         {
 
             if (!open_permit_by_key_controller.OpenPermit) {
+
                 //Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é
                 if(EventActionMan.tag == "Player")
                 {
-                    noticed_ui_controller.Notice("Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é", NoticedUIController.NoticeStatus.NeedKey);
+                    open_permit_by_key_controller.NeedKeyForPlayer();
                 }
                 else if(EventActionMan.tag == "Enemy")
                 {
@@ -83,10 +81,7 @@ public class TheDoorController : SerializedMonoBehaviour
             DoorsOpen();
         }   
     }
-    public void DoorOpenDOPermit()
-    {
-        open_permit_by_key_controller.OpenPermit = true;
-    }
+
     public bool DoorOpenPermitCheck()
     {
         return open_permit_by_key_controller.OpenPermit;
