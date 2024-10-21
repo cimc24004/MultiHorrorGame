@@ -18,6 +18,8 @@ public class HorizontalProjectile : MonoBehaviour
     public float FirstSpeed = 1;
 
     public ItemThrowController item_throw_controller;
+    [Header("対称のレイヤーを指定")]
+    public LayerMask col_layer;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,20 +51,28 @@ public class HorizontalProjectile : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Object") && throw_now)
+        Debug.Log("アイテム投げて落ちたときのオブジェクト??::" + other.gameObject);
+        Debug.DrawRay(this.gameObject.transform.position, other.contacts[0].normal * 10, Color.green);
+        if (throw_now)
         {
-            OnGroundEvent.Invoke();
-            OnGround = true;
+            if ((col_layer.value & (1 << other.gameObject.layer)) != 0)
+            {
+                OnGroundEvent.Invoke();
+                OnGround = true;
+            }
+
+
+            if (other.gameObject.tag == "Enemy")
+            {
+                item_throw_controller.EnemyThrowCollisionEvent(other.gameObject);
+                HitEnemyEvent.Invoke();
+            }
         }
-        if(other.gameObject.tag == "Enemy")
-        {
-            item_throw_controller.EnemyThrowCollisionEvent(other.gameObject);
-            HitEnemyEvent.Invoke();
-        }
+
     }
     private void OnCollisionExit(Collision other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Object") && throw_now)
+        if (other.gameObject.layer == col_layer && throw_now)
         {
             OnGround = false;
         }

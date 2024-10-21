@@ -87,6 +87,14 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f998453777ee9044099e7b3a3d1f7baf,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2139763541982577942}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f998453777ee9044099e7b3a3d1f7baf,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6317185442797840295}
     - targetCorrespondingSourceObject: {fileID: 6211321326387368056, guid: f998453777ee9044099e7b3a3d1f7baf,
         type: 3}
       insertIndex: -1
@@ -120,6 +128,124 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 624193676412484157}
   m_SourcePrefab: {fileID: 100100000, guid: f998453777ee9044099e7b3a3d1f7baf, type: 3}
+--- !u!1 &1893966464129671742 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f998453777ee9044099e7b3a3d1f7baf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1624059655883759471}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2139763541982577942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893966464129671742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1657c175730b89428524f1993c7bfba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OpenPermit: 0
+  KeyAudioSource: {fileID: 6317185442797840295}
+  KeyUsedAudioClip: {fileID: 8300000, guid: 2f8bf85209e00734bb5001f402a39769, type: 3}
+  NeedKeyAudioClip: {fileID: 8300000, guid: c4acef1e7b9a87f4d92e47e4393239cd, type: 3}
+--- !u!82 &6317185442797840295
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893966464129671742}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4664280544570117911 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6211321326387368056, guid: f998453777ee9044099e7b3a3d1f7baf,
@@ -188,10 +314,10 @@ MonoBehaviour:
   door_open_close_controllers:
   - {fileID: 6505152683124494797}
   door_status: 0
-  NeededKey: 0
+  NeededKey: 1
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 2139763541982577942}
 --- !u!65 &358600262011188028
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -377,10 +503,10 @@ MonoBehaviour:
   door_open_close_controllers:
   - {fileID: 6225896402688906638}
   door_status: 0
-  NeededKey: 0
+  NeededKey: 1
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 2139763541982577942}
 --- !u!65 &2903386207463741882
 BoxCollider:
   m_ObjectHideFlags: 0

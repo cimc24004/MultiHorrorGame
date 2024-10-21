@@ -18,6 +18,7 @@ public class CrossHairEvent : MonoBehaviour
     private CrossHairStatus cross_hair_status;
     public GameObject RaycasstedObj;
 
+    public AudioSource ItemGetSource;
     // Start is called before the first frame update
     void Start()
     {
@@ -58,7 +59,7 @@ public class CrossHairEvent : MonoBehaviour
                 if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item"))
                 {
                     //���̗�L���X�g�ɓ������������A�C�e���Ȃ�΁@�A�C�e�����擾�B
-
+                    ItemGetSource.Play();
 
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
                     item_object.ItemGet(item_belonging_controller);
