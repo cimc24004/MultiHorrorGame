@@ -200,6 +200,10 @@ public class DiscoveryPlayerController : MonoBehaviour
                     follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
                 }
             }
+            else
+            {
+                follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
+            }
         }
         else
         {

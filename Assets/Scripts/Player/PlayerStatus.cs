@@ -122,35 +122,37 @@ public class PlayerStatus : Singleton<PlayerStatus>
     {
         if (Crouch)
         {
-            offsetY = 0;
+            offsetY = StandHeadPos.position.y;
             DOTween.To(
                 () => offsetY,
                 num => offsetY = num,
-                (CrouchHeadPos.position.y - StandHeadPos.position.y),
+                CrouchHeadPos.position.y,
                 0.2f
             ).SetEase(Ease.Linear).OnUpdate(() => {
                 Debug.Log("offsetY: : ???? " + offsetY);
-                cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
+                //cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
+                CameraRoot.transform.position = new Vector3(CameraRoot.transform.position.x, offsetY, CameraRoot.transform.position.z);
             }).OnComplete(() => {
                 Debug.Log("OnCompletedd--------------------------");
                 HeadPos.transform.position = CrouchHeadPos.transform.position;
+                CameraRoot.transform.position = CrouchHeadPos.transform.position;
             });
 
         }
         else
         {
-            offsetY = (CrouchHeadPos.position.y - StandHeadPos.position.y);
 
             DOTween.To(
                 () => offsetY,
                 num => offsetY = num,
-                0,
+                StandHeadPos.position.y,
                 0.2f
             ).SetEase(Ease.Linear).OnUpdate(() => {
                 Debug.Log("offsetY: : ???? " + offsetY);
-                cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
+                CameraRoot.transform.position = new Vector3(CameraRoot.position.x, offsetY, CameraRoot.position.z);
             }).OnComplete(() => {
                 HeadPos.transform.position = StandHeadPos.transform.position;
+                CameraRoot.transform.position = StandHeadPos.transform.position;
             });
         }
     }

@@ -16,6 +16,7 @@ public class PlayerHideObjectAction : MonoBehaviour
     private Collider player_collider;
     private CharacterController player_character_controller;
     private PlayerInput player_input;
+    private PlayerMoveScript player_move_script;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +27,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_character_controller = this.gameObject.GetComponent<CharacterController>();
         charactor_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         player_input = this.gameObject.GetComponent<PlayerInput>();
+        player_move_script = this.gameObject.GetComponent<PlayerMoveScript>();
     }
 
     // Update is called once per frame
@@ -66,8 +68,7 @@ public class PlayerHideObjectAction : MonoBehaviour
     {
         player_character_controller.enabled = false;
         target_hide_object.HideTarget(this.gameObject);
-        player_status.HeadPos.position = player_status.FaceDownHeadPos.position;
-        player_status.CameraRoot.position = player_status.FaceDownHeadPos.position;
+
         //player_rigid.isKinematic = true;
         //player_collider.isTrigger = true;
         //player_character_controller.stepOffset = 0;
@@ -93,19 +94,25 @@ public class PlayerHideObjectAction : MonoBehaviour
     }
     private void PlayerDeformedByHideType()
     {
+        player_move_script.CrouchNow = false;
         //HideType(うつぶせや座るや立つ)の値によってプレイヤーの状態を変える。
-        if(hide_type_target_object == TargetHideObject.HideType.Stand)
+        if (hide_type_target_object == TargetHideObject.HideType.Stand)
         {
             //立つタイプなら
-
-        }else if(hide_type_target_object == TargetHideObject.HideType.Crouch)
+            player_status.HeadPos.position = player_status.StandHeadPos.position;
+            player_status.CameraRoot.position = player_status.StandHeadPos.position;
+        }
+        else if(hide_type_target_object == TargetHideObject.HideType.Crouch)
         {
             //座るタイプなら
-
+            player_status.HeadPos.position = player_status.CrouchHeadPos.position;
+            player_status.CameraRoot.position = player_status.CrouchHeadPos.position;
         }
         else if(hide_type_target_object == TargetHideObject.HideType.FaceDown)
         {
             //うつ伏せタイプならうつ伏せアニメーションを流す。
+            player_status.HeadPos.position = player_status.FaceDownHeadPos.position;
+            player_status.CameraRoot.position = player_status.FaceDownHeadPos.position;
             player_anim.SetBool("FaceDown", true);
         }
     }
