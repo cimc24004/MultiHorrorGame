@@ -148,7 +148,6 @@ public class PlayerStatus : Singleton<PlayerStatus>
                 StandHeadPos.position.y,
                 0.2f
             ).SetEase(Ease.Linear).OnUpdate(() => {
-                Debug.Log("offsetY: : ???? " + offsetY);
                 CameraRoot.transform.position = new Vector3(CameraRoot.position.x, offsetY, CameraRoot.position.z);
             }).OnComplete(() => {
                 HeadPos.transform.position = StandHeadPos.transform.position;

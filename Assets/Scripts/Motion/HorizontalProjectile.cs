@@ -51,7 +51,6 @@ public class HorizontalProjectile : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-        Debug.Log("アイテム投げて落ちたときのオブジェクト??::" + other.gameObject);
         Debug.DrawRay(this.gameObject.transform.position, other.contacts[0].normal * 10, Color.green);
         if (throw_now)
         {

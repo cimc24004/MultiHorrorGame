@@ -22,12 +22,13 @@ public class ItemBoxOpenCloseController : MonoBehaviour
 
     public AudioClip CloseCompletedClip;
     public AudioClip OpenClip;
-
+    private ItemDatabases item_databases;
     // Start is called before the first frame update
     void Start()
     {
         DefaultPosition = this.transform.position;
         item_box_source = this.gameObject.GetComponent<AudioSource>();
+        item_databases = ItemDatabases.instance;
     }
     public void OpenCloseChangeEventByStatus()
     {
@@ -44,6 +45,12 @@ public class ItemBoxOpenCloseController : MonoBehaviour
     [Button]
     public void Open()
     {
+        Debug.Log("item_databases: " + item_databases);
+        GameObject random_created_item = item_databases.RandomItemCreate(this.gameObject.transform);
+        if(random_created_item != null)
+        {
+            random_created_item.transform.SetParent(this.transform);
+        }
         AnimationCompleted = false;
         if (AnimationTween != null)
             AnimationTween.Kill();

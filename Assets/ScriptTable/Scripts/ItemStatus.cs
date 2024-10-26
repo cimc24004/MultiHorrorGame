@@ -22,6 +22,13 @@ public class ItemStatus : SerializedScriptableObject
         Equip, //装備品(懐中電灯とか)
         Key //扉を開けるための鍵
     }
+    public enum ApperanceRatio
+    {
+        EasyToHit,
+        NormalToHit,
+        RareToHit,
+        VeryRareToHit
+    }
     public ItemType item_type;
 
     [Required] public Sprite MenuSprite;
@@ -35,6 +42,8 @@ public class ItemStatus : SerializedScriptableObject
     public bool MakingStopEnemyItem;
     [ShowIf("MakingStopEnemyItem", true)]
     public StatusOfMakingStopEnemy status_of_making_stop_enemy;
+    [Header("ランダムでこのアイテムが引かれる可能性。")]
 
 
+    [Required] public ApperanceRatio apperance_ratio;
 }

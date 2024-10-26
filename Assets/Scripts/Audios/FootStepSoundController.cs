@@ -70,10 +70,8 @@ public class FootStepSoundController : SerializedMonoBehaviour
         //GroundedName‚É‚æ‚Á‚Ä‰¹‚ð•Ï‚¦‚é
         if (audio_random_with_grounded_name.ContainsKey(_GroundedName))
         {
-            Debug.Log("GameObject: " + this.gameObject.transform.parent.gameObject.name + "      FootStepSoundPlay");
             int Count = audio_random_with_grounded_name[_GroundedName][_MoveMode].Count;
             int r = Random.Range(0, Count);
-            Debug.Log("Random R: " + r);
             audio_source.PlayOneShot(audio_random_with_grounded_name[_GroundedName][_MoveMode][r]);
 
         }
