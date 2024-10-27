@@ -31,11 +31,16 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     public AudioClip OpenClip;
     public AudioClip CloseClip;
 
+
     [ShowIf("open_type", OpenType.Rotate)]
     public AudioClip CloseCompletedClip;
     private Collider collider;
     private AudioSource audio_source;
+    [Header("扉を開けたときにアイテムが出現するかどうか(台所の戸など)")]
+    public bool ItemApperanceWhenOpended;
+    private ItemRandomCreateIndividual item_random_create_individual;
 
+    public bool AlreadyOpended;
 
     public enum MoveXYZ
     {
@@ -58,6 +63,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         DefaultRotateVector = this.transform.localEulerAngles;
         audio_source = this.gameObject.GetComponent<AudioSource>();
         collider = this.gameObject.GetComponent<Collider>();
+        item_random_create_individual = this.gameObject.GetComponent<ItemRandomCreateIndividual>();
         if (OpenType.SideOpen == open_type)
         {
             if (move_x_y_z == MoveXYZ.X)
@@ -82,6 +88,13 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [Button]
     public void Open()
     {
+        if (ItemApperanceWhenOpended)
+        {
+            Debug.Log("Open---ItemApperanceWhenOpended");
+            item_random_create_individual.ItemRandomCreateFromIndividual(AlreadyOpended);
+        }
+        AlreadyOpended = true;
+
         if (OpenClip != null && audio_source != null)
         {
             audio_source.PlayOneShot(OpenClip);

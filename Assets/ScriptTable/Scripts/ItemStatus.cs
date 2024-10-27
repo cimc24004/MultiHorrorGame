@@ -33,17 +33,25 @@ public class ItemStatus : SerializedScriptableObject
 
     [Required] public Sprite MenuSprite;
     [Required] public string ItemName;
-     public string ItemDescription;
-    [Header("ワールド上に置くアイテムのオブジェクトのこと。")]
-     public GameObject ItemObjectPrefab;
+    public string ItemDescription;
+    [Header("ランダムで引き出しなどにアイテムを召喚させるか。")]
+    public bool PutInItemBox = true;
+    [HideIf("item_type", ItemType.Equip)]
+    [Header("ワールド上に置くアイテムのPrefabのこと。")]
+    public GameObject ItemPutObjectPrefab;
+    [HideIf("item_type", ItemType.Equip)]
+    [Header("アイテムを使用したときのPrefab(投げたりのときは)")]
+    public GameObject ItemUseObjectPrefab;
+
 
     [ShowIf("item_type", ItemType.CanThrow)]
     [Header("敵を停止させることができるアイテムかどうか")]
     public bool MakingStopEnemyItem;
+
     [ShowIf("MakingStopEnemyItem", true)]
     public StatusOfMakingStopEnemy status_of_making_stop_enemy;
+
+    [ShowIf("PutInItemBox")]
     [Header("ランダムでこのアイテムが引かれる可能性。")]
-
-
     [Required] public ApperanceRatio apperance_ratio;
 }

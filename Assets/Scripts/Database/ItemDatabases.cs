@@ -8,14 +8,14 @@ using System.IO;
 [ExecuteInEditMode]
 public class ItemDatabases : Singleton<ItemDatabases>
 {
-    //コノゲームに出現するアイテムすべて。
-    public List<ItemStatus> AllItems;
+    [Header("ワールドにランダム生成されるアイテムたち")]
+    public List<ItemStatus> ForPutItems;
     
 #if UNITY_EDITOR
     [Button("すべてのアイテムを登録")]
         public void ItemsDBMigrateReset()
         {
-            AllItems.Clear();
+            ForPutItems.Clear();
             //UtenStatys[] all = AssetDatabase.LoadAssetAtPath<Itemstatus>("")
             string[] files = Directory.GetFiles("Assets/ScriptTable/Items");
             foreach(string file in files)
@@ -24,30 +24,23 @@ public class ItemDatabases : Singleton<ItemDatabases>
                 {
                     Debug.Log(file);
                     ItemStatus ItemStatus = (ItemStatus)AssetDatabase.LoadAssetAtPath<ItemStatus>(file) as ItemStatus;
-                    AllItems.Add(ItemStatus);
+                    ForPutItems.Add(ItemStatus);
                 }
                 //AssetDatabase.LoadAssetAtPath(file);
             }
         }
     #endif
-    [Button("RandomItemCreate100回")]
-    public void GO()
-    {
-        for(int i = 0; i < 100; i++)
-        {
-            RandomItemCreate(null);
-        }
-    }
-    [Button]
-    public GameObject RandomItemCreate(Transform ItemCreatePos)
+
+    public GameObject RandomItemCreate(Transform Parent)
     {
         int r = Random.Range(0, 100);
         List<ItemStatus> resulted_items = new List<ItemStatus>();
         
         //ランダムされたrの値でレア度をチェックする。
 
-        foreach(ItemStatus item_status in AllItems)
+        foreach(ItemStatus item_status in ForPutItems)
         {
+            Debug.Log("item_status: " + item_status);
             if(r>=0 && r <= 5)
             {
                 //激レアアイテムはいま存在しないため。エラーがでるかな
@@ -63,6 +56,10 @@ public class ItemDatabases : Singleton<ItemDatabases>
                 {
                     resulted_items.Add(item_status);
                 }
+                else
+                {
+                    Debug.Log(item_status.ItemName + "は存在しませんでした");
+                }
 
             }
             else if(r > 25 && r <= 55)
@@ -70,6 +67,10 @@ public class ItemDatabases : Singleton<ItemDatabases>
                 if (ItemStatus.ApperanceRatio.NormalToHit == item_status.apperance_ratio)
                 {
                     resulted_items.Add(item_status);
+                }
+                else
+                {
+                    Debug.Log(item_status.ItemName + "は存在しませんでした");
                 }
 
 
@@ -80,14 +81,17 @@ public class ItemDatabases : Singleton<ItemDatabases>
                 {
                     resulted_items.Add(item_status);
                 }
+                else
+                {
+                    Debug.Log(item_status.ItemName + "は存在しませんでした");
+                }
 
             }
         }
-
         int result_r = Random.Range(0,resulted_items.Count);
         ItemStatus decided_result_item = resulted_items[result_r];
         Debug.Log($"アイテムは....{decided_result_item.apperance_ratio.ToString()}の{decided_result_item.ItemName}が当たりました！");
-        //return null;
-        return Instantiate(decided_result_item.ItemObjectPrefab, ItemCreatePos.position, Quaternion.identity);
+        return Instantiate(decided_result_item.ItemPutObjectPrefab,Parent.transform.position,Quaternion.identity, Parent.transform);
     }
+
 }

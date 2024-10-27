@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using DG.Tweening;
-public class ItemBoxOpenCloseController : MonoBehaviour
+public class ItemBoxOpenCloseController : SerializedMonoBehaviour
 {
     //アイテムが入っているボックス用の開け閉めController
     //引き出しや戸など
@@ -13,6 +13,7 @@ public class ItemBoxOpenCloseController : MonoBehaviour
     private Vector3 DefaultPosition;
     private Tween AnimationTween;
     private AudioSource item_box_source;
+    public bool AlreadyOpened;
     public enum OpenCloseStatus
     {
         Close,
@@ -22,13 +23,14 @@ public class ItemBoxOpenCloseController : MonoBehaviour
 
     public AudioClip CloseCompletedClip;
     public AudioClip OpenClip;
-    private ItemDatabases item_databases;
+    private ItemRandomCreateIndividual item_random_create_individual;
+
     // Start is called before the first frame update
     void Start()
     {
         DefaultPosition = this.transform.position;
         item_box_source = this.gameObject.GetComponent<AudioSource>();
-        item_databases = ItemDatabases.instance;
+        item_random_create_individual = this.gameObject.GetComponent<ItemRandomCreateIndividual>();
     }
     public void OpenCloseChangeEventByStatus()
     {
@@ -45,13 +47,13 @@ public class ItemBoxOpenCloseController : MonoBehaviour
     [Button]
     public void Open()
     {
-        Debug.Log("item_databases: " + item_databases);
-        GameObject random_created_item = item_databases.RandomItemCreate(this.gameObject.transform);
-        if(random_created_item != null)
-        {
-            random_created_item.transform.SetParent(this.transform);
-        }
+        item_random_create_individual.ItemRandomCreateFromIndividual(AlreadyOpened);
+
+        AlreadyOpened = true;
+
+
         AnimationCompleted = false;
+
         if (AnimationTween != null)
             AnimationTween.Kill();
         AnimationTween = this.transform.DOMove(OpenPos.position, duration).SetLink(this.gameObject).SetEase(Ease.Linear).OnComplete(() => {

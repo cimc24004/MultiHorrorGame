@@ -58,7 +58,6 @@ public class PlayerStatus : Singleton<PlayerStatus>
         if(player_move_state == PlayerMoveState.Crouch)
         {
             Crouch = true;
-            Debug.Log("HeadPosChangeCrouch");
         }
         else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
         {
@@ -129,11 +128,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
                 CrouchHeadPos.position.y,
                 0.2f
             ).SetEase(Ease.Linear).OnUpdate(() => {
-                Debug.Log("offsetY: : ???? " + offsetY);
                 //cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
                 CameraRoot.transform.position = new Vector3(CameraRoot.transform.position.x, offsetY, CameraRoot.transform.position.z);
             }).OnComplete(() => {
-                Debug.Log("OnCompletedd--------------------------");
                 HeadPos.transform.position = CrouchHeadPos.transform.position;
                 CameraRoot.transform.position = CrouchHeadPos.transform.position;
             });

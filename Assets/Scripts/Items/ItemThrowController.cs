@@ -8,7 +8,6 @@ public class ItemThrowController : MonoBehaviour
     //なにか物を投げる為のスクリプト。 
 
     //↓仮に投げるアイテムをセットしてるだけ。
-    public GameObject itemPrefab;
     public GameObject camera;
     public PlayerInput player_input;
     public Transform StartFiringPos;

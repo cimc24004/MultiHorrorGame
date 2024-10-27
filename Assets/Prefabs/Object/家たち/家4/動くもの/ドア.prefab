@@ -168,6 +168,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9ee655d456919c546b3f3b58ffd9166a, type: 3}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 0
 --- !u!114 &4052961665153226775
 MonoBehaviour:
@@ -220,7 +222,7 @@ AudioSource:
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -253,7 +255,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
