@@ -51,7 +51,6 @@ public class TheDoorController : SerializedMonoBehaviour
         //空いている状態なら閉める。　開いている状態なら開ける。
 
         //鍵が必要なドアならまず鍵をこのドアに使ったかどうかを判定。 使ってなかったらreturn; 開けないよ。
-        Debug.Log("DoorOPenClosedChangeByStatus");
         if (NeededKey)
         {
 
@@ -72,7 +71,6 @@ public class TheDoorController : SerializedMonoBehaviour
 
         //開けてる閉めてるアニメーション再生中ならこのアクションを実行しない。
         if (!OpenedClosedCompleted) return;
-        Debug.Log("OpenedClosedCompleted");
         if (door_status == DoorStatus.Opened)
         {
             DoorsClose();

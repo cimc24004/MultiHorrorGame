@@ -34,6 +34,7 @@ public class HorizontalProjectile : MonoBehaviour
             //地面に到着したときはオブジェクトが滑らないように静止したいのでisKinematic=trueにする。
             rigid.isKinematic = true;
         }
+
     }
     private void FixedUpdate()
     {
@@ -41,8 +42,10 @@ public class HorizontalProjectile : MonoBehaviour
     public void Throw(float _FirstSpeed, Vector3 _forward)
     {
         //物を水平投射で投げる関数。 ItemThrowControllerなどから実行する。
-
+        this.gameObject.isStatic = false;
+        Debug.Log("throwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
         rigid = this.gameObject.GetComponent<Rigidbody>();
+        rigid.isKinematic = false;
         this.FirstSpeed = _FirstSpeed;
 
         //初速度と_forward設定して最初だけ速度つけてあげれば水平投射になる.
@@ -51,7 +54,6 @@ public class HorizontalProjectile : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-        Debug.Log("アイテム投げて落ちたときのオブジェクト??::" + other.gameObject);
         Debug.DrawRay(this.gameObject.transform.position, other.contacts[0].normal * 10, Color.green);
         if (throw_now)
         {

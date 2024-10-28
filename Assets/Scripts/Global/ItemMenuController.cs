@@ -30,6 +30,12 @@ public class ItemMenuController : SerializedMonoBehaviour
     public float WaitHideTimeNow;
     public bool ItemMenuShowUpNow;
     public bool ItemMenuShowUpCommand;
+
+    public bool HaveLight = true;
+    [ShowIf("HaveLight", true)]
+    [Header("懐中電灯(?)オブジェクトをセット")]
+    public GameObject LightObject;
+    private bool LightSwitchMode = false;
     private void Start()
     {
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
@@ -41,14 +47,35 @@ public class ItemMenuController : SerializedMonoBehaviour
         //ホイールの値を取得する。
         scroll_value_float = player_input.currentActionMap["ItemSelectWheel"].ReadValue<float>();
 
+        //懐中電灯を持っていたら
+        if (HaveLight)
+        {
+            if (player_input.currentActionMap["LightSwitchAction"].triggered)
+            {
+                Debug.Log("LightSwitchActionTriggered!!!!");
+                if (!LightSwitchMode)
+                {
+                    //ライトをつける。
+                    Debug.Log("!LightSwitchMode");
+                    LightObject.SetActive(true);
+                    LightSwitchMode = true;
+                }
+                else
+                {
+                    //ライトをけす。
+                    Debug.Log("LightSwitchMode");
 
+                    LightObject.SetActive(false);
+                    LightSwitchMode = false;
+                }
+            }
+        }
 
         //ホイールの値を1,-1,0で返すようにする為のやつ。
         if (scroll_value_float > 0) scroll_value = 1;
         else if (scroll_value_float == 0) scroll_value = 0;
         else scroll_value = -1;
         
-
         
         //アイテムを1個以上持っていた場合は？
         if (ItemGroup.transform.childCount > 0)
@@ -76,8 +103,8 @@ public class ItemMenuController : SerializedMonoBehaviour
                     NowItemSelectIndexX = ItemGroup.transform.childCount - 1;
                 }
             }
-            //InputSystem.
 
+ 
             if (player_input.currentActionMap["ItemUse"].triggered)
             {
                 //アイテム使用ボタンを押したらアイテムを使用する関数を実行。

@@ -13,6 +13,6 @@ public class LookAtPlayer : MonoBehaviour
     private void LateUpdate()
     {
         //DotWeenで少しフェードしてLookAtする
-        this.gameObject.transform.DODynamicLookAt(player_status.HeadPos.transform.position, 0.3f);
+        this.gameObject.transform.DODynamicLookAt(player_status.HeadPos.transform.position, 0.3f).SetLink(this.gameObject);
     }
 }
