@@ -21,7 +21,7 @@ public class OpenPermitByKeyController : MonoBehaviour
     }
     public void KeyUse()
     {
-        noticed_ui_controller.Notice("Œ®‚ªŠJ‚¢‚½", NoticedUIController.NoticeStatus.UsedKey);
+        noticed_ui_controller.Notice("Œ®‚ªŠJ‚¢‚½");
         this.OpenPermit = true;
 
         KeyAudioSource.PlayOneShot(KeyUsedAudioClip);
@@ -29,7 +29,7 @@ public class OpenPermitByKeyController : MonoBehaviour
 
     public void NeedKeyForPlayer()
     {
-        noticed_ui_controller.Notice("Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é", NoticedUIController.NoticeStatus.NeedKey);
+        noticed_ui_controller.Notice("Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é");
 
         KeyAudioSource.PlayOneShot(NeedKeyAudioClip);
     }

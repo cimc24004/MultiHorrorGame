@@ -11,6 +11,8 @@ public class ItemDatabases : Singleton<ItemDatabases>
     [Header("ワールドにランダム生成されるアイテムたち")]
     public List<ItemStatus> ForPutItems;
     
+    [Header("桜の木の下に納めるアイテムたち")]
+    public ItemStatus ForDeliverItem;
 #if UNITY_EDITOR
     [Button("すべてのアイテムを登録")]
         public void ItemsDBMigrateReset()

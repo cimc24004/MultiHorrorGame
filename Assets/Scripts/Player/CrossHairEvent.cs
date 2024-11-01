@@ -19,6 +19,10 @@ public class CrossHairEvent : MonoBehaviour
     public GameObject RaycasstedObj;
 
     public AudioSource ItemGetSource;
+
+
+    private PrayController pray_controller;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +43,7 @@ public class CrossHairEvent : MonoBehaviour
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
                 raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer" || 
-                raycast_hit.collider.gameObject.tag == "Light")
+                raycast_hit.collider.gameObject.tag == "Light" || raycast_hit.collider.gameObject.tag == "Pray" || raycast_hit.collider.gameObject.tag == "DeliverPlace")
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = true;
@@ -53,12 +57,9 @@ public class CrossHairEvent : MonoBehaviour
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {
 
-                //���C�L���X�g���������ɓ��������ꍇ�B
-                //���ɓ������Ă��̎��ɃN���b�N����Ƃ��낢��C�x���g�����s�B
-                //�A�C�e������肷��B �����J����B ���ɉB���Ȃǂ̃C�x���g�������B
+
                 if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item"))
                 {
-                    //���̗�L���X�g�ɓ������������A�C�e���Ȃ�΁@�A�C�e�����擾�B
                     ItemGetSource.Play();
 
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
@@ -66,9 +67,14 @@ public class CrossHairEvent : MonoBehaviour
                     Destroy(item_object.gameObject);
                     return;
                 }
+                if(raycast_hit.collider.gameObject.tag == "DeliverPlace")
+                {
+                    DeliverMemoryPlace deliver_memory_place = raycast_hit.collider.gameObject.GetComponent<DeliverMemoryPlace>();
+                    deliver_memory_place.Deliver(item_belonging_controller);
+                    return;
+                }
                 if (raycast_hit.collider.gameObject.tag == "HideActionObject")
                 {
-                    //�B���I�u�W�F�N�g�Ƀ��C�L���X�g���������Ă��� �B���A�N�V�������s�B
 
                     player_hide_object_action.HideAction = true;
                     player_hide_object_action.TargetHideObjectSet(raycast_hit.collider.gameObject);
@@ -77,7 +83,6 @@ public class CrossHairEvent : MonoBehaviour
                 }
                 if (raycast_hit.collider.gameObject.tag == "Door")
                 {
-                    //�h�A���N���b�N������h�A���J����B
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     TheDoorController the_door_controller = door_open_close_controlelr.the_door_controller;
@@ -96,9 +101,26 @@ public class CrossHairEvent : MonoBehaviour
                 {
                     TurningOnOffLightController turn_on_off_by_status = raycast_hit.collider.gameObject.GetComponent<TurningOnOffLightController>();
                     turn_on_off_by_status.TurnOnOffByStatus();
+                    return;
+                }
+                if(raycast_hit.collider.gameObject.tag == "Pray")
+                {
+                    pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
                 }
             }
 
+            if (player_input.currentActionMap["RaycastAction"].IsPressed())
+            {
+                //こっちは長押し用のイベント
+                if(raycast_hit.collider.gameObject.tag == "Pray")
+                {
+                    Debug.Log("Pray------------COl");
+                    if (pray_controller != null)
+                    {
+                        pray_controller.Pray();
+                    }
+                }
+            }
         }
         else
         {

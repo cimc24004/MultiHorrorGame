@@ -27,7 +27,8 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     public Transform ItemGroup;
 
     public CrossHairEvent cross_hair_event;
-    private ItemMenuController item_menu_controller;
+    [HideInInspector]
+    public ItemMenuController item_menu_controller;
     private ItemThrowController item_throw_controller;
     private PlayerStatus player_status;
     private NoticedUIController noticed_ui_controller;
@@ -152,7 +153,12 @@ public class ItemBelongingsController : SerializedMonoBehaviour
                 }
             }
 
+        }else if(item_status.item_type == ItemStatus.ItemType.Event)
+        {
+            //思い出の品を納品したら
+            ItemUse(BelongingCountNow, item_status);
         }
+
 
     }
     public bool ExistsItems()
@@ -179,6 +185,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             return false;
         }
     }
+
     private void  ItemUse(int BelongingCountNow, ItemStatus item_status)
     {
         BelongingCountNow -= 1;

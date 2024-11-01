@@ -152,4 +152,5 @@ public class PlayerStatus : Singleton<PlayerStatus>
             });
         }
     }
+
 }

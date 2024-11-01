@@ -20,7 +20,8 @@ public class ItemStatus : SerializedScriptableObject
         Consumable, //消耗品(カギとか)
         CanThrow, //投げられるもん
         Equip, //装備品(懐中電灯とか)
-        Key //扉を開けるための鍵
+        Key, //扉を開けるための鍵
+        Event //イベント用 桜の木の下に納めるやつ。
     }
     public enum ApperanceRatio
     {

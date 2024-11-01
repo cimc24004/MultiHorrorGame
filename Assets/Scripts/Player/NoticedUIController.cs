@@ -7,11 +7,7 @@ using TMPro;
 using Sirenix.OdinInspector;
 public class NoticedUIController : SerializedMonoBehaviour
 {
-    public enum NoticeStatus
-    {
-        NeedKey,
-        UsedKey
-    }
+
     public TextMeshProUGUI m_notice_text_ui;
     public CanvasGroup NoticeUIs;
 
@@ -40,7 +36,7 @@ public class NoticedUIController : SerializedMonoBehaviour
 
     }
     [Button]
-    public void Notice(string _sentence, NoticeStatus _notice_status, float _display_time = 1)
+    public void Notice(string _sentence,float _display_time = 1)
     {
         notice_uis_tween.Kill();
         NoticeUIs.alpha = 1;
@@ -48,13 +44,7 @@ public class NoticedUIController : SerializedMonoBehaviour
         notice_now = true;
         m_notice_text_ui.text = _sentence;
         notice_time = _display_time;
-        if(_notice_status == NoticeStatus.NeedKey)
-        {
 
-        }else if(_notice_status == NoticeStatus.UsedKey)
-        {
-
-        }
     }
     public void NoticeReset()
     {
