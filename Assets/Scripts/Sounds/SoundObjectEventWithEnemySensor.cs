@@ -32,7 +32,7 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
         if (enemy_sound_sensor_mode)
         {
             //‚ ‚é’ö“xŽžŠÔ‚ª‚½‚Á‚½‚ç‰¹º’âŽ~B
-            SoundPlayingTimeNow += time_manager.deltaTime;
+            SoundPlayingTimeNow += Time.deltaTime;
 
             if(SoundPlayingTimeNow > SoundPlayingTime)
             {

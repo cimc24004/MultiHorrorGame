@@ -58,7 +58,7 @@ public class EnemySoundSensor : MonoBehaviour
     {
         if (follow_object_nav.ArrivedTarget && MoveToSoundPlaceNow)
         {
-            ArriveSoundPlaceWaitTimeToReturnNow += time_manager.deltaTime;
+            ArriveSoundPlaceWaitTimeToReturnNow += Time.deltaTime;
         }
     }
     // Update is called once per frame

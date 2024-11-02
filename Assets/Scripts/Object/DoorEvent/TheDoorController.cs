@@ -36,7 +36,7 @@ public class TheDoorController : SerializedMonoBehaviour
     {
         if (OpenedClosedCompletedAnimation)
         {
-            CompletedWaitTimeNow += time_manager.deltaTime;
+            CompletedWaitTimeNow += Time.deltaTime;
             if(CompletedWaitTimeNow > 0.3f)
             {
                 OpenedClosedCompleted = true;

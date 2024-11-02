@@ -42,7 +42,7 @@ public class CrossHairEvent : MonoBehaviour
 
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
-                raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer" || 
+                raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer" ||
                 raycast_hit.collider.gameObject.tag == "Light" || raycast_hit.collider.gameObject.tag == "Pray" || raycast_hit.collider.gameObject.tag == "DeliverPlace")
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
@@ -53,6 +53,11 @@ public class CrossHairEvent : MonoBehaviour
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             }
 
+            if (raycast_hit.collider.gameObject.tag == "Pray")
+            {
+                pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
+                pray_controller.OnTouchOn();
+            }
 
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {
@@ -103,10 +108,7 @@ public class CrossHairEvent : MonoBehaviour
                     turn_on_off_by_status.TurnOnOffByStatus();
                     return;
                 }
-                if(raycast_hit.collider.gameObject.tag == "Pray")
-                {
-                    pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
-                }
+
             }
 
             if (player_input.currentActionMap["RaycastAction"].IsPressed())

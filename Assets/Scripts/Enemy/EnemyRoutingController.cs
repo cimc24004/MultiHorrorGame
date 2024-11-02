@@ -96,7 +96,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
                 //Debug.Log("!ArrivedNextRouteMode && ArrivedTarget=true");
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //いま向かっているルートに到着したら少し待ってから次のルートにいく。
-                WaitToMoveNextPointTimeNow += time_manager.deltaTime;
+                WaitToMoveNextPointTimeNow += Time.deltaTime;
                 if(WaitToMoveNextPointTimeNow > WaitToMoveNextPointTime)
                 {
                     ArrivedNextRouteMode = true;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using DG.Tweening;
+using UnityEngine.UI;
 public class PlayerStatus : Singleton<PlayerStatus>
 {
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
@@ -16,6 +17,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public PlayerHideObjectAction player_hide_object_action;
 
     public NoticedUIController noticed_ui_controller;
+    //円ゲージUI画像
+    public GameObject GageCanvas;
+    public Image GageImage;
     //死んだかどうか
     public bool Dead;
     //プレイヤーの移動状態 (走る 歩く しゃがむ)

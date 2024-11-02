@@ -35,7 +35,7 @@ public class EnemyStatus : MonoBehaviour
     {
         if (StopEnemyByPlayerNow)
         {
-            StopEnemyByPlayerTimeNow -= time_manager.deltaTime;
+            StopEnemyByPlayerTimeNow -= Time.deltaTime;
             Debug.Log("StopEnemyByPlayerTimeNow: " + StopEnemyByPlayerTimeNow);
             if(StopEnemyByPlayerTimeNow <= 0)
             {

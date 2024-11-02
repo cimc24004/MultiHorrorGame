@@ -108,7 +108,7 @@ public class DiscoveryPlayerController : MonoBehaviour
 
 
             //時間を計り、ある程度の時間がたったら追いかけるのをやめる
-            SightOutPlayerTimeNow += time_manager.deltaTime;
+            SightOutPlayerTimeNow += Time.deltaTime;
             if (SightOutPlayerTimeNow > SightOutPlayerTime)
             {
                 Debug.Log("時間経過しましたよ");
