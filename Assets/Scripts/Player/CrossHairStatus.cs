@@ -21,6 +21,7 @@ public class CrossHairStatus : SerializedMonoBehaviour
 
     //CrossHairEventの　ドアやアイテムなどにレイキャストが当たっているのかどうか
     public bool RaycastHitedExistsByCrossHairEvent;
+    public string HitedTag;
     private PlayerStatus player_status;
     public EventColHitedStatus event_col_hited_status;
     // Start is called before the first frame update

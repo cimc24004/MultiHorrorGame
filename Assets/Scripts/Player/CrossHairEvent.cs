@@ -39,13 +39,13 @@ public class CrossHairEvent : MonoBehaviour
         if (Physics.Raycast(ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
         {
             RaycasstedObj = raycast_hit.collider.gameObject;
-
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
                 raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer" ||
                 raycast_hit.collider.gameObject.tag == "Light" || raycast_hit.collider.gameObject.tag == "Pray" || raycast_hit.collider.gameObject.tag == "DeliverPlace")
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
+                cross_hair_status.HitedTag = RaycasstedObj.tag;
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = true;
             }
             else

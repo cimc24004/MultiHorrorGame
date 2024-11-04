@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class HouseDirector : MonoBehaviour
+using Sirenix.OdinInspector;
+public class HouseDirector : SerializedMonoBehaviour
 {
+    public GameObject Butsudan;
     // Start is called before the first frame update
     void Start()
     {
