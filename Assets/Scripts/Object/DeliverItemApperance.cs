@@ -1,12 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
+using Sirenix.OdinInspector;
 public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPlace>
 {
     public Transform DeliverItemApperancePlace;
+
+    [Header("出現させる敵")]
+    public GameObject ApperanceEnemy;
+    public Transform ApperanceEnemyPos;
+
+    [Header("アイテムを取得したときのイベント")]
+    public UnityEvent2 ItemGetedEvent;
+
+    [Header("どちらでもいいのでドアをセット")]
+    public DoorOpenCloseController door_open_close_controller;
     private ItemDatabases item_databases;
     private AudioSource audio_source;
+
+
     [Header("必要な仏壇に祈る回数")]
     public int NeedPrayCount = 1;
 
@@ -25,6 +38,7 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
     {
         
     }
+    [Button]
     public void OnPrayCompleted()
     {
         //どこかの仏壇で祈りがコンプリートされたとき。
@@ -40,8 +54,21 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
 
         //int r = Random.Range(0, item_databases.ForDeliverItem.Count);
 
-        Instantiate(item_databases.ForDeliverItem.ItemPutObjectPrefab, DeliverItemApperancePlace.transform.position, Quaternion.identity);
-        Debug.Log("a-------------------------------------");
+        GameObject item = Instantiate(item_databases.ForDeliverItem.ItemPutObjectPrefab, DeliverItemApperancePlace.transform.position, Quaternion.identity);
+        ItemObject item_object_script = item.GetComponent<ItemObject>();
+        GameObject enemy = null;
+        EnemySoundSensor enemy_sound_sensor = null;
+        //アイテムを取得したときのイベント。
+        item_object_script.ItemGetAddEvent.AddListener(() => {
+            enemy = Instantiate(ApperanceEnemy, ApperanceEnemyPos.position, Quaternion.LookRotation(-transform.right));
+            enemy_sound_sensor = enemy.GetComponent<EnemySoundSensor>();
+            enemy_sound_sensor.enabled = false;
+            ItemGetedEvent.Invoke();
+        });
+        door_open_close_controller.OpenCompleted.AddListener(() => { 
+            enemy_sound_sensor.enabled = true;
+            
+        });
         audio_source.Play();
     }
 }

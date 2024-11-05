@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ItemObject : MonoBehaviour
 {
+    
     //ワールド上に置かれているアイテムにつけておくクラス。
     public ItemStatus item_status;
+    public UnityEvent ItemGetAddEvent;
     private Rigidbody rigid;
     private void Start()
     {
@@ -14,5 +17,6 @@ public class ItemObject : MonoBehaviour
     public void ItemGet(ItemBelongingsController item_belonging_controller)
     {
         item_belonging_controller.ItemAddToBelonging(item_status);
+        ItemGetAddEvent.Invoke();
     }
 }

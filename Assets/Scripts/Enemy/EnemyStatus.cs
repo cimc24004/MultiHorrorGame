@@ -70,7 +70,7 @@ public class EnemyStatus : MonoBehaviour
         {
             anim.SetFloat("MoveY", 0);
         }
-        if (follow_object_by_nav.ArrivedTarget)
+        if (follow_object_by_nav.ArrivedTarget && enemy_move_state != EnemyMoveState.Walk)
         {
             enemy_move_state = EnemyMoveState.Stop;
         }
