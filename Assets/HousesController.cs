@@ -27,7 +27,10 @@ public class HousesController : SerializedMonoBehaviour
         List<int> histroy_r = new List<int>();
         foreach(HouseDirector house_director in house_directors)
         {
-            house_director.Butsudan.gameObject.SetActive(false);
+            foreach(GameObject Butsudan in house_director.Butsudans)
+            {
+                Butsudan.gameObject.SetActive(false);
+            }
         }
         yield return null;
 
@@ -38,14 +41,16 @@ public class HousesController : SerializedMonoBehaviour
         {
             if (i >= pray_to_deliver_item_appear_place.NeedPrayCount) break;
 
-            int r = Random.Range(0, pray_to_deliver_item_appear_place.NeedPrayCount);
-            GameObject Butsudan = house_directors[r].Butsudan;
-            if (!Butsudan.activeSelf)
+            int r = Random.Range(0, house_directors.Count);
+            //GameObject Butsudan = house_directors[r].Butsudan;
+            List<GameObject> Butsudans = house_directors[r].Butsudans;
+            int r_2 = Random.Range(0, house_directors[r].Butsudans.Count);
+            if (!Butsudans[r_2].activeSelf && !house_directors[r].ButsudanExists)
             {
-                house_directors[r].Butsudan.SetActive(true);
+                house_directors[r].ButsudanExists = true;
+                Butsudans[r_2].SetActive(true);
                 i++;
             }
-
         }
 
     }

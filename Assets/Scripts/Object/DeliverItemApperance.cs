@@ -58,16 +58,19 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
         ItemObject item_object_script = item.GetComponent<ItemObject>();
         GameObject enemy = null;
         EnemySoundSensor enemy_sound_sensor = null;
+        DiscoveryPlayerController discovery_player_controller = null;
         //アイテムを取得したときのイベント。
         item_object_script.ItemGetAddEvent.AddListener(() => {
             enemy = Instantiate(ApperanceEnemy, ApperanceEnemyPos.position, Quaternion.LookRotation(-transform.right));
             enemy_sound_sensor = enemy.GetComponent<EnemySoundSensor>();
+            discovery_player_controller = enemy.GetComponent<DiscoveryPlayerController>();
             enemy_sound_sensor.enabled = false;
+            discovery_player_controller.enabled = false;
             ItemGetedEvent.Invoke();
         });
         door_open_close_controller.OpenCompleted.AddListener(() => { 
             enemy_sound_sensor.enabled = true;
-            
+            discovery_player_controller.enabled = true;
         });
         audio_source.Play();
     }

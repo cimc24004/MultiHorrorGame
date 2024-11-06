@@ -45,7 +45,7 @@ public class PrayController : MonoBehaviour
             if (cross_hair_status.RaycastHitedExistsByCrossHairEvent)
             {
                 //G‚ê‚Ä‚¢‚½‚ç
-                noticed_ui_controller.Notice("‚¨‹F‚è‚·‚éB", 0);
+                noticed_ui_controller.Notice("‚¨‹F‚è‚·‚éB", 1);
                 GageCanvas.SetActive(true);
                 once = false;
             }
