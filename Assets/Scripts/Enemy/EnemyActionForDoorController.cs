@@ -15,20 +15,25 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     private FollowObjectByNav follow_object_by_nav;
     private EnemyStatus enemy_status;
     private NavMeshAgent nav_mesh_agent;
+    private Animator anim;
     // Start is called before the first frame update
     void Start()
     {
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
+        anim = this.gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        anim.SetBool("DoorAttack", false);
+
         //レイキャストを正面から当てて、ドアに当たったら開けるようにする。
-        if(Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, 0.3f, layer_mask))
+        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, 0.3f, layer_mask))
         {
+
             if (raycast_hit.collider.gameObject.tag == "Door")
             {
                 Debug.Log("DoorHit: " + raycast_hit.collider.gameObject);
@@ -39,10 +44,13 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 raycast_hit_obj = raycast_hit.collider.gameObject;
 
                 the_door_controller = door_open_close_controller.the_door_controller;
-                if (the_door_controller.OpenedClosedCompleted)
+                if (the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey)
                 {
                     //ドアの開け閉めアニメーションが終わっていた場合だけ開け閉めできるようにするよ。
                     the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                }else if(the_door_controller.NeededKey || the_door_controller.LockedByPlayer)
+                {
+                    anim.SetBool("DoorAttack", true);
                 }
 
             }

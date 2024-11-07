@@ -19,12 +19,19 @@ public class TheDoorController : SerializedMonoBehaviour
     [Header("キーが必要なドアかどうか。")]
     public bool NeededKey;
 
+    [Header("プレイヤーにロックされたドアか？")]
+    public bool LockedByPlayer;
     //[HideInInspector]
     public bool OpenedClosedCompletedAnimation = true;
     public bool OpenedClosedCompleted = true;
     private PlayerStatus player_status;
     private TimeManager time_manager;
     private float CompletedWaitTimeNow;
+
+    //扉が壊れる条件(3回で壊れる。)
+    private float need_break_count = 3.0f;
+    private float break_count_now = 0;
+
     [ShowIf("NeededKey")]
     [Required] public OpenPermitByKeyController open_permit_by_key_controller;
     private void Start()
@@ -61,13 +68,11 @@ public class TheDoorController : SerializedMonoBehaviour
                 {
                     open_permit_by_key_controller.NeedKeyForPlayer();
                 }
-                else if(EventActionMan.tag == "Enemy")
-                {
-                    //ドアを破壊するとかを作ればいい。
-                }
+
                 return;
             }
         }
+
 
         //開けてる閉めてるアニメーション再生中ならこのアクションを実行しない。
         if (!OpenedClosedCompleted) return;
@@ -83,6 +88,17 @@ public class TheDoorController : SerializedMonoBehaviour
     public bool DoorOpenPermitCheck()
     {
         return open_permit_by_key_controller.OpenPermit;
+    }
+    public void DoorAttacked()
+    {
+        Debug.Log("扉を攻撃しています: " + break_count_now);
+        break_count_now += 1;
+        if(need_break_count <= break_count_now)
+        {
+            //扉が完全に壊れました。
+            Debug.Log("扉が完全に壊れた");
+            this.gameObject.SetActive(false);
+        }
     }
     private void DoorsOpen()
     {
@@ -104,4 +120,5 @@ public class TheDoorController : SerializedMonoBehaviour
         }
         door_status = DoorStatus.Closed;
     }
+
 }
