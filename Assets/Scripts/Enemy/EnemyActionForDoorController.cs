@@ -61,6 +61,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
                     anim.SetBool("DoorAttack", true);
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 }
 
             }

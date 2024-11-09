@@ -103,6 +103,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4677380569883464508}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e1471f7d674adfc4ab0eda98d010db37,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3847029040725474167}
   m_SourcePrefab: {fileID: 100100000, guid: e1471f7d674adfc4ab0eda98d010db37, type: 3}
 --- !u!1 &8052211488537097134 stripped
 GameObject:
@@ -159,6 +163,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 3847029040725474167}
 --- !u!114 &3663219931690413952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,6 +201,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9ee655d456919c546b3f3b58ffd9166a, type: 3}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 0
 --- !u!82 &4677380569883464508
 AudioSource:
@@ -293,3 +300,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3847029040725474167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8052211488537097134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0
+  Doors:
+  - {fileID: 8052211488537097134}
