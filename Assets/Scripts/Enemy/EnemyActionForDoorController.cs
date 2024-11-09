@@ -12,24 +12,33 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     public RaycastHit raycast_hit;
     public GameObject raycast_hit_obj;
     public LayerMask layer_mask;
+
+
+    public AudioSource DoorAttackSource;
+    public AudioClip DoorAttackClip;
+    public AudioClip DoorBrokenClip;
+
     private FollowObjectByNav follow_object_by_nav;
     private EnemyStatus enemy_status;
     private NavMeshAgent nav_mesh_agent;
     private Animator anim;
+    private DiscoveryPlayerController discovery_player_controller;
+    private EnemySoundSensor enemy_sound_sensor;
     // Start is called before the first frame update
     void Start()
     {
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
+        discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         anim = this.gameObject.GetComponent<Animator>();
+        enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
     }
 
     // Update is called once per frame
     void Update()
     {
         anim.SetBool("DoorAttack", false);
-
         //レイキャストを正面から当てて、ドアに当たったら開けるようにする。
         if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, 0.3f, layer_mask))
         {
@@ -44,11 +53,12 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 raycast_hit_obj = raycast_hit.collider.gameObject;
 
                 the_door_controller = door_open_close_controller.the_door_controller;
-                if (the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey)
+                if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
                 {
                     //ドアの開け閉めアニメーションが終わっていた場合だけ開け閉めできるようにするよ。
                     the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
-                }else if(the_door_controller.NeededKey || the_door_controller.LockedByPlayer)
+                }
+                if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
                     anim.SetBool("DoorAttack", true);
                 }
@@ -65,5 +75,17 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         }
 
     }
-
+    public void AttackToDoor(TheDoorController the_door_controller)
+    {
+        DoorAttackedController door_attacked_controller = the_door_controller.door_attacked_controller;
+        bool broken = the_door_controller.door_attacked_controller.DoorAttacked();
+        if (broken)
+        {
+            DoorAttackSource.PlayOneShot(DoorBrokenClip);
+        }
+        else
+        {
+            DoorAttackSource.PlayOneShot(DoorAttackClip);
+        }
+    }
 }

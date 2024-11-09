@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+
 public class TheDoorController : SerializedMonoBehaviour
 {
+
     //子要素に存在するドアたちをListとして登録し、一気に開ける。　一気に閉めるとかを実装する為のやつ。
     //一つだけでいいなら一つだけでも入れる。
     [Header("ドアごとについているDoorOpenCloseControllerスクリプトをセット。")]
@@ -19,21 +21,20 @@ public class TheDoorController : SerializedMonoBehaviour
     [Header("キーが必要なドアかどうか。")]
     public bool NeededKey;
 
-    [Header("プレイヤーにロックされたドアか？")]
-    public bool LockedByPlayer;
-    //[HideInInspector]
+
+    //プレイヤーが扉をロックする
+
+
     public bool OpenedClosedCompletedAnimation = true;
     public bool OpenedClosedCompleted = true;
     private PlayerStatus player_status;
     private TimeManager time_manager;
     private float CompletedWaitTimeNow;
 
-    //扉が壊れる条件(3回で壊れる。)
-    private float need_break_count = 3.0f;
-    private float break_count_now = 0;
-
     [ShowIf("NeededKey")]
     [Required] public OpenPermitByKeyController open_permit_by_key_controller;
+
+    public DoorAttackedController door_attacked_controller;
     private void Start()
     {
         player_status = PlayerStatus.instance;
@@ -50,6 +51,9 @@ public class TheDoorController : SerializedMonoBehaviour
                 CompletedWaitTimeNow = 0;
             }
         }
+
+
+
     }
     public void DoorOpenClosedChangeByStatus(GameObject EventActionMan)
     {
@@ -73,6 +77,18 @@ public class TheDoorController : SerializedMonoBehaviour
             }
         }
 
+        if(EventActionMan.tag == "Enemy")
+        {
+            //敵がプレイヤーを発見していたら、閉められた扉は壊して開けるようにする。
+            DiscoveryPlayerController discovery_player_controller = EventActionMan.GetComponent<DiscoveryPlayerController>();
+            EnemySoundSensor enemy_sound_sensor = EventActionMan.GetComponent<EnemySoundSensor>();
+            if (discovery_player_controller.DiscoveryPlayerNow)
+            {
+                return;
+            }
+
+        }
+
 
         //開けてる閉めてるアニメーション再生中ならこのアクションを実行しない。
         if (!OpenedClosedCompleted) return;
@@ -89,17 +105,8 @@ public class TheDoorController : SerializedMonoBehaviour
     {
         return open_permit_by_key_controller.OpenPermit;
     }
-    public void DoorAttacked()
-    {
-        Debug.Log("扉を攻撃しています: " + break_count_now);
-        break_count_now += 1;
-        if(need_break_count <= break_count_now)
-        {
-            //扉が完全に壊れました。
-            Debug.Log("扉が完全に壊れた");
-            this.gameObject.SetActive(false);
-        }
-    }
+
+
     private void DoorsOpen()
     {
         this.OpenedClosedCompleted = false;
@@ -108,6 +115,7 @@ public class TheDoorController : SerializedMonoBehaviour
         {
             door_open_close_controller.Open();
         }
+
         door_status = DoorStatus.Opened;
     }
     private void DoorsClose()
@@ -118,6 +126,7 @@ public class TheDoorController : SerializedMonoBehaviour
         {
             door_open_close_controller.Close();
         }
+
         door_status = DoorStatus.Closed;
     }
 

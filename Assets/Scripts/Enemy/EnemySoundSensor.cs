@@ -23,6 +23,8 @@ public class EnemySoundSensor : MonoBehaviour
     //音が鳴った場所に移動しているNow
     public bool MoveToSoundPlaceNow;
 
+    //オブジェクトが鳴らしている音に向かっているのかどうか
+    public bool MoveToSoundObjectPlace;
     [Header("音がなった場所についた後戻るまで判断する時間。")]
     public float ArriveSoundPlaceWaitTimeToReturn;
     [Header("プレイヤーの状態によって音に気づく距離を変える。")]
@@ -115,7 +117,7 @@ public class EnemySoundSensor : MonoBehaviour
                 if (ToPlayerDistance <= RealizeSoundPlayerRunDistance)
                 {
                     Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
-                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound, false);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
@@ -131,7 +133,7 @@ public class EnemySoundSensor : MonoBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
-                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound, false);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
@@ -148,7 +150,7 @@ public class EnemySoundSensor : MonoBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
-                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound);
+                    SoundSeonsor(Player.transform.position, SpeedWalkWhenRealizeSound, false);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
@@ -162,7 +164,7 @@ public class EnemySoundSensor : MonoBehaviour
     }
     //TargetPos: 音が鳴った目標先の場所 ReturnPos: 音が鳴って目標先に到着した後帰る先の場所
 
-    public void SoundSeonsor(Vector3 TargetPos, float _speed)
+    public void SoundSeonsor(Vector3 TargetPos, float _speed, bool _SoundObject)
     {
         enemy_routing_controller.PermitFunction(false);
         //どこからか音鳴らすときこの関数を呼ぶ。 例(プレイヤーの足音や非常ベルの音をならす関数などで)
@@ -172,7 +174,7 @@ public class EnemySoundSensor : MonoBehaviour
             follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
             SoundPlacePosition = TargetPos;
             MoveToSoundPlaceNow = true;
-
+            MoveToSoundObjectPlace = _SoundObject;
         }
         else
         {
