@@ -89,6 +89,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2911560383626514385}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e2c74fe445a7c064a9e17eb9531abb37,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3351687263827535466}
   m_SourcePrefab: {fileID: 100100000, guid: e2c74fe445a7c064a9e17eb9531abb37, type: 3}
 --- !u!1 &8724287132957521274 stripped
 GameObject:
@@ -133,6 +137,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9ee655d456919c546b3f3b58ffd9166a, type: 3}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 0
 --- !u!114 &4690449892973502163
 MonoBehaviour:
@@ -162,6 +168,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 3351687263827535466}
 --- !u!65 &2911560383626514385
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -183,3 +190,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.7978443, y: 1.8582299, z: 0.065522216}
   m_Center: {x: -0.39869496, y: 0.92662156, z: -0.024681402}
+--- !u!114 &3351687263827535466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8724287132957521274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0

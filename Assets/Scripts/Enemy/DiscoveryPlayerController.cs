@@ -51,7 +51,7 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     private HorrorDirector horror_director;
 
-
+    [SerializeField] GameObject g;
     private bool DiscoveriedEventOnce;
     private bool NonDiscoveriedEventOnce;
     // Start is called before the first frame update
@@ -157,6 +157,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, layerMask))
             {
                 //Raycastをプレイヤーにとりあえず飛ばす。
+                g = raycast_hit.collider.gameObject;
                 Debug.Log("raycast_hit_name??: " + raycast_hit.collider.gameObject.name + "    " + "raycast_hit_layer::" + raycast_hit.collider.gameObject.layer);
                 if (!ObstacleLayers.Contains(LayerMask.LayerToName(raycast_hit.collider.gameObject.layer)))
                 {

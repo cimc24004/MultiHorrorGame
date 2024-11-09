@@ -177,6 +177,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 5241240562722142144}
 --- !u!82 &1635077233917647574
 AudioSource:
   m_ObjectHideFlags: 0
@@ -394,6 +395,10 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1615064436357367704}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a671e927250c4c644ba252fc98614848,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5241240562722142144}
     - targetCorrespondingSourceObject: {fileID: -9049132808808881180, guid: a671e927250c4c644ba252fc98614848,
         type: 3}
       insertIndex: -1
@@ -482,6 +487,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 5241240562722142144}
 --- !u!114 &313555642339509944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -624,6 +630,26 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3731669473305830429}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4542131242419427660 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a671e927250c4c644ba252fc98614848,
+    type: 3}
+  m_PrefabInstance: {fileID: 3731669473305830429}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5241240562722142144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4542131242419427660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0
 --- !u!4 &5331450875642477909 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8805825691427625288, guid: a671e927250c4c644ba252fc98614848,
@@ -691,6 +717,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 5241240562722142144}
 --- !u!114 &6391695275914626870
 MonoBehaviour:
   m_ObjectHideFlags: 0

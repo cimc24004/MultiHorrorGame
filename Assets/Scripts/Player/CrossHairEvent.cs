@@ -40,6 +40,16 @@ public class CrossHairEvent : MonoBehaviour
         
         if (Physics.Raycast(main_ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
         {
+
+            if (raycast_hit.collider.gameObject.tag == "Pray")
+            {
+                if (RaycasstedObj != raycast_hit.collider.gameObject)
+                {
+                    pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
+                }
+                pray_controller.OnTouchOn();
+            }
+
             RaycasstedObj = raycast_hit.collider.gameObject;
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
@@ -56,14 +66,7 @@ public class CrossHairEvent : MonoBehaviour
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             }
 
-            if (raycast_hit.collider.gameObject.tag == "Pray")
-            {
-                if (RaycasstedObj != raycast_hit.collider.gameObject)
-                {
-                    pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
-                }
-                pray_controller.OnTouchOn();
-            }
+
 
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {

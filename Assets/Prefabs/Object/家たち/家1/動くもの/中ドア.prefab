@@ -102,6 +102,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 934424629363707814}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 70360f780334fd1458383855522f6ed9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2130150101826197790}
   m_SourcePrefab: {fileID: 100100000, guid: 70360f780334fd1458383855522f6ed9, type: 3}
 --- !u!1 &3488778856007392197 stripped
 GameObject:
@@ -198,6 +202,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 2130150101826197790}
 --- !u!208 &1793985051169983350
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -310,3 +315,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2130150101826197790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3488778856007392197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0

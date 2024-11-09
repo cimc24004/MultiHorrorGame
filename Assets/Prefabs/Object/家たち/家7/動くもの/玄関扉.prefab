@@ -138,6 +138,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 7189445544632688847}
 --- !u!114 &2957192679416097613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,6 +284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: -8679921383154817045}
+  - component: {fileID: 7189445544632688847}
   m_Layer: 0
   m_Name: "\u7384\u95A2\u6249"
   m_TagString: Untagged
@@ -308,6 +310,20 @@ Transform:
   - {fileID: 8034273055886046027}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7189445544632688847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0
 --- !u!1 &6211321326387368056
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,6 +462,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 7189445544632688847}
 --- !u!114 &5113292170853196827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,6 +737,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 7189445544632688847}
 --- !u!114 &8964648797460032813
 MonoBehaviour:
   m_ObjectHideFlags: 0

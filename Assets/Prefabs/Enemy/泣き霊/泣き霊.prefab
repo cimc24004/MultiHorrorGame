@@ -240,7 +240,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 128
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -358,7 +358,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 128
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -1079,6 +1079,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8675497483416675099, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8078382466035686468, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3247852405856916958, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1251879877917080215, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -624657604957839163, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -575779570751670235, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 257067661740533036, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c12ce116e91db2942997c0f86c510d1d,
         type: 3}
       propertyPath: m_Name
@@ -1094,6 +1129,26 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 993275526042048795, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184010644381814324, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2324259456053924510, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4155127495502566453, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: c12ce116e91db2942997c0f86c510d1d,
         type: 3}
       propertyPath: m_Avatar
@@ -1104,6 +1159,21 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 4ddea7e4f31254342b3222b2d0fece0b, type: 2}
+    - target: {fileID: 6828343655524699772, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7761060255116746078, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8031477344060450129, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1224,7 +1294,7 @@ MonoBehaviour:
   SpeedWhenDiscoveried: 3
   layerMask:
     serializedVersion: 2
-    m_Bits: 201288
+    m_Bits: 463432
   SightOutPlayerTime: 10
   SppedWhenReturned: 1
   SightningPlayer: 0
@@ -1232,6 +1302,7 @@ MonoBehaviour:
   InsidePlayer: 0
   direction: {x: 0, y: 0, z: 0}
   SightOutPlayerTimeNow: 0
+  g: {fileID: 0}
 --- !u!114 &-5208536115284402003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1265,6 +1336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ArriveSoundPlaceWaitTimeToReturnNow: 0
   MoveToSoundPlaceNow: 0
+  MoveToSoundObjectPlace: 0
   ArriveSoundPlaceWaitTimeToReturn: 6
   RealizeSoundPlayerRunDistance: 10
   RealizeSoundPlayerWalkDistance: 5
@@ -1306,6 +1378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a246c2b2a29eece429eb2eb31f71ced8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NoticedSound: 0
 --- !u!114 &9145366707989285431
 MonoBehaviour:
   m_ObjectHideFlags: 0

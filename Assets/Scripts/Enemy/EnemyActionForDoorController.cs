@@ -82,6 +82,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         if (broken)
         {
             DoorAttackSource.PlayOneShot(DoorBrokenClip);
+            DoorAttackSource.PlayOneShot(DoorAttackClip);
         }
         else
         {
