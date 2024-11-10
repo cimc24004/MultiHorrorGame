@@ -43,7 +43,6 @@ public class EnemyToPlayerKillController : MonoBehaviour
                 }
             }
         }
-        Debug.DrawRay(StartPos.position, Direction * RaycastDistance, Color.red);
 
     }
 

@@ -40,7 +40,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     {
         anim.SetBool("DoorAttack", false);
         //レイキャストを正面から当てて、ドアに当たったら開けるようにする。
-        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, 0.3f, layer_mask))
+        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, 1f, layer_mask))
         {
 
             if (raycast_hit.collider.gameObject.tag == "Door")
@@ -60,6 +60,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 }
                 if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
+                    Debug.Log("扉を壊したいと思います。");
                     anim.SetBool("DoorAttack", true);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 }
@@ -74,7 +75,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         {
 
         }
-
+        Debug.DrawRay(RaycastStartTransform.position, RaycastStartTransform.transform.forward * 1f, Color.red);
     }
     public void AttackToDoor(TheDoorController the_door_controller)
     {
