@@ -237,8 +237,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -273,7 +273,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -326,6 +326,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item_status: {fileID: 11400000, guid: 8c1eb24ebe4226944aa8f2c68a69fa64, type: 2}
+  ItemGetAddEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6004684370138334408
 GameObject:
   m_ObjectHideFlags: 0

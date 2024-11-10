@@ -80,6 +80,10 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     public void AttackToDoor(TheDoorController the_door_controller)
     {
         DoorAttackedController door_attacked_controller = the_door_controller.door_attacked_controller;
+        if(the_door_controller == null)
+        {
+            return;
+        }
         bool broken = the_door_controller.door_attacked_controller.DoorAttacked();
         if (broken)
         {
