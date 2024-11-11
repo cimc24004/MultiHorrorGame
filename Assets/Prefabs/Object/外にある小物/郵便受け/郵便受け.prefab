@@ -97,6 +97,10 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -8391222552659086748, guid: 96682b83f21f88e4fa9999ffc2f11854,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9058888144703883597}
     - targetCorrespondingSourceObject: {fileID: -7029948723529949830, guid: 96682b83f21f88e4fa9999ffc2f11854,
         type: 3}
       insertIndex: -1
@@ -110,6 +114,33 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 8298389062844251376}
   m_SourcePrefab: {fileID: 100100000, guid: 96682b83f21f88e4fa9999ffc2f11854, type: 3}
+--- !u!1 &7117781928385458870 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8391222552659086748, guid: 96682b83f21f88e4fa9999ffc2f11854,
+    type: 3}
+  m_PrefabInstance: {fileID: 7587179436699418834}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &9058888144703883597
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7117781928385458870}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.42589366, y: 0.47772062, z: 0.6849103}
+  m_Center: {x: 0.033243187, y: 0.012031972, z: -0.00000026822102}
 --- !u!1 &8591612026295901608 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7029948723529949830, guid: 96682b83f21f88e4fa9999ffc2f11854,
@@ -144,6 +175,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 0}
 --- !u!114 &4907450687111475024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +213,8 @@ MonoBehaviour:
   OpenClip: {fileID: 0}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 0}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 0
 --- !u!65 &8298389062844251376
 BoxCollider:
