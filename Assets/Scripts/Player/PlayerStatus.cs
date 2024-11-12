@@ -43,9 +43,11 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private Animator anim;
     private bool Crouch;
     public CinemachineVirtualCamera virtual_camera;
-
+    public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
     private CinemachineTransposer cinemachine_transposer;
+    private ItemMenuController item_menu_controller;
+    private ItemBelongingsController item_belonging_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,7 +55,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
         anim = this.gameObject.GetComponent<Animator>();
         cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
         player_hide_object_action = this.gameObject.GetComponent<PlayerHideObjectAction>();
-
+        item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
+        item_menu_controller = ItemController.GetComponent<ItemMenuController>();
     }
 
     // Update is called once per frame
@@ -107,6 +110,22 @@ public class PlayerStatus : Singleton<PlayerStatus>
     {
         //プレイヤーが死ぬときのイベント。
         Debug.Log("あなたは死にました！");
+        if (KilledMeEnemy.tag == "Enemy")
+        {
+            //緊急攻撃アイテムを所持していたら、
+            //緊急攻撃アイテムで攻撃して敵をひるませる。
+            EnemyFlinchController enemy_flinch_controller = KilledMeEnemy.GetComponent<EnemyFlinchController>();
+            List<ItemStatus> item_statues = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
+            if(item_statues != null)
+            {
+                Debug.Log("悪霊退散おふだをはつどう！");
+                item_belonging_controller.ItemUseFromBelonging(item_statues[0]);
+                enemy_flinch_controller.FlinchStart(item_statues[0].StopEnemyTime);
+                return;
+            }
+        }
+
+
         //恐怖演出用のイベントを実行。
         anim.SetBool("AppearentDeath", true);
         MoveX = 0;
@@ -118,6 +137,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
         camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
 
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
+
+
         player_move_permit.Stop();
 
     }

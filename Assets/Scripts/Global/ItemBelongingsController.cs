@@ -158,6 +158,10 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             //思い出の品を納品したら
             ItemUse(BelongingCountNow, item_status);
         }
+        else
+        {
+            ItemUse(BelongingCountNow, item_status);
+        }
 
 
     }
@@ -185,7 +189,30 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             return false;
         }
     }
+    public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType _item_type)
+    {
+        //var item_type_belonging_items = belonging_items.Where(x => x.Key.item_type == ItemStatus.ItemType.Equip);
+        Dictionary<ItemStatus, int> itemsDictionary = belonging_items
+            .Where(x => x.Key.item_type == _item_type)
+            .ToDictionary(x => x.Key, x => x.Value);
 
+        List<ItemStatus> founded_items = new List<ItemStatus>();
+        foreach (KeyValuePair<ItemStatus, int> item in itemsDictionary)
+        {
+            if(_item_type == item.Key.item_type)
+            {
+                founded_items.Add(item.Key);
+            }
+        }
+        if (founded_items.Count > 0)
+        {
+            return founded_items;
+        }
+        else
+        {
+            return null;
+        }
+    }
     private void  ItemUse(int BelongingCountNow, ItemStatus item_status)
     {
         BelongingCountNow -= 1;

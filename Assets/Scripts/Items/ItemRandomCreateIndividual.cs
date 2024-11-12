@@ -8,7 +8,8 @@ public class ItemRandomCreateIndividual : SerializedMonoBehaviour
     public Transform ItemToParent;
     //引き出しなどにつけるスクリプト。　アイテムランダム生成されたもの
     private ItemDatabases item_databases;
-    
+
+    public int FrequencyItemApperance = 6;
     private void Start()
     {
         item_databases = ItemDatabases.instance;
@@ -16,7 +17,7 @@ public class ItemRandomCreateIndividual : SerializedMonoBehaviour
     [Button]
     public void ItemRandomCreateFromIndividual(bool _AlreadyOpended)
     {
-        int r = Random.Range(0, 6);
+        int r = Random.Range(0, FrequencyItemApperance);
         if (_AlreadyOpended) return;
         if (r != 0)
         {

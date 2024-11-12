@@ -20,6 +20,8 @@ public class FollowObjectByNav : MonoBehaviour
     public double ToTargetPosDistance;
     //[HideInInspector]
     public Vector3 ChaseTargetPosition;
+
+    [SerializeField]public bool MovePermit = true;
     private Vector3 Move;
     [HideInInspector]
     public float DefaultStoppingDistance;
@@ -28,6 +30,8 @@ public class FollowObjectByNav : MonoBehaviour
     private CharacterController character_controller;
     private Vector3 Vector3Move;
     private CustomGravity custom_gravity;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +54,10 @@ public class FollowObjectByNav : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!MovePermit)
+        {
+            return;
+        }
         //追いかけるターゲットと自分との距離
         ToTargetPosDistance = Math.Round(Vector3.Distance(ChaseTargetPosition, this.transform.position), 1, MidpointRounding.ToEven);
         PosGetByFinder(ChaseTargetPosition);
@@ -91,6 +98,7 @@ public class FollowObjectByNav : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (!MovePermit) return;
         if (ChaseToTargetMode)
         {
 

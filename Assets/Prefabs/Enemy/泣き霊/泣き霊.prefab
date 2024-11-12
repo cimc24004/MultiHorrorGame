@@ -921,7 +921,7 @@ PrefabInstance:
     - target: {fileID: 8483580507634944193, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
       propertyPath: serializationData.ReferencedUnityObjects.Array.size
-      value: 74
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8483580507634944193, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
@@ -1662,6 +1662,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1335489689929688915}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2753579916918088318}
   m_SourcePrefab: {fileID: 100100000, guid: c12ce116e91db2942997c0f86c510d1d, type: 3}
 --- !u!1 &7214472519949709180 stripped
 GameObject:
@@ -1710,6 +1714,7 @@ MonoBehaviour:
   ArrivedTarget: 0
   ToTargetPosDistance: 0
   ChaseTargetPosition: {x: 0, y: 0, z: 0}
+  MovePermit: 1
   DefaultStoppingDistance: 0
 --- !u!114 &1731175746714003234
 MonoBehaviour:
@@ -1924,6 +1929,21 @@ MonoBehaviour:
   DoorAttackSource: {fileID: 5027499808225202209}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 5a9945f6fab4959418fbd76c3aec7b79, type: 3}
+--- !u!114 &2753579916918088318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7214472519949709180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943dd1ad765af247928a156a38b5162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FlinchNow: 0
+  FlinchTime: 0
+  FlinchTimeNow: 0
 --- !u!4 &8022358052224841158 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c12ce116e91db2942997c0f86c510d1d,

@@ -111,8 +111,10 @@ public class ItemMenuController : SerializedMonoBehaviour
                     if (item_belongings_controller.ExistItemUIItemStatusByFind(NowSelect_item_status))
                     {
                         //選択しているアイテムがあったらアイテムを使用する。
-                        Debug.Log("NowSelectItemUIObject: " + NowSelectItemUIObject);
-                        ItemUseFromMenu(NowSelectItemUIObject);
+                        if (NowSelect_item_status && NowSelect_item_status.ItemUseFromClick)
+                        {
+                            ItemUseFromMenu(NowSelectItemUIObject);
+                        }
                     }
                 }
             }
@@ -191,7 +193,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         //この時間を0にしておくことで選択したら非表示するまでの時間を伸ばせる。
         WaitHideTimeNow = 0;
     }
-    private void ItemUseFromMenu(GameObject item_ui_obj)
+    public void ItemUseFromMenu(GameObject item_ui_obj)
     {
         //アイテムメニューからアイテムを使う関数。
 

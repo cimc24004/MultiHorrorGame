@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 5007184443225665439}
   - component: {fileID: 3294226047180700996}
   - component: {fileID: 5036844258042664734}
+  - component: {fileID: 8177297459139619117}
   - component: {fileID: 229994668436465297}
   - component: {fileID: 2175855036313305512}
   - component: {fileID: 3305612839892290971}
   - component: {fileID: 7396010553086035570}
-  - component: {fileID: 8177297459139619117}
   m_Layer: 13
   m_Name: "\u7206\u7AF9\u7F6E\u304D"
   m_TagString: Untagged
@@ -89,6 +89,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8177297459139619117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2560351184006967456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 611f159e1371f724b9f1f4dd5f9229c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item_status: {fileID: 11400000, guid: 8c1eb24ebe4226944aa8f2c68a69fa64, type: 2}
+  ItemGetAddEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &229994668436465297
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -245,19 +261,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &8177297459139619117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560351184006967456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 611f159e1371f724b9f1f4dd5f9229c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item_status: {fileID: 11400000, guid: 8c1eb24ebe4226944aa8f2c68a69fa64, type: 2}
 --- !u!1001 &6336155612773645760
 PrefabInstance:
   m_ObjectHideFlags: 0
