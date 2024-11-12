@@ -4,6 +4,8 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 public class FootStepSoundController : SerializedMonoBehaviour
 {
+    //足音を鳴らすためだけのスクリプト
+
     public enum MoveStatus
     {
         Walk,
@@ -11,12 +13,11 @@ public class FootStepSoundController : SerializedMonoBehaviour
         Crouch,
         Stop
     }
-    //足音を鳴らすためだけのスクリプト
     public AudioSource audio_source;
 
     [Header("Groundの名前によって再生するクリップを変える、")]
-    public Dictionary<string, Dictionary<string,List<AudioClip>>> audio_random_with_grounded_name;
 
+    public FootStepControllerStatus foot_step_controller_status;
     public GroundCheck ground_check;
 
     public MoveStatus move_status;
@@ -70,14 +71,14 @@ public class FootStepSoundController : SerializedMonoBehaviour
         //GroundedNameによって音を変える
         if (this.gameObject.name == "泣き霊 (1)")
             Debug.Log("GroundedName: ? " + _GroundedName);
-        if (audio_random_with_grounded_name.ContainsKey(_GroundedName))
+        if (foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(_GroundedName))
         {
-            int Count = audio_random_with_grounded_name[_GroundedName][_MoveMode].Count;
+            int Count = foot_step_controller_status.audio_random_with_grounded_name[_GroundedName][_MoveMode].Count;
             int r = Random.Range(0, Count);
-            audio_source.PlayOneShot(audio_random_with_grounded_name[_GroundedName][_MoveMode][r]);
+            audio_source.PlayOneShot(foot_step_controller_status.audio_random_with_grounded_name[_GroundedName][_MoveMode][r]);
             if(this.gameObject.name == "泣き霊 (1)")
             {
-                Debug.Log(audio_random_with_grounded_name[_GroundedName][_MoveMode][r] + "を再生するよおお");
+                Debug.Log(foot_step_controller_status.audio_random_with_grounded_name[_GroundedName][_MoveMode][r] + "を再生するよおお");
             }
         }
     }
