@@ -158,8 +158,12 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             //v‚¢o‚Ì•i‚ğ”[•i‚µ‚½‚ç
             ItemUse(BelongingCountNow, item_status);
         }
-        else
+        else if(item_status.item_type == ItemStatus.ItemType.EmergencyAttack)
         {
+            //‹Ù‹}UŒ‚!
+            if(item_status.ItemUseObjectPrefab != null)
+            {
+            }
             ItemUse(BelongingCountNow, item_status);
         }
 

@@ -114,13 +114,17 @@ public class PlayerStatus : Singleton<PlayerStatus>
         {
             //‹Ù‹}UŒ‚ƒAƒCƒeƒ€‚ğŠ‚µ‚Ä‚¢‚½‚çA
             //‹Ù‹}UŒ‚ƒAƒCƒeƒ€‚ÅUŒ‚‚µ‚Ä“G‚ğ‚Ğ‚é‚Ü‚¹‚éB
-            EnemyFlinchController enemy_flinch_controller = KilledMeEnemy.GetComponent<EnemyFlinchController>();
+            EnemyStatus enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
+            EnemyFlinchController enemy_flinch_controller = enemy_status.enemy_flinch_controller;
             List<ItemStatus> item_statues = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
             if(item_statues != null)
             {
                 Debug.Log("ˆ«—ì‘ŞU‚¨‚Ó‚¾‚ğ‚Í‚Â‚Ç‚¤I");
-                item_belonging_controller.ItemUseFromBelonging(item_statues[0]);
-                enemy_flinch_controller.FlinchStart(item_statues[0].StopEnemyTime);
+                ItemStatus item_status = item_statues[0];
+                GameObject g = Instantiate(item_status.ItemUseObjectPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
+                item_belonging_controller.ItemUseFromBelonging(item_status);
+                Destroy(g, item_status.StopEnemyTime);
+                enemy_flinch_controller.FlinchStart(item_status.StopEnemyTime);
                 return;
             }
         }

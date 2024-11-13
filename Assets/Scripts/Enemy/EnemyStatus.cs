@@ -13,13 +13,15 @@ public class EnemyStatus : MonoBehaviour
     public FootStepSoundController foot_step_sound_controller;
     public EnemyMoveState enemy_move_state;
     public GameObject FaceExpandingCamera;
+
+    public Transform EyePosition;
     private FollowObjectByNav follow_object_by_nav;
     private DiscoveryPlayerController discovery_player_controller;
     private Animator anim;
     private CharacterMovePermit character_move_permit;
     private TimeManager time_manager;
     private EnemyRoutingController enemy_routing_controller;
-    private EnemyFlinchController enemy_flinch_controller;
+    [HideInInspector]public EnemyFlinchController enemy_flinch_controller;
     public bool StopEnemyByPlayerNow;
     private float StopEnemyByPlayerTimeNow;
 
