@@ -121,9 +121,11 @@ public class FollowObjectByNav : MonoBehaviour
         //この関数は外部から使用する。 targetの位置をセットする為の関数 
         //_SetDestinationOnceとは SetDestinationを何回もやってると重くなるのでプレイヤーなど動くもの以外は
         //一回だけ探索ゴールを設定するようにしておく。 軽量化のため。
+        this.ArrivedTarget = false;
         this.ChaseToTargetMode = _mode;
         this.speed = _speed;
         this.ChaseTargetPosition = _position;
+        this.ToTargetPosDistance = Math.Round(Vector3.Distance(ChaseTargetPosition, this.transform.position), 1, MidpointRounding.ToEven);
     }
     public void PosGetByFinder(Vector3 target_pos)
     {

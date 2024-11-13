@@ -17,6 +17,7 @@ public class EnemySoundSensor : MonoBehaviour
     private float ToPlayerDistance;
     private Animator enemy_anim;
     private TimeManager time_manager;
+    public bool sound_by_obj;
     private double ToSoundPlaceDistance;
     //音が鳴った先の場所
     private Vector3 SoundPlacePosition;
@@ -66,7 +67,7 @@ public class EnemySoundSensor : MonoBehaviour
 
             if(follow_object_nav.ArrivedTarget)
             {
-
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //音が鳴った位置に到着し終えた場合 少し時間を待ってから元の位置に戻るようにする。
                 if (ArriveSoundPlaceWaitTimeToReturnNow >= sound_sensor_status.ArriveSoundPlaceWaitTimeToReturn)
                 {
@@ -74,7 +75,6 @@ public class EnemySoundSensor : MonoBehaviour
 
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
                     //enemy_routing_controller.RoutingMovePermit = true;
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                     enemy_routing_controller.NearRouteSet();
                     //follow_object_nav.ChaseToTargetSet(true, DefaultPosition, SpeedWhenReturn);
                     Debug.Log("NearRouteSet 帰るところです！");
@@ -84,6 +84,7 @@ public class EnemySoundSensor : MonoBehaviour
             }
             else
             {
+
             }
         }
         else
@@ -108,6 +109,7 @@ public class EnemySoundSensor : MonoBehaviour
                     {
                         MoveToSoundPlaceNow = true;
                     }
+                    this.sound_by_obj = false;
                 }
             }
             else if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Walk)
@@ -125,6 +127,8 @@ public class EnemySoundSensor : MonoBehaviour
 
                         MoveToSoundPlaceNow = true;
                     }
+                    this.sound_by_obj = false;
+
                 }
             }
             else if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Crouch)
@@ -142,7 +146,20 @@ public class EnemySoundSensor : MonoBehaviour
 
                         MoveToSoundPlaceNow = true;
                     }
+                    this.sound_by_obj = false;
+
                 }
+            }
+        }
+        if (!follow_object_nav.ArrivedTarget)
+        {
+            if (sound_by_obj)
+            {
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+            }
+            else
+            {
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
             }
         }
     }
@@ -155,6 +172,7 @@ public class EnemySoundSensor : MonoBehaviour
         if (!discovery_player_controller.DiscoveryPlayerNow)
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
+            Debug.Log("SoundSensor実行!!");
             follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
             SoundPlacePosition = TargetPos;
             MoveToSoundPlaceNow = true;

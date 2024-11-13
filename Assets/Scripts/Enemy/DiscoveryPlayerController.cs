@@ -70,7 +70,10 @@ public class DiscoveryPlayerController : MonoBehaviour
                 horror_director.DiscoveriedHorror();
                 DiscoveriedEventOnce = true;
             }
-
+            if (follow_object_nav.ArrivedTarget)
+            {
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+            }
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
             enemy_routing_controller.PermitFunction(false);

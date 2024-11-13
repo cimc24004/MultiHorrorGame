@@ -57,18 +57,26 @@ public class EnemyStatus : MonoBehaviour
 
         if (enemy_move_state == EnemyMoveState.Run)
         {
+            if (this.gameObject.name == "‹ƒ‚«—ì")
+
+                Debug.Log("EnemyStatus.EnemyMoveState.Run");
             anim.SetFloat("MoveY", 1);
         }else if(enemy_move_state == EnemyMoveState.Walk)
         {
+            if (this.gameObject.name == "‹ƒ‚«—ì")
+
+                Debug.Log("EnemyStatus.EnemyMoveState.Walk");
             anim.SetFloat("MoveY", 0.5f);
         }
         else if(enemy_move_state == EnemyMoveState.Stop)
         {
+            if (this.gameObject.name == "‹ƒ‚«—ì")
+
+                Debug.Log("EnemyStatus.EnemyMoveState.Stop");
             anim.SetFloat("MoveY", 0);
         }
         if (follow_object_by_nav.ArrivedTarget)
         {
-            enemy_move_state = EnemyMoveState.Stop;
         }
 
     }

@@ -58,6 +58,7 @@ public class EnemyFlinchController : MonoBehaviour
         discovery_player_controller.enabled = true;
         enemy_to_player_kill_controller.enabled = true;
         follow_object_by_nav.MovePermit = true;
+        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
         FlinchNow = false;
     }
 }
