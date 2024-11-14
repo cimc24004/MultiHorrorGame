@@ -16,7 +16,6 @@ public class FootStepSoundController : SerializedMonoBehaviour
     public AudioSource audio_source;
 
     [Header("Groundの名前によって再生するクリップを変える、")]
-
     public FootStepControllerStatus foot_step_controller_status;
     public GroundCheck ground_check;
 

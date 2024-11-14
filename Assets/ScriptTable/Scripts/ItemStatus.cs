@@ -35,6 +35,7 @@ public class ItemStatus : SerializedScriptableObject
 
     [Required] public Sprite MenuSprite;
     [Required] public string ItemName;
+    [TextArea]
     public string ItemDescription;
     [Header("ランダムで引き出しなどにアイテムを召喚させるか。")]
     public bool PutInItemBox = true;

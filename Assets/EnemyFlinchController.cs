@@ -34,7 +34,8 @@ public class EnemyFlinchController : MonoBehaviour
             enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             enemy_to_player_kill_controller.enabled = false;
             discovery_player_controller.DiscoveryPlayerNow = false;
-
+            discovery_player_controller.SightningPlayer = false;
+            discovery_player_controller.SightningPlayerWhenHidePlayer = false;
             discovery_player_controller.enabled = false;
             character_controller.Move(Vector3.zero);
             if (FlinchTime < FlinchTimeNow)
