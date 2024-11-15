@@ -31,15 +31,24 @@ public class PlayerStatus : Singleton<PlayerStatus>
         
     }
     public PlayerMoveState player_move_state;
+    [Header("移動速度")]
     public float MoveSpeed;
+
+    [Header("スタミナコスト")]
+    public float StaminaCost = 0.3f;
     //今隠れているかどうか
     public bool HidingNow;
     public float MoveX;
     public float MoveY;
-
-
+    [Header("現在のスタミナ値")]
+    public float StaminaValueNow = 100f;
+    [Header("スタミナ1fにつきの回復力")]
+    public float StaminaRetakePower;
+    [Header("走れる最小スタミナ")]
+    public float CanMinStaminaRun = 30;
     private float offsetY;
     private CharacterMovePermit player_move_permit;
+    private PlayerStaminaController player_stamina_controller;
     private Animator anim;
     private bool Crouch;
     public CinemachineVirtualCamera virtual_camera;
@@ -51,6 +60,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     // Start is called before the first frame update
     void Start()
     {
+        player_stamina_controller = this.gameObject.GetComponent<PlayerStaminaController>();
         player_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         anim = this.gameObject.GetComponent<Animator>();
         cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
@@ -97,6 +107,17 @@ public class PlayerStatus : Singleton<PlayerStatus>
         anim.SetBool("Crouch", Crouch);
         anim.SetFloat("MoveY", MoveY);
         anim.SetFloat("MoveX", MoveX);
+    }
+    private void FixedUpdate()
+    {
+        if(MoveSpeed != 0)
+        {
+            if(player_move_state == PlayerMoveState.Run)
+            {
+                player_stamina_controller.ConsumeStamina();
+            }
+        }
+
     }
     public void StopEvent()
     {

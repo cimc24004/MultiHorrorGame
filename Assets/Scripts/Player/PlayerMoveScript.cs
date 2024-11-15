@@ -16,7 +16,7 @@ public class PlayerMoveScript : MonoBehaviour
     //このカメラの方向とプレイヤーの向く方向が同じになるようにする。
     public GameObject DirectionCamera;
 
-    private float TimeWaitNow;
+    private bool RunWalkTriggerChange;
     private PlayerInput player_input;
     private Vector3 MoveKeyValue;
     
@@ -25,11 +25,13 @@ public class PlayerMoveScript : MonoBehaviour
     private InputAction CrouchChangeAction;
     private TimeManager time_manager;
     private PlayerStatus player_status;
+    private PlayerStaminaController player_stamina_controller;
     // Start is called before the first frame update
     void Start()
     {
         //rigid = this.gameObject.GetComponent<Rigidbody>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
+        player_stamina_controller = this.gameObject.GetComponent<PlayerStaminaController>();
         NowSpeed = WalkSpeed;
         player_input = this.gameObject.GetComponent<PlayerInput>();
         MoveAction = player_input.currentActionMap["Move"];
@@ -63,17 +65,63 @@ public class PlayerMoveScript : MonoBehaviour
 
         if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Run || player_status.player_move_state == PlayerStatus.PlayerMoveState.Walk)
         {
-            if (RunChangeAction.IsPressed())
+            if (RunChangeAction.triggered)
             {
-                //RunChangeキーを長押ししている場合はRunSpeedを代入
-                player_status.player_move_state = PlayerStatus.PlayerMoveState.Run;
-                NowSpeed = RunSpeed;
+                if (player_stamina_controller.StaminaCheck())
+                {
+                    RunWalkTriggerChange = true;
+                }
+                else
+                {
+                    RunWalkTriggerChange = false;
+                }
+
             }
+            if (RunWalkTriggerChange)
+            {
+                if (RunChangeAction.IsPressed())
+                {
+                    if (!player_stamina_controller.StaminaIncreaseNow)
+                    {
+                        if (player_status.StaminaValueNow > 0)
+                        {
+                            //RunChangeキーを長押ししている場合はRunSpeedを代入
+                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Run;
+                            NowSpeed = RunSpeed;
+                        }
+                        else
+                        {
+                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                            NowSpeed = WalkSpeed;
+                        }
+                    }
+                    else
+                    {
+                        if (player_stamina_controller.StaminaCheck())
+                        {
+                            //RunChangeキーを長押ししている場合はRunSpeedを代入
+                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Run;
+                            NowSpeed = RunSpeed;
+                        }
+                        else
+                        {
+                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                            NowSpeed = WalkSpeed;
+                        }
+                    }
+
+
+                }
+            }
+
+
+
             if (RunChangeAction.WasReleasedThisFrame())
             {
                 //RunChangeキーを離した場合はWalkSpeedに戻す。
                 player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed = WalkSpeed;
+                RunWalkTriggerChange = false;
             }
         }
         if (CrouchChangeAction.triggered)
