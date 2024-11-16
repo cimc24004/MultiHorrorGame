@@ -151,17 +151,21 @@ public class EnemySoundSensor : MonoBehaviour
                 }
             }
         }
-        if (!follow_object_nav.ArrivedTarget)
+        if (MoveToSoundPlaceNow)
         {
-            if (sound_by_obj)
+            if (!follow_object_nav.ArrivedTarget)
             {
-                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
-            }
-            else
-            {
-                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                if (sound_by_obj)
+                {
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+                }
+                else
+                {
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                }
             }
         }
+
     }
     //TargetPos: ‰¹‚ª–Â‚Á‚½–Ú•Wæ‚ÌêŠ ReturnPos: ‰¹‚ª–Â‚Á‚Ä–Ú•Wæ‚É“’…‚µ‚½Œã‹A‚éæ‚ÌêŠ
 

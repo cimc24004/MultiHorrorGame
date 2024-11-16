@@ -32,7 +32,7 @@ public class HorizontalProjectile : MonoBehaviour
         if (OnGround && throw_now)
         {
             //地面に到着したときはオブジェクトが滑らないように静止したいのでisKinematic=trueにする。
-            rigid.isKinematic = true;
+            //rigid.isKinematic = true;
         }
 
     }
