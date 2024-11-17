@@ -42,12 +42,24 @@ public class FootStepSoundController : SerializedMonoBehaviour
         if (!FootStepPlayFromUpdate) return;
         if (ground_check.OnGround)
         {
+            if(ground_check.GroundedTagName != GroundedName)
+            {
+                if (move_status == MoveStatus.Run)
+                {
+                    FootStepSoundPlayFromUpdate("Run");
+                }
+                else if (move_status == MoveStatus.Walk)
+                {
+
+                    FootStepSoundPlayFromUpdate("Walk");
+                }
+            }
             if (move_status == MoveStatus.Run)
             {
                 PlaySoundDelayTimeNow += Time.deltaTime;
                 if (PlaySoundDelayTimeNow > RunPlayDelay)
                 {
-                    FootStepSoundPlay("Run");
+                    FootStepSoundPlayFromUpdate("Run");
                     PlaySoundDelayTimeNow = 0;
                 }
             }
@@ -56,7 +68,7 @@ public class FootStepSoundController : SerializedMonoBehaviour
                 PlaySoundDelayTimeNow += Time.deltaTime;
                 if (PlaySoundDelayTimeNow > WalkPlayDelay)
                 {
-                    FootStepSoundPlay("Walk");
+                    FootStepSoundPlayFromUpdate("Walk");
                     PlaySoundDelayTimeNow = 0;
                 }
             }
@@ -75,6 +87,18 @@ public class FootStepSoundController : SerializedMonoBehaviour
     {
         if (FootStepPlayFromUpdate) return;
         //GroundedName‚É‚æ‚Á‚Ä‰¹‚ð•Ï‚¦‚é
+        GroundedName = ground_check.GroundedTagName;
+        if (!ground_check.OnGround) return;
+        if (foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(GroundedName))
+        {
+            int Count = foot_step_controller_status.audio_random_with_grounded_name[GroundedName][_MoveMode].Count;
+            int r = Random.Range(0, Count);
+            audio_source.PlayOneShot(foot_step_controller_status.audio_random_with_grounded_name[GroundedName][_MoveMode][r]);
+        }
+    }
+
+    public void FootStepSoundPlayFromUpdate(string _MoveMode)
+    {
         GroundedName = ground_check.GroundedTagName;
         if (!ground_check.OnGround) return;
         if (foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(GroundedName))

@@ -20,6 +20,8 @@ public class HorizontalProjectile : MonoBehaviour
     public ItemThrowController item_throw_controller;
     [Header("対称のレイヤーを指定")]
     public LayerMask col_layer;
+
+    private Vector3 normal;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +34,8 @@ public class HorizontalProjectile : MonoBehaviour
         if (OnGround && throw_now)
         {
             //地面に到着したときはオブジェクトが滑らないように静止したいのでisKinematic=trueにする。
-            //rigid.isKinematic = true;
+            Debug.DrawRay(this.transform.position,normal * 10, Color.blue);
+
         }
 
     }
@@ -59,7 +62,13 @@ public class HorizontalProjectile : MonoBehaviour
         {
             if ((col_layer.value & (1 << other.gameObject.layer)) != 0)
             {
-                OnGroundEvent.Invoke();
+                normal = other.contacts[0].normal;
+                if (Vector3.up == normal)
+                {
+                    //地面に衝突した際はiskinematic = trueにする。
+                    OnGroundEvent.Invoke();
+                    rigid.isKinematic = true;
+                }
                 OnGround = true;
             }
 
