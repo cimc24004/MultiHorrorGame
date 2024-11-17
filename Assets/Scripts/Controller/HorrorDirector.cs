@@ -9,11 +9,13 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public AudioSource MainBGM;
     public AudioSource DiscoveriedSound;
     private CinemachineImpulseSource cinemachine_impulse_source;
-
+    public AudioClip NearEnemyBGM;
     public AudioClip DiscoveriedBGM;
     public AudioClip MainDefaultBGM;
 
     public GameObject DiscoveryVolume;
+
+    public bool DiscoveryNow;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,12 +28,18 @@ public class HorrorDirector : Singleton<HorrorDirector>
     {
         
     }
+    public void NearEnemy()
+    {
+        if (DiscoveryNow) return;
+        MainBGM.clip = NearEnemyBGM;
+        MainBGM.Play();
+    }
     [Button]
     public void DiscoveriedHorror()
     {
         MainBGM.clip = DiscoveriedBGM;
         MainBGM.Play();
-
+        DiscoveryNow = true;
         DiscoveriedSound.Play();
 
         DiscoveryVolume.SetActive(true);
