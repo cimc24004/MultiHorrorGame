@@ -18,7 +18,7 @@ public class AnimationUnityEvent2 : SerializedMonoBehaviour
         
     }
 
-    public void Invoke(string event_name)
+    public void Action(string event_name)
     {
         AnimEvent[event_name].Invoke();
     }

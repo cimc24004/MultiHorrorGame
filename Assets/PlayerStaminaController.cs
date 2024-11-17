@@ -20,7 +20,7 @@ public class PlayerStaminaController : MonoBehaviour
     void Start()
     {
         fillRectImageUI = stamina_slider.fillRect.gameObject.GetComponent<Image>();
-        default_color = stamina_slider.colors.normalColor;
+        default_color = fillRectImageUI.color;
         player_status = this.gameObject.GetComponent<PlayerStatus>();
     }
 

@@ -15,6 +15,9 @@ public class FootStepSoundController : SerializedMonoBehaviour
     }
     public AudioSource audio_source;
 
+    [Header("Update関数から足音関数を実行するかどうか(Animation Eventから実行するなら不要)")]
+    public bool FootStepPlayFromUpdate;
+
     [Header("Groundの名前によって再生するクリップを変える、")]
     public FootStepControllerStatus foot_step_controller_status;
     public GroundCheck ground_check;
@@ -36,39 +39,41 @@ public class FootStepSoundController : SerializedMonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (ground_check.OnGround)
-        //{
-        //    if(move_status == MoveStatus.Run)
-        //    {
-        //        PlaySoundDelayTimeNow += Time.deltaTime;
-        //        if(PlaySoundDelayTimeNow > RunPlayDelay)
-        //        {
-        //            FootStepSoundPlay(ground_check.GroundedTagName, "Run");
-        //            PlaySoundDelayTimeNow = 0;
-        //        }
-        //    }
-        //    else if(move_status == MoveStatus.Walk)
-        //    {
-        //        PlaySoundDelayTimeNow += Time.deltaTime;
-        //        if (PlaySoundDelayTimeNow > WalkPlayDelay)
-        //        {
-        //            FootStepSoundPlay(ground_check.GroundedTagName, "Walk");
-        //            PlaySoundDelayTimeNow = 0;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        PlaySoundDelayTimeNow = 0;
-        //    }
-        //}
-        //else
-        //{
-        //    PlaySoundDelayTimeNow = 0;
-        //}
+        if (!FootStepPlayFromUpdate) return;
+        if (ground_check.OnGround)
+        {
+            if (move_status == MoveStatus.Run)
+            {
+                PlaySoundDelayTimeNow += Time.deltaTime;
+                if (PlaySoundDelayTimeNow > RunPlayDelay)
+                {
+                    FootStepSoundPlay("Run");
+                    PlaySoundDelayTimeNow = 0;
+                }
+            }
+            else if (move_status == MoveStatus.Walk)
+            {
+                PlaySoundDelayTimeNow += Time.deltaTime;
+                if (PlaySoundDelayTimeNow > WalkPlayDelay)
+                {
+                    FootStepSoundPlay("Walk");
+                    PlaySoundDelayTimeNow = 0;
+                }
+            }
+            else
+            {
+                PlaySoundDelayTimeNow = 0;
+            }
+        }
+        else
+        {
+            PlaySoundDelayTimeNow = 0;
+        }
     }
     [Button]
     public void FootStepSoundPlay(string _MoveMode)
     {
+        if (FootStepPlayFromUpdate) return;
         //GroundedNameによって音を変える
         GroundedName = ground_check.GroundedTagName;
         if (!ground_check.OnGround) return;
