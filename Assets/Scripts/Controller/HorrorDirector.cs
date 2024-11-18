@@ -39,16 +39,15 @@ public class HorrorDirector : Singleton<HorrorDirector>
 
     public void NearEnemyReset()
     {
-        MainBGM.DOFade(1, 0).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+        MainBGM.DOFade(0, 1).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
         {
-
-            NearEnemyVolume.SetActive(false);
             ResetSetting();
         });
     }
     [Button]
     public void DiscoveriedHorror()
     {
+        NearEnemyVolume.SetActive(false);
         MainBGM.clip = DiscoveriedBGM;
         MainBGM.Play();
         DiscoveryNow = true;
@@ -62,6 +61,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     }
     public void ResetSetting()
     {
+        NearEnemyVolume.SetActive(false);
         MainBGM.clip = MainDefaultBGM;
         MainBGM.volume = 1;
         MainBGM.Play();
