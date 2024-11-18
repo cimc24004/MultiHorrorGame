@@ -50,18 +50,15 @@ public class ItemMenuController : SerializedMonoBehaviour
         {
             if (player_input.currentActionMap["LightSwitchAction"].triggered)
             {
-                Debug.Log("LightSwitchActionTriggered!!!!");
                 if (!LightSwitchMode)
                 {
                     //ライトをつける。
-                    Debug.Log("!LightSwitchMode");
                     LightObject.SetActive(true);
                     LightSwitchMode = true;
                 }
                 else
                 {
                     //ライトをけす。
-                    Debug.Log("LightSwitchMode");
 
                     LightObject.SetActive(false);
                     LightSwitchMode = false;
@@ -118,7 +115,6 @@ public class ItemMenuController : SerializedMonoBehaviour
             }
             if (scroll_value != 0)
             {
-                Debug.Log("scroll_value:::::: ??" + scroll_value);
                 //スクロールしている最中なのであれば アイテムをセレクトします。
                 
                 ItemSelectByIndex(NowItemSelectIndexX);
@@ -167,7 +163,6 @@ public class ItemMenuController : SerializedMonoBehaviour
     public void ItemSelectByIndex(int ItemIndex)
     {
         //アイテムをセレクトする時の関数。(セレクトしている状態を示すUIやindex、SelectNowGameObjectを更新する。)
-        Debug.Log("EventSystem.current.???: " + EventSystem.current.currentSelectedGameObject);
         
         //現在セレクトしているオブジェクトを引数のItemIndexによって取得。 
         //GetChildで何番目のオブジェクトを取得するというコード。

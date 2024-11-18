@@ -51,7 +51,6 @@ public class PlayerMoveScript : MonoBehaviour
         {
             this.transform.localRotation = Quaternion.Euler(0, DirectionCamera.transform.rotation.eulerAngles.y, 0);
             MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
-            Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             character_controller.Move(MoveDirection * Time.deltaTime * NowSpeed);
             player_status.MoveSpeed = NowSpeed;
         }

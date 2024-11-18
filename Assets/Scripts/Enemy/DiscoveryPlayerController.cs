@@ -157,7 +157,6 @@ public class DiscoveryPlayerController : MonoBehaviour
             if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, layerMask))
             {
                 //Raycastをプレイヤーにとりあえず飛ばす。
-                Debug.Log("raycast_hit_name??: " + raycast_hit.collider.gameObject.name + "    " + "raycast_hit_layer::" + raycast_hit.collider.gameObject.layer);
                 if (!ObstacleLayers.Contains(LayerMask.LayerToName(raycast_hit.collider.gameObject.layer)))
                 {
                     //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。

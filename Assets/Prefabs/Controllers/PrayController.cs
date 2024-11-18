@@ -36,7 +36,7 @@ public class PrayController : MonoBehaviour
     {
         if (!once)
         {
-            GageCanvas.SetActive(false);
+           GageCanvas.SetActive(false);
             once = true;
         }
 
