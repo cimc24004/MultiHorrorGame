@@ -7,69 +7,81 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
     //敵との距離で心拍音を上げる。
     [SerializeField] private float to_enemy_distance;
 
-    public GameObject Parent;
-    private AudioSource audio_source;
     private HorrorDirector horror_director;
-    private bool once;
 
-    [SerializeField]private bool NearEnemy;
+    public bool NearEnemyStart;
+    public bool AwayEnemyWhenNearEnemyTrue;
+
+    public bool NearEnemyNow;
+
+    public bool AwayEnemy;
+
+    [SerializeField]private float AwayEnemyTrueTimeNow;
+    //NearEnemyがtrueのとき どのくらいtrueなのかを時間計測
+    [SerializeField] private float AwayEnemyWhenNearEnemyTrueTimeNow;
     // Start is called before the first frame update
     void Start()
     {
-        audio_source = this.gameObject.GetComponent<AudioSource>();
         horror_director = HorrorDirector.instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (NearEnemy)
+        if (NearEnemyStart)
         {
-            if (!once)
+            //NearEnemyStartは一フレームだけ通るようにしておく。
+            if (!NearEnemyNow)
             {
-                NearDistanceEvent();
-                once = true;
+                //NearEnemyNowがfalseの場合(すでに敵が近くにいるならこの関数は実行しない)
+                NearStartDistaceEvent();
+            }
+            NearEnemyNow = true;
+
+            NearEnemyStart = false;
+        }
+        if (NearEnemyNow)
+        {
+            //NearEnemyNowがtrueならNearDistanceNowEventを実行します。
+            NearDistanceNowEvent();
+            if (AwayEnemy)
+            {
+                //敵がプレイヤーから離れてから、数秒間たった場合完全にFarDistance実行。
+                //もし、１りの敵が離れても、ほかの敵が近くにいるのであれば、このtimeは0となる。
+                AwayEnemyTrueTimeNow += Time.deltaTime;
+                if(AwayEnemyTrueTimeNow > 1)
+                {
+                    FarDistanceEvent();
+                    ResetWhenFar();
+                }
+            }
+            else
+            {
+                AwayEnemyTrueTimeNow = 0;
             }
         }
-
     }
-
-    private void OnTriggerEnter(Collider other)
+    private void FixedUpdate()
     {
-
+        AwayEnemy = true;
     }
-    private void OnTriggerStay(Collider other)
+    private void NearStartDistaceEvent()
     {
-        if (other.gameObject.tag == "Enemy")
-        {
-            to_enemy_distance = Vector3.Distance(this.transform.position, other.gameObject.transform.position);
-            Debug.Log("Enemy  ??" + other.gameObject.name + "Distance->" + to_enemy_distance);
-
-            NearEnemy = true;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if(other.gameObject.tag == "Enemy")
-        {
-            FarDistanceEvent();
-            NearEnemy = false;
-            once = false;
-        }
-    }
-
-    private void NearDistanceEvent()
-    {
-        if (horror_director.DiscoveryNow) return;
-        audio_source.Play();
         horror_director.NearEnemy();
-        Parent.SetActive(true);
+    }
+    private void NearDistanceNowEvent()
+    {
     }
 
     private void FarDistanceEvent()
     {
-        horror_director.ResetSetting();
-        audio_source.Stop();
-        Parent.SetActive(false);
+        horror_director.NearEnemyReset();
+        NearEnemyNow = false;
+    }
+
+    private void ResetWhenFar()
+    {
+        NearEnemyNow = false;
+        AwayEnemyTrueTimeNow = 0;
     }
 }

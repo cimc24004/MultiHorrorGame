@@ -14,6 +14,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public AudioClip MainDefaultBGM;
 
     public GameObject DiscoveryVolume;
+    public GameObject NearEnemyVolume;
 
     public bool DiscoveryNow;
     // Start is called before the first frame update
@@ -33,6 +34,17 @@ public class HorrorDirector : Singleton<HorrorDirector>
         if (DiscoveryNow) return;
         MainBGM.clip = NearEnemyBGM;
         MainBGM.Play();
+        NearEnemyVolume.SetActive(true);
+    }
+
+    public void NearEnemyReset()
+    {
+        MainBGM.DOFade(1, 0).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+        {
+
+            NearEnemyVolume.SetActive(false);
+            ResetSetting();
+        });
     }
     [Button]
     public void DiscoveriedHorror()
@@ -51,6 +63,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public void ResetSetting()
     {
         MainBGM.clip = MainDefaultBGM;
+        MainBGM.volume = 1;
         MainBGM.Play();
         DiscoveriedSound.DOFade(1,0).OnComplete(() => { 
             DiscoveriedSound.volume = 1;
