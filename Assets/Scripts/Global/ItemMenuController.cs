@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using TMPro;
 public class ItemMenuController : SerializedMonoBehaviour
 {
     //アイテムのメニューコントローラー　
@@ -34,7 +35,11 @@ public class ItemMenuController : SerializedMonoBehaviour
     [ShowIf("HaveLight", true)]
     [Header("懐中電灯(?)オブジェクトをセット")]
     public GameObject LightObject;
+    public TextMeshProUGUI item_description_text_ui;
+    public GameObject ItemDescriptionUI;
+    
     private bool LightSwitchMode = false;
+    private ItemUI before_selected_item_ui;
     private void Start()
     {
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
@@ -44,7 +49,14 @@ public class ItemMenuController : SerializedMonoBehaviour
     {
         //ホイールの値を取得する。
         scroll_value_float = player_input.currentActionMap["ItemSelectWheel"].ReadValue<float>();
-
+        if (!item_belongings_controller.ExistsItems())
+        {
+            ItemDescriptionUI.SetActive(false);
+        }
+        else
+        {
+            ItemDescriptionUI.SetActive(true);
+        }
         //懐中電灯を持っていたら
         if (HaveLight)
         {
@@ -108,8 +120,10 @@ public class ItemMenuController : SerializedMonoBehaviour
                     if (item_belongings_controller.ExistItemUIItemStatusByFind(NowSelect_item_status))
                     {
                         //選択しているアイテムがあったらアイテムを使用する。
-                        Debug.Log("NowSelectItemUIObject: " + NowSelectItemUIObject);
-                        ItemUseFromMenu(NowSelectItemUIObject);
+                        if (NowSelect_item_status && NowSelect_item_status.ItemUseFromClick)
+                        {
+                            ItemUseFromMenu(NowSelectItemUIObject);
+                        }
                     }
                 }
             }
@@ -175,18 +189,33 @@ public class ItemMenuController : SerializedMonoBehaviour
     }
     private void CommonItemSelect(GameObject selectObj)
     {
+        Debug.Log("CommonItemSelect");
         //今洗濯しているやつをButtonコンポーネントで取得し、選択する。
         NowSelectItemUIObject.gameObject.GetComponent<Button>().Select();
+
         //選択しているアイテムステータスも取得しておく。
         NowSelect_item_status = NowSelectItemUIObject.GetComponent<ItemUI>().item_status;
+        
+        if(before_selected_item_ui != null)
+        {
+            //前に選択していたアイテムがあった場合
+            before_selected_item_ui.FocusUI.SetActive(false);
+        }
+
+        before_selected_item_ui = item_belongings_controller.belonging_item_uis[NowSelect_item_status].ItemUIs.GetComponent<ItemUI>();
+        
+        before_selected_item_ui.FocusUI.SetActive(true);
+
         //変数にIndexも入れておくよ。
         NowItemSelectIndexX = selectObj.transform.GetSiblingIndex();
+
+        item_description_text_ui.SetText(NowSelect_item_status.ItemDescription);
 
         ItemMenuShowUpNow = true;
         //この時間を0にしておくことで選択したら非表示するまでの時間を伸ばせる。
         WaitHideTimeNow = 0;
     }
-    private void ItemUseFromMenu(GameObject item_ui_obj)
+    public void ItemUseFromMenu(GameObject item_ui_obj)
     {
         //アイテムメニューからアイテムを使う関数。
 

@@ -21,7 +21,8 @@ public class ItemStatus : SerializedScriptableObject
         CanThrow, //投げられるもん
         Equip, //装備品(懐中電灯とか)
         Key, //扉を開けるための鍵
-        Event //イベント用 桜の木の下に納めるやつ。
+        Event, //イベント用 桜の木の下に納めるやつ。
+        EmergencyAttack //捕まったときに攻撃できるアイテム
     }
     public enum ApperanceRatio
     {
@@ -34,6 +35,7 @@ public class ItemStatus : SerializedScriptableObject
 
     [Required] public Sprite MenuSprite;
     [Required] public string ItemName;
+    [TextArea]
     public string ItemDescription;
     [Header("ランダムで引き出しなどにアイテムを召喚させるか。")]
     public bool PutInItemBox = true;
@@ -43,7 +45,8 @@ public class ItemStatus : SerializedScriptableObject
     [HideIf("item_type", ItemType.Equip)]
     [Header("アイテムを使用したときのPrefab(投げたりのときは)")]
     public GameObject ItemUseObjectPrefab;
-
+    [ShowIf("@item_type == ItemType.CanThrow || item_type == ItemType.EmergencyAttack")]
+    public float StopEnemyTime = 3;
 
     [ShowIf("item_type", ItemType.CanThrow)]
     [Header("敵を停止させることができるアイテムかどうか")]
@@ -55,4 +58,7 @@ public class ItemStatus : SerializedScriptableObject
     [ShowIf("PutInItemBox")]
     [Header("ランダムでこのアイテムが引かれる可能性。")]
     [Required] public ApperanceRatio apperance_ratio;
+
+    [Header("アイテムを右クリックから使用できるか")]
+    public bool ItemUseFromClick = true;
 }

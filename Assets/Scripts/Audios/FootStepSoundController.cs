@@ -4,6 +4,8 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 public class FootStepSoundController : SerializedMonoBehaviour
 {
+    //足音を鳴らすためだけのスクリプト
+
     public enum MoveStatus
     {
         Walk,
@@ -11,12 +13,13 @@ public class FootStepSoundController : SerializedMonoBehaviour
         Crouch,
         Stop
     }
-    //足音を鳴らすためだけのスクリプト
     public AudioSource audio_source;
 
-    [Header("Groundの名前によって再生するクリップを変える、")]
-    public Dictionary<string, Dictionary<string,List<AudioClip>>> audio_random_with_grounded_name;
+    [Header("Update関数から足音関数を実行するかどうか(Animation Eventから実行するなら不要)")]
+    public bool FootStepPlayFromUpdate;
 
+    [Header("Groundの名前によって再生するクリップを変える、")]
+    public FootStepControllerStatus foot_step_controller_status;
     public GroundCheck ground_check;
 
     public MoveStatus move_status;
@@ -25,6 +28,8 @@ public class FootStepSoundController : SerializedMonoBehaviour
     public float WalkPlayDelay = 1;
 
     public float PlaySoundDelayTimeNow;
+
+    private string GroundedName;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,23 +39,36 @@ public class FootStepSoundController : SerializedMonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!FootStepPlayFromUpdate) return;
         if (ground_check.OnGround)
         {
-            if(move_status == MoveStatus.Run)
+            if(ground_check.GroundedTagName != GroundedName)
+            {
+                if (move_status == MoveStatus.Run)
+                {
+                    FootStepSoundPlayFromUpdate("Run");
+                }
+                else if (move_status == MoveStatus.Walk)
+                {
+
+                    FootStepSoundPlayFromUpdate("Walk");
+                }
+            }
+            if (move_status == MoveStatus.Run)
             {
                 PlaySoundDelayTimeNow += Time.deltaTime;
-                if(PlaySoundDelayTimeNow > RunPlayDelay)
+                if (PlaySoundDelayTimeNow > RunPlayDelay)
                 {
-                    FootStepSoundPlay(ground_check.GroundedTagName, "Run");
+                    FootStepSoundPlayFromUpdate("Run");
                     PlaySoundDelayTimeNow = 0;
                 }
             }
-            else if(move_status == MoveStatus.Walk)
+            else if (move_status == MoveStatus.Walk)
             {
                 PlaySoundDelayTimeNow += Time.deltaTime;
                 if (PlaySoundDelayTimeNow > WalkPlayDelay)
                 {
-                    FootStepSoundPlay(ground_check.GroundedTagName, "Walk");
+                    FootStepSoundPlayFromUpdate("Walk");
                     PlaySoundDelayTimeNow = 0;
                 }
             }
@@ -65,20 +83,29 @@ public class FootStepSoundController : SerializedMonoBehaviour
         }
     }
     [Button]
-    public void FootStepSoundPlay(string _GroundedName, string _MoveMode)
+    public void FootStepSoundPlay(string _MoveMode)
     {
+        if (FootStepPlayFromUpdate) return;
         //GroundedNameによって音を変える
-        if (this.gameObject.name == "泣き霊 (1)")
-            Debug.Log("GroundedName: ? " + _GroundedName);
-        if (audio_random_with_grounded_name.ContainsKey(_GroundedName))
+        GroundedName = ground_check.GroundedTagName;
+        if (!ground_check.OnGround) return;
+        if (foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(GroundedName))
         {
-            int Count = audio_random_with_grounded_name[_GroundedName][_MoveMode].Count;
+            int Count = foot_step_controller_status.audio_random_with_grounded_name[GroundedName][_MoveMode].Count;
             int r = Random.Range(0, Count);
-            audio_source.PlayOneShot(audio_random_with_grounded_name[_GroundedName][_MoveMode][r]);
-            if(this.gameObject.name == "泣き霊 (1)")
-            {
-                Debug.Log(audio_random_with_grounded_name[_GroundedName][_MoveMode][r] + "を再生するよおお");
-            }
+            audio_source.PlayOneShot(foot_step_controller_status.audio_random_with_grounded_name[GroundedName][_MoveMode][r]);
+        }
+    }
+
+    public void FootStepSoundPlayFromUpdate(string _MoveMode)
+    {
+        GroundedName = ground_check.GroundedTagName;
+        if (!ground_check.OnGround) return;
+        if (foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(GroundedName))
+        {
+            int Count = foot_step_controller_status.audio_random_with_grounded_name[GroundedName][_MoveMode].Count;
+            int r = Random.Range(0, Count);
+            audio_source.PlayOneShot(foot_step_controller_status.audio_random_with_grounded_name[GroundedName][_MoveMode][r]);
         }
     }
 }

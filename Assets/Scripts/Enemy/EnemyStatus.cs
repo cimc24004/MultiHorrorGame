@@ -13,14 +13,18 @@ public class EnemyStatus : MonoBehaviour
     public FootStepSoundController foot_step_sound_controller;
     public EnemyMoveState enemy_move_state;
     public GameObject FaceExpandingCamera;
+
+    public Transform EyePosition;
     private FollowObjectByNav follow_object_by_nav;
     private DiscoveryPlayerController discovery_player_controller;
     private Animator anim;
     private CharacterMovePermit character_move_permit;
     private TimeManager time_manager;
     private EnemyRoutingController enemy_routing_controller;
+    [HideInInspector]public EnemyFlinchController enemy_flinch_controller;
     public bool StopEnemyByPlayerNow;
     private float StopEnemyByPlayerTimeNow;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,20 +32,12 @@ public class EnemyStatus : MonoBehaviour
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
+        enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         anim = this.gameObject.GetComponent<Animator>();
         time_manager = TimeManager.instance;
     }
     private void Update()
     {
-        if (StopEnemyByPlayerNow)
-        {
-            StopEnemyByPlayerTimeNow -= Time.deltaTime;
-            Debug.Log("StopEnemyByPlayerTimeNow: " + StopEnemyByPlayerTimeNow);
-            if(StopEnemyByPlayerTimeNow <= 0)
-            {
-                StopEnemyByPlayerToMove();
-            }
-        }
         switch (enemy_move_state)
         {
             case EnemyMoveState.Walk:
@@ -61,36 +57,34 @@ public class EnemyStatus : MonoBehaviour
 
         if (enemy_move_state == EnemyMoveState.Run)
         {
+            if (this.gameObject.name == "‹ƒ‚«—ì")
+
+                Debug.Log("EnemyStatus.EnemyMoveState.Run");
             anim.SetFloat("MoveY", 1);
         }else if(enemy_move_state == EnemyMoveState.Walk)
         {
+            if (this.gameObject.name == "‹ƒ‚«—ì")
+
+                Debug.Log("EnemyStatus.EnemyMoveState.Walk");
             anim.SetFloat("MoveY", 0.5f);
         }
         else if(enemy_move_state == EnemyMoveState.Stop)
         {
+            if (this.gameObject.name == "‹ƒ‚«—ì")
+
+                Debug.Log("EnemyStatus.EnemyMoveState.Stop");
             anim.SetFloat("MoveY", 0);
         }
-        if (follow_object_by_nav.ArrivedTarget && enemy_move_state != EnemyMoveState.Walk)
+        if (follow_object_by_nav.ArrivedTarget)
         {
-            enemy_move_state = EnemyMoveState.Stop;
         }
 
     }
     public void StopEnemyByPlayer(float stop_time)
     {
-        StopEnemyByPlayerTimeNow = stop_time;
-        StopEnemyByPlayerNow = true;
-        discovery_player_controller.DiscoveryPlayerNow = false;
+        enemy_flinch_controller.FlinchStart(stop_time);
         enemy_routing_controller.NearRouteSet();
-        this.enemy_move_state = EnemyMoveState.Stop;
-        character_move_permit.Stop();
-    }
-    public void StopEnemyByPlayerToMove()
-    {
-        character_move_permit.Move();
 
-        StopEnemyByPlayerNow = false;
     }
-
     
 }

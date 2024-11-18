@@ -103,6 +103,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2307212836539162163}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 700d9695348244847b8c57b447fd69ca,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 941414529033025101}
   m_SourcePrefab: {fileID: 100100000, guid: 700d9695348244847b8c57b447fd69ca, type: 3}
 --- !u!1 &3919775135198897917 stripped
 GameObject:
@@ -147,6 +151,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 51838244fe887174ba82423d1c576537, type: 3}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 0
 --- !u!114 &4794131651083977139
 MonoBehaviour:
@@ -176,6 +182,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 941414529033025101}
 --- !u!65 &1117155456799909417
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -217,10 +224,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -253,7 +260,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -293,3 +300,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &941414529033025101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3919775135198897917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0
+  Doors:
+  - {fileID: 3919775135198897917}

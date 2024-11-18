@@ -22,7 +22,8 @@ public class CrossHairEvent : MonoBehaviour
 
 
     private PrayController pray_controller;
-
+    private TheDoorController the_door_controller;
+    private Ray main_ray;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,10 +35,21 @@ public class CrossHairEvent : MonoBehaviour
     void Update()
     {
         //�J�����̒������烌�C�L���X�g���΂��B
-        Ray ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        main_ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.green);
-        if (Physics.Raycast(ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
+        
+        if (Physics.Raycast(main_ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
         {
+
+            if (raycast_hit.collider.gameObject.tag == "Pray")
+            {
+                if (RaycasstedObj != raycast_hit.collider.gameObject)
+                {
+                    pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
+                }
+                pray_controller.OnTouchOn();
+            }
+
             RaycasstedObj = raycast_hit.collider.gameObject;
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
@@ -46,6 +58,7 @@ public class CrossHairEvent : MonoBehaviour
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
                 cross_hair_status.HitedTag = RaycasstedObj.tag;
+                cross_hair_status.HitedObj = RaycasstedObj;
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = true;
             }
             else
@@ -53,11 +66,7 @@ public class CrossHairEvent : MonoBehaviour
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             }
 
-            if (raycast_hit.collider.gameObject.tag == "Pray")
-            {
-                pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
-                pray_controller.OnTouchOn();
-            }
+
 
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {
@@ -90,8 +99,9 @@ public class CrossHairEvent : MonoBehaviour
                 {
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
-                    TheDoorController the_door_controller = door_open_close_controlelr.the_door_controller;
+                    the_door_controller = door_open_close_controlelr.the_door_controller;
                     the_door_controller.DoorOpenClosedChangeByStatus(Player);
+
                     return;
 
                 }
@@ -110,6 +120,8 @@ public class CrossHairEvent : MonoBehaviour
                 }
 
             }
+
+
 
             if (player_input.currentActionMap["RaycastAction"].IsPressed())
             {

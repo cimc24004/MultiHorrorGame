@@ -97,6 +97,10 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 30c8d5fe21abaa2438d663bfdaad41c2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3961985059879292622}
     - targetCorrespondingSourceObject: {fileID: -4802577147811290208, guid: 30c8d5fe21abaa2438d663bfdaad41c2,
         type: 3}
       insertIndex: -1
@@ -185,6 +189,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 3961985059879292622}
 --- !u!114 &8670219440753283683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,10 +250,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -281,7 +286,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -327,6 +332,29 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3697807768953935570}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4580206189045934979 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 30c8d5fe21abaa2438d663bfdaad41c2,
+    type: 3}
+  m_PrefabInstance: {fileID: 3697807768953935570}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3961985059879292622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4580206189045934979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0
+  Doors:
+  - {fileID: 1011217638113768818}
+  - {fileID: 6798721611747825539}
 --- !u!4 &5263088644158296881 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8816781082224444899, guid: 30c8d5fe21abaa2438d663bfdaad41c2,
@@ -388,6 +416,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 3961985059879292622}
 --- !u!114 &6687899777609195703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,10 +477,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -484,7 +513,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

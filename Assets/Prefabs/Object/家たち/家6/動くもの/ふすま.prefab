@@ -121,6 +121,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: -8400479654780410335}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8acff786782310d4d9d604524bad730e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 263453875006378078}
     - targetCorrespondingSourceObject: {fileID: -2459875658324418586, guid: 8acff786782310d4d9d604524bad730e,
         type: 3}
       insertIndex: -1
@@ -209,6 +213,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 263453875006378078}
 --- !u!114 &4635469671540841135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,6 +251,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
   CloseClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
   CloseCompletedClip: {fileID: 0}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 0
 --- !u!82 &5556266919001224775
 AudioSource:
@@ -267,10 +274,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -303,7 +310,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -404,6 +411,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 263453875006378078}
 --- !u!114 &241726522494804683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,6 +449,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
   CloseClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
   CloseCompletedClip: {fileID: 0}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 0
 --- !u!82 &2767880287365274435
 AudioSource:
@@ -462,10 +472,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -498,7 +508,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -564,10 +574,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -600,7 +610,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -640,6 +650,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &263453875006378078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6423602712595244499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0
+  Doors:
+  - {fileID: 592387646039639908}
+  - {fileID: 4281501171710008257}
 --- !u!4 &8226716596274747421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2868646021178638495, guid: 8acff786782310d4d9d604524bad730e,

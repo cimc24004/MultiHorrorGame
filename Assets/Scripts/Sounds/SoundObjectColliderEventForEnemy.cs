@@ -5,10 +5,10 @@ using UnityEngine;
 public class SoundEnemyObjectColliderForEvent : MonoBehaviour
 {
     //敵につける音センサーイベントスクリプト(プレイヤーの足音以外のアイテムから出る音など)
-    
+
     //音が鳴るアイテムに音センサーコライダーをつけ、Enemyにもセンサーコライダーをつける。
     //こうすることで高さにも対応したセンサー機能ようなのができる。
-
+    public bool NoticedSound;
     private bool InSoundRange;
     private SoundObjectEventWithEnemySensor sound_object_event_with_sensor;
     private EnemySoundSensor enemy_sound_sensor;
@@ -34,12 +34,8 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
             {
                 //SoundObject(非常ベルや投擲アイテム)の音がなっている最中ならば
                 //enemy_sound_sensor.ArriveSoundPlaceWaitTimeToReturnNow = 0;
-                enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.SpeedRunWhenRealizeSound);
-                if (!follow_object_by_nav.ArrivedTarget)
-                {
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
-                }
-
+                enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.sound_sensor_status.SpeedRunWhenRealizeSound, true);
+                enemy_sound_sensor.sound_by_obj = true;
             }
 
 

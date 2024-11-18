@@ -90,6 +90,7 @@ public class ItemDatabases : Singleton<ItemDatabases>
 
             }
         }
+        Debug.Log($"resulted_itemsCOunt: {resulted_items.Count} r={r}");
         int result_r = Random.Range(0,resulted_items.Count);
         ItemStatus decided_result_item = resulted_items[result_r];
         Debug.Log($"アイテムは....{decided_result_item.apperance_ratio.ToString()}の{decided_result_item.ItemName}が当たりました！");

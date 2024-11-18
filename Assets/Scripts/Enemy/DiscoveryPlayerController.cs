@@ -8,22 +8,7 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     public List<string> ObstacleLayers;
     public Transform EyePosition;
-    [Header("視野角")]
-    public float VisionFieldAngle;
-    [Header("Playerを見つけられる範囲")]
-    public float PlayerDiscoveryRange;
-    [Header("Playerを見つけた時追いかけるスピード")]
-    public float SpeedWhenDiscoveried;
-    [Header("視認できるオブジェクトのレイヤー")]
-    public LayerMask layerMask;
-    //特定のレイヤーオブジェクトのみで視野判定を行っていくための設定
-    //public List<string> layer_mask_lists = new List<string>{ "Player", "Object" };
-    //プレイヤーが自分の視界から外れている間の時間
-    [Header("プレイヤーが敵の視界から外れている間の追いかけるのを諦めるまでの時間")]
-    public float SightOutPlayerTime = 1;
-
-    [Header("プレイヤーを追いかけるのをあきらめた後、戻るときの歩く速さ。")]
-    public float SppedWhenReturned = 1;
+    public DiscoveryPlayerStatus discovery_player_status;
     //プレイヤーを視認しているかどうか
     public bool SightningPlayer;
     //プレイヤーが隠れた時に敵はその隠れた所を見ているかどうか。
@@ -51,7 +36,6 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     private HorrorDirector horror_director;
 
-
     private bool DiscoveriedEventOnce;
     private bool NonDiscoveriedEventOnce;
     // Start is called before the first frame update
@@ -75,7 +59,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     {
         direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
         ToPlayerDistance = Vector3.Distance(Player.transform.position, this.transform.position);
-        if (ToPlayerDistance <= PlayerDiscoveryRange)
+        if (ToPlayerDistance <= discovery_player_status.PlayerDiscoveryRange)
             InsidePlayer = true;
         else
             InsidePlayer = false;
@@ -86,7 +70,10 @@ public class DiscoveryPlayerController : MonoBehaviour
                 horror_director.DiscoveriedHorror();
                 DiscoveriedEventOnce = true;
             }
-
+            if (follow_object_nav.ArrivedTarget)
+            {
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+            }
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
             enemy_routing_controller.PermitFunction(false);
@@ -97,6 +84,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             DiscoveriedEventOnce = false;
             if (!NonDiscoveriedEventOnce)
             {
+                horror_director.DiscoveryNow = false;
                 horror_director.ResetSetting();
                 NonDiscoveriedEventOnce = true;
             }
@@ -109,7 +97,7 @@ public class DiscoveryPlayerController : MonoBehaviour
 
             //時間を計り、ある程度の時間がたったら追いかけるのをやめる
             SightOutPlayerTimeNow += Time.deltaTime;
-            if (SightOutPlayerTimeNow > SightOutPlayerTime)
+            if (SightOutPlayerTimeNow > discovery_player_status.SightOutPlayerTime)
             {
                 Debug.Log("時間経過しましたよ");
                 //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
@@ -150,11 +138,11 @@ public class DiscoveryPlayerController : MonoBehaviour
                 this.SightningPlayerWhenHidePlayer = false;
             }
         }
-        if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= VisionFieldAngle && InsidePlayer)
+        if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle && InsidePlayer)
         {
             //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
             Debug.Log("プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか");
-            if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, layerMask))
+            if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, discovery_player_status.layerMask))
             {
                 //Raycastをプレイヤーにとりあえず飛ばす。
                 if (!ObstacleLayers.Contains(LayerMask.LayerToName(raycast_hit.collider.gameObject.layer)))
@@ -222,7 +210,7 @@ public class DiscoveryPlayerController : MonoBehaviour
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
             }
 
-            follow_object_nav.ChaseToTargetSet(true, Player.transform.position, SpeedWhenDiscoveried);
+            follow_object_nav.ChaseToTargetSet(true, Player.transform.position, discovery_player_status.SpeedWhenDiscoveried);
         }
         else
         {
@@ -232,7 +220,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, -VisionFieldAngle, 0) * EyePosition.forward) * 10);
-        Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, VisionFieldAngle, 0) * EyePosition.forward) * 10);
+        Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, -discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
+        Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
     }
 }

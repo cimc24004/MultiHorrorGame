@@ -93,6 +93,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1954233229732459688}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 07531f2d17ba3df4db1e452e263dcf93,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5989116385697359925}
   m_SourcePrefab: {fileID: 100100000, guid: 07531f2d17ba3df4db1e452e263dcf93, type: 3}
 --- !u!1 &6618904566071645735 stripped
 GameObject:
@@ -149,6 +153,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 5989116385697359925}
 --- !u!114 &4730580781067193833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,8 +214,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 20
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -285,3 +290,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5989116385697359925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6618904566071645735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  need_break_count: 3
+  break_count_now: 0
+  Doors:
+  - {fileID: 6618904566071645735}

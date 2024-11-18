@@ -306,6 +306,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 0}
 --- !u!114 &7670873877047748027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,6 +344,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
   CloseClip: {fileID: 8300000, guid: 91654c7549f8f5447816db38c6cfd7e3, type: 3}
   CloseCompletedClip: {fileID: 0}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 2
 --- !u!82 &3279735445903147458
 AudioSource:
@@ -364,10 +367,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -400,7 +403,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -495,6 +498,7 @@ MonoBehaviour:
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 0}
 --- !u!114 &9160152585786021587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532,6 +536,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
   CloseClip: {fileID: 8300000, guid: 91654c7549f8f5447816db38c6cfd7e3, type: 3}
   CloseCompletedClip: {fileID: 0}
+  ItemApperanceWhenOpended: 0
+  AlreadyOpended: 0
   move_x_y_z: 2
 --- !u!82 &8616482322063907264
 AudioSource:
@@ -553,10 +559,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -589,7 +595,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
