@@ -10,7 +10,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public AudioSource MainBGM;
 
     public GameObject ToEnemyNear;
-    public AudioSource ToEnemyNearAudioSource;
+    public AudioSource ToEnemyNearBGMAudioSource;
+    public AudioSource ToEnemyNearHeartBeatSoundSource;
 
     public GameObject Discoveried;
     public GameObject DiscoveriedSound;
@@ -42,10 +43,15 @@ public class HorrorDirector : Singleton<HorrorDirector>
 
     public void NearEnemyReset()
     {
-        ToEnemyNearAudioSource.DOFade(0, 1).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+        
+        ToEnemyNearBGMAudioSource.DOFade(0, 1).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
         {
-            ToEnemyNearAudioSource.volume = 1;
+            ToEnemyNearBGMAudioSource.volume = 1;
             ResetSetting();
+        });
+        ToEnemyNearHeartBeatSoundSource.DOFade(0, 1).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+        {
+            ToEnemyNearHeartBeatSoundSource.volume = 1;
         });
     }
     [Button]
