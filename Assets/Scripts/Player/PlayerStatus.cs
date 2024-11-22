@@ -34,12 +34,13 @@ public class PlayerStatus : Singleton<PlayerStatus>
     [Header("移動速度")]
     public float MoveSpeed;
 
-    [Header("スタミナコスト")]
-    public float StaminaCost = 0.3f;
+
     //今隠れているかどうか
     public bool HidingNow;
     public float MoveX;
     public float MoveY;
+    [Header("スタミナコスト")]
+    public float StaminaCost = 0.3f;
     [Header("現在のスタミナ値")]
     public float StaminaValueNow = 100f;
     [Header("スタミナ1fにつきの回復力")]
