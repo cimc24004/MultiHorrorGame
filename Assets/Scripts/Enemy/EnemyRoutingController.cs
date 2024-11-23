@@ -142,6 +142,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             RoutingMovePermit = false;
         }
     }
+    [Button]
     public void NearRouteSet()
     {
         //いちばん近く(仮)のルートをセットする関数
