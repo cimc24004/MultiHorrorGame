@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
 public class TextDisplay : MonoBehaviour
 {
     public string textToDisplay = "";
@@ -11,6 +10,7 @@ public class TextDisplay : MonoBehaviour
     {
         
     }
+    #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         GUIStyle style = new GUIStyle();
@@ -22,4 +22,5 @@ public class TextDisplay : MonoBehaviour
         Handles.color = textColor;
         Handles.Label(transform.position, textToDisplay, style);
     }
+    #endif
 }

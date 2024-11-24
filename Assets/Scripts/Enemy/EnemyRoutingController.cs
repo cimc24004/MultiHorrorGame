@@ -157,18 +157,19 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     public void NearRouteSet()
     {
         //いちばん近く(仮)のルートをセットする関数
+        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+        follow_object_by_nav.ArrivedTarget = false;
+        this.ArrivedTarget = false;
+        this.PermitFunction(true);
         if (OriginalRouting) {
             //オリジナルルートどおりなら、元の配置に戻るように
             this.NextRouteObject = Routings[RouteIndexNow];
-            this.NextRouteSet(this.NearRouteObject);
+            this.NextRouteSet(this.NextRouteObject);
             return;
         } 
-        follow_object_by_nav.ArrivedTarget = false;
-        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-        this.ArrivedTarget = false;
-        this.PermitFunction(true);
+
         //もし近くにルートがなかった場合はRouteIndexNowのものに対して進むようにする
-        if (this.NearRouteObject == null) this.NextRouteObject = Routings[RouteIndexNow];
+        if (this.NearRouteObject == null) this.NearRouteObject = Routings[RouteIndexNow];
         this.NextRouteSet(this.NearRouteObject);
     }
     [Button]

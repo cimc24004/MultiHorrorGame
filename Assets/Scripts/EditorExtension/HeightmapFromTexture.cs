@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+#if UNITY_EDITOR
 public class HeightmapFromTexture
 {
 
@@ -92,3 +93,4 @@ public class HeightmapFromTexture
         terrain.SetHeights(0, 0, heightmapData);
     }
 }
+#endif

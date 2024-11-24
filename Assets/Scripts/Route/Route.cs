@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+#if UNITY_EDITOR
 [ExecuteInEditMode]
+#endif
 public class Route : MonoBehaviour
 {
     private TextDisplay text_display;
