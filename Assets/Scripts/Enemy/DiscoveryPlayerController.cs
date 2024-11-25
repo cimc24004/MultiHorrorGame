@@ -6,7 +6,6 @@ public class DiscoveryPlayerController : MonoBehaviour
 {
     public bool DiscoveryPlayerNow;
 
-    public List<string> ObstacleLayers;
     public Transform EyePosition;
     public DiscoveryPlayerStatus discovery_player_status;
     //プレイヤーを視認しているかどうか
@@ -30,7 +29,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private CameraEnemyFaceExpanding camera_enemy_face_expanding;
     private EnemyRoutingController enemy_routing_controller;
     private TimeManager time_manager;
-
+    [SerializeField]private GameObject raycasted_obj;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
 
@@ -65,6 +64,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             InsidePlayer = false;
         if (DiscoveryPlayerNow)
         {
+            horror_director.DiscoveryNow = true;
             if (!DiscoveriedEventOnce)
             {
                 horror_director.DiscoveriedHorror();
@@ -144,18 +144,16 @@ public class DiscoveryPlayerController : MonoBehaviour
             Debug.Log("プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか");
             if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, discovery_player_status.layerMask))
             {
+                raycasted_obj = raycast_hit.collider.gameObject;
                 //Raycastをプレイヤーにとりあえず飛ばす。
-                if (!ObstacleLayers.Contains(LayerMask.LayerToName(raycast_hit.collider.gameObject.layer)))
+                //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
+                if (raycast_hit.collider.gameObject.tag == "Player")
                 {
-                    //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
-                    if (raycast_hit.collider.gameObject.tag == "Player")
-                    {
-                        Debug.Log("Playerが敵に見つかりました！");
-                        //プレイヤーを視認しているナウ。
-                        SightningPlayer = true;
-                        //即見つかる判定ではある。
-                        DiscoveryPlayerNow = true;
-                    }
+                    Debug.Log("Playerが敵に見つかりました！");
+                    //プレイヤーを視認しているナウ。
+                    SightningPlayer = true;
+                    //即見つかる判定ではある。
+                    DiscoveryPlayerNow = true;
                 }
                 else
                 {

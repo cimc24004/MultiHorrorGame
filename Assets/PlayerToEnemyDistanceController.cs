@@ -49,7 +49,7 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
                 //敵がプレイヤーから離れてから、数秒間たった場合完全にFarDistance実行。
                 //もし、１りの敵が離れても、ほかの敵が近くにいるのであれば、このtimeは0となる。
                 AwayEnemyTrueTimeNow += Time.deltaTime;
-                if(AwayEnemyTrueTimeNow > 1)
+                if(AwayEnemyTrueTimeNow > 2)
                 {
                     FarDistanceEvent();
                     ResetWhenFar();

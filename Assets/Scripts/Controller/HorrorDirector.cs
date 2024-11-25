@@ -6,15 +6,20 @@ using Cinemachine;
 using Sirenix.OdinInspector;
 public class HorrorDirector : Singleton<HorrorDirector>
 {
+    public GameObject Main;
     public AudioSource MainBGM;
-    public AudioSource DiscoveriedSound;
-    private CinemachineImpulseSource cinemachine_impulse_source;
-    public AudioClip NearEnemyBGM;
-    public AudioClip DiscoveriedBGM;
-    public AudioClip MainDefaultBGM;
 
+    public GameObject ToEnemyNear;
+    public AudioSource ToEnemyNearBGMAudioSource;
+    public AudioSource ToEnemyNearHeartBeatSoundSource;
+
+    public GameObject Discoveried;
+    public GameObject DiscoveriedSound;
     public GameObject DiscoveryVolume;
-    public GameObject NearEnemyVolume;
+
+
+    private AudioClip MainDefaultBGM;
+    private CinemachineImpulseSource cinemachine_impulse_source;
 
     public bool DiscoveryNow;
     // Start is called before the first frame update
@@ -32,28 +37,34 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public void NearEnemy()
     {
         if (DiscoveryNow) return;
-        MainBGM.clip = NearEnemyBGM;
-        MainBGM.Play();
-        NearEnemyVolume.SetActive(true);
+        Main.SetActive(false);
+        ToEnemyNear.SetActive(true);
     }
 
     public void NearEnemyReset()
     {
-        MainBGM.DOFade(0, 1).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+        
+        ToEnemyNearBGMAudioSource.DOFade(0, 1).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
         {
+            ToEnemyNearBGMAudioSource.volume = 1;
             ResetSetting();
+        });
+        ToEnemyNearHeartBeatSoundSource.DOFade(0, 1).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() =>
+        {
+            ToEnemyNearHeartBeatSoundSource.volume = 1;
         });
     }
     [Button]
     public void DiscoveriedHorror()
     {
-        NearEnemyVolume.SetActive(false);
-        MainBGM.clip = DiscoveriedBGM;
-        MainBGM.Play();
-        DiscoveryNow = true;
-        DiscoveriedSound.Play();
-
+        ToEnemyNear.SetActive(false);
+        DiscoveriedSound.SetActive(false);
+        DiscoveriedSound.SetActive(true);
+        Main.SetActive(false);
         DiscoveryVolume.SetActive(true);
+
+        DiscoveryNow = true;
+        Discoveried.SetActive(true);
         DOVirtual.DelayedCall(1, () => {
             DiscoveryVolume.SetActive(false);
         });
@@ -61,15 +72,21 @@ public class HorrorDirector : Singleton<HorrorDirector>
     }
     public void ResetSetting()
     {
-        NearEnemyVolume.SetActive(false);
-        MainBGM.clip = MainDefaultBGM;
-        MainBGM.volume = 1;
-        MainBGM.Play();
-        DiscoveriedSound.DOFade(1,0).OnComplete(() => { 
-            DiscoveriedSound.volume = 1;
-        });
+        StartCoroutine(check());
 
 
     }
+    private IEnumerator check()
+    {
+        yield return null;
+        if (!DiscoveryNow) {
+            ToEnemyNear.SetActive(false);
+            Discoveried.SetActive(false);
+            Main.SetActive(true);
+            MainBGM.clip = MainDefaultBGM;
+            MainBGM.volume = 1;
+            MainBGM.Play();
+        }
 
+    } 
 }

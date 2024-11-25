@@ -1780,8 +1780,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DiscoveryPlayerNow: 0
-  ObstacleLayers:
-  - Object
   EyePosition: {fileID: 3352441109391350809}
   discovery_player_status: {fileID: 11400000, guid: b38f43497a19d824f953bfb765263415,
     type: 2}
@@ -1789,6 +1787,7 @@ MonoBehaviour:
   SightningPlayerWhenHidePlayer: 0
   InsidePlayer: 0
   direction: {x: 0, y: 0, z: 0}
+  raycasted_obj: {fileID: 0}
   SightOutPlayerTimeNow: 0
 --- !u!114 &-5208536115284402003
 MonoBehaviour:
@@ -1847,7 +1846,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.44
-  m_BaseOffset: -0.03
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
 --- !u!114 &1617505804584227098

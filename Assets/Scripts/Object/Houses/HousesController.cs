@@ -13,6 +13,8 @@ public class HousesController : SerializedMonoBehaviour
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         house_directors = new List<HouseDirector>(FindObjectsOfType<HouseDirector>().ToList());
 
+
+
         StartCoroutine(ButsudanRandomCreate());
     }
 
@@ -21,6 +23,8 @@ public class HousesController : SerializedMonoBehaviour
     {
 
     }
+
+
 
     private IEnumerator ButsudanRandomCreate()
     {
@@ -40,11 +44,14 @@ public class HousesController : SerializedMonoBehaviour
         while (true)
         {
             if (i >= pray_to_deliver_item_appear_place.NeedPrayCount) break;
+            //NeedPrayCount•ª‚¾‚¯Butsudan‚ğì¬‚·‚é‚Æ‚¢‚¤‚±‚Æ
 
             int r = Random.Range(0, house_directors.Count);
-            //GameObject Butsudan = house_directors[r].Butsudan;
+            
             List<GameObject> Butsudans = house_directors[r].Butsudans;
+            
             int r_2 = Random.Range(0, house_directors[r].Butsudans.Count);
+            
             if (!Butsudans[r_2].activeSelf && !house_directors[r].ButsudanExists)
             {
                 house_directors[r].ButsudanExists = true;

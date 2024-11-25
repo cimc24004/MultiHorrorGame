@@ -29,6 +29,12 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     public GameObject NearRouteObject;
 
     public bool ArrivedTarget;
+
+    [Header("ルートを独自に指定するかどうか")]
+    public bool OriginalRouting;
+
+    [ShowIf("OriginalRouting")]
+    public List<GameObject> Routings;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +43,11 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         time_manager = TimeManager.instance;
+
+        if (!OriginalRouting)
+        {
+            Routings = stage_routings.Routings;
+        }
         //最初にルートを設定。
         NextRouteSet();
     }
@@ -48,7 +59,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         if (ArrivedNextRouteMode)
         {
             //すでに進んでいるルートに到着していたら
-            if (stage_routings.Routings.Count > RouteIndexNow + 1)
+            if (Routings.Count > RouteIndexNow + 1)
             {
                 //次のルートにいく。
                 if (!ReverseIndexChange)
@@ -142,15 +153,23 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             RoutingMovePermit = false;
         }
     }
+    [Button]
     public void NearRouteSet()
     {
         //いちばん近く(仮)のルートをセットする関数
-        follow_object_by_nav.ArrivedTarget = false;
         enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+        follow_object_by_nav.ArrivedTarget = false;
         this.ArrivedTarget = false;
         this.PermitFunction(true);
+        if (OriginalRouting) {
+            //オリジナルルートどおりなら、元の配置に戻るように
+            this.NextRouteObject = Routings[RouteIndexNow];
+            this.NextRouteSet(this.NextRouteObject);
+            return;
+        } 
+
         //もし近くにルートがなかった場合はRouteIndexNowのものに対して進むようにする
-        if (this.NearRouteObject == null) this.NextRouteObject = stage_routings.Routings[RouteIndexNow];
+        if (this.NearRouteObject == null) this.NearRouteObject = Routings[RouteIndexNow];
         this.NextRouteSet(this.NearRouteObject);
     }
     [Button]
@@ -161,7 +180,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         //次に行くルートに指定がなかったらIndexで順番通りに行く。
         if(_NextRouteObject == null)
         {
-            NextRouteObject = stage_routings.Routings[RouteIndexNow];
+            NextRouteObject = Routings[RouteIndexNow];
         }
         else
         {
@@ -169,7 +188,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             NextRouteObject = _NextRouteObject;
 
             //それとIndexも変更する。 NextRouteObjectに到着したらルートどおりに徘徊する。
-            RouteIndexNow = stage_routings.Routings.IndexOf(NextRouteObject);
+            RouteIndexNow = Routings.IndexOf(NextRouteObject);
         }
         follow_object_by_nav.ChaseToTargetSet(true, NextRouteObject.transform.position, RoutingWalkSpeed);
     }
