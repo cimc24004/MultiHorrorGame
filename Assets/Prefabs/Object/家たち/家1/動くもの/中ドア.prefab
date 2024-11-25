@@ -93,10 +93,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 70360f780334fd1458383855522f6ed9,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1793985051169983350}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 70360f780334fd1458383855522f6ed9,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 934424629363707814}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 70360f780334fd1458383855522f6ed9,
         type: 3}
@@ -138,7 +134,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: -90, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 7939446796787829864}
   duration: 0.7
   OpenCompleted:
@@ -150,8 +145,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9ee655d456919c546b3f3b58ffd9166a, type: 3}
-  ItemApperanceWhenOpended: 0
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7939446796787829864
 MonoBehaviour:
@@ -182,22 +177,6 @@ MonoBehaviour:
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
   door_attacked_controller: {fileID: 2130150101826197790}
---- !u!208 &1793985051169983350
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3488778856007392197}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.41500002, y: 0.883, z: 0.112}
-  m_MoveThreshold: 0
-  m_Carve: 1
-  m_CarveOnlyStationary: 0
-  m_Center: {x: -0.41500002, y: 0.88100004, z: -0.024}
-  m_TimeToStationary: 0
 --- !u!82 &934424629363707814
 AudioSource:
   m_ObjectHideFlags: 0

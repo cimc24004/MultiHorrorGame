@@ -1214,6 +1214,11 @@ MonoBehaviour:
         m_Target: {fileID: 6363367670232404261}
         m_MethodName: ButsudanPrayCompleted
         m_Modes: 01000000
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 5537512453587132696}
+        m_MethodName: Play
+        m_Modes: 01000000
 --- !u!82 &5537512453587132696
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1224,7 +1229,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 03fb17d7e6e7a604c979045069d1d980, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1234,10 +1239,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 30
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1270,7 +1275,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

@@ -73,6 +73,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u9577\u3044\u7A93"
       objectReference: {fileID: 0}
+    - target: {fileID: 5611644540468245857, guid: 0a937aa53dcb09840a181ecf324d8382,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5611644540468245857, guid: 0a937aa53dcb09840a181ecf324d8382,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -137,9 +147,8 @@ MonoBehaviour:
     SerializationNodes: []
   TriggerChangeModeOpenClose: 1
   open_type: 0
-  ToOpenTransform: {fileID: 906782458671839683}
+  ToOpenTransform: {fileID: 6062103747222928589}
   TargetRotateVector: {x: 0, y: 0, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 954148017263346647}
   duration: 0.7
   OpenCompleted:
@@ -151,8 +160,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: e4494953b8655664fb42555201b50c9b, type: 3}
   CloseClip: {fileID: 8300000, guid: e4494953b8655664fb42555201b50c9b, type: 3}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 0
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &954148017263346647
 MonoBehaviour:
@@ -310,7 +319,6 @@ MonoBehaviour:
   open_type: 0
   ToOpenTransform: {fileID: 906782458671839683}
   TargetRotateVector: {x: 0, y: 0, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 7765791057597114822}
   duration: 0.7
   OpenCompleted:
@@ -322,8 +330,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: e4494953b8655664fb42555201b50c9b, type: 3}
   CloseClip: {fileID: 8300000, guid: e4494953b8655664fb42555201b50c9b, type: 3}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 0
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7765791057597114822
 MonoBehaviour:
@@ -450,3 +458,9 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!4 &6062103747222928589 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -9090396021249275903, guid: 0a937aa53dcb09840a181ecf324d8382,
+    type: 3}
+  m_PrefabInstance: {fileID: 6194850572208272588}
+  m_PrefabAsset: {fileID: 0}

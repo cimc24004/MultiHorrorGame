@@ -22,10 +22,12 @@ public class HorizontalProjectile : MonoBehaviour
     public LayerMask col_layer;
 
     private Vector3 normal;
+
+    private GameObject hited_obj;
     // Start is called before the first frame update
-    void Start()
-    {
-    }
+    //void Start()
+    //{
+    //}
 
     // Update is called once per frame
     void Update()
@@ -35,13 +37,22 @@ public class HorizontalProjectile : MonoBehaviour
         {
             //地面に到着したときはオブジェクトが滑らないように静止したいのでisKinematic=trueにする。
             Debug.DrawRay(this.transform.position,normal * 10, Color.blue);
+            if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0)
+            {
+                if (Vector3.Dot(Vector3.up, normal) >= 0.5f)
+                {
+
+                    //地面に衝突した際はiskinematic = trueにする。
+                    OnGroundEvent.Invoke();
+                    rigid.isKinematic = true;
+                    OnGround = false;
+                }
+            }
 
         }
 
     }
-    private void FixedUpdate()
-    {
-    }
+
     public void Throw(float _FirstSpeed, Vector3 _forward)
     {
         //物を水平投射で投げる関数。 ItemThrowControllerなどから実行する。
@@ -58,20 +69,13 @@ public class HorizontalProjectile : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         Debug.DrawRay(this.gameObject.transform.position, other.contacts[0].normal * 10, Color.green);
+        hited_obj = other.gameObject;
         if (throw_now)
         {
-            if ((col_layer.value & (1 << other.gameObject.layer)) != 0)
+            if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0)
             {
-                normal = other.contacts[0].normal;
-                if (Vector3.up == normal)
-                {
-                    //地面に衝突した際はiskinematic = trueにする。
-                    OnGroundEvent.Invoke();
-                    rigid.isKinematic = true;
-                }
                 OnGround = true;
             }
-
 
             if (other.gameObject.tag == "Enemy")
             {
@@ -81,10 +85,19 @@ public class HorizontalProjectile : MonoBehaviour
         }
 
     }
+    private void OnCollisionStay(Collision collision)
+    {
+        if ((col_layer.value & (1 << collision.gameObject.layer)) != 0)
+        {
+            normal = collision.contacts[0].normal;
+            hited_obj = collision.gameObject;
+        }
+    }
     private void OnCollisionExit(Collision other)
     {
         if (other.gameObject.layer == col_layer && throw_now)
         {
+            hited_obj = null;
             OnGround = false;
         }
         if(other.gameObject.tag == "Enemy")
