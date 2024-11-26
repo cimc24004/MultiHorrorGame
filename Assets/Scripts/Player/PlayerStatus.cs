@@ -47,6 +47,10 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public float StaminaRetakePower;
     [Header("走れる最小スタミナ")]
     public float CanMinStaminaRun = 30;
+
+    public bool PlayerDeaded;
+
+
     private float offsetY;
     private CharacterMovePermit player_move_permit;
     private PlayerStaminaController player_stamina_controller;
@@ -58,10 +62,16 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private CinemachineTransposer cinemachine_transposer;
     private ItemMenuController item_menu_controller;
     private ItemBelongingsController item_belonging_controller;
+    private PlayerContinueController player_continue_controller;
+    private CharacterController player_character_controller;
+
+    private Tween crouchTween;
     // Start is called before the first frame update
     void Start()
     {
         player_stamina_controller = this.gameObject.GetComponent<PlayerStaminaController>();
+        player_continue_controller = GameController.instance.gameObject.GetComponent<PlayerContinueController>();
+        player_character_controller = this.gameObject.GetComponent<CharacterController>();
         player_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         anim = this.gameObject.GetComponent<Animator>();
         cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
@@ -139,7 +149,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
             EnemyStatus enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
             EnemyFlinchController enemy_flinch_controller = enemy_status.enemy_flinch_controller;
             List<ItemStatus> item_statues = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
-            if(item_statues != null)
+            if (item_statues != null)
             {
                 Debug.Log("悪霊退散おふだをはつどう！");
                 ItemStatus item_status = item_statues[0];
@@ -149,6 +159,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
                 enemy_flinch_controller.FlinchStart(item_status.StopEnemyTime);
                 return;
             }
+            player_hide_object_action.HidingPermit = false;
         }
 
 
@@ -158,50 +169,48 @@ public class PlayerStatus : Singleton<PlayerStatus>
         MoveY = 0;
         
         player_hide_object_action.HidingPermit = true;
-
+        
         CameraEnemyFaceExpanding camera_enemy_face_expanding = KilledMeEnemy.GetComponent<CameraEnemyFaceExpanding>();
         camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
 
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
-
-
+        PlayerDeaded = true;
+        player_character_controller.enabled = false;
         player_move_permit.Stop();
-
+        DOVirtual.DelayedCall(3, () =>
+        {
+            PlayerDeaded = false;
+            camera_enemy_face_expanding.FaceExpandingUnActive();
+            player_continue_controller.Continue();
+        });
     }
     public void CrouchStandCameraPosChange(bool Crouch)
     {
-        if (Crouch)
-        {
-            offsetY = StandHeadPos.position.y;
-            DOTween.To(
-                () => offsetY,
-                num => offsetY = num,
-                CrouchHeadPos.position.y,
-                0.2f
-            ).SetEase(Ease.Linear).OnUpdate(() => {
-                //cinemachine_transposer.m_FollowOffset = new Vector3(0, offsetY, 0);
-                CameraRoot.transform.position = new Vector3(CameraRoot.transform.position.x, offsetY, CameraRoot.transform.position.z);
-            }).OnComplete(() => {
-                HeadPos.transform.position = CrouchHeadPos.transform.position;
-                CameraRoot.transform.position = CrouchHeadPos.transform.position;
-            });
+        // ターゲット位置の設定
+        Transform targetHeadPos = Crouch ? CrouchHeadPos : StandHeadPos;
 
-        }
-        else
-        {
+        // 既存のアニメーションを停止
+        crouchTween?.Kill();
 
-            DOTween.To(
-                () => offsetY,
-                num => offsetY = num,
-                StandHeadPos.position.y,
-                0.2f
-            ).SetEase(Ease.Linear).OnUpdate(() => {
-                CameraRoot.transform.position = new Vector3(CameraRoot.position.x, offsetY, CameraRoot.position.z);
-            }).OnComplete(() => {
-                HeadPos.transform.position = StandHeadPos.transform.position;
-                CameraRoot.transform.position = StandHeadPos.transform.position;
-            });
-        }
+        // アニメーション開始
+        crouchTween = DOTween.To(
+            () => CameraRoot.localPosition.y,
+            y => CameraRoot.localPosition = new Vector3(CameraRoot.localPosition.x, y, CameraRoot.localPosition.z),
+            targetHeadPos.localPosition.y,
+            0.2f
+        )
+        .SetEase(Ease.OutQuad)
+        .OnUpdate(() =>
+        {
+            // 必要であれば、更新中の処理をここに追加可能
+        })
+        .OnComplete(() =>
+        {
+            // 最終位置を正確に設定
+            CameraRoot.localPosition = targetHeadPos.localPosition;
+            HeadPos.position = targetHeadPos.position;
+        });
+
     }
 
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeManager : SingleTonDontDestory<TimeManager>
+public class TimeManager : Singleton<TimeManager>
 {
     public float deltaTime;
     // Start is called before the first frame update

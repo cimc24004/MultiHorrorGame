@@ -25,6 +25,7 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
 
     [Header("現在の祈り回数")]
     public int PrayCountNow = 0;
+    public GameObject enemy;
 
     // Start is called before the first frame update
     void Start()
@@ -56,20 +57,21 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
 
         GameObject item = Instantiate(item_databases.ForDeliverItem.ItemPutObjectPrefab, DeliverItemApperancePlace.transform.position, Quaternion.identity);
         ItemObject item_object_script = item.GetComponent<ItemObject>();
-        GameObject enemy = null;
         EnemySoundSensor enemy_sound_sensor = null;
         DiscoveryPlayerController discovery_player_controller = null;
+        EnemyRoutingController enemy_routing_controller = null;
         //アイテムを取得したときのイベント。
         item_object_script.ItemGetAddEvent.AddListener(() => {
-            enemy = Instantiate(ApperanceEnemy, ApperanceEnemyPos.position, Quaternion.identity);
             enemy_sound_sensor = enemy.GetComponent<EnemySoundSensor>();
             discovery_player_controller = enemy.GetComponent<DiscoveryPlayerController>();
+            enemy_routing_controller = enemy.GetComponent<EnemyRoutingController>();
             ItemGetedEvent.Invoke();
         });
         door_open_close_controller.OpenCompleted.AddListener(() => {
             Debug.Log("aaaaaaaaaaaaaaaaaaaaDoorOpenClosepedtd!!");
             enemy_sound_sensor.enabled = true;
             discovery_player_controller.enabled = true;
+            enemy_routing_controller.enabled = true;
         });
         audio_source.Play();
     }

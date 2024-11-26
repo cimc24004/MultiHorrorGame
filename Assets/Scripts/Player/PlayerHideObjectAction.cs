@@ -89,6 +89,8 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_anim.SetBool("FaceDown", false);
         charactor_move_permit.Move();
 
+        player_move_script.NowSpeed = player_move_script.WalkSpeed;
+
         player_status.HidingNow = false;
 
     }
@@ -128,7 +130,6 @@ public class PlayerHideObjectAction : MonoBehaviour
         //隠れている時 もし敵に隠れてることが知られていたら。
         Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
         //敵にバレているかつ近くにいる最中なら、そこからもう出られないようにする。
-        this.HidingPermit = false;
 
         if (hide_type_target_object == TargetHideObject.HideType.FaceDown)
         {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.SceneManagement;
 public class DeliverMemoryPlace : SerializedMonoBehaviour
 {
     [Header("届けなければいけないアイテムを指定")]
@@ -51,5 +52,6 @@ public class DeliverMemoryPlace : SerializedMonoBehaviour
     {
         //アイテムがすべて納められたら？
         Debug.Log("クリアしました！！！！！！\n");
+        SceneManager.LoadScene("GameClear");
     }
 }

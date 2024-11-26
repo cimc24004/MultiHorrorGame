@@ -143,8 +143,5 @@ public class PlayerMoveScript : MonoBehaviour
         }
 
     }
-    private void FixedUpdate()
-    {
 
-    }
 }

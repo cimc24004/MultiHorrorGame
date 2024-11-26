@@ -58,6 +58,12 @@ public class DiscoveryPlayerController : MonoBehaviour
     {
         direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
         ToPlayerDistance = Vector3.Distance(Player.transform.position, this.transform.position);
+        if (player_status.PlayerDeaded) {
+            enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+            follow_object_nav.ArrivedTarget = false;
+            enemy_routing_controller.NearRouteSet();
+            DiscoveryPlayer(false);
+        } 
         if (ToPlayerDistance <= discovery_player_status.PlayerDiscoveryRange)
             InsidePlayer = true;
         else
@@ -150,10 +156,13 @@ public class DiscoveryPlayerController : MonoBehaviour
                 if (raycast_hit.collider.gameObject.tag == "Player")
                 {
                     Debug.Log("Playerが敵に見つかりました！");
-                    //プレイヤーを視認しているナウ。
-                    SightningPlayer = true;
-                    //即見つかる判定ではある。
-                    DiscoveryPlayerNow = true;
+                    if (!player_status.HidingNow)
+                    {
+                        //プレイヤーを視認しているナウ。
+                        SightningPlayer = true;
+                        //即見つかる判定ではある。
+                        DiscoveryPlayerNow = true;
+                    }
                 }
                 else
                 {
