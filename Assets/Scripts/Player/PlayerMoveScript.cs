@@ -33,7 +33,7 @@ public class PlayerMoveScript : MonoBehaviour
         character_controller = this.gameObject.GetComponent<CharacterController>();
         player_stamina_controller = this.gameObject.GetComponent<PlayerStaminaController>();
         NowSpeed = WalkSpeed;
-        player_input = this.gameObject.GetComponent<PlayerInput>();
+        player_input = GameControllerOnAllScene.instance.player_input;
         MoveAction = player_input.currentActionMap["Move"];
         RunChangeAction = player_input.currentActionMap["RunChange"];
         CrouchChangeAction = player_input.currentActionMap["CrouchChange"];

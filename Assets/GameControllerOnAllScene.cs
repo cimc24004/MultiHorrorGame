@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class GameControllerOnAllScene : SingleTonDontDestory<GameControllerOnAllScene>
 {
-    private PlayerInput player_input;
+    public PlayerInput player_input;
     // Start is called before the first frame update
     void Start()
     {

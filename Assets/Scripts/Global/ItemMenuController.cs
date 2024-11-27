@@ -15,7 +15,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     //アイテムをセレクトしたり、アイテムを使用したりする。
 
     public GameObject ItemGroup;
-    public PlayerInput player_input;
+    private PlayerInput player_input;
     public CanvasGroup ItemCanvasGroup;
 
     //現在選択しているアイテム。
@@ -43,6 +43,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     private AudioSource LightAudioSource;
     private void Start()
     {
+        player_input = GameControllerOnAllScene.instance.player_input;
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
         player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
         LightAudioSource = LightObject.GetComponent<AudioSource>();
