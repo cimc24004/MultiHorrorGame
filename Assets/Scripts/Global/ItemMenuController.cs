@@ -40,10 +40,12 @@ public class ItemMenuController : SerializedMonoBehaviour
     
     private bool LightSwitchMode = false;
     private ItemUI before_selected_item_ui;
+    private AudioSource LightAudioSource;
     private void Start()
     {
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
         player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
+        LightAudioSource = LightObject.GetComponent<AudioSource>();
     }
     private void Update()
     {
@@ -66,12 +68,12 @@ public class ItemMenuController : SerializedMonoBehaviour
                 {
                     //ライトをつける。
                     LightObject.SetActive(true);
+                    LightAudioSource.Play();
                     LightSwitchMode = true;
                 }
                 else
                 {
                     //ライトをけす。
-
                     LightObject.SetActive(false);
                     LightSwitchMode = false;
                 }

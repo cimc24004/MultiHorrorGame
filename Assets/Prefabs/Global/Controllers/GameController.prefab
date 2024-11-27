@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5926026781336159376}
   - component: {fileID: 2754973926635492104}
   - component: {fileID: 8483235478568917305}
-  - component: {fileID: 6810201851665725403}
+  - component: {fileID: 1584810825975147330}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -97,7 +97,7 @@ MonoBehaviour:
   cinemachine_virtualcamera: {fileID: 6053593067618923119}
   ContinueCount: 0
   ContinueTransform: {fileID: 0}
---- !u!114 &6810201851665725403
+--- !u!114 &1584810825975147330
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -106,9 +106,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 212090357542631498}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cacfbfaf9d9165a489e7404c0c47df3d, type: 3}
+  m_Script: {fileID: 11500000, guid: 79c44ce761db9264a91a4b63c0695fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  virtualCamera: {fileID: 6053593067618923119}
+  sensitivitySlider: {fileID: 0}
+  minSensitivity: 0.1
+  maxSensitivity: 2
 --- !u!1 &4569975058844514793
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +124,7 @@ GameObject:
   - component: {fileID: 5711834032776332426}
   - component: {fileID: 3032091209149714297}
   - component: {fileID: 4381322522663758872}
+  - component: {fileID: 5960309107783581118}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -227,6 +232,102 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!82 &5960309107783581118
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569975058844514793}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 1724365bc9af0ad46a8956f0921da778, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 10
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5813597359055340539
 GameObject:
   m_ObjectHideFlags: 0

@@ -72,7 +72,7 @@ public class HorizontalProjectile : MonoBehaviour
         hited_obj = other.gameObject;
         if (throw_now)
         {
-            if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0)
+            if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0 && hited_obj.gameObject.tag != "WindowBorder")
             {
                 OnGround = true;
             }

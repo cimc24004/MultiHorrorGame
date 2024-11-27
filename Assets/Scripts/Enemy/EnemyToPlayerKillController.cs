@@ -15,6 +15,7 @@ public class EnemyToPlayerKillController : MonoBehaviour
     public Transform StartPos;
     public float RaycastDistance = 1;
     private Vector3 Direction;
+    [SerializeField]private GameObject ray_obj;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,11 +30,12 @@ public class EnemyToPlayerKillController : MonoBehaviour
         Direction = (player_status.HeadPos.position - StartPos.position).normalized;
         if (!player_status.Dead)
         {
-            if (discovery_player_controller.DiscoveryPlayerNow)
+            if (discovery_player_controller.DiscoveryPlayerNow && !player_status.HidingNow)
             {
                 //プレイヤーが死んでいないかつプレイヤーが見つかっていたら。
                 if (Physics.Raycast(StartPos.position, Direction, out raycast_hit, RaycastDistance, layer_mask))
                 {
+                    ray_obj = raycast_hit.collider.gameObject;
                     Debug.Log("RayCastHiTColliderGameObjecttag: " + raycast_hit.collider.gameObject);
                     //敵の目からのレイキャストを飛ばす。　プレイヤーの方向を見てるときだけ殺せるようにしておく。
                     if(raycast_hit.collider.gameObject.tag == "Player")
