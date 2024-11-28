@@ -34,30 +34,37 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
 
     private StageController stage_controller;
 
+    public GameControllerOnAllScene game_controller_all_scene;
+    
+    private GameStateControlelr game_state_controller;
 
+    public InputActionReference CommonActionESC;
+    //
     [SerializeField]private bool Opended = false;
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         stage_controller = StageController.instance;
+        game_state_controller = game_controller_all_scene.gameObject.GetComponent<GameStateControlelr>();
     }
 
     private void Update()
     {
-        if (player_input.currentActionMap["ESC"].triggered)
+        Debug.Log("player_input.currentActionMap['ESC'].triggered: " + player_input.currentActionMap.name);
+        if (CommonActionESC.action.triggered)
         {
             if (!Opended)
             {
                 //‚Ð‚ç‚¢‚½
+                game_state_controller.MenuOnGamePlayMode();
                 ConfigCanvas.gameObject.SetActive(true);
-                Cursor.lockState = CursorLockMode.None;
                 Opended = true;
             }
             else
             {
 
                 //‚Æ‚¶‚½
-                Cursor.lockState = CursorLockMode.Locked;
+                game_state_controller.GameplayMode();
                 ConfigCanvas.gameObject.SetActive(false);
                 Opended = false;
             }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8480967498620859629}
   - component: {fileID: 913879677871559287}
   - component: {fileID: 7533825387544462242}
+  - component: {fileID: 6970895402691693783}
   m_Layer: 6
   m_Name: GameControllerOnAllScene
   m_TagString: GameControllerOnAllScene
@@ -79,6 +80,19 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &6970895402691693783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4397317948245933151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c0b4a7e55d13884ba580b3a9b27db55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game_state: 0
 --- !u!1 &6242197805592287760
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,14 +323,101 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
         type: 3}
-      propertyPath: ConfigCanvas
-      value: 
-      objectReference: {fileID: 7303096487121543910}
-    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
-        type: 3}
       propertyPath: player_input
       value: 
       objectReference: {fileID: 7533825387544462242}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionESC
+      value: 
+      objectReference: {fileID: -665118323469733910, guid: 3240c63fa2c3210419407122950635ad,
+        type: 3}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap
+      value: 
+      objectReference: {fileID: -665118323469733910, guid: 3240c63fa2c3210419407122950635ad,
+        type: 3}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: ESCAction.m_Name
+      value: ESC
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Id
+      value: 75b9f6f0-e7eb-4298-b23d-8e88e01e6278
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Name
+      value: Common
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: game_controller_all_scene
+      value: 
+      objectReference: {fileID: 913879677871559287}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Actions.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Bindings.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Actions.Array.data[0].m_Id
+      value: e5005759-5f4b-40d6-b8d3-b2a15f3c656d
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Bindings.Array.data[0].m_Id
+      value: 8b1d2234-aadd-4900-84e2-e2d046326522
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Actions.Array.data[0].m_Name
+      value: New action
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Actions.Array.data[0].m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: ESCAction.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Bindings.Array.data[0].m_Action
+      value: New action
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: ESCAction.m_SingletonActionBindings.Array.data[0].m_Id
+      value: ad7d3934-8860-4a47-94ff-0e1226a3e794
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: ESCAction.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/escape
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: ESCAction.m_SingletonActionBindings.Array.data[0].m_Action
+      value: ESC
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069928271323063791, guid: 070bd2ce3c4fb74488ce301941a6a007,
+        type: 3}
+      propertyPath: CommonActionMap.m_Actions.Array.data[0].m_ExpectedControlType
+      value: Button
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7453798979143328027, guid: 070bd2ce3c4fb74488ce301941a6a007, type: 3}
@@ -326,12 +427,6 @@ PrefabInstance:
 --- !u!1 &151835181496165645 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7604167888645687254, guid: 070bd2ce3c4fb74488ce301941a6a007,
-    type: 3}
-  m_PrefabInstance: {fileID: 7754076150205571803}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7303096487121543910 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1064481888420003901, guid: 070bd2ce3c4fb74488ce301941a6a007,
     type: 3}
   m_PrefabInstance: {fileID: 7754076150205571803}
   m_PrefabAsset: {fileID: 0}
