@@ -4,84 +4,77 @@ using UnityEngine;
 
 public class PlayerToEnemyDistanceController : MonoBehaviour
 {
-    //敵との距離で心拍音を上げる。
-    [SerializeField] private float to_enemy_distance;
+    // 範囲内の敵を追跡するリスト
+    private List<Collider> enemiesInRange = new List<Collider>();
+
+    public bool NearEnemy;
 
     private HorrorDirector horror_director;
 
-    public bool NearEnemyStart;
-    public bool AwayEnemyWhenNearEnemyTrue;
-
-    public bool NearEnemyNow;
-
-    public bool AwayEnemy;
-
-    [SerializeField]private float AwayEnemyTrueTimeNow;
-    //NearEnemyがtrueのとき どのくらいtrueなのかを時間計測
-    [SerializeField] private float AwayEnemyWhenNearEnemyTrueTimeNow;
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         horror_director = HorrorDirector.instance;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (NearEnemyStart)
+        if (NearEnemy)
         {
-            //NearEnemyStartは一フレームだけ通るようにしておく。
-            if (!NearEnemyNow)
-            {
-                //NearEnemyNowがfalseの場合(すでに敵が近くにいるならこの関数は実行しない)
-                NearStartDistaceEvent();
-            }
-            NearEnemyNow = true;
-
-            NearEnemyStart = false;
+            horror_director.NearEnemy();
         }
-        if (NearEnemyNow)
+    }
+    // トリガーに敵が入った時
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("PlayerNearSensor")) // "Enemy"タグが付いたオブジェクトのみ反応
         {
-            //NearEnemyNowがtrueならNearDistanceNowEventを実行します。
-            NearDistanceNowEvent();
-            if (AwayEnemy)
+            // リストに敵を追加
+            if (!enemiesInRange.Contains(other))
             {
-                //敵がプレイヤーから離れてから、数秒間たった場合完全にFarDistance実行。
-                //もし、１りの敵が離れても、ほかの敵が近くにいるのであれば、このtimeは0となる。
-                AwayEnemyTrueTimeNow += Time.deltaTime;
-                if(AwayEnemyTrueTimeNow > 2)
+                enemiesInRange.Add(other);
+
+                // 初めての敵が入った場合、近づいたイベントを実行
+                if (enemiesInRange.Count == 1)
                 {
-                    FarDistanceEvent();
-                    ResetWhenFar();
+                    OnEnemyApproach();
                 }
             }
-            else
+        }
+    }
+
+    // トリガーから敵が出た時
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("PlayerNearSensor")) // "Enemy"タグが付いたオブジェクトのみ反応
+        {
+            // リストから敵を削除
+            if (enemiesInRange.Contains(other))
             {
-                AwayEnemyTrueTimeNow = 0;
+                enemiesInRange.Remove(other);
+
+                // 全ての敵が範囲外に出た場合、離れたイベントを実行
+                if (enemiesInRange.Count == 0)
+                {
+                    OnEnemyLeave();
+                }
             }
         }
     }
-    private void FixedUpdate()
+
+    // 敵が近づいたときのイベント
+    private void OnEnemyApproach()
     {
-        AwayEnemy = true;
-    }
-    private void NearStartDistaceEvent()
-    {
-        horror_director.NearEnemy();
-    }
-    private void NearDistanceNowEvent()
-    {
+        Debug.Log("敵が範囲内に近づいた！");
+        // 特定のイベントをここに実行
+        NearEnemy = true;
     }
 
-    private void FarDistanceEvent()
+    // 敵が全て範囲外に出たときのイベント
+    private void OnEnemyLeave()
     {
+        Debug.Log("敵が全て範囲外に離れた！");
+        // 特定のイベントをここに実行
+        NearEnemy = false;
         horror_director.NearEnemyReset();
-        NearEnemyNow = false;
-    }
-
-    private void ResetWhenFar()
-    {
-        NearEnemyNow = false;
-        AwayEnemyTrueTimeNow = 0;
     }
 }

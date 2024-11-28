@@ -26,6 +26,17 @@ public class GameStateControlelr : MonoBehaviour
         
     }
 
+    public void ActionByModeSelect(GameState game_state)
+    {
+        if(game_state == GameState.Gameplay)
+        {
+            GameplayMode();
+        }else if(game_state == GameState.MenuOnGamePlay)
+        {
+            MenuOnGamePlayMode();
+        }
+    }
+
     public void GameplayMode()
     {
         //ƒQ[ƒ€‚ğƒvƒŒƒC‚µ‚Ä‚é‚Æ‚«
