@@ -8,18 +8,20 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     public Transform EyePosition;
     public DiscoveryPlayerStatus discovery_player_status;
-    //ƒvƒŒƒCƒ„[‚ğ‹”F‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦–èªã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
     public bool SightningPlayer;
-    //ƒvƒŒƒCƒ„[‚ª‰B‚ê‚½‚É“G‚Í‚»‚Ì‰B‚ê‚½Š‚ğŒ©‚Ä‚¢‚é‚©‚Ç‚¤‚©B
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒéš ã‚ŒãŸæ™‚ã«æ•µã¯ãã®éš ã‚ŒãŸæ‰€ã‚’è¦‹ã¦ã„ã‚‹ã‹ã©ã†ã‹ã€‚
     public bool SightningPlayerWhenHidePlayer;
 
+    [SerializeField] private Material EnemyDiscoveryPlayerSlihouetteMaterial;
+    
     private GameObject Player;
     private Transform PlayersHeadTransform;
     private FollowObjectByNav follow_object_nav;
     private PlayerStatus player_status;
     private Animator anim;
     private RaycastHit raycast_hit;
-    //ƒvƒŒƒCƒ„[‚ªŒ©‚Â‚¯‚ç‚ê‚é”ÍˆÍˆÈ“à‚É‚¢‚é‚©‚Ç‚¤‚©B
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¦‹ã¤ã‘ã‚‰ã‚Œã‚‹ç¯„å›²ä»¥å†…ã«ã„ã‚‹ã‹ã©ã†ã‹ã€‚
     public bool InsidePlayer;
     [HideInInspector]
     public Vector3 direction;
@@ -29,18 +31,23 @@ public class DiscoveryPlayerController : MonoBehaviour
     private CameraEnemyFaceExpanding camera_enemy_face_expanding;
     private EnemyRoutingController enemy_routing_controller;
     private TimeManager time_manager;
+    private MaterialChangeController material_change_controller;
+    private VisibleThroughTheWallController visible_through_the_wall_controller;
     [SerializeField]private GameObject raycasted_obj;
-    //ƒvƒŒƒCƒ„[‚ª©•ª‚Ì‹ŠE‚©‚çŠO‚ê‚Ä‚¢‚éŠÔ‚ÌŠÔNow
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè‡ªåˆ†ã®è¦–ç•Œã‹ã‚‰å¤–ã‚Œã¦ã„ã‚‹é–“ã®æ™‚é–“Now
     public float SightOutPlayerTimeNow;
 
     private HorrorDirector horror_director;
 
     private bool DiscoveriedEventOnce;
     private bool NonDiscoveriedEventOnce;
+
     // Start is called before the first frame update
     void Start()
     {
         player_status = PlayerStatus.instance;
+        visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
+        material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
         Player = player_status.gameObject;
         PlayersHeadTransform = player_status.HeadPos;
@@ -51,6 +58,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         time_manager = TimeManager.instance;
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
         horror_director = HorrorDirector.instance;
+
     }
 
     // Update is called once per frame
@@ -73,6 +81,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             horror_director.DiscoveryNow = true;
             if (!DiscoveriedEventOnce)
             {
+                visible_through_the_wall_controller.VisibleOnce = true;
                 horror_director.DiscoveriedHorror();
                 DiscoveriedEventOnce = true;
             }
@@ -81,7 +90,7 @@ public class DiscoveryPlayerController : MonoBehaviour
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             }
             DiscoveryPlayer(true);
-            //Œ©‚Â‚©‚Á‚Ä‚¢‚éó‘Ô‚ÅƒvƒŒƒCƒ„[‚ÌˆÊ’u‚É“’…‚µ‚½‚ç
+            //è¦‹ã¤ã‹ã£ã¦ã„ã‚‹çŠ¶æ…‹ã§ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã«åˆ°ç€ã—ãŸã‚‰
             enemy_routing_controller.PermitFunction(false);
             NonDiscoveriedEventOnce = false;
         }
@@ -98,17 +107,17 @@ public class DiscoveryPlayerController : MonoBehaviour
         anim.SetBool("PlayerHidingNow", player_status.HidingNow);
         if (DiscoveryPlayerNow && !SightningPlayer)
         {
-            //“G‚ÉŒ©‚Â‚©‚Á‚Ä‚¢‚é‚©‚ÂƒvƒŒƒCƒ„[‚ªŒ©‚¦‚Ä‚È‚©‚Á‚½‚ç
+            //æ•µã«è¦‹ã¤ã‹ã£ã¦ã„ã‚‹ã‹ã¤ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¦‹ãˆã¦ãªã‹ã£ãŸã‚‰
 
 
-            //ŠÔ‚ğŒv‚èA‚ ‚é’ö“x‚ÌŠÔ‚ª‚½‚Á‚½‚ç’Ç‚¢‚©‚¯‚é‚Ì‚ğ‚â‚ß‚é
+            //æ™‚é–“ã‚’è¨ˆã‚Šã€ã‚ã‚‹ç¨‹åº¦ã®æ™‚é–“ãŒãŸã£ãŸã‚‰è¿½ã„ã‹ã‘ã‚‹ã®ã‚’ã‚„ã‚ã‚‹
             SightOutPlayerTimeNow += Time.deltaTime;
             if (SightOutPlayerTimeNow > discovery_player_status.SightOutPlayerTime)
             {
-                Debug.Log("ŠÔŒo‰ß‚µ‚Ü‚µ‚½‚æ");
-                //“G‚ª’Ç‚¢‚©‚¯‚Ä‚éÅ’†‚à‚µƒvƒŒƒCƒ„[‚ğŒ©¸‚Á‚½ê‡‚ÍŒ³‚ÌˆÊ’u‚É–ß‚é
-                //¡‚ÍƒfƒtƒHƒ‹ƒgˆÊ’u‚É–ß‚éİ’è‚É‚µ‚Ä‚¢‚é‚ª‹ß‚­‚Ìœpœjƒ‹[ƒg‚És‚­‚Æ‚¢‚¤İ’è‚·‚é—\’èB
-                //ˆê”Ô‹ß‚­‚Ìœpœjƒ‹[ƒg‚É‚¢‚­B@‚Â‚Ü‚è‚ÍŒÅ’è‚ÌˆÊ’u‚È‚Ì‚ÅSetDestinationOnceMode‚Ítrue
+                Debug.Log("æ™‚é–“çµŒéã—ã¾ã—ãŸã‚ˆ");
+                //æ•µãŒè¿½ã„ã‹ã‘ã¦ã‚‹æœ€ä¸­ã‚‚ã—ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦‹å¤±ã£ãŸå ´åˆã¯å…ƒã®ä½ç½®ã«æˆ»ã‚‹
+                //ä»Šã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆä½ç½®ã«æˆ»ã‚‹è¨­å®šã«ã—ã¦ã„ã‚‹ãŒè¿‘ãã®å¾˜å¾Šãƒ«ãƒ¼ãƒˆã«è¡Œãã¨ã„ã†è¨­å®šã™ã‚‹äºˆå®šã€‚
+                //ä¸€ç•ªè¿‘ãã®å¾˜å¾Šãƒ«ãƒ¼ãƒˆã«ã„ãã€‚ã€€ã¤ã¾ã‚Šã¯å›ºå®šã®ä½ç½®ãªã®ã§SetDestinationOnceModeã¯true
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                 follow_object_nav.ArrivedTarget = false;
                 enemy_routing_controller.NearRouteSet();
@@ -131,7 +140,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             if (player_status.HidingNow)
             {
-                //‹”F‚µ‚Ä‚¢‚é‚©‚Â‰B‚ê‚Ä‚éê‡‚Í‰B‚ê‚Ä‚é‚±‚Æ’m‚Á‚Ä‚é‚æ[@•Ï”‚ğTrue‚ÉB
+                //è¦–èªã—ã¦ã„ã‚‹ã‹ã¤éš ã‚Œã¦ã‚‹å ´åˆã¯éš ã‚Œã¦ã‚‹ã“ã¨çŸ¥ã£ã¦ã‚‹ã‚ˆãƒ¼ã€€å¤‰æ•°ã‚’Trueã«ã€‚
                 SightningPlayerWhenHidePlayer = true;
             }
         }
@@ -139,29 +148,30 @@ public class DiscoveryPlayerController : MonoBehaviour
         {
             if (ToPlayerDistance <= 2)
             {
-                //‰B‚ê‚Ä‚é‚±‚Æ‚ªƒoƒŒ‚Ä‚¢‚Ä‚©‚Â‹ß‚­‚É‚¢‚½‚çê‡‚Í‚±‚ÌŠÖ”‚ğÀsB
+                //éš ã‚Œã¦ã‚‹ã“ã¨ãŒãƒãƒ¬ã¦ã„ã¦ã‹ã¤è¿‘ãã«ã„ãŸã‚‰å ´åˆã¯ã“ã®é–¢æ•°ã‚’å®Ÿè¡Œã€‚
                 player_status.player_hide_object_action.GetCoughtWhenHidingByEnemy(this.gameObject);
                 this.SightningPlayerWhenHidePlayer = false;
             }
         }
         if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle && InsidePlayer)
         {
-            //ƒvƒŒƒCƒ„[‚ª“G‚Ì‹ŠEˆÈ“à‚É‚¢‚é‚©‚Ç‚¤‚© && ƒvƒŒƒCƒ„[‚ª”ÍˆÍˆÈ“à‚É‚¢‚é‚©‚Ç‚¤‚©B
-            Debug.Log("ƒvƒŒƒCƒ„[‚ª“G‚Ì‹ŠEˆÈ“à‚É‚¢‚é‚©‚Ç‚¤‚© && ƒvƒŒƒCƒ„[‚ª”ÍˆÍˆÈ“à‚É‚¢‚é‚©‚Ç‚¤‚©");
+            //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ•µã®è¦–ç•Œä»¥å†…ã«ã„ã‚‹ã‹ã©ã†ã‹ && ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç¯„å›²ä»¥å†…ã«ã„ã‚‹ã‹ã©ã†ã‹ã€‚
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ•µã®è¦–ç•Œä»¥å†…ã«ã„ã‚‹ã‹ã©ã†ã‹ && ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç¯„å›²ä»¥å†…ã«ã„ã‚‹ã‹ã©ã†ã‹");
             if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, discovery_player_status.layerMask))
             {
                 raycasted_obj = raycast_hit.collider.gameObject;
-                //Raycast‚ğƒvƒŒƒCƒ„[‚É‚Æ‚è‚ ‚¦‚¸”ò‚Î‚·B
-                //ƒvƒŒƒCƒ„[‚ÉRaycast‚ª“–‚½‚Á‚Ä‚¢‚é‚ªA‚Ü‚¸‚»‚Ì‘O‚ÉáŠQ•¨‚ª‘¶İ‚·‚éê‡‚ÍŒ©‚Â‚©‚ç‚È‚©‚Á‚½”»’è‚É‚µ‚Ä‚¨‚­B
+                //Raycastã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã¨ã‚Šã‚ãˆãšé£›ã°ã™ã€‚
+                //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«RaycastãŒå½“ãŸã£ã¦ã„ã‚‹ãŒã€ã¾ãšãã®å‰ã«éšœå®³ç‰©ãŒå­˜åœ¨ã™ã‚‹å ´åˆã¯è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸåˆ¤å®šã«ã—ã¦ãŠãã€‚
                 if (raycast_hit.collider.gameObject.tag == "Player")
                 {
-                    Debug.Log("Player‚ª“G‚ÉŒ©‚Â‚©‚è‚Ü‚µ‚½I");
+                    Debug.Log("PlayerãŒæ•µã«è¦‹ã¤ã‹ã‚Šã¾ã—ãŸï¼");
                     if (!player_status.HidingNow)
                     {
-                        //ƒvƒŒƒCƒ„[‚ğ‹”F‚µ‚Ä‚¢‚éƒiƒEB
+                        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦–èªã—ã¦ã„ã‚‹ãƒŠã‚¦ã€‚
                         SightningPlayer = true;
-                        //‘¦Œ©‚Â‚©‚é”»’è‚Å‚Í‚ ‚éB
+                        //å³è¦‹ã¤ã‹ã‚‹åˆ¤å®šã§ã¯ã‚ã‚‹ã€‚
                         DiscoveryPlayerNow = true;
+                        //renderer.material = EnemyDiscoveryPlayerSlihouetteMaterial;
                     }
                 }
                 else
@@ -185,12 +195,12 @@ public class DiscoveryPlayerController : MonoBehaviour
             {
                 if (player_status.HidingNow)
                 {
-                    //ƒvƒŒƒCƒ„[‚ª‰B‚ê‚Ä‚¢‚Ä“G‚É‚Î‚ê‚Ä‚¢‚È‚©‚Á‚½‚çƒXƒgƒbƒv‹——£‚Í‘å‚«‚ß‚ÉBB
+                    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒéš ã‚Œã¦ã„ã¦æ•µã«ã°ã‚Œã¦ã„ãªã‹ã£ãŸã‚‰ã‚¹ãƒˆãƒƒãƒ—è·é›¢ã¯å¤§ãã‚ã«ã€‚ã€‚
                     follow_object_nav.StoppingDistance = 4;
                 }
                 else
                 {
-                    //‚»‚êˆÈŠO‚È‚çƒfƒtƒHƒ‹ƒg‚ÌƒXƒgƒbƒv‹——£‚É‚µ‚Ä‚¨‚­B
+                    //ãã‚Œä»¥å¤–ãªã‚‰ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¹ãƒˆãƒƒãƒ—è·é›¢ã«ã—ã¦ãŠãã€‚
                     follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
                 }
             }
@@ -207,8 +217,8 @@ public class DiscoveryPlayerController : MonoBehaviour
     }
     private void DiscoveryPlayer(bool _discovery)
     {
-        //“G‚ÉŒ©‚Â‚©‚Á‚½‚Æ‚«A‚Ü‚½‚ÍŒ©‚Â‚©‚Á‚Ä‚éó‘Ô‚ğƒŠƒZƒbƒg‚µ‚½‚¢‚Ég‚¤B
-        //True‚È‚ç‚ÎŒ©‚Â‚©‚Á‚½‚Æ‚«‚ÌƒCƒxƒ“ƒgAFalse‚È‚ç‚ÎŒ©‚Â‚©‚ç‚È‚­‚È‚Á‚½‚Æ‚«‚ÉƒŠƒZƒbƒg‚·‚é‚½‚ß‚ÌŠÖ”
+        //æ•µã«è¦‹ã¤ã‹ã£ãŸã¨ãã€ã¾ãŸã¯è¦‹ã¤ã‹ã£ã¦ã‚‹çŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆã—ãŸã„æ™‚ã«ä½¿ã†ã€‚
+        //Trueãªã‚‰ã°è¦‹ã¤ã‹ã£ãŸã¨ãã®ã‚¤ãƒ™ãƒ³ãƒˆã€Falseãªã‚‰ã°è¦‹ã¤ã‹ã‚‰ãªããªã£ãŸã¨ãã«ãƒªã‚»ãƒƒãƒˆã™ã‚‹ãŸã‚ã®é–¢æ•°
         DiscoveryPlayerNow = _discovery;
         if (_discovery)
         {
@@ -224,10 +234,14 @@ public class DiscoveryPlayerController : MonoBehaviour
 
         }
     }
+    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, -discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
         Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
     }
+
+
 }
