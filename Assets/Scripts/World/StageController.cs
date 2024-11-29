@@ -8,11 +8,12 @@ public class StageController : Singleton<StageController>
     public CursorLockMode DefaultCursorLockMode;
     public string NowSceneName;
     private GameControllerOnAllScene game_controller_on_all_scene;
-    private GameStateControlelr game_state_controller;
+    private GameStateController game_state_controller;
 
     public UnityEvent2 StartEvent;
 
-    public GameStateControlelr.GameState game_state;
+    public GameStateController.GameState game_state;
+    public bool CursorVisible;
     //カーソルのロックはステージごとに違う可能性がある(GameOverやGameStart画面などではLockはしておかない)
     //なのでステージごとに配置するコントローラーを分けている。
 
@@ -20,8 +21,8 @@ public class StageController : Singleton<StageController>
     void Start()
     {
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
-        game_state_controller = game_controller_on_all_scene.gameObject.GetComponent<GameStateControlelr>();
-        game_state_controller.ActionByModeSelect(game_state);
+        game_state_controller = game_controller_on_all_scene.gameObject.GetComponent<GameStateController>();
+        game_state_controller.ActionByModeSelect(game_state, CursorVisible);
         StartEvent.Invoke();
         Cursor.lockState = DefaultCursorLockMode;
         if(DefaultCursorLockMode != CursorLockMode.None)

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class GameStateControlelr : MonoBehaviour
+public class GameStateController : MonoBehaviour
 {
     public enum GameState
     {
@@ -26,14 +26,14 @@ public class GameStateControlelr : MonoBehaviour
         
     }
 
-    public void ActionByModeSelect(GameState game_state)
+    public void ActionByModeSelect(GameState game_state, bool cursor_display)
     {
         if(game_state == GameState.Gameplay)
         {
             GameplayMode();
         }else if(game_state == GameState.MenuOnGamePlay)
         {
-            MenuOnGamePlayMode();
+            MenuOnGamePlayMode(cursor_display);
         }
     }
 
@@ -47,17 +47,21 @@ public class GameStateControlelr : MonoBehaviour
         Cursor.visible = false;
     }
 
-    public void MenuOnGamePlayMode()
+    public void MenuOnGamePlayMode(bool visibleCursor)
     {
         //ゲームプレイ中にメニューを開いたとき
         player_input.actions.FindActionMap("MenuOnGamePlay").Enable();
         player_input.actions.FindActionMap("Player").Disable();
-
-        //カーソルは表示
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (visibleCursor)
+        {
+            //カーソルは表示
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
 
     }
+
+
     public void StartClearOverMode()
     {
         //ゲームオーバーやスタート画面など

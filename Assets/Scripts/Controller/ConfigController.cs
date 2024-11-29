@@ -36,7 +36,7 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
 
     public GameControllerOnAllScene game_controller_all_scene;
     
-    private GameStateControlelr game_state_controller;
+    private GameStateController game_state_controller;
 
     public InputActionReference CommonActionESC;
     //
@@ -45,7 +45,7 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         stage_controller = StageController.instance;
-        game_state_controller = game_controller_all_scene.gameObject.GetComponent<GameStateControlelr>();
+        game_state_controller = game_controller_all_scene.gameObject.GetComponent<GameStateController>();
     }
 
     private void Update()
@@ -56,7 +56,7 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
             if (!Opended)
             {
                 //‚Ð‚ç‚¢‚½
-                game_state_controller.MenuOnGamePlayMode();
+                game_state_controller.MenuOnGamePlayMode(true);
                 ConfigCanvas.gameObject.SetActive(true);
                 Opended = true;
             }

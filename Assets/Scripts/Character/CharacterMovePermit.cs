@@ -26,6 +26,7 @@ public class CharacterMovePermit : MonoBehaviour
     {
         StopEvent.Invoke();
         //rigid.velocity = Vector3.zero;
+        if(characterController.enabled)
         characterController.Move(new Vector3(0, characterController.velocity.y, 0));
     }
 }

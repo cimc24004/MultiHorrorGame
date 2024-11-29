@@ -6,13 +6,12 @@ using Sirenix.OdinInspector;
 public class HousesController : SerializedMonoBehaviour
 {
     public List<HouseDirector> house_directors;
-    private PrayToDeliverItemAppearPlace pray_to_deliver_item_appear_place;
+    private GameProgressController game_progress_controller;
     // Start is called before the first frame update
     void Start()
     {
-        pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         house_directors = new List<HouseDirector>(FindObjectsOfType<HouseDirector>().ToList());
-
+        game_progress_controller = GameProgressController.instance;
 
 
         StartCoroutine(ButsudanRandomCreate());
@@ -43,7 +42,7 @@ public class HousesController : SerializedMonoBehaviour
 
         while (true)
         {
-            if (i >= pray_to_deliver_item_appear_place.NeedPrayCount) break;
+            if (i >= game_progress_controller.NeedPrayCount) break;
             //NeedPrayCount•ª‚¾‚¯Butsudan‚ğì¬‚·‚é‚Æ‚¢‚¤‚±‚Æ
 
             int r = Random.Range(0, house_directors.Count);

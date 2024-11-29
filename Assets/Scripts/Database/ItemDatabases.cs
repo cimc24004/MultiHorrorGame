@@ -5,7 +5,6 @@ using UnityEditor;
 using Sirenix.OdinInspector;
 using System.IO;
 
-[ExecuteInEditMode]
 public class ItemDatabases : Singleton<ItemDatabases>
 {
     [Header("ワールドにランダム生成されるアイテムたち")]

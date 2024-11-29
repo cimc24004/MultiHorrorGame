@@ -24,6 +24,7 @@ public class CustomGravity : MonoBehaviour
         gravity = Vector3.down * gravityMultiplier;
         if (UseCharacterController)
         {
+            if(character_controller.enabled)
             character_controller.Move(new Vector3(character_controller.velocity.x * Time.deltaTime, gravity.y * Time.deltaTime, character_controller.velocity.z * Time.deltaTime));
         }
         else

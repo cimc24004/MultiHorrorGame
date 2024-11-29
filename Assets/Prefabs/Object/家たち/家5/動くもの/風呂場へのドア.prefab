@@ -90,10 +90,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64fb5b184b203e44580973e54a4910c6,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4195714642179302239}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64fb5b184b203e44580973e54a4910c6,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3146142459590182160}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64fb5b184b203e44580973e54a4910c6,
         type: 3}
@@ -107,6 +103,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8770959496762206390}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64fb5b184b203e44580973e54a4910c6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6093462202634142094}
   m_SourcePrefab: {fileID: 100100000, guid: 64fb5b184b203e44580973e54a4910c6, type: 3}
 --- !u!1 &8666144842980828626 stripped
 GameObject:
@@ -114,27 +114,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8396184151282784387}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &4195714642179302239
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8666144842980828626}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.9304614, y: 2.029739, z: 0.20604043}
-  m_Center: {x: -0.395286, y: 0.9802589, z: 0.016909212}
 --- !u!114 &3146142459590182160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,7 +168,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 15, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 3146142459590182160}
   duration: 0.7
   OpenCompleted:
@@ -201,8 +179,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9ee655d456919c546b3f3b58ffd9166a, type: 3}
-  ItemApperanceWhenOpended: 0
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &1344623786960288341
 MonoBehaviour:
@@ -316,3 +294,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!65 &6093462202634142094
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8666144842980828626}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9304615, y: 2.029739, z: 0.070855625}
+  m_Center: {x: -0.3953013, y: 0.9802588, z: 0.019857198}
