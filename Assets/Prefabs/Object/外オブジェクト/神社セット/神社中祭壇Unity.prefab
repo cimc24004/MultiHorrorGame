@@ -332,10 +332,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 632139635014475286}
-    - targetCorrespondingSourceObject: {fileID: 1347699068070518257, guid: e55f538549d567546a3437f27a8e2dd6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5249386527774967838}
   m_SourcePrefab: {fileID: 100100000, guid: e55f538549d567546a3437f27a8e2dd6, type: 3}
 --- !u!1 &795198184983494719 stripped
 GameObject:
@@ -641,8 +637,7 @@ MonoBehaviour:
         m_MethodName: Open
         m_Modes: 01000000
   door_open_close_controller: {fileID: 2240962146208375320}
-  NeedPrayCount: 5
-  PrayCountNow: 0
+  enemy: {fileID: 0}
 --- !u!4 &5205875359880824745 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e55f538549d567546a3437f27a8e2dd6,
@@ -655,34 +650,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5743291787915206722}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6703529270614785459 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1347699068070518257, guid: e55f538549d567546a3437f27a8e2dd6,
-    type: 3}
-  m_PrefabInstance: {fileID: 5743291787915206722}
-  m_PrefabAsset: {fileID: 0}
---- !u!64 &5249386527774967838
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6703529270614785459}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8934321335857367576, guid: e55f538549d567546a3437f27a8e2dd6, type: 3}
 --- !u!1 &7516635942552061653 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6348894722825296233, guid: e55f538549d567546a3437f27a8e2dd6,
