@@ -6054,7 +6054,6 @@ GameObject:
   - component: {fileID: 597350177767367547}
   - component: {fileID: 3709143509871936015}
   - component: {fileID: 4640989651405648362}
-  - component: {fileID: 5005781273623164305}
   - component: {fileID: 6936642782527425598}
   - component: {fileID: 7228379173649806129}
   - component: {fileID: 364072651999732485}
@@ -6144,37 +6143,6 @@ MonoBehaviour:
   NowSpeed: 0
   CrouchNow: 0
   DirectionCamera: {fileID: 0}
---- !u!114 &5005781273623164305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7525078627656951602}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 3240c63fa2c3210419407122950635ad,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &6936642782527425598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9316,11 +9284,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1031172189521599334, guid: bf2b63344542f7344936f0461ae57791,
         type: 3}
-      propertyPath: player_input
-      value: 
-      objectReference: {fileID: 5005781273623164305}
-    - target: {fileID: 1031172189521599334, guid: bf2b63344542f7344936f0461ae57791,
-        type: 3}
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 1031172189521599334, guid: bf2b63344542f7344936f0461ae57791,
@@ -9330,11 +9293,6 @@ PrefabInstance:
       propertyPath: serializationData.SerializedFormat
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1950205279438642194, guid: bf2b63344542f7344936f0461ae57791,
-        type: 3}
-      propertyPath: player_input
-      value: 
-      objectReference: {fileID: 5005781273623164305}
     - target: {fileID: 3815935756808298079, guid: bf2b63344542f7344936f0461ae57791,
         type: 3}
       propertyPath: cross_hair_event
@@ -11674,11 +11632,6 @@ PrefabInstance:
       propertyPath: Player
       value: 
       objectReference: {fileID: 7525078627656951602}
-    - target: {fileID: 8204214372993340261, guid: 484eb64d9afb0a646ac814640b81aabf,
-        type: 3}
-      propertyPath: player_input
-      value: 
-      objectReference: {fileID: 5005781273623164305}
     - target: {fileID: 8204214372993340261, guid: 484eb64d9afb0a646ac814640b81aabf,
         type: 3}
       propertyPath: RaycastDistance

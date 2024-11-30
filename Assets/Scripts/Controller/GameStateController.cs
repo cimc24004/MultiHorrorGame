@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 public class GameStateController : MonoBehaviour
 {
     public enum GameState
@@ -45,11 +46,13 @@ public class GameStateController : MonoBehaviour
         player_input.actions.FindActionMap("Player").Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        EventSystem.current.sendNavigationEvents = true;
     }
 
     public void MenuOnGamePlayMode(bool visibleCursor)
     {
         //ゲームプレイ中にメニューを開いたとき
+
         player_input.actions.FindActionMap("MenuOnGamePlay").Enable();
         player_input.actions.FindActionMap("Player").Disable();
         if (visibleCursor)
@@ -58,7 +61,7 @@ public class GameStateController : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-
+        EventSystem.current.sendNavigationEvents = false;
     }
 
 

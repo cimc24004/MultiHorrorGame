@@ -7,7 +7,7 @@ public class CrossHairEvent : MonoBehaviour
     //�^�񒆂̃N���X�w�A���烌�C�L���X�g���΂����ꂪ���̂ɓ��������Ƃ��ɔ���������C�x���g�B
     public LayerMask TargetLayerMaskViewToPoint;
     public ItemBelongingsController item_belonging_controller;
-    public PlayerInput player_input;
+    private PlayerInput player_input;
     public PlayerHideObjectAction player_hide_object_action;
     public GameObject Player;
     //�N���X�w�A�����΂����C�L���X�g�̋����B
@@ -24,10 +24,12 @@ public class CrossHairEvent : MonoBehaviour
     private PrayController pray_controller;
     private TheDoorController the_door_controller;
     private Ray main_ray;
+    private GameStateController game_state_controller;
     // Start is called before the first frame update
     void Start()
     {
         MainCamera = Camera.main;
+        player_input = GameControllerOnAllScene.instance.player_input;
         cross_hair_status = this.gameObject.GetComponent<CrossHairStatus>();
     }
 
@@ -37,7 +39,6 @@ public class CrossHairEvent : MonoBehaviour
         //�J�����̒������烌�C�L���X�g���΂��B
         main_ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.green);
-        
         if (Physics.Raycast(main_ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
         {
 
@@ -67,10 +68,9 @@ public class CrossHairEvent : MonoBehaviour
             }
 
 
-
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {
-
+                Debug.Log("RaycastAction---------------------Triggered!!!!!!!!!!!!!!!!!!!!!");
 
                 if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item"))
                 {
