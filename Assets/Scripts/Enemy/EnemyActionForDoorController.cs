@@ -24,6 +24,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     private Animator anim;
     private DiscoveryPlayerController discovery_player_controller;
     private EnemySoundSensor enemy_sound_sensor;
+    private CharacterController character_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +34,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         anim = this.gameObject.GetComponent<Animator>();
         enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
+        character_controller = this.gameObject.GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -61,6 +63,9 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
                     Debug.Log("î‡ÇâÛÇµÇΩÇ¢Ç∆évÇ¢Ç‹Ç∑ÅB");
+                    follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,3);
+                    follow_object_by_nav.StoppingDistance = 2;
+                    character_controller.Move(Vector3.zero);
                     anim.SetBool("DoorAttack", true);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 }
@@ -77,7 +82,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         }
         Debug.DrawRay(RaycastStartTransform.position, RaycastStartTransform.transform.forward * 1f, Color.red);
     }
-    public void AttackToDoor(TheDoorController the_door_controller)
+    public void AttackToDoor()
     {
         DoorAttackedController door_attacked_controller = the_door_controller.door_attacked_controller;
         if(the_door_controller == null || door_attacked_controller == null)
@@ -87,6 +92,8 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         bool broken = the_door_controller.door_attacked_controller.DoorAttacked();
         if (broken)
         {
+            follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
+            follow_object_by_nav.MovePermit = true;
             DoorAttackSource.PlayOneShot(DoorBrokenClip);
             DoorAttackSource.PlayOneShot(DoorAttackClip);
         }

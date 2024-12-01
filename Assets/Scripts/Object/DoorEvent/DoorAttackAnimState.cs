@@ -22,7 +22,7 @@ public class DoorAttackAnimState : StateMachineBehaviour
             enemy_action_for_door_controller = animator.gameObject.GetComponent<EnemyActionForDoorController>();
             if (enemy_action_for_door_controller.the_door_controller != null)
             {
-                enemy_action_for_door_controller.AttackToDoor(enemy_action_for_door_controller.the_door_controller);
+                enemy_action_for_door_controller.AttackToDoor();
 
             }
         }
