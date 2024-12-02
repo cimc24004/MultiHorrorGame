@@ -121,6 +121,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb4185fc0241d74db4e0c20af8ef501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   throw_now: 0
   OnGround: 0
   OnGroundEvent:
@@ -153,6 +162,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  InstantiateOnHit: 1
+  InstantiatePrefab: {fileID: 1509486939602526, guid: 2bdfafb54af034a46815013e96d908d0,
+    type: 3}
   FirstSpeed: 10
   item_throw_controller: {fileID: 0}
   col_layer:
@@ -170,6 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ed7779f1a7f44d4a96729cee117c388, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnStart: 0
+  OnStartDestroyTime: 0
 --- !u!54 &3305612839892290971
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class HorizontalProjectile : MonoBehaviour
+using Sirenix.OdinInspector;
+public class HorizontalProjectile : SerializedMonoBehaviour
 {
     //水平投射を行うためのスクリプト。
     public bool throw_now;
@@ -14,6 +15,9 @@ public class HorizontalProjectile : MonoBehaviour
     public UnityEvent OnGroundEvent;
     //投げてから敵に触れたときのUnityイベント
     public UnityEvent HitEnemyEvent;
+    [SerializeField] private bool InstantiateOnHit;
+    [ShowIf("InstantiateOnHit")]
+    [SerializeField] private GameObject InstantiatePrefab;
     //初速度
     public float FirstSpeed = 1;
 
@@ -25,9 +29,17 @@ public class HorizontalProjectile : MonoBehaviour
 
     private GameObject hited_obj;
     // Start is called before the first frame update
-    //void Start()
-    //{
-    //}
+    void Start()
+    {
+        if (InstantiateOnHit)
+        {
+            HitEnemyEvent.AddListener(() =>
+            {
+                Instantiate(InstantiatePrefab, this.transform.position, Quaternion.identity);
+            });
+        }
+
+    }
 
     // Update is called once per frame
     void Update()
