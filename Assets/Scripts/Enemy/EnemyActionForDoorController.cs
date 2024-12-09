@@ -63,6 +63,8 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
                     Debug.Log("î‡ÇâÛÇµÇΩÇ¢Ç∆évÇ¢Ç‹Ç∑ÅB");
+                    if ((door_open_close_controller.open_type == DoorOpenCloseController.OpenType.Rotate && the_door_controller.door_status == TheDoorController.DoorStatus.Opened))
+                        return;
                     follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,3);
                     follow_object_by_nav.StoppingDistance = 2;
                     character_controller.Move(Vector3.zero);

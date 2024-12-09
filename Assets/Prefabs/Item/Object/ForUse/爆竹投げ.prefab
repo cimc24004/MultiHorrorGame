@@ -110,7 +110,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 2, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8036080520467748999
 MonoBehaviour:
@@ -124,6 +124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb4185fc0241d74db4e0c20af8ef501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   throw_now: 0
   OnGround: 0
   OnGroundEvent:
@@ -144,11 +153,13 @@ MonoBehaviour:
   HitEnemyEvent:
     m_PersistentCalls:
       m_Calls: []
+  InstantiateOnHit: 0
+  InstantiatePrefab: {fileID: 0}
   FirstSpeed: 10
   item_throw_controller: {fileID: 0}
   col_layer:
     serializedVersion: 2
-    m_Bits: 65544
+    m_Bits: 4259848
 --- !u!114 &2168927718610686170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,6 +201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ed7779f1a7f44d4a96729cee117c388, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnStart: 0
+  OnStartDestroyTime: 0
 --- !u!54 &3305612839892290971
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -380,5 +393,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 250, y: 10, z: 250}
+  m_Size: {x: 350, y: 40, z: 350}
   m_Center: {x: 3.3170855, y: 10, z: 2.5953312}
