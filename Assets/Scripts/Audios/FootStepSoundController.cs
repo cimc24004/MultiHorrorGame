@@ -18,6 +18,10 @@ public class FootStepSoundController : SerializedMonoBehaviour
     [Header("Update関数から足音関数を実行するかどうか(Animation Eventから実行するなら不要)")]
     public bool FootStepPlayFromUpdate;
 
+    [Header("足音は一定で一個しかない場合")]
+    public bool OnlyOneFootStepSound;
+
+    [HideIf("OnlyOneFootStepSound")]
     [Header("Groundの名前によって再生するクリップを変える、")]
     public FootStepControllerStatus foot_step_controller_status;
     public GroundCheck ground_check;
@@ -40,6 +44,29 @@ public class FootStepSoundController : SerializedMonoBehaviour
     void Update()
     {
         if (!FootStepPlayFromUpdate) return;
+
+        if (OnlyOneFootStepSound)
+        {
+            if(move_status == MoveStatus.Walk || move_status == MoveStatus.Run)
+            {
+                if (!audio_source.isPlaying)
+                {
+                    Debug.Log("再生しました！");
+                    audio_source.Play();
+                }
+            }
+            else
+            {
+                if (audio_source.isPlaying)
+                {
+                    audio_source.Stop();
+
+                }
+            }
+
+            return;
+        }
+        
         if (ground_check.OnGround)
         {
             if(ground_check.GroundedTagName != GroundedName)
@@ -85,7 +112,7 @@ public class FootStepSoundController : SerializedMonoBehaviour
     [Button]
     public void FootStepSoundPlay(string _MoveMode)
     {
-        if (FootStepPlayFromUpdate) return;
+        if (FootStepPlayFromUpdate || OnlyOneFootStepSound) return;
         //GroundedNameによって音を変える
         GroundedName = ground_check.GroundedTagName;
         if (!ground_check.OnGround) return;

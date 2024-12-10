@@ -58,18 +58,23 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
                 {
                     //ドアの開け閉めアニメーションが終わっていた場合だけ開け閉めできるようにするよ。
-                    the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                    if (!discovery_player_controller.DiscoveryPlayerNow) { 
+                        the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                    }
                 }
+                Debug.Log("EnemyName: " + this.gameObject.name + "\n\n" + "the_door_controller.NeededKey: " + the_door_controller.NeededKey + "discovery_player_controller.DiscoveryPlayerNow: " + discovery_player_controller.DiscoveryPlayerNow);
                 if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
                     Debug.Log("扉を壊したいと思います。");
                     if ((door_open_close_controller.open_type == DoorOpenCloseController.OpenType.Rotate && the_door_controller.door_status == TheDoorController.DoorStatus.Opened))
                         return;
-                    follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,3);
+                    discovery_player_controller.enabled = false;
+                    follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,1);
                     follow_object_by_nav.StoppingDistance = 2;
                     character_controller.Move(Vector3.zero);
                     anim.SetBool("DoorAttack", true);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+                    discovery_player_controller.enabled = true;
                 }
 
             }
