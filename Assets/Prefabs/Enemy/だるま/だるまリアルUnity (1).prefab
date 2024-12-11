@@ -397,6 +397,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1e6af67d225e85f4e9311765b8756175,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 4697713167375291244}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1e6af67d225e85f4e9311765b8756175,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 6395210051295802361}
     - targetCorrespondingSourceObject: {fileID: -162539559439640829, guid: 1e6af67d225e85f4e9311765b8756175,
         type: 3}
@@ -425,6 +429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f233798fe3bfd6b4f8327e8f38636e0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  look_at: 1
   play_mode: 0
 --- !u!1 &3197721740240784121 stripped
 GameObject:
@@ -444,6 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f233798fe3bfd6b4f8327e8f38636e0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  look_at: 1
   play_mode: 0
 --- !u!4 &6220778025668262417 stripped
 Transform:
@@ -654,6 +660,19 @@ MonoBehaviour:
   DoorAttackSource: {fileID: 737149869875355185}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 5a9945f6fab4959418fbd76c3aec7b79, type: 3}
+--- !u!114 &4697713167375291244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6710209561006137515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257d6aca33c5a9e429062195743c71b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isVisible: 0
 --- !u!143 &6395210051295802361
 CharacterController:
   m_ObjectHideFlags: 0
