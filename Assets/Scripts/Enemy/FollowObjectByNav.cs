@@ -29,7 +29,6 @@ public class FollowObjectByNav : MonoBehaviour
     private TimeManager time_manager;
     private CharacterController character_controller;
     private Vector3 Vector3Move;
-    private CustomGravity custom_gravity;
 
 
     // Start is called before the first frame update
@@ -39,14 +38,13 @@ public class FollowObjectByNav : MonoBehaviour
         //rigid = this.gameObject.GetComponent<Rigidbody>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
         time_manager = TimeManager.instance;
-        custom_gravity = this.gameObject.GetComponent<CustomGravity>();
         this.DefaultStoppingDistance = StoppingDistance;
         //デフォルトでは探索結果の0番目を指定する
         if (nav_mesh_agent.path.corners.Length >= 1)
         {
             NavmeshNextPos = nav_mesh_agent.path.corners[0];
         }
-        //navmeshagentによる動きを停止。 動きはrigidbodyで行いnavmeshagentは探索結果のみを用いる。
+        //navmeshagentによる動きを停止。 動きはCharacterControllerで行いnavmeshagentは探索結果のみを用いる。
         nav_mesh_agent.updatePosition = true;
         nav_mesh_agent.updateRotation = false;
     }
@@ -94,7 +92,8 @@ public class FollowObjectByNav : MonoBehaviour
 
 
         }
-
+        nav_mesh_agent.velocity = character_controller.velocity;
+        character_controller.Move(new Vector3(Vector3Move.x * Time.deltaTime, 0, Vector3Move.z * Time.deltaTime));
     }
     private void FixedUpdate()
     {
@@ -113,8 +112,7 @@ public class FollowObjectByNav : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
             }
         }
-        nav_mesh_agent.velocity = character_controller.velocity;
-        character_controller.Move(new Vector3(Vector3Move.x * Time.fixedDeltaTime, 0, Vector3Move.z * Time.fixedDeltaTime));
+
     }
     public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed)
     {

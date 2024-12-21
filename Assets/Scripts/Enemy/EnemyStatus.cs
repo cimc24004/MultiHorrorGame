@@ -24,6 +24,7 @@ public class EnemyStatus : MonoBehaviour
     [HideInInspector]public EnemyFlinchController enemy_flinch_controller;
     public bool StopEnemyByPlayerNow;
     private float StopEnemyByPlayerTimeNow;
+    public GroundCheck ground_check;
 
     // Start is called before the first frame update
     void Start()
