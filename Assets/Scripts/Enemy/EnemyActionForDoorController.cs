@@ -6,6 +6,8 @@ using Sirenix.OdinInspector;
 public class EnemyActionForDoorController : SerializedMonoBehaviour
 {
     //敵がドアを開けたり、壊したりするコントローラー
+    
+    [SerializeField] private float RaycastDistance = 1f;
     public DoorOpenCloseController door_open_close_controller;
     public TheDoorController the_door_controller;
     public Transform RaycastStartTransform;
@@ -42,7 +44,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     {
         anim.SetBool("DoorAttack", false);
         //レイキャストを正面から当てて、ドアに当たったら開けるようにする。
-        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, 1f, layer_mask))
+        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, RaycastDistance, layer_mask))
         {
 
             if (raycast_hit.collider.gameObject.tag == "Door")

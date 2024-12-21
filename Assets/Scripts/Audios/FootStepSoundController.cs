@@ -20,7 +20,8 @@ public class FootStepSoundController : SerializedMonoBehaviour
 
     [Header("足音は一定で一個しかない場合")]
     public bool OnlyOneFootStepSound;
-
+    [Header("AnimationEventで足音を慣らすかどうか")]
+    [SerializeField] private bool PlayFootStepFromAnimationEvent = true;
     [HideIf("OnlyOneFootStepSound")]
     [Header("Groundの名前によって再生するクリップを変える、")]
     public FootStepControllerStatus foot_step_controller_status;
@@ -112,7 +113,8 @@ public class FootStepSoundController : SerializedMonoBehaviour
     [Button]
     public void FootStepSoundPlay(string _MoveMode)
     {
-        if (FootStepPlayFromUpdate || OnlyOneFootStepSound) return;
+        Debug.Log("aaaaaaaaaaaaaananananananananFootStepSoundPLay");
+        if (FootStepPlayFromUpdate || OnlyOneFootStepSound || !PlayFootStepFromAnimationEvent) return;
         //GroundedNameによって音を変える
         GroundedName = ground_check.GroundedTagName;
         if (!ground_check.OnGround) return;
