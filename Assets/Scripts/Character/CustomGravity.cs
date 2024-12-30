@@ -6,6 +6,7 @@ public class CustomGravity : MonoBehaviour
     private Rigidbody rb;
     public bool UseCharacterController;
     private CharacterController character_controller;
+    [SerializeField]private GroundCheck ground_check;
     public Vector3 gravity;
     void Start()
     {
@@ -18,18 +19,28 @@ public class CustomGravity : MonoBehaviour
             rb = GetComponent<Rigidbody>();
         }
     }
-
-    void FixedUpdate()
+    private void Update()
     {
-        gravity = Vector3.down * gravityMultiplier;
         if (UseCharacterController)
         {
-            if(character_controller.enabled)
-            character_controller.Move(new Vector3(character_controller.velocity.x * Time.deltaTime, gravity.y * Time.deltaTime, character_controller.velocity.z * Time.deltaTime));
+            gravity = Vector3.down * gravityMultiplier;
+            if (character_controller.enabled )
+            {
+                character_controller.Move(new Vector3(0, gravity.y * Time.deltaTime, 0));
+            }
         }
-        else
+
+    }
+    void FixedUpdate()
+    {
+
+        if (!UseCharacterController)
         {
-            rb.AddForce(gravity, ForceMode.Acceleration);
+            gravity = Vector3.down * gravityMultiplier;
+            if (!ground_check.OnGround)
+            {
+                rb.AddForce(gravity, ForceMode.Acceleration);
+            }
         }
     }
 }

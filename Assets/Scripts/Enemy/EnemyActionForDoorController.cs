@@ -6,6 +6,8 @@ using Sirenix.OdinInspector;
 public class EnemyActionForDoorController : SerializedMonoBehaviour
 {
     //敵がドアを開けたり、壊したりするコントローラー
+    
+    [SerializeField] private float RaycastDistance = 1f;
     public DoorOpenCloseController door_open_close_controller;
     public TheDoorController the_door_controller;
     public Transform RaycastStartTransform;
@@ -42,7 +44,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     {
         anim.SetBool("DoorAttack", false);
         //レイキャストを正面から当てて、ドアに当たったら開けるようにする。
-        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, 1f, layer_mask))
+        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, RaycastDistance, layer_mask))
         {
 
             if (raycast_hit.collider.gameObject.tag == "Door")
@@ -58,16 +60,23 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
                 {
                     //ドアの開け閉めアニメーションが終わっていた場合だけ開け閉めできるようにするよ。
-                    the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                    if (!discovery_player_controller.DiscoveryPlayerNow) { 
+                        the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                    }
                 }
+                Debug.Log("EnemyName: " + this.gameObject.name + "\n\n" + "the_door_controller.NeededKey: " + the_door_controller.NeededKey + "discovery_player_controller.DiscoveryPlayerNow: " + discovery_player_controller.DiscoveryPlayerNow);
                 if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
                     Debug.Log("扉を壊したいと思います。");
-                    follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,3);
+                    if ((door_open_close_controller.open_type == DoorOpenCloseController.OpenType.Rotate && the_door_controller.door_status == TheDoorController.DoorStatus.Opened))
+                        return;
+                    discovery_player_controller.enabled = false;
+                    follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,1);
                     follow_object_by_nav.StoppingDistance = 2;
                     character_controller.Move(Vector3.zero);
                     anim.SetBool("DoorAttack", true);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+                    discovery_player_controller.enabled = true;
                 }
 
             }

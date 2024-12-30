@@ -177,6 +177,12 @@ public class PlayerStatus : Singleton<PlayerStatus>
         PlayerDeaded = true;
         player_character_controller.enabled = false;
         player_move_permit.Stop();
+        item_menu_controller.LightObject.SetActive(false);
+        item_menu_controller.enabled = false;
+
+
+
+
         DOVirtual.DelayedCall(3, () =>
         {
             PlayerDeaded = false;

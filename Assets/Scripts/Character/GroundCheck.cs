@@ -30,5 +30,6 @@ public class GroundCheck : MonoBehaviour
             OnGround = false;
             GroundedTagName = null;
         }
+        Debug.DrawRay(this.transform.position, Vector3.down * Distance, Color.yellow);
     }
 }

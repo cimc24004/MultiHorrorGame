@@ -32,13 +32,17 @@ public class DoorAttackedController : MonoBehaviour
             foreach(GameObject door in Doors)
             {
                 Rigidbody rigid_door = door.gameObject.AddComponent<Rigidbody>();
-                rigid_door.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                Collider door_collider = door.gameObject.GetComponent<Collider>();
-                door.gameObject.layer = LayerMask.NameToLayer("WithoutCharacter");
-                if(door != null && rigid_door != null)
+                if(rigid_door != null)
                 {
-                    door.transform.Rotate(30 ,30 ,30 );
+                    rigid_door.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    Collider door_collider = door.gameObject.GetComponent<Collider>();
+                    door.gameObject.layer = LayerMask.NameToLayer("WithoutCharacter");
+                    if (door != null && rigid_door != null)
+                    {
+                        door.transform.Rotate(30, 30, 30);
+                    }
                 }
+
             }
             //this.gameObject.SetActive(false);
             return true;
