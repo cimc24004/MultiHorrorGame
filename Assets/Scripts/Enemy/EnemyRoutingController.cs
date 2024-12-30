@@ -92,7 +92,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
 
             ArrivedNextRouteMode = false;
         }
-
+        follow_object_by_nav.ChaseToTargetSet(true, NextRouteObject.transform.position, RoutingWalkSpeed);
 
         if (!ArrivedNextRouteMode)
         {
@@ -190,7 +190,6 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             //それとIndexも変更する。 NextRouteObjectに到着したらルートどおりに徘徊する。
             RouteIndexNow = Routings.IndexOf(NextRouteObject);
         }
-        follow_object_by_nav.ChaseToTargetSet(true, NextRouteObject.transform.position, RoutingWalkSpeed);
     }
 
     private void OnTriggerEnter(Collider other)

@@ -99,6 +99,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
             return;
         }
         bool broken = the_door_controller.door_attacked_controller.DoorAttacked();
+        follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
         if (broken)
         {
             follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
