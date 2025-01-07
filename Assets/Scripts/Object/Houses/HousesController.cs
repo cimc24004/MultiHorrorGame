@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Sirenix.OdinInspector;
+using FronkonGames.Glitches.Hacked;
 public class HousesController : SerializedMonoBehaviour
 {
     public List<HouseDirector> house_directors;
@@ -12,18 +13,13 @@ public class HousesController : SerializedMonoBehaviour
     {
         house_directors = new List<HouseDirector>(FindObjectsOfType<HouseDirector>().ToList());
         game_progress_controller = GameProgressController.instance;
-
-
         StartCoroutine(ButsudanRandomCreate());
     }
 
     // Update is called once per frame
     void Update()
     {
-
     }
-
-
 
     private IEnumerator ButsudanRandomCreate()
     {
@@ -36,7 +32,6 @@ public class HousesController : SerializedMonoBehaviour
             }
         }
         yield return null;
-
 
         int i = 0;
 
