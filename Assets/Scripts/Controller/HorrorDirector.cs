@@ -43,7 +43,9 @@ public class HorrorDirector : Singleton<HorrorDirector>
         if (DiscoveryNow) return;
         Main.SetActive(false);
         ToEnemyNear.SetActive(true);
-        urp_fx_controller.CorruptMemoryChange(true);
+        //urp_fx_controller.CorruptMemoryChange(true);
+        urp_fx_controller.CheapCameraChange(true);
+        urp_fx_controller.VHSChange(true);
     }
 
     public void NearEnemyReset()
@@ -57,7 +59,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
         {
             ToEnemyNearHeartBeatSoundSource.volume = 1;
         });
-        urp_fx_controller.CorruptMemoryChange(false);
+        urp_fx_controller.CheapCameraChange(false);
+        urp_fx_controller.VHSChange(false);
     }
     [Button]
     public void DiscoveriedHorror()
@@ -65,7 +68,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
         ToEnemyNear.SetActive(false);
         DiscoveriedSound.SetActive(false);
         DiscoveriedSound.SetActive(true);
-        urp_fx_controller.CorruptMemoryChange(false);
+        urp_fx_controller.CheapCameraChange(false);
+        urp_fx_controller.VHSChange(false);
 
         urp_fx_controller.InteferecesChange(true);
 
@@ -92,7 +96,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
         if (!DiscoveryNow) {
             ToEnemyNear.SetActive(false);
             Discoveried.SetActive(false);
-            urp_fx_controller.CorruptMemoryChange(false);
+            urp_fx_controller.CheapCameraChange(false);
+            urp_fx_controller.VHSChange(false);
             urp_fx_controller.InteferecesChange(false);
             Main.SetActive(true);
             MainBGM.clip = MainDefaultBGM;
