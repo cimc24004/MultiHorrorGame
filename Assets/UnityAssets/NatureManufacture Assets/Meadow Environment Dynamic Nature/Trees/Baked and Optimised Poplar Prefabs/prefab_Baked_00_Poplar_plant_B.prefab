@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4226638925935982}
   - component: {fileID: 33070206493489680}
   - component: {fileID: 23643944097646328}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 00_Poplar_plant_B_cross_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,8 @@ GameObject:
   - component: {fileID: 4135600552353040}
   - component: {fileID: 33787850062637808}
   - component: {fileID: 23759846430758166}
-  m_Layer: 0
+  - component: {fileID: 8570371090616425375}
+  m_Layer: 3
   m_Name: 00_Poplar_plant_B_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,6 +168,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &8570371090616425375
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571600652268224}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 2.5537207
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.24, z: 0}
 --- !u!1 &1790868255743902
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,7 +202,7 @@ GameObject:
   - component: {fileID: 4450964976420478}
   - component: {fileID: 33258197951888254}
   - component: {fileID: 23446390790654656}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 00_Poplar_plant_B_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4008233023550204}
   - component: {fileID: 205650321978311724}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: prefab_Baked_00_Poplar_plant_B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
