@@ -9,6 +9,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: daruma
     second: {fileID: 2100000, guid: eeade8c5e7cc6204f8896eeba0a7557f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: daruma.002
+    second: {fileID: 2100000, guid: eeade8c5e7cc6204f8896eeba0a7557f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -34,15 +39,23 @@ ModelImporter:
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
-    extraExposedTransformPaths: []
+    extraExposedTransformPaths:
+    - "\u3060\u308B\u307E\u808C"
+    - "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2"
+    - "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2/Bone"
+    - "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2/Bone/Bone_end"
+    - "\u76EE"
+    - "\u76EE.001"
+    - "\u7709\u6BDB\u3068\u304B"
+    - "\u8D64\u3044\u3068\u3053"
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: "\u8D64\u3044\u90E8\u5206|DoorAttack"
-      takeName: "\u8D64\u3044\u90E8\u5206|DoorAttack"
+      name: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|\u30C9\u30A2\u7834\u58CA"
+      takeName: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|\u30C9\u30A2\u7834\u58CA"
       internalID: -49448193066809563
       firstFrame: 0
-      lastFrame: 25
+      lastFrame: 28
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -125,7 +138,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: Armature
+    rootMotionBoneName: Root
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
@@ -133,7 +146,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
