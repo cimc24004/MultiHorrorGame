@@ -1,0 +1,173 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.InputSystem;
+
+public class ReadEventUIController : MonoBehaviour
+{
+    // UI表示に必要なもの
+    public GameObject CanvasUI;
+    public TextMeshProUGUI sentenceUI;
+
+    // シングルトンなど他システムへの参照
+    private GameControllerOnAllScene game_controller_on_all_scene;
+    private AudioSource audio_source;
+    private PlayerInput player_input;
+    private GameStateController game_state_controller;
+
+    // ページ管理用
+    private int Page;        // 現在のページ (1-based)
+    private int MaxPage;     // 最大ページ数
+    private bool DisplayNow; // 今本を表示しているか
+
+    // 表示する文章一覧
+    private List<string> sentences = new List<string>();
+
+    private InputAction ESCAction;
+
+    private InputAction NextPageAction;
+    private InputAction BeforePageAction;
+    [SerializeField]
+    private GameObject VectorPageUI;
+    [SerializeField]
+    private GameObject NextUI;
+    [SerializeField]
+    private GameObject BeforeUI;
+    [SerializeField]
+    private TextMeshProUGUI PageNowCountTextUI;
+    [SerializeField]
+    private TextMeshProUGUI MaxPageCountTextUI;
+    void Start()
+    {
+        audio_source = this.gameObject.GetComponent<AudioSource>();
+        game_controller_on_all_scene = GameControllerOnAllScene.instance;
+        player_input = game_controller_on_all_scene.player_input;
+        game_state_controller = game_controller_on_all_scene.GetComponent<GameStateController>();
+        ESCAction = player_input.actions.FindActionMap("ReadEvent")["ESC"];
+        NextPageAction = player_input.actions.FindActionMap("ReadEvent")["NextPage"];
+        BeforePageAction = player_input.actions.FindActionMap("ReadEvent")["BeforePage"];
+    }
+
+    void Update()
+    {
+        if (!DisplayNow) return;
+            Debug.Log("DIsplayNowwwww: " + player_input.currentActionMap);
+        if (ESCAction.triggered)
+        {
+            CloseBook();
+        }
+                // 次ページへ進む入力 (例: "NavigateNext" など適宜ActionMapで設定)
+                if (NextPageAction.WasPerformedThisFrame())
+                {
+                    // ここでは「右スティック or キー入力などで次ページに進む」扱いにする例
+                    // 実際は「NavigateNext」「NavigatePrev」などを分けてもOK
+                    GoToNextPage();
+                }
+                else if (BeforePageAction.WasPerformedThisFrame())
+                {
+                    GoToPreviousPage();
+
+                }
+    }
+
+    /// <summary>
+    /// 本を開き、複数ページ分の文章をセットして表示開始
+    /// </summary>
+    public void StartReading(List<string> _sentences)
+    {
+        if (_sentences == null || _sentences.Count == 0) return;
+
+        // 本文リストをセット
+        sentences = _sentences;
+
+        // 1ページ目を表示する準備
+        Page = 1;
+        MaxPage = sentences.Count;
+
+        // 画面表示の更新
+        game_state_controller.ReadEventMode(true);
+        CanvasUI.SetActive(true);
+        sentenceUI.SetText(sentences[0]);  // 最初のページ文をセット
+        MaxPageCountTextUI.text = MaxPage.ToString();
+        audio_source.Play();
+        DisplayNow = true;
+        NextAndBeforePageUIDisplayCheck();
+    }
+
+    /// <summary>
+    /// 次のページに進む処理
+    /// </summary>
+    private void GoToNextPage()
+    {
+        // まだ最終ページでないなら次へ
+        if (Page < MaxPage)
+        {
+            Page++;
+            sentenceUI.SetText(sentences[Page - 1]); // Pageは1-basedなので-1
+            audio_source.Play();
+            NextAndBeforePageUIDisplayCheck();
+        }
+        else
+        {
+            // 最終ページなら閉じる
+            //CloseBook();
+        }
+    }
+
+    /// <summary>
+    /// 前のページに戻る処理
+    /// (必要ならUpdate内で入力を拾って呼び出してください)
+    /// </summary>
+    private void GoToPreviousPage()
+    {
+        // 1ページ目より前には戻れないようにする
+        if (Page > 1)
+        {
+            Page--;
+            sentenceUI.SetText(sentences[Page - 1]);
+            audio_source.Play();
+            NextAndBeforePageUIDisplayCheck();
+        }
+    }
+
+    /// <summary>
+    /// 本を閉じる (UIを閉じてリセット)
+    /// </summary>
+    private void CloseBook()
+    {
+        DisplayNow = false;
+        game_state_controller.GameplayMode();
+        CanvasUI.SetActive(false);
+        sentenceUI.SetText("");
+    }
+    //次のページ、前のページへを表示するやつチェックしていく
+    private void NextAndBeforePageUIDisplayCheck()
+    {
+        if(MaxPage == 1)
+        {
+            VectorPageUI.SetActive(false);
+            return;
+        }
+        PageNowCountTextUI.text = Page.ToString();
+        VectorPageUI.SetActive(true);
+        if (MaxPage > Page)
+        {
+            NextUI.SetActive(true);
+            BeforeUI.SetActive(true);
+        }
+        else
+        {
+            NextUI.SetActive(false);
+            BeforeUI.SetActive(true);
+        }
+        if (Page != 1)
+        {
+            BeforeUI.SetActive(true);
+        }
+        else
+        {
+            BeforeUI.SetActive(false);
+        }
+    }
+}
