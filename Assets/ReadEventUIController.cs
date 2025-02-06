@@ -29,6 +29,10 @@ public class ReadEventUIController : MonoBehaviour
     private InputAction NextPageAction;
     private InputAction BeforePageAction;
     [SerializeField]
+    private float TimeToPermitPageChange = 0.5f;
+    [SerializeField]
+    private float TimeToPermitPageChangeNow = 0.5f;
+    [SerializeField]
     private GameObject VectorPageUI;
     [SerializeField]
     private GameObject NextUI;
@@ -57,18 +61,26 @@ public class ReadEventUIController : MonoBehaviour
         {
             CloseBook();
         }
-                // 次ページへ進む入力 (例: "NavigateNext" など適宜ActionMapで設定)
-                if (NextPageAction.WasPerformedThisFrame())
-                {
-                    // ここでは「右スティック or キー入力などで次ページに進む」扱いにする例
-                    // 実際は「NavigateNext」「NavigatePrev」などを分けてもOK
-                    GoToNextPage();
-                }
-                else if (BeforePageAction.WasPerformedThisFrame())
-                {
-                    GoToPreviousPage();
-
-                }
+        // 次ページへ進む入力 (例: "NavigateNext" など適宜ActionMapで設定)
+        TimeToPermitPageChangeNow += Time.deltaTime;
+        if (NextPageAction.WasPerformedThisFrame())
+        {
+            // ここでは「右スティック or キー入力などで次ページに進む」扱いにする例
+            // 実際は「NavigateNext」「NavigatePrev」などを分けてもOK
+            if(TimeToPermitPageChange < TimeToPermitPageChangeNow)
+            {
+                GoToNextPage();
+                TimeToPermitPageChangeNow = 0;
+            }
+        }
+        else if (BeforePageAction.WasPerformedThisFrame())
+        {
+            if (TimeToPermitPageChange < TimeToPermitPageChangeNow)
+            {
+                GoToPreviousPage();
+                TimeToPermitPageChangeNow = 0;
+            }
+        }
     }
 
     /// <summary>
