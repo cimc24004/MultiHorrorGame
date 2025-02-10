@@ -32,7 +32,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     private EnemyRoutingController enemy_routing_controller;
     private TimeManager time_manager;
     private MaterialChangeController material_change_controller;
-    private VisibleThroughTheWallController visible_through_the_wall_controller;
+    //private VisibleThroughTheWallController visible_through_the_wall_controller;
     [SerializeField]private GameObject raycasted_obj;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
@@ -46,7 +46,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     void Start()
     {
         player_status = PlayerStatus.instance;
-        visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
+        //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
         material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
         Player = player_status.gameObject;
@@ -81,7 +81,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             horror_director.DiscoveryNow = true;
             if (!DiscoveriedEventOnce)
             {
-                visible_through_the_wall_controller.VisibleOnce = true;
+                //visible_through_the_wall_controller.VisibleOnce = true;
                 horror_director.DiscoveriedHorror();
                 DiscoveriedEventOnce = true;
             }
