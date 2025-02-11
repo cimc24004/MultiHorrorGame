@@ -8,7 +8,7 @@ public class ReadEventController : MonoBehaviour
     private ReadEventUIController read_event_ui_controller;
 
     [TextArea]
-    public List<string> Sentence;  // 1ƒy[ƒW‚²‚Æ‚É•\¦‚·‚é•¶Í
+    public List<string> Sentence;  // 1ãƒšãƒ¼ã‚¸ã”ã¨ã«è¡¨ç¤ºã™ã‚‹æ–‡ç« 
 
     void Start()
     {
@@ -16,12 +16,11 @@ public class ReadEventController : MonoBehaviour
         read_event_ui_controller = game_controller_on_all_scene.read_event_ui_controller;
     }
 
-    // –{‚ğ“Ç‚İn‚ß‚é‚Æ‚«‚ÉŒÄ‚Î‚ê‚é
-
+    // æœ¬ã‚’èª­ã¿å§‹ã‚ã‚‹ã¨ãã«å‘¼ã°ã‚Œã‚‹
     public void ReadEventStart()
     {
-        // UIƒRƒ“ƒgƒ[ƒ‰‚Éu‘Sƒy[ƒW•¶ƒŠƒXƒgv‚ğ“n‚·
-        // ‚±‚ê‚ÅUI‘¤‚Å•¡”ƒy[ƒW‚Ì§Œä‚ª‰Â”\‚É‚È‚é
+        // UIã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã«ã€Œå…¨ãƒšãƒ¼ã‚¸æ–‡ç« ãƒªã‚¹ãƒˆã€ã‚’æ¸¡ã™
+        // ä»¥é™UIã§æ–‡ç« ãƒšãƒ¼ã‚¸ã®åˆ¶å¾¡ãŒå¯èƒ½ã«ãªã‚‹
         read_event_ui_controller.StartReading(Sentence);
     }
 }

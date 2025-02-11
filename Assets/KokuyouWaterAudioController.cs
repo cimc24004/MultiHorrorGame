@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class KokuyouWaterAudioController : MonoBehaviour
@@ -13,12 +14,14 @@ public class KokuyouWaterAudioController : MonoBehaviour
     private AudioClip MoveWaterClip;
 
     private EnemyStatus.EnemyMoveState before_enemy_move_state;
+    private float DefaultVolume;
     // Start is called before the first frame update
     void Start()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
         audio_source.Play();
         enemy_status.OnChangeEnemyMoveEvent.AddListener(OnChangeMoveState);
+        DefaultVolume = audio_source.volume;
     }
 
     // Update is called once per frame
@@ -34,14 +37,16 @@ public class KokuyouWaterAudioController : MonoBehaviour
         Debug.Log("OnChangeMoveState----> " + enemy_status.enemy_move_state.ToString());
         if (enemy_status.enemy_move_state == EnemyStatus.EnemyMoveState.Walk || enemy_status.enemy_move_state == EnemyStatus.EnemyMoveState.Run)
         {
-
             audio_source.clip = MoveWaterClip;
-            audio_source.Play();
         }
         else if (enemy_status.enemy_move_state == EnemyStatus.EnemyMoveState.Stop)
         {
             audio_source.clip = IdleWaterClip;
-            audio_source.Play();
         }
+        audio_source.Play();
+        audio_source.volume = 0;
+        audio_source.DOFade(DefaultVolume, 0.1f).SetLink(this.gameObject).SetEase(Ease.Linear).OnComplete(() => {
+        
+        });
     }
 }

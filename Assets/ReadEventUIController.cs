@@ -6,22 +6,22 @@ using UnityEngine.InputSystem;
 
 public class ReadEventUIController : MonoBehaviour
 {
-    // UI•\¦‚É•K—v‚È‚à‚Ì
+    // UIè¡¨ç¤ºã«å¿…è¦ãªå¤‰æ•°
     public GameObject CanvasUI;
     public TextMeshProUGUI sentenceUI;
 
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‚È‚Ç‘¼ƒVƒXƒeƒ€‚Ö‚ÌQÆ
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ãªã©ä»–ã‚·ã‚¹ãƒ†ãƒ ã¸ã®å‚ç…§
     private GameControllerOnAllScene game_controller_on_all_scene;
     private AudioSource audio_source;
     private PlayerInput player_input;
     private GameStateController game_state_controller;
 
-    // ƒy[ƒWŠÇ——p
-    private int Page;        // Œ»İ‚Ìƒy[ƒW (1-based)
-    private int MaxPage;     // Å‘åƒy[ƒW”
-    private bool DisplayNow; // ¡–{‚ğ•\¦‚µ‚Ä‚¢‚é‚©
+    // ãƒšãƒ¼ã‚¸ç®¡ç†ç”¨
+    private int Page;        // ç¾åœ¨ã®ãƒšãƒ¼ã‚¸ (1-based)
+    private int MaxPage;     // æœ€å¤§ãƒšãƒ¼ã‚¸æ•°
+    private bool DisplayNow; // ä»Šæœ¬ã‚’è¡¨ç¤ºã—ã¦ã„ã‚‹ã‹
 
-    // •\¦‚·‚é•¶Íˆê——
+    // è¡¨ç¤ºã™ã‚‹æ–‡ç« ä¸€è¦§
     private List<string> sentences = new List<string>();
 
     private InputAction ESCAction;
@@ -42,6 +42,7 @@ public class ReadEventUIController : MonoBehaviour
     private TextMeshProUGUI PageNowCountTextUI;
     [SerializeField]
     private TextMeshProUGUI MaxPageCountTextUI;
+
     void Start()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
@@ -56,17 +57,17 @@ public class ReadEventUIController : MonoBehaviour
     void Update()
     {
         if (!DisplayNow) return;
-            Debug.Log("DIsplayNowwwww: " + player_input.currentActionMap);
+        Debug.Log("DIsplayNowwwww: " + player_input.currentActionMap);
         if (ESCAction.triggered)
         {
             CloseBook();
         }
-        // Ÿƒy[ƒW‚Öi‚Ş“ü—Í (—á: "NavigateNext" ‚È‚Ç“K‹XActionMap‚Åİ’è)
+        // æ¬¡ãƒšãƒ¼ã‚¸ã¸é€²ã‚€å‡¦ç† (ä¾‹: "NavigateNext" ãªã©é©å®œActionMapã§è¨­å®š)
         TimeToPermitPageChangeNow += Time.deltaTime;
         if (NextPageAction.WasPerformedThisFrame())
         {
-            // ‚±‚±‚Å‚Íu‰EƒXƒeƒBƒbƒN or ƒL[“ü—Í‚È‚Ç‚ÅŸƒy[ƒW‚Éi‚Şvˆµ‚¢‚É‚·‚é—á
-            // ÀÛ‚ÍuNavigateNextvuNavigatePrevv‚È‚Ç‚ğ•ª‚¯‚Ä‚àOK
+            // ã“ã“ã§ã¯ã€Œå³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ or ã‚­ãƒ¼å…¥åŠ›ãªã©ã§æ¬¡ãƒšãƒ¼ã‚¸ã«é€²ã‚€ã€å‡¦ç†ã«ã—ã¦ã‚‹
+            // å®Ÿéš›ã¯ã€ŒNavigateNextã€ã€ŒNavigatePrevã€ãªã©ã‚’åˆ†ã‘ã¦ã‚‚OK
             if(TimeToPermitPageChange < TimeToPermitPageChangeNow)
             {
                 GoToNextPage();
@@ -84,23 +85,23 @@ public class ReadEventUIController : MonoBehaviour
     }
 
     /// <summary>
-    /// –{‚ğŠJ‚«A•¡”ƒy[ƒW•ª‚Ì•¶Í‚ğƒZƒbƒg‚µ‚Ä•\¦ŠJn
+    /// æœ¬ã‚’é–‹ãã€å„ãƒšãƒ¼ã‚¸åˆ†ã®æ–‡ç« ã‚’ã‚»ãƒƒãƒˆã—ã¦è¡¨ç¤ºé–‹å§‹
     /// </summary>
     public void StartReading(List<string> _sentences)
     {
         if (_sentences == null || _sentences.Count == 0) return;
 
-        // –{•¶ƒŠƒXƒg‚ğƒZƒbƒg
+        // æœ¬æ–‡ãƒªã‚¹ãƒˆã‚’ã‚»ãƒƒãƒˆ
         sentences = _sentences;
 
-        // 1ƒy[ƒW–Ú‚ğ•\¦‚·‚é€”õ
+        // 1ãƒšãƒ¼ã‚¸ç›®ã‚’è¡¨ç¤ºã™ã‚‹å‡¦ç†
         Page = 1;
         MaxPage = sentences.Count;
 
-        // ‰æ–Ê•\¦‚ÌXV
+        // ç”»é¢è¡¨ç¤ºã®æ›´æ–°
         game_state_controller.ReadEventMode(true);
         CanvasUI.SetActive(true);
-        sentenceUI.SetText(sentences[0]);  // Å‰‚Ìƒy[ƒW•¶‚ğƒZƒbƒg
+        sentenceUI.SetText(sentences[0]);  // æœ€åˆã®ãƒšãƒ¼ã‚¸æ–‡ã‚’ã‚»ãƒƒãƒˆ
         MaxPageCountTextUI.text = MaxPage.ToString();
         audio_source.Play();
         DisplayNow = true;
@@ -108,32 +109,31 @@ public class ReadEventUIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Ÿ‚Ìƒy[ƒW‚Éi‚Şˆ—
+    /// æ¬¡ã®ãƒšãƒ¼ã‚¸ã«é€²ã‚€å‡¦ç†
     /// </summary>
     private void GoToNextPage()
     {
-        // ‚Ü‚¾ÅIƒy[ƒW‚Å‚È‚¢‚È‚çŸ‚Ö
+        // ã¾ã æœ€çµ‚ãƒšãƒ¼ã‚¸ã§ãªã„ãªã‚‰æ¬¡ã¸
         if (Page < MaxPage)
         {
             Page++;
-            sentenceUI.SetText(sentences[Page - 1]); // Page‚Í1-based‚È‚Ì‚Å-1
+            sentenceUI.SetText(sentences[Page - 1]); // Pageã¯1-basedãªã®ã§-1
             audio_source.Play();
             NextAndBeforePageUIDisplayCheck();
         }
         else
         {
-            // ÅIƒy[ƒW‚È‚ç•Â‚¶‚é
+            // æœ€çµ‚ãƒšãƒ¼ã‚¸ãªã‚‰é–‰ã˜ã‚‹
             //CloseBook();
         }
     }
 
     /// <summary>
-    /// ‘O‚Ìƒy[ƒW‚É–ß‚éˆ—
-    /// (•K—v‚È‚çUpdate“à‚Å“ü—Í‚ğE‚Á‚ÄŒÄ‚Ño‚µ‚Ä‚­‚¾‚³‚¢)
+    /// å‰ã®ãƒšãƒ¼ã‚¸ã«æˆ»ã‚‹å‡¦ç†
     /// </summary>
     private void GoToPreviousPage()
     {
-        // 1ƒy[ƒW–Ú‚æ‚è‘O‚É‚Í–ß‚ê‚È‚¢‚æ‚¤‚É‚·‚é
+        // 1ãƒšãƒ¼ã‚¸ç›®ã‚ˆã‚Šå‰ã«ã¯æˆ»ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹
         if (Page > 1)
         {
             Page--;
@@ -144,7 +144,7 @@ public class ReadEventUIController : MonoBehaviour
     }
 
     /// <summary>
-    /// –{‚ğ•Â‚¶‚é (UI‚ğ•Â‚¶‚ÄƒŠƒZƒbƒg)
+    /// æœ¬ã‚’é–‰ã˜ã‚‹ (UIæ¶ˆã—ã¦ãƒªã‚»ãƒƒãƒˆ)
     /// </summary>
     private void CloseBook()
     {
@@ -153,7 +153,8 @@ public class ReadEventUIController : MonoBehaviour
         CanvasUI.SetActive(false);
         sentenceUI.SetText("");
     }
-    //Ÿ‚Ìƒy[ƒWA‘O‚Ìƒy[ƒW‚Ö‚ğ•\¦‚·‚é‚â‚Âƒ`ƒFƒbƒN‚µ‚Ä‚¢‚­
+
+    // æ¬¡ã®ãƒšãƒ¼ã‚¸ã€å‰ã®ãƒšãƒ¼ã‚¸ã¸ã®è¡¨ç¤ºã‚’ãƒã‚§ãƒƒã‚¯ã—ã¦ã„ã‚‹
     private void NextAndBeforePageUIDisplayCheck()
     {
         if(MaxPage == 1)
