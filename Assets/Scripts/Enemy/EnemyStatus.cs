@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class EnemyStatus : MonoBehaviour
 {
     public enum EnemyMoveState
@@ -11,7 +11,19 @@ public class EnemyStatus : MonoBehaviour
         Run
     }
     public FootStepSoundController foot_step_sound_controller;
-    public EnemyMoveState enemy_move_state;
+    private EnemyMoveState m_enemy_move_state;
+    public EnemyMoveState enemy_move_state
+    {
+        get { return m_enemy_move_state; }
+        set {
+            if (m_enemy_move_state != value)
+            {
+                m_enemy_move_state = value;
+                OnChangeEnemyMoveEvent.Invoke();
+            }
+
+        }
+    }
     public GameObject FaceExpandingCamera;
 
     public Transform EyePosition;
@@ -26,6 +38,8 @@ public class EnemyStatus : MonoBehaviour
     private float StopEnemyByPlayerTimeNow;
     public GroundCheck ground_check;
 
+    [SerializeField]
+    public UnityEvent OnChangeEnemyMoveEvent;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,38 +53,36 @@ public class EnemyStatus : MonoBehaviour
     }
     private void Update()
     {
-        switch (enemy_move_state)
+        if(foot_step_sound_controller != null)
         {
-            case EnemyMoveState.Walk:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
-                break;
-            case EnemyMoveState.Run:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
-                break;
-            default:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
-                break;
+            switch (enemy_move_state)
+            {
+                case EnemyMoveState.Walk:
+                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                    break;
+                case EnemyMoveState.Run:
+                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                    break;
+                default:
+                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
+                    break;
+            }
         }
+
 
         if (enemy_move_state == EnemyMoveState.Run)
         {
-            if (this.gameObject.name == "‹ƒ‚«—ì")
 
-                Debug.Log("EnemyStatus.EnemyMoveState.Run");
             anim.SetFloat("MoveY", 1);
         }
         else if (enemy_move_state == EnemyMoveState.Walk)
         {
-            if (this.gameObject.name == "‹ƒ‚«—ì")
 
-                Debug.Log("EnemyStatus.EnemyMoveState.Walk");
             anim.SetFloat("MoveY", 0.5f);
         }
         else if (enemy_move_state == EnemyMoveState.Stop)
         {
-            if (this.gameObject.name == "‹ƒ‚«—ì")
 
-                Debug.Log("EnemyStatus.EnemyMoveState.Stop");
             anim.SetFloat("MoveY", 0);
         }
     }

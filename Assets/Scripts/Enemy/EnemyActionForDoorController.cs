@@ -8,6 +8,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     //敵がドアを開けたり、壊したりするコントローラー
     
     [SerializeField] private float RaycastDistance = 1f;
+    [SerializeField] private int BrokeDoorPlusCount = 1;
     public DoorOpenCloseController door_open_close_controller;
     public TheDoorController the_door_controller;
     public Transform RaycastStartTransform;
@@ -98,7 +99,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         {
             return;
         }
-        bool broken = the_door_controller.door_attacked_controller.DoorAttacked();
+        bool broken = the_door_controller.door_attacked_controller.DoorAttacked(BrokeDoorPlusCount);
         follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
         if (broken)
         {

@@ -25,7 +25,9 @@ public class TurningOnOffLightController : MonoBehaviour
     {
         if(turn_status == TurnStatus.TurnOff)
         {
+            Debug.Log("animator:" + animator);
             animator.SetTrigger("TurnOn");
+            Debug.Log("animator!?!?!?!???fa");
             HimoAudioSource.Play();
             LightOnAudioSource.Play();
             turn_status = TurnStatus.TurnOn;

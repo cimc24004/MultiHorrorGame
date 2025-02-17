@@ -43,7 +43,9 @@ public class GameStateController : MonoBehaviour
         //ゲームをプレイしてるとき
 
         player_input.actions.FindActionMap("MenuOnGamePlay").Disable();
+        player_input.actions.FindActionMap("ReadEvent").Disable();
         player_input.actions.FindActionMap("Player").Enable();
+        player_input.actions.FindActionMap("GamePlayAndMenuCommon").Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         EventSystem.current.sendNavigationEvents = true;
@@ -55,6 +57,8 @@ public class GameStateController : MonoBehaviour
 
         player_input.actions.FindActionMap("MenuOnGamePlay").Enable();
         player_input.actions.FindActionMap("Player").Disable();
+        player_input.actions.FindActionMap("ReadEvent").Disable();
+        player_input.actions.FindActionMap("GamePlayAndMenuCommon").Enable();
         if (visibleCursor)
         {
             //カーソルは表示
@@ -64,7 +68,21 @@ public class GameStateController : MonoBehaviour
         EventSystem.current.sendNavigationEvents = false;
     }
 
+    public void ReadEventMode(bool visibleCursor)
+    {
+        player_input.actions.FindActionMap("Player").Disable();
+        player_input.actions.FindActionMap("MenuOnGamePlay").Disable();
+        player_input.actions.FindActionMap("ReadEvent").Enable();
+        player_input.actions.FindActionMap("GamePlayAndMenuCommon").Disable();
+        if (visibleCursor)
+        {
+            //カーソルは表示
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        EventSystem.current.sendNavigationEvents = false;
 
+    }
     public void StartClearOverMode()
     {
         //ゲームオーバーやスタート画面など

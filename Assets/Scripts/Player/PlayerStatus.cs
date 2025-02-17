@@ -4,6 +4,7 @@ using UnityEngine;
 using Cinemachine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 public class PlayerStatus : Singleton<PlayerStatus>
 {
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
@@ -49,7 +50,6 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public float CanMinStaminaRun = 30;
 
     public bool PlayerDeaded;
-
 
     private float offsetY;
     private CharacterMovePermit player_move_permit;
