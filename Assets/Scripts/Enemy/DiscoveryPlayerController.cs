@@ -5,7 +5,8 @@ using UnityEngine;
 public class DiscoveryPlayerController : MonoBehaviour
 {
     public bool DiscoveryPlayerNow;
-
+    [Header("視界から見つけるかどうか")]
+    public bool DiscoveryPlayerBySightning;
     public Transform EyePosition;
     public DiscoveryPlayerStatus discovery_player_status;
     //プレイヤーを視認しているかどうか
@@ -170,7 +171,10 @@ public class DiscoveryPlayerController : MonoBehaviour
                         //プレイヤーを視認しているナウ。
                         SightningPlayer = true;
                         //即見つかる判定ではある。
-                        DiscoveryPlayerNow = true;
+                        if (DiscoveryPlayerBySightning)
+                        {
+                            DiscoveryPlayerNow = true;
+                        }
                         //renderer.material = EnemyDiscoveryPlayerSlihouetteMaterial;
                     }
                 }
@@ -238,6 +242,7 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (!DiscoveryPlayerBySightning) return;
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, -discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
         Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
