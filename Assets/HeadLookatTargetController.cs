@@ -19,17 +19,19 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
     
     [SerializeField] private GameObject target_obj;
     [SerializeField] private Rig rig;
+    [SerializeField] private MultiAimConstraint multi_aim_constraint;
+    private RigBuilder rig_builder;
 
     private GameObject CameraRoot;
     private GameObject Player;
     private PlayerStatus player_status;
     [SerializeField]
-    private float DistanceWithSeeingTarget;
-    [SerializeField]
-    private float DistanceToTarget;
+    private Collidered m_collidered;
 
     private float rig_weights;
     private bool m_NearNow = false;
+
+    public bool LookAtTargetNow;
     private bool NearNow
     {
         set
@@ -45,6 +47,8 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
                     .SetEase(Ease.Linear) // イージングを変更可能（Ease.OutQuad, Ease.InOutSine など）
                     .OnUpdate(() => {
                         rig.weight = rig_weights;
+                    }).OnComplete(() => {
+                        LookAtTargetNow = true;
                     });
                 }
                 else
@@ -56,6 +60,7 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
                     .SetEase(Ease.Linear) // イージングを変更可能（Ease.OutQuad, Ease.InOutSine など）
                     .OnUpdate(() => {
                         rig.weight = rig_weights;
+                        LookAtTargetNow = false;
                     });
                 }
 
@@ -75,16 +80,22 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
         player_status = PlayerStatus.instance;  
         Player = player_status.gameObject;
         CameraRoot = player_status.CameraRoot.gameObject;
+        rig_builder = this.gameObject.GetComponent<RigBuilder>();
+        WeightedTransformArray sources = new WeightedTransformArray();
+        sources.Add(new WeightedTransform(CameraRoot.transform, 1f));
+        multi_aim_constraint.data.sourceObjects = sources;
 
+        rig_builder.Build();
     }
 
     // Update is called once per frame
     void Update()
     {
-        DistanceToTarget = Vector3.Distance(this.transform.position, TargetCheck().transform.position);
-        if(DistanceToTarget <= DistanceWithSeeingTarget)
+        Debug.Log("m_Collidered.collider: " + m_collidered.Collider);
+        if (m_collidered.Collider)
         {
             NearNow = true;
+
         }
         else
         {
