@@ -142,6 +142,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
 
     public void PermitFunction(bool _permit)
     {
+        //‚±‚ê‚Åpermit‚ğØ‚è‘Ö‚¦‚é‚Ì‚ªŠî–{
         if (_permit)
         {
             RoutingMovePermit = true;

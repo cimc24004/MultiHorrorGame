@@ -763,6 +763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DiscoveryPlayerNow: 0
+  DiscoveryPlayerBySightning: 1
   EyePosition: {fileID: 5339302577916997224}
   discovery_player_status: {fileID: 11400000, guid: 4e5ac4d4b8d5eb44a9104c723df6f027,
     type: 2}
@@ -809,12 +810,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foot_step_sound_controller: {fileID: 2096613140106059598}
-  enemy_move_state: 0
   FaceExpandingCamera: {fileID: 5096731822965772548}
   EyePosition: {fileID: 5339302577916997224}
   enemy_flinch_controller: {fileID: 0}
   StopEnemyByPlayerNow: 0
   ground_check: {fileID: 1425629801864483318}
+  OnChangeEnemyMoveEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!95 &6816268028285260129
 Animator:
   serializedVersion: 5
@@ -886,6 +889,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   RaycastDistance: 1
+  BrokeDoorPlusCount: 1
   door_open_close_controller: {fileID: 0}
   the_door_controller: {fileID: 0}
   RaycastStartTransform: {fileID: 5339302577916997224}
