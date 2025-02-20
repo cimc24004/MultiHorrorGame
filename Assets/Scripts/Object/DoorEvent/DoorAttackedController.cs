@@ -21,10 +21,10 @@ public class DoorAttackedController : MonoBehaviour
     {
         
     }
-    public bool DoorAttacked(int PlusBreakCount = 1)
+    public bool DoorAttacked(int PlusAttackCount = 1)
     {
         Debug.Log("”à‚ğUŒ‚‚µ‚Ä‚¢‚Ü‚·: " + break_count_now);
-        break_count_now += PlusBreakCount;
+        break_count_now += PlusAttackCount;
         if (need_break_count <= break_count_now)
         {
             //”à‚ªŠ®‘S‚É‰ó‚ê‚Ü‚µ‚½B
