@@ -129,7 +129,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: -60, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 4690449892973502163}
   duration: 0.7
   OpenCompleted:
@@ -141,8 +140,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: c6fe71740d4f3d54ba55e2d167256097, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9ee655d456919c546b3f3b58ffd9166a, type: 3}
-  ItemApperanceWhenOpended: 0
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &4690449892973502163
 MonoBehaviour:
@@ -231,7 +230,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 0
-  MaxDistance: 5
+  MaxDistance: 10
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0

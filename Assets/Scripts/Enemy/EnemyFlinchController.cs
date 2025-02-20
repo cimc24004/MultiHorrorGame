@@ -8,12 +8,13 @@ public class EnemyFlinchController : MonoBehaviour
     private EnemyToPlayerKillController enemy_to_player_kill_controller;
     private EnemyStatus enemy_status;
     private CharacterController character_controller;
-    [SerializeField] private bool FlinchNow;
+    [SerializeField] public bool FlinchNow;
     [SerializeField] private float FlinchTime;
     [SerializeField] private float FlinchTimeNow;
     private Vector3 move = new Vector3(0, 1, 0);
     private DiscoveryPlayerController discovery_player_controller;
     private Animator anim;
+
     // Start is called before the first frame update
     void Start()
     {
