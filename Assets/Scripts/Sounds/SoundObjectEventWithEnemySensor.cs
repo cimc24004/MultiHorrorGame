@@ -37,7 +37,6 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
             if(SoundPlayingTimeNow > SoundPlayingTime)
             {
                 SensorSoundStop();
-                SoundStopEvent.Invoke();
                 SoundPlayingTimeNow = 0;
             }
         }
@@ -54,6 +53,7 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
     }
     public void SensorSoundStop()
     {
+        SoundStopEvent.Invoke();
         enemy_sound_sensor_mode = false;
         audio_source.Stop();
     }

@@ -76,6 +76,10 @@ public class EnemySoundSensor : MonoBehaviour
                     //元の位置に戻るようにしている。 これを最短の探索経路のPosを入れたりすればいいと思う。
                     //enemy_routing_controller.RoutingMovePermit = true;
                     enemy_routing_controller.NearRouteSet();
+                    if (sound_by_obj)
+                    {
+                        sound_by_obj = false;
+                    }
                     //follow_object_nav.ChaseToTargetSet(true, DefaultPosition, SpeedWhenReturn);
                     Debug.Log("NearRouteSet 帰るところです！");
                     MoveToSoundPlaceNow = false;
@@ -93,6 +97,22 @@ public class EnemySoundSensor : MonoBehaviour
             ArriveSoundPlaceWaitTimeToReturnNow = 0;
         }
 
+        if (MoveToSoundPlaceNow)
+        {
+            if (!follow_object_nav.ArrivedTarget)
+            {
+                if (sound_by_obj)
+                {
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+                }
+                else
+                {
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                }
+            }
+        }
+
+        if (sound_by_obj == true) return;
         //ここからはプレイヤーの足音がなったときの話。
         if (player_status.MoveSpeed != 0)
         {
@@ -151,20 +171,7 @@ public class EnemySoundSensor : MonoBehaviour
                 }
             }
         }
-        if (MoveToSoundPlaceNow)
-        {
-            if (!follow_object_nav.ArrivedTarget)
-            {
-                if (sound_by_obj)
-                {
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
-                }
-                else
-                {
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-                }
-            }
-        }
+
 
     }
     //TargetPos: 音が鳴った目標先の場所 ReturnPos: 音が鳴って目標先に到着した後帰る先の場所

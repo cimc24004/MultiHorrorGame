@@ -23,11 +23,13 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
         enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         //(敵のセンサー範囲内かつ音範囲内)
         if (InSoundRange)
         {
@@ -36,11 +38,10 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
             {
                 //SoundObject(非常ベルや投擲アイテム)の音がなっている最中ならば
                 //enemy_sound_sensor.ArriveSoundPlaceWaitTimeToReturnNow = 0;
-                if(before_enemy_sound_sensor_mode != sound_object_event_with_sensor.enemy_sound_sensor_mode)
-                {
-                    enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.sound_sensor_status.SpeedRunWhenRealizeSound, true);
-                }
+                enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.sound_sensor_status.SpeedRunWhenRealizeSound, true);
                 enemy_sound_sensor.sound_by_obj = true;
+
+
             }
             before_enemy_sound_sensor_mode = sound_object_event_with_sensor.enemy_sound_sensor_mode;
         }
@@ -51,6 +52,15 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
         if (other.gameObject.tag == "SoundObjectRange")
         {
             sound_object_event_with_sensor = other.transform.parent.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
+
+
+            //sound_object_event_with_sensor.SoundStopEvent.AddListener(() =>
+            //{
+            //    //音が終了したらsound_by_objをfalseにします。
+            //    Debug.Log("soundobject_event_with_sensorのSoundStopEventが実行したああああ");
+            //    enemy_sound_sensor.sound_by_obj = false;
+            //}); 
+            
             InSoundRange = true;
         }
     }

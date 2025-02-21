@@ -32,6 +32,8 @@ public class SisenAsobiDousiController : MonoBehaviour
 
     private URPFxController urp_fx_controller;
     private EnemyFlinchController enemy_flinch_controller;
+
+    private EnemySoundSensor enemy_sound_sensor;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +41,7 @@ public class SisenAsobiDousiController : MonoBehaviour
         head_look_at_target_controller = this.gameObject.GetComponent<HeadLookatTargetController>();
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
         BeforePosition = this.transform.position;
+        enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
         enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
@@ -50,6 +53,10 @@ public class SisenAsobiDousiController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (enemy_sound_sensor.MoveToSoundObjectPlace && enemy_sound_sensor.sound_by_obj)
+        {
+            return;
+        }
         if (!previousFlinchNow && enemy_flinch_controller.FlinchNow)
         {
             ResetValue();
