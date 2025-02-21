@@ -46,7 +46,9 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
 
     public void SensorSoundPlay()
     {
+
         //‰¹‚ğ–Â‚ç‚·‚Æ“¯‚Éenemy_sound_sensor_mode‚àtrue‚É‚·‚éB
+        Debug.Log("SensorSoundPlay!!!!!!");
         enemy_sound_sensor_mode = true;
         audio_source.Play();
     }

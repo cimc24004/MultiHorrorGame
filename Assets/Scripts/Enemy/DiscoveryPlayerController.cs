@@ -57,7 +57,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         time_manager = TimeManager.instance;
-        enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
+        this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         horror_director = HorrorDirector.instance;
 
     }
@@ -70,7 +70,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         if (player_status.PlayerDeaded) {
             enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
             follow_object_nav.ArrivedTarget = false;
-            enemy_routing_controller.NearRouteSet();
+            enemy_routing_controller?.NearRouteSet();
             DiscoveryPlayer(false);
         } 
         if (ToPlayerDistance <= discovery_player_status.PlayerDiscoveryRange)
@@ -92,7 +92,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             }
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
-            enemy_routing_controller.PermitFunction(false);
+            enemy_routing_controller?.PermitFunction(false);
             NonDiscoveriedEventOnce = false;
         }
         else
@@ -121,7 +121,7 @@ public class DiscoveryPlayerController : MonoBehaviour
                 //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                 follow_object_nav.ArrivedTarget = false;
-                enemy_routing_controller.NearRouteSet();
+                enemy_routing_controller?.NearRouteSet();
 
                 DiscoveryPlayer(false);
 
