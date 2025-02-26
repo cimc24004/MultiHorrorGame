@@ -13,8 +13,6 @@ public class DiscoveryPlayerController : MonoBehaviour
     public bool SightningPlayer;
     //プレイヤーが隠れた時に敵はその隠れた所を見ているかどうか。
     public bool SightningPlayerWhenHidePlayer;
-
-    [SerializeField] private Material EnemyDiscoveryPlayerSlihouetteMaterial;
     
     private GameObject Player;
     private Transform PlayersHeadTransform;
@@ -175,7 +173,6 @@ public class DiscoveryPlayerController : MonoBehaviour
                         {
                             DiscoveryPlayerNow = true;
                         }
-                        //renderer.material = EnemyDiscoveryPlayerSlihouetteMaterial;
                     }
                 }
                 else

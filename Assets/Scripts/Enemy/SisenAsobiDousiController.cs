@@ -53,10 +53,7 @@ public class SisenAsobiDousiController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemy_sound_sensor.MoveToSoundObjectPlace && enemy_sound_sensor.sound_by_obj)
-        {
-            return;
-        }
+
         if (!previousFlinchNow && enemy_flinch_controller.FlinchNow)
         {
             ResetValue();

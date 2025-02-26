@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerToEnemyDistanceController : MonoBehaviour
 {
     // ”ÍˆÍ“à‚Ì“G‚ğ’ÇÕ‚·‚éƒŠƒXƒg
+    [SerializeField]
     private List<Collider> enemiesInRange = new List<Collider>();
 
     public bool NearEnemy;

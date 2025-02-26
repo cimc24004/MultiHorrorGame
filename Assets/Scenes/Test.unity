@@ -24,10 +24,10 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.5320754, g: 0.5320754, b: 0.5320754, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 0
+  m_AmbientIntensity: 8
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.335849, g: 0.335849, b: 0.335849, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 51b74d7bad397457d883c5940f7664d8, type: 2}
+  m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 313a2f06887cfd042a1afeae1388f7d2, type: 2}
   m_HaloStrength: 0.495
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -6533,7 +6533,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.7754717, g: 0.9472812, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -7354,6 +7354,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  RaycastDistance: 1
+  BrokeDoorPlusCount: 1
   door_open_close_controller: {fileID: 0}
   the_door_controller: {fileID: 0}
   RaycastStartTransform: {fileID: 444977793}
@@ -7629,6 +7631,7 @@ MonoBehaviour:
     m_Bits: 2120
   StartPos: {fileID: 444977793}
   RaycastDistance: 1
+  ray_obj: {fileID: 0}
 --- !u!114 &475790708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7664,11 +7667,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foot_step_sound_controller: {fileID: 0}
-  enemy_move_state: 0
   FaceExpandingCamera: {fileID: 0}
   EyePosition: {fileID: 0}
   enemy_flinch_controller: {fileID: 0}
   StopEnemyByPlayerNow: 0
+  ground_check: {fileID: 0}
+  OnChangeEnemyMoveEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &475790710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7754,10 +7760,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DiscoveryPlayerNow: 1
+  DiscoveryPlayerBySightning: 0
   EyePosition: {fileID: 99983470}
   discovery_player_status: {fileID: 0}
   SightningPlayer: 0
   SightningPlayerWhenHidePlayer: 0
+  EnemyDiscoveryPlayerSlihouetteMaterial: {fileID: 0}
   InsidePlayer: 0
   direction: {x: 0, y: 0, z: 0}
   raycasted_obj: {fileID: 0}
@@ -11913,6 +11921,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  RaycastDistance: 1
+  BrokeDoorPlusCount: 1
   door_open_close_controller: {fileID: 0}
   the_door_controller: {fileID: 0}
   RaycastStartTransform: {fileID: 444977793}
@@ -12188,6 +12198,7 @@ MonoBehaviour:
     m_Bits: 2120
   StartPos: {fileID: 444977793}
   RaycastDistance: 1
+  ray_obj: {fileID: 0}
 --- !u!114 &847364969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12223,11 +12234,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foot_step_sound_controller: {fileID: 0}
-  enemy_move_state: 0
   FaceExpandingCamera: {fileID: 0}
   EyePosition: {fileID: 0}
   enemy_flinch_controller: {fileID: 0}
   StopEnemyByPlayerNow: 0
+  ground_check: {fileID: 0}
+  OnChangeEnemyMoveEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &847364971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12313,10 +12327,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DiscoveryPlayerNow: 1
+  DiscoveryPlayerBySightning: 0
   EyePosition: {fileID: 99983470}
   discovery_player_status: {fileID: 0}
   SightningPlayer: 0
   SightningPlayerWhenHidePlayer: 0
+  EnemyDiscoveryPlayerSlihouetteMaterial: {fileID: 0}
   InsidePlayer: 0
   direction: {x: 0, y: 0, z: 0}
   raycasted_obj: {fileID: 0}
@@ -30696,12 +30712,32 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2674010223066076458, guid: 7d7f354e78d42484da5a564762aec0e3,
         type: 3}
+    - target: {fileID: 3492926491931511538, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
+      propertyPath: far clip plane
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 4170531289096548808, guid: 7d7f354e78d42484da5a564762aec0e3,
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 4170531289096548808, guid: 7d7f354e78d42484da5a564762aec0e3,
         type: 3}
+    - target: {fileID: 4932896848663239556, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 26.898779
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932896848663239556, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.6813116
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932896848663239556, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -14.400141
+      objectReference: {fileID: 0}
     - target: {fileID: 6016797124699175455, guid: 7d7f354e78d42484da5a564762aec0e3,
         type: 3}
       propertyPath: AllItems.Array.size
