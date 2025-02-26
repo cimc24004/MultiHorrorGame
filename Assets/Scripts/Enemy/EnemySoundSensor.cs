@@ -11,6 +11,7 @@ public class EnemySoundSensor : MonoBehaviour
     private PlayerStatus player_status;
     private EnemyRoutingController enemy_routing_controller;
     private EnemyStatus enemy_status;
+    private FootStepSoundController player_foot_step_sound_controller;
     public float ArriveSoundPlaceWaitTimeToReturnNow;
     private Vector3 DefaultPosition;
     //プレイヤーとの距離
@@ -21,19 +22,28 @@ public class EnemySoundSensor : MonoBehaviour
     private double ToSoundPlaceDistance;
     //音が鳴った先の場所
     private Vector3 SoundPlacePosition;
+
+    private EnemyDatabases enemy_databases;
+    private EnemyAllController enemy_all_controller;
     //音が鳴った場所に移動しているNow
     public bool MoveToSoundPlaceNow;
 
     //オブジェクトが鳴らしている音に向かっているのかどうか
     public bool MoveToSoundObjectPlace;
 
+    //音が聞くことができないならtrue
+
     public SoundSensorStatus sound_sensor_status;
+
     // Start is called before the first frame update
     void Start()
     {
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         player_status = PlayerStatus.instance;
+        player_foot_step_sound_controller = player_status.foot_step_sound_controller;
+        enemy_databases = EnemyDatabases.instance;
+        enemy_all_controller = enemy_databases.gameObject.GetComponent<EnemyAllController>();
         Player = player_status.gameObject;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();
@@ -112,7 +122,9 @@ public class EnemySoundSensor : MonoBehaviour
             }
         }
 
-        if (sound_by_obj == true) return;
+        if (sound_by_obj == true || player_foot_step_sound_controller.FootStepSoundLevel == 0)
+            return;
+
         //ここからはプレイヤーの足音がなったときの話。
         if (player_status.MoveSpeed != 0)
         {

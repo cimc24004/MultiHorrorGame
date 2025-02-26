@@ -39,6 +39,7 @@ Transform:
   - {fileID: 3881122304923167388}
   - {fileID: 288238147213574242}
   - {fileID: 5252121401538479257}
+  - {fileID: 837934033444872291}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5926026781336159376
@@ -432,7 +433,106 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0ffd72d9dbed94a4cb8cd11982cca58d, type: 2}
   - {fileID: 11400000, guid: 73edfa8463b37c040a4d02cef1342e04, type: 2}
   - {fileID: 11400000, guid: 99da8d2bc3eb91543ae3b09b9a82825a, type: 2}
+  - {fileID: 11400000, guid: 31fc01b47a20331489639ff44ef08478, type: 2}
   ForDeliverItem: {fileID: 11400000, guid: 8e7e848712e2abf40a33bb8db62c8b65, type: 2}
+--- !u!1 &6768719259319537026
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 837934033444872291}
+  - component: {fileID: 5593356176953083619}
+  - component: {fileID: 4354042993010982730}
+  m_Layer: 0
+  m_Name: EnemyDatabases
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &837934033444872291
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6768719259319537026}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 683485212088034435}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5593356176953083619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6768719259319537026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae07dc261fbea934aa746a77c0e926f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  enemy_discovery_statuses:
+  - {fileID: 11400000, guid: 4e5ac4d4b8d5eb44a9104c723df6f027, type: 2}
+  - {fileID: 11400000, guid: 4eee944bf6137f44fbb6e49633fd6570, type: 2}
+  - {fileID: 11400000, guid: b38f43497a19d824f953bfb765263415, type: 2}
+  - {fileID: 11400000, guid: a471b8f764bacc2489838ef4d0c0b857, type: 2}
+  enemy_sound_sensor_statuses:
+  - {fileID: 11400000, guid: 37f7cd7c4a174384caee30c5e7b646e8, type: 2}
+  - {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9, type: 2}
+--- !u!114 &4354042993010982730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6768719259319537026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4f84888e8912ac40ae0b028d11c61ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: cant_hear_status
+      Entry: 7
+      Data: 0|EnemyAllController+CantHearStatus, Assembly-CSharp
+    - Name: AllCantHear
+      Entry: 5
+      Data: false
+    - Name: PlayerFootStepCantHear
+      Entry: 5
+      Data: false
+    - Name: SoundObjectCantHear
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1001 &3254971474470320286
 PrefabInstance:
   m_ObjectHideFlags: 0

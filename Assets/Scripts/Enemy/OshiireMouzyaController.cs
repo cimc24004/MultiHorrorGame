@@ -34,6 +34,8 @@ public class OshiireMouzyaController : MonoBehaviour
     private PlayerStatus player_status;
     private EnemyFlinchController enemy_flinch_controller;
     private EnemyDeathController enemy_death_controller;
+
+    private FootStepSoundController player_foot_step_sound_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +45,11 @@ public class OshiireMouzyaController : MonoBehaviour
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        player_status = PlayerStatus.instance;  
+        
+        player_status = PlayerStatus.instance;
+        player_foot_step_sound_controller = player_status.foot_step_sound_controller;
+
+
         foreach (Transform door in door_attacked_controller.gameObject.transform)
         {
             Debug.Log("Door:r:r::" + door.gameObject.name);
@@ -60,7 +66,7 @@ public class OshiireMouzyaController : MonoBehaviour
     {
         if (OshiireAttackRange.Collider)
         {
-            if(!(player_status.player_move_state == PlayerStatus.PlayerMoveState.Crouch || player_status.MoveSpeed == 0))
+            if(!(player_foot_step_sound_controller.FootStepSoundLevel == 0))
             {
                 discovery_player_controller.DiscoveryPlayerNow = true;
                 OshiireAttackMode = true;

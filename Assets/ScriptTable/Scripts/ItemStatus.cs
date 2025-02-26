@@ -12,9 +12,16 @@ public class StatusOfMakingStopEnemy
 
 }
 
+
 [CreateAssetMenu(fileName = "ItemStatus", menuName = "ScriptableObjects/CreateItemStatusAsset")]
 public class ItemStatus : SerializedScriptableObject
 {
+    public class StealthStatus
+    {
+        [Header("敵が足音が聞こえなくなるようにする秒数")]
+        public float FootStepStealthTime;
+    }
+
     public enum ItemType
     {
         Consumable, //消耗品(カギとか)
@@ -44,9 +51,16 @@ public class ItemStatus : SerializedScriptableObject
     public GameObject ItemPutObjectPrefab;
     [HideIf("item_type", ItemType.Equip)]
     [Header("アイテムを使用したときのPrefab(投げたりのときは)")]
-    public GameObject ItemUseObjectPrefab;
+    public GameObject ItemThrowPrefab;
     [ShowIf("@item_type == ItemType.CanThrow || item_type == ItemType.EmergencyAttack")]
     public float StopEnemyTime = 3;
+
+    [ShowIf("item_type", ItemType.Consumable)]
+    [Header("足音をきかれないようになるかどうか")]
+    public bool StealthMode;
+    [ShowIf("StealthMode")]
+    public StealthStatus stealth_status;
+
 
     [ShowIf("item_type", ItemType.CanThrow)]
     [Header("敵を停止させることができるアイテムかどうか")]
@@ -61,4 +75,8 @@ public class ItemStatus : SerializedScriptableObject
 
     [Header("アイテムを右クリックから使用できるか")]
     public bool ItemUseFromClick = true;
+
+    [Header("アイテムを使用したときにスクリプトを実行する用のprefab")]
+    [SerializeField] public GameObject InstantiateItemScriptPrefab;
+
 }

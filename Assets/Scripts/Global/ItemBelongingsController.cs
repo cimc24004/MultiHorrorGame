@@ -32,6 +32,8 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     private ItemThrowController item_throw_controller;
     private PlayerStatus player_status;
     private NoticedUIController noticed_ui_controller;
+    private EnemyDatabases enemy_databases;
+    private EnemyAllController enemy_all_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +41,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
         item_throw_controller = this.gameObject.GetComponent<ItemThrowController>();
         noticed_ui_controller = player_status.noticed_ui_controller;
+        enemy_all_controller = EnemyDatabases.instance.gameObject.GetComponent<EnemyAllController>();
     }
 
     //アイテムをこのコントローラーに追加する関数 外部から実行する。　主にCrossHairEvent.csから
@@ -114,7 +117,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         if (item_status.item_type == ItemStatus.ItemType.CanThrow)
         {
             //投げるタイプのアイテムならば投げます。
-            item_throw_controller.ThrowStart(item_status.ItemUseObjectPrefab);
+            item_throw_controller.ThrowStart(item_status.ItemThrowPrefab);
             item_throw_controller.item_status = item_status;
             //使用したらItemMenuにあるこのアイテムUIの情報を更新。
             ItemUse(BelongingCountNow, item_status);
@@ -123,6 +126,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         {
             //消費アイテムなら
             ItemUse(BelongingCountNow, item_status);
+
 
         }
         else if (item_status.item_type == ItemStatus.ItemType.Equip)
@@ -161,13 +165,12 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         else if(item_status.item_type == ItemStatus.ItemType.EmergencyAttack)
         {
             //緊急攻撃!
-            if(item_status.ItemUseObjectPrefab != null)
-            {
-            }
+
             ItemUse(BelongingCountNow, item_status);
         }
-
-
+        //スクリプト用Prefabを生成する。 数秒で消えるやつ
+        GameObject InstantiateItemScriptPrefab = Instantiate(item_status.InstantiateItemScriptPrefab);
+        InstantiateItemScriptPrefab.GetComponent<InstantiateItemScript>().item_status = item_status;
     }
     public bool ExistsItems()
     {
@@ -257,4 +260,5 @@ public class ItemBelongingsController : SerializedMonoBehaviour
 
         }
     }
+
 }

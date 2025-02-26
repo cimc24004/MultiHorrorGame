@@ -153,7 +153,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
             {
                 Debug.Log("ˆ«—ì‘ŞU‚¨‚Ó‚¾‚ğ‚Í‚Â‚Ç‚¤I");
                 ItemStatus item_status = item_statues[0];
-                GameObject g = Instantiate(item_status.ItemUseObjectPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
+                GameObject g = Instantiate(item_status.ItemThrowPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
                 item_belonging_controller.ItemUseFromBelonging(item_status);
                 Destroy(g, item_status.StopEnemyTime);
                 enemy_flinch_controller.FlinchStart(item_status.StopEnemyTime);

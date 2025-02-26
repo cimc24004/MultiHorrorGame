@@ -20,16 +20,14 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-
+        enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
         //(“G‚ÌƒZƒ“ƒT[”ÍˆÍ“à‚©‚Â‰¹”ÍˆÍ“à)
         if (InSoundRange)
         {
@@ -40,7 +38,6 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
                 //enemy_sound_sensor.ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.sound_sensor_status.SpeedRunWhenRealizeSound, true);
                 enemy_sound_sensor.sound_by_obj = true;
-
 
             }
             before_enemy_sound_sensor_mode = sound_object_event_with_sensor.enemy_sound_sensor_mode;
