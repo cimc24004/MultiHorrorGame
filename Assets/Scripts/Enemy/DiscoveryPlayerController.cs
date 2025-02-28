@@ -8,7 +8,14 @@ public class DiscoveryPlayerController : MonoBehaviour
     [Header("視界から見つけるかどうか")]
     public bool DiscoveryPlayerBySightning;
     public Transform EyePosition;
-    public DiscoveryPlayerStatus discovery_player_status;
+
+    [SerializeField]
+    private DiscoveryPlayerStatus original_discovery_player_status;
+    
+    [SerializeField]
+    private DiscoveryPlayerStatus discovery_player_status;
+
+
     //プレイヤーを視認しているかどうか
     public bool SightningPlayer;
     //プレイヤーが隠れた時に敵はその隠れた所を見ているかどうか。
@@ -57,7 +64,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         time_manager = TimeManager.instance;
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         horror_director = HorrorDirector.instance;
-
+        discovery_player_status = original_discovery_player_status;
     }
 
     // Update is called once per frame
@@ -240,10 +247,25 @@ public class DiscoveryPlayerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (!DiscoveryPlayerBySightning) return;
+        if(discovery_player_status == null)
+            discovery_player_status = original_discovery_player_status;
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, -discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
         Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
     }
 
+    public void DiscoveryPlayerStatusChange(DiscoveryPlayerStatus _discovery_player_status = null, bool original = false)
+    {
+        if (original == true)
+        {
+            discovery_player_status = original_discovery_player_status;
+        }
+        else
+        {
+            Debug.Log("DiscoveryPlayerStatusChange: " + _discovery_player_status);
+            discovery_player_status = _discovery_player_status;
+        }
+
+    }
 
 }

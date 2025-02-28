@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1584810825975147330}
   - component: {fileID: 4792861919019928693}
   - component: {fileID: 558902658958424669}
+  - component: {fileID: 310270129932899514}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -158,6 +159,50 @@ MonoBehaviour:
   NeedPrayCount: 5
   PrayCountNow: 0
   DeliverItemGeted: 0
+--- !u!114 &310270129932899514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212090357542631498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abeeceaf0293cdb4cbd443d2d0ef3994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: c9b0ce67b710d774199af309ee0f9410, type: 2}
+    - {fileID: 11400000, guid: d6e2bec30b111ae46aceea4c1c46a821, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: senkou_item_use
+      Entry: 7
+      Data: 0|ItemEffectController+SenkouItemUse, Assembly-CSharp
+    - Name: SenkouUsingTimeNow
+      Entry: 4
+      Data: 0
+    - Name: SenkouUsingTime
+      Entry: 4
+      Data: 0
+    - Name: usingNow
+      Entry: 5
+      Data: false
+    - Name: discovery_player_status
+      Entry: 10
+      Data: 0
+    - Name: sound_sensor_status
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &4569975058844514793
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,22 +562,9 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: cant_hear_status
-      Entry: 7
-      Data: 0|EnemyAllController+CantHearStatus, Assembly-CSharp
-    - Name: AllCantHear
-      Entry: 5
-      Data: false
-    - Name: PlayerFootStepCantHear
-      Entry: 5
-      Data: false
-    - Name: SoundObjectCantHear
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
+  enemy_sound_sensors: []
+  discovery_player_controllers: []
 --- !u!1001 &3254971474470320286
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -22,4 +22,5 @@ public class DiscoveryPlayerStatus : ScriptableObject
     [Header("プレイヤーを追いかけるのをあきらめた後、戻るときの歩く速さ。")]
     public float SppedWhenReturned = 1;
 
+
 }

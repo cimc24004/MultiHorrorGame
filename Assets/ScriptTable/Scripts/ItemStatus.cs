@@ -56,10 +56,8 @@ public class ItemStatus : SerializedScriptableObject
     public float StopEnemyTime = 3;
 
     [ShowIf("item_type", ItemType.Consumable)]
-    [Header("‘«‰¹‚ð‚«‚©‚ê‚È‚¢‚æ‚¤‚É‚È‚é‚©‚Ç‚¤‚©")]
-    public bool StealthMode;
-    [ShowIf("StealthMode")]
-    public StealthStatus stealth_status;
+    [Header("ƒAƒCƒeƒ€‚ÌŒø‰ÊŽžŠÔ")]
+    public float ConsumableEffectTime;
 
 
     [ShowIf("item_type", ItemType.CanThrow)]

@@ -23,9 +23,10 @@ public class SoundSensorStatus : SerializedScriptableObject
     [Header("’T‚·‚Ì‚ð‚ ‚«‚ç‚ß‚Ä–ß‚é‚Æ‚«‚Ì•à‚­‘¬‚³")]
     public float SpeedWhenReturn = 1;
 
-
     public void AllStatusChange(float _change)
     {
         ArriveSoundPlaceWaitTimeToReturn = _change;
     }
+
+
 }

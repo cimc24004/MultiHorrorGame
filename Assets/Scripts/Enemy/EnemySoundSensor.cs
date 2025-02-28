@@ -35,6 +35,9 @@ public class EnemySoundSensor : MonoBehaviour
 
     public SoundSensorStatus sound_sensor_status;
 
+    [SerializeField]
+    //‚à‚Æ‚à‚Æ‚ÌScriptableObject
+    private SoundSensorStatus original_sound_sensor_status;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +46,7 @@ public class EnemySoundSensor : MonoBehaviour
         player_status = PlayerStatus.instance;
         player_foot_step_sound_controller = player_status.foot_step_sound_controller;
         enemy_databases = EnemyDatabases.instance;
+        sound_sensor_status = original_sound_sensor_status;
         enemy_all_controller = enemy_databases.gameObject.GetComponent<EnemyAllController>();
         Player = player_status.gameObject;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
@@ -50,9 +54,11 @@ public class EnemySoundSensor : MonoBehaviour
         DefaultPosition = this.transform.position;
         time_manager = TimeManager.instance;
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
+
     }
     private void Update()
     {
+
         if (follow_object_nav.ArrivedTarget && MoveToSoundPlaceNow)
         {
             ArriveSoundPlaceWaitTimeToReturnNow += Time.deltaTime;
@@ -208,4 +214,16 @@ public class EnemySoundSensor : MonoBehaviour
         }
     }
 
+    public void SoundSensorStatusChange(SoundSensorStatus _sound_sensor_status = null, bool original = false)
+    {
+        if(original == true)
+        {
+            sound_sensor_status = original_sound_sensor_status;
+        }
+        else
+        {
+            sound_sensor_status = _sound_sensor_status;
+        }
+
+    }
 }
