@@ -202,8 +202,22 @@ public class EnemySoundSensor : MonoBehaviour
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
             Debug.Log("SoundSensor実行!!");
-            follow_object_nav.StoppingDistance = 1;
-            follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
+            Debug.Log("NavMesh いけるかどうか！？！？！？: " + follow_object_nav.CanMoveCheck(TargetPos));
+            if (follow_object_nav.CanMoveCheck(TargetPos))
+            {
+                //目標の地点がNavmeshの青枠内ならば 普通にその目標地点に向かう
+                follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
+
+            }
+            else
+            {
+                //もし目標地点がNavMeshの青枠以外ならば、青枠内で最も目標地点に近い地点をピックアップ
+                //してそのピックアップされた地点を目標地点として設定する。
+
+                Vector3 NearPosition = follow_object_nav.BlueRangeNearPositionGet(TargetPos, 3f);
+                follow_object_nav.ChaseToTargetSet(true, NearPosition, _speed);
+            }
+            follow_object_nav.StoppingDistance = 0.5f;
             SoundPlacePosition = TargetPos;
             MoveToSoundPlaceNow = true;
             MoveToSoundObjectPlace = _SoundObject;

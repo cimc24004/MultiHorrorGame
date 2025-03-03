@@ -5,6 +5,7 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 using System;
 using DG.Tweening;
+using UnityEngine.UIElements;
 public class FollowObjectByNav : MonoBehaviour
 {
     //ただ追いかける為だけのクラス ここに直接イベントは書かないこと。
@@ -29,8 +30,7 @@ public class FollowObjectByNav : MonoBehaviour
     private TimeManager time_manager;
     private CharacterController character_controller;
     private Vector3 Vector3Move;
-
-
+    private NavMeshHit nav_mesh_hit;
     // Start is called before the first frame update
     void Start()
     {
@@ -142,17 +142,43 @@ public class FollowObjectByNav : MonoBehaviour
 
     }
 
+    public bool CanMoveCheck(Vector3 targetPos)
+    {
+        NavMeshPath checkPath = new NavMeshPath();
+        nav_mesh_agent.CalculatePath(targetPos, checkPath);
+
+        // パスが完全でないなら「青いエリア外 or パスを引けない」
+        if (checkPath.status != NavMeshPathStatus.PathComplete)
+        {
+            return false;
+        }
+        return true;
+    }
+    public Vector3 BlueRangeNearPositionGet(Vector3 targetPos, float maxDistance)
+    {
+        //青の範囲内の中で近いものをゲット
+        NavMeshPath path = new NavMeshPath();
+        bool found = NavMesh.SamplePosition(targetPos, out nav_mesh_hit, maxDistance, NavMesh.AllAreas);
+        return nav_mesh_hit.position;
+    }
     private void OnDrawGizmos()
     {
         if (!ChaseToTargetMode) return;
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(nav_mesh_hit.position, 1);
+
+
         Vector3 prepos = ChaseTargetPosition;
         Gizmos.color = Color.green;
         foreach (Vector3 pos in nav_mesh_agent.path.corners)
         {
-            Gizmos.DrawCube(pos, new Vector3(1,1,0));
+            Gizmos.DrawCube(pos, new Vector3(1, 1, 0));
             prepos = pos;
         }
         Gizmos.color = Color.red;
-        Gizmos.DrawCube(nav_mesh_agent.nextPosition, new Vector3(1,1,1));
+        Gizmos.DrawCube(nav_mesh_agent.nextPosition, new Vector3(1, 1, 1));
     }
+
+
 }
