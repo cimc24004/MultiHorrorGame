@@ -145,7 +145,7 @@ PrefabInstance:
     - target: {fileID: -9186007496021145544, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
@@ -210,7 +210,7 @@ PrefabInstance:
     - target: {fileID: -7422151822734960208, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: -1861604965400755317, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
@@ -225,7 +225,7 @@ PrefabInstance:
     - target: {fileID: -1861604965400755317, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: 401122468259050895, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
@@ -240,7 +240,7 @@ PrefabInstance:
     - target: {fileID: 401122468259050895, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
@@ -400,7 +400,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 30, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 5161556413837349499}
   duration: 0.5
   OpenCompleted:
@@ -412,8 +411,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &5161556413837349499
 MonoBehaviour:
@@ -562,6 +561,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   ItemToParent: {fileID: 3422637253579144846}
+  FrequencyItemApperance: 6
 --- !u!1 &7700779680667886920 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7422151822734960208, guid: 0ce1169ecd58b784b9da7fc420b37d39,
@@ -614,7 +614,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 150, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 7618073703530152313}
   duration: 0.5
   OpenCompleted:
@@ -626,8 +625,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7618073703530152313
 MonoBehaviour:
@@ -776,6 +775,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   ItemToParent: {fileID: 4358525667905996013}
+  FrequencyItemApperance: 6
 --- !u!1 &8261058253430568128 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -9186007496021145544, guid: 0ce1169ecd58b784b9da7fc420b37d39,
@@ -828,7 +828,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 30, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 442915876212778768}
   duration: 0.5
   OpenCompleted:
@@ -840,8 +839,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &442915876212778768
 MonoBehaviour:
@@ -990,6 +989,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   ItemToParent: {fileID: 3237526175593808738}
+  FrequencyItemApperance: 6
 --- !u!4 &8478918075496880915 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0ce1169ecd58b784b9da7fc420b37d39,
@@ -1048,7 +1048,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 150, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 8783884178927063201}
   duration: 0.5
   OpenCompleted:
@@ -1060,8 +1059,8 @@ MonoBehaviour:
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &8783884178927063201
 MonoBehaviour:
@@ -1210,3 +1209,4 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   ItemToParent: {fileID: 6325156022713149738}
+  FrequencyItemApperance: 6

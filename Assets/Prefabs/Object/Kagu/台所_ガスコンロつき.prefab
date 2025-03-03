@@ -257,7 +257,7 @@ PrefabInstance:
     - target: {fileID: -3778644264426962316, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: -2764512629625626004, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
@@ -272,7 +272,7 @@ PrefabInstance:
     - target: {fileID: -2764512629625626004, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: -2045257923548263128, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
@@ -287,7 +287,7 @@ PrefabInstance:
     - target: {fileID: -2045257923548263128, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
@@ -307,7 +307,7 @@ PrefabInstance:
     - target: {fileID: 1502877291743220047, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: 4504409719310791647, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
@@ -322,7 +322,7 @@ PrefabInstance:
     - target: {fileID: 4504409719310791647, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     - target: {fileID: 8009987137999418058, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
@@ -337,7 +337,7 @@ PrefabInstance:
     - target: {fileID: 8009987137999418058, guid: afb9a19620700974ead389e78ddc012d,
         type: 3}
       propertyPath: m_TagString
-      value: Door
+      value: Cabinet
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -583,7 +583,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: -70, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 6738268490683360683}
   duration: 0.5
   OpenCompleted:
@@ -595,8 +594,8 @@ MonoBehaviour:
   OpenClip: {fileID: 0}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &6738268490683360683
 MonoBehaviour:
@@ -831,7 +830,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 70, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 1582711080476538961}
   duration: 0.5
   OpenCompleted:
@@ -843,8 +841,8 @@ MonoBehaviour:
   OpenClip: {fileID: 0}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &1582711080476538961
 MonoBehaviour:
@@ -1046,7 +1044,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 70, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 7924090974575230783}
   duration: 0.5
   OpenCompleted:
@@ -1058,8 +1055,8 @@ MonoBehaviour:
   OpenClip: {fileID: 0}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7924090974575230783
 MonoBehaviour:
@@ -1261,7 +1258,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 70, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 3403862540522171546}
   duration: 0.5
   OpenCompleted:
@@ -1273,8 +1269,8 @@ MonoBehaviour:
   OpenClip: {fileID: 0}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &3403862540522171546
 MonoBehaviour:
@@ -1503,7 +1499,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: -70, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 7957089938478800079}
   duration: 0.5
   OpenCompleted:
@@ -1515,8 +1510,8 @@ MonoBehaviour:
   OpenClip: {fileID: 0}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7957089938478800079
 MonoBehaviour:
@@ -1724,7 +1719,6 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: -70, z: 0}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 4035595674465531060}
   duration: 0.5
   OpenCompleted:
@@ -1736,8 +1730,8 @@ MonoBehaviour:
   OpenClip: {fileID: 0}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 0}
-  ItemApperanceWhenOpended: 1
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &4035595674465531060
 MonoBehaviour:

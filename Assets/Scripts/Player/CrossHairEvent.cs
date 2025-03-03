@@ -56,7 +56,8 @@ public class CrossHairEvent : MonoBehaviour
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
                 raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer" ||
                 raycast_hit.collider.gameObject.tag == "Light" || raycast_hit.collider.gameObject.tag == "Pray" || raycast_hit.collider.gameObject.tag == "DeliverPlace"
-                || raycast_hit.collider.gameObject.tag == "ReadEvent")
+                || raycast_hit.collider.gameObject.tag == "ReadEvent" || raycast_hit.collider.gameObject.tag == "Window"
+                || raycast_hit.collider.gameObject.tag == "Cabinet")
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
                 cross_hair_status.HitedTag = RaycasstedObj.tag;
@@ -96,7 +97,7 @@ public class CrossHairEvent : MonoBehaviour
                     return;
 
                 }
-                if (raycast_hit.collider.gameObject.tag == "Door")
+                if (raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Cabinet" || raycast_hit.collider.gameObject.tag == "Window")
                 {
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
