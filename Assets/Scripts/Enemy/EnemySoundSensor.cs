@@ -217,7 +217,7 @@ public class EnemySoundSensor : MonoBehaviour
                 Vector3 NearPosition = follow_object_nav.BlueRangeNearPositionGet(TargetPos, 3f);
                 follow_object_nav.ChaseToTargetSet(true, NearPosition, _speed);
             }
-            follow_object_nav.StoppingDistance = 0.5f;
+            follow_object_nav.StoppingDistance = 1f;
             SoundPlacePosition = TargetPos;
             MoveToSoundPlaceNow = true;
             MoveToSoundObjectPlace = _SoundObject;
