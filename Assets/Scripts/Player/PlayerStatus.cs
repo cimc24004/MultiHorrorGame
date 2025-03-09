@@ -5,6 +5,8 @@ using Cinemachine;
 using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
+using Sirenix.OdinInspector;
 public class PlayerStatus : Singleton<PlayerStatus>
 {
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
@@ -48,8 +50,20 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public float StaminaRetakePower;
     [Header("走れる最小スタミナ")]
     public float CanMinStaminaRun = 30;
+    [Header("現在の呪いゲージ値")]
+    public float CurseValueNow = 0;
+    [SerializeField]
+    [Header("呪いゲージのMAX値")]
+    private float CurseMaxValue = 100;
+    [SerializeField]
+    [Header("呪いアクションが行われた時増える呪いゲージ量")]
+    private float CurseRetakePower = 0.5f;
+    [SerializeField]
+    [Header("呪いゲージを減らす量")]
+    private float CurseReducedPower = 0.1f;
 
     public bool PlayerDeaded;
+
 
     private float offsetY;
     private CharacterMovePermit player_move_permit;
@@ -66,6 +80,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private CharacterController player_character_controller;
 
     private Tween crouchTween;
+    [SerializeField] public UnityEvent2 OnValueChangeCurseEvent;
+    [SerializeField] public UnityEvent2 OnCurseGageMaxEvent;
     // Start is called before the first frame update
     void Start()
     {
@@ -218,5 +234,37 @@ public class PlayerStatus : Singleton<PlayerStatus>
         });
 
     }
+    [Button]
+    public void CurseValueChange(string Curse)
+    {
+        OnValueChangeCurseEvent.Invoke();
+        if (Curse == "Increase")
+        {
+            //増えるのならば
+            if(CurseMaxValue >= CurseValueNow + CurseRetakePower)
+            {
+                CurseValueNow += CurseRetakePower;
+            }
+            else
+            {
+                CurseValueNow = CurseMaxValue;
+            }
+            Debug.Log("CurseValueNow: " + CurseValueNow);
+            if(CurseMaxValue <= CurseValueNow)
+            {
+                Debug.Log("CurseMaxValue <= CurseValueNow");
+                //呪いゲージがMAXを超えたなら
+                OnCurseGageMaxEvent.Invoke();
+            }
+        }
+        else
+        {
+            if(CurseValueNow - CurseReducedPower > 0)
+            {
+                CurseValueNow -= CurseReducedPower;
+            }
+        }
+    }
+
 
 }

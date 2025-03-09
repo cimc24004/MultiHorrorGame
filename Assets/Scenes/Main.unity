@@ -12252,6 +12252,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ac030a3bb4e06546af33bf597df814e, type: 3}
+--- !u!1 &1291598073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1291598074}
+  m_Layer: 0
+  m_Name: MikoApperance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1291598074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291598073}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 209.54, y: 56.65, z: 210.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1294720832
 GameObject:
   m_ObjectHideFlags: 0
@@ -12764,6 +12795,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerUnityChan
+      objectReference: {fileID: 0}
+    - target: {fileID: 7525078627656951602, guid: d80f24115aecc314daca3d90e3da798e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807238215796157599, guid: d80f24115aecc314daca3d90e3da798e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807238215796157599, guid: d80f24115aecc314daca3d90e3da798e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9187394712909114214, guid: d80f24115aecc314daca3d90e3da798e,
         type: 3}
@@ -14833,6 +14879,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
+    - target: {fileID: 212090357542631498, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 310270129932899514, guid: 7d7f354e78d42484da5a564762aec0e3,
         type: 3}
       propertyPath: serializationData.Prefab
@@ -14849,6 +14900,17 @@ PrefabInstance:
       propertyPath: m_HorizontalAxis.m_MaxSpeed
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 490329350961075074, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
+      propertyPath: MikoApperancePlaceTrans
+      value: 
+      objectReference: {fileID: 1291598074}
+    - target: {fileID: 490329350961075074, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 490329350961075074, guid: 7d7f354e78d42484da5a564762aec0e3,
+        type: 3}
     - target: {fileID: 558902658958424669, guid: 7d7f354e78d42484da5a564762aec0e3,
         type: 3}
       propertyPath: serializationData.Prefab
@@ -166405,3 +166467,4 @@ SceneRoots:
   - {fileID: 4654636201169030573}
   - {fileID: 475490769183691332}
   - {fileID: 2783393064297079286}
+  - {fileID: 1291598074}

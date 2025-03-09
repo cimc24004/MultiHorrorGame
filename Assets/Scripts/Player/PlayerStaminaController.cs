@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Events;
 public class PlayerStaminaController : MonoBehaviour
 {
 
@@ -16,12 +17,15 @@ public class PlayerStaminaController : MonoBehaviour
     private Image fillRectImageUI;
     private PlayerStatus player_status;
     private float stamina_retake_start_time_now = 0;
+    private UIFadeController ui_fade_controller;
     // Start is called before the first frame update
     void Start()
     {
         fillRectImageUI = stamina_slider.fillRect.gameObject.GetComponent<Image>();
         default_color = fillRectImageUI.color;
         player_status = this.gameObject.GetComponent<PlayerStatus>();
+        ui_fade_controller = stamina_slider.gameObject.GetComponent<UIFadeController>();
+        
     }
 
     // Update is called once per frame
@@ -61,6 +65,7 @@ public class PlayerStaminaController : MonoBehaviour
     }
     public void ConsumeStamina()
     {
+        ui_fade_controller.AutoFadeIn();
         player_status.StaminaValueNow -= player_status.StaminaCost;
         StaminaConsumeNow = true;
     }
@@ -69,6 +74,7 @@ public class PlayerStaminaController : MonoBehaviour
         //スタミナ回復
         if(player_status.StaminaValueNow / 100.0f <= 1)
         {
+            ui_fade_controller.AutoFadeIn();
             player_status.StaminaValueNow += player_status.StaminaRetakePower;
             StaminaIncreaseNow = true;
         }
