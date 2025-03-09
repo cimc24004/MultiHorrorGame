@@ -55,12 +55,6 @@ public class PlayerStatus : Singleton<PlayerStatus>
     [SerializeField]
     [Header("呪いゲージのMAX値")]
     private float CurseMaxValue = 100;
-    [SerializeField]
-    [Header("呪いアクションが行われた時増える呪いゲージ量")]
-    private float CurseRetakePower = 0.5f;
-    [SerializeField]
-    [Header("呪いゲージを減らす量")]
-    private float CurseReducedPower = 0.1f;
 
     public bool PlayerDeaded;
 
@@ -235,36 +229,34 @@ public class PlayerStatus : Singleton<PlayerStatus>
 
     }
     [Button]
-    public void CurseValueChange(string Curse)
+    public void CurseIncrease(float CurseRetakePower)
     {
         OnValueChangeCurseEvent.Invoke();
-        if (Curse == "Increase")
+        if (CurseMaxValue >= CurseValueNow + CurseRetakePower)
         {
-            //増えるのならば
-            if(CurseMaxValue >= CurseValueNow + CurseRetakePower)
-            {
-                CurseValueNow += CurseRetakePower;
-            }
-            else
-            {
-                CurseValueNow = CurseMaxValue;
-            }
-            Debug.Log("CurseValueNow: " + CurseValueNow);
-            if(CurseMaxValue <= CurseValueNow)
-            {
-                Debug.Log("CurseMaxValue <= CurseValueNow");
-                //呪いゲージがMAXを超えたなら
-                OnCurseGageMaxEvent.Invoke();
-            }
+            CurseValueNow += CurseRetakePower;
         }
         else
         {
-            if(CurseValueNow - CurseReducedPower > 0)
-            {
-                CurseValueNow -= CurseReducedPower;
-            }
+            CurseValueNow = CurseMaxValue;
+        }
+        Debug.Log("CurseValueNow: " + CurseValueNow);
+        if (CurseMaxValue <= CurseValueNow)
+        {
+            Debug.Log("CurseMaxValue <= CurseValueNow");
+            //呪いゲージがMAXを超えたなら
+            OnCurseGageMaxEvent.Invoke();
         }
     }
+    [Button]
+    public void CurseDecrease(float CurseReducedPower)
+    {
+        if ((CurseValueNow - CurseReducedPower) >= 0)
+        {
+            OnValueChangeCurseEvent.Invoke();
 
+            CurseValueNow -= CurseReducedPower;
+        }
+    }
 
 }

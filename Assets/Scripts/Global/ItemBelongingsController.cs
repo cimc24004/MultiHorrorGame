@@ -15,10 +15,17 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         public Text ItemCountText;
         public GameObject ItemUIs;
     }
+    
+    public class ItemCountWithPermit
+    {
+        public int item_count;
+        public bool CanUse = true;
+    }
     //アイテム持ち物コントローラー 
 
+
     //持っているアイテムの情報。
-    public Dictionary<ItemStatus, int> belonging_items = new Dictionary<ItemStatus, int>();
+    public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items = new Dictionary<ItemStatus, ItemCountWithPermit>();
     public Dictionary<ItemStatus, ItemStatusUI> belonging_item_uis = new Dictionary<ItemStatus, ItemStatusUI>();
 
     //ItemUIのPrefabをセット。 InstantiateしてアイテムUIを作る。
@@ -81,7 +88,11 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             belonging_item_uis[_item_status].ItemIcon.sprite = _item_status.MenuSprite;
             belonging_item_uis[_item_status].ItemCountText.text = "1";
 
-            belonging_items.Add(_item_status, 1);
+            ItemCountWithPermit item_count_with_permit = new ItemCountWithPermit();
+            item_count_with_permit.item_count = 1;
+            item_count_with_permit.CanUse = true;
+
+            belonging_items.Add(_item_status, item_count_with_permit);
 
             //アイテムを拾ったらアイテムUIを選択するようにする。
             Debug.Log(item_ui_obj.gameObject);
@@ -92,12 +103,12 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             //アイテムメニューにアイテムが存在するならば。
             
             //指定したアイテムの持っている数を取得。
-            int BelongingCountNow = belonging_items[_item_status];
+            int BelongingCountNow = belonging_items[_item_status].item_count;
             
             //アイテムを"手に入れる"なのでアイテム数を１増やす。
             BelongingCountNow += 1;
 
-            belonging_items[_item_status] = BelongingCountNow;
+            belonging_items[_item_status].item_count = BelongingCountNow;
             Debug.Log("SetItemStatusToItemMenu アイテムメニューにアイテムが存在する");
             SetItemStatusToItemMenu(_item_status);
 
@@ -110,7 +121,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     public void ItemUseFromBelonging(ItemStatus item_status)
     {
         Debug.Log("ItemUseFromBelonging-----");
-        int BelongingCountNow = belonging_items[item_status];
+        int BelongingCountNow = belonging_items[item_status].item_count;
         //アイテムを使用するので   所持数を減らす。
 
         //アイテムのタイプによって、アイテムを使用したときにイベントを発生させる。
@@ -196,15 +207,28 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             return false;
         }
     }
+    public bool WhichCanUseItem(ItemStatus _item_status)
+    {
+        if (belonging_items[_item_status].CanUse)
+        {
+            return true;
+        }
+        return false;
+    }
+    public void CanUseItem(bool can, ItemStatus _item_status)
+    {
+        belonging_items[_item_status].CanUse = can;
+        item_menu_controller.OnCanItemUseChangeUI(can, _item_status);
+    }
     public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType _item_type)
     {
         //var item_type_belonging_items = belonging_items.Where(x => x.Key.item_type == ItemStatus.ItemType.Equip);
-        Dictionary<ItemStatus, int> itemsDictionary = belonging_items
+        Dictionary<ItemStatus, ItemCountWithPermit> itemsDictionary = belonging_items
             .Where(x => x.Key.item_type == _item_type)
             .ToDictionary(x => x.Key, x => x.Value);
 
         List<ItemStatus> founded_items = new List<ItemStatus>();
-        foreach (KeyValuePair<ItemStatus, int> item in itemsDictionary)
+        foreach (KeyValuePair<ItemStatus, ItemCountWithPermit> item in itemsDictionary)
         {
             if(_item_type == item.Key.item_type)
             {
@@ -223,7 +247,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     private void  ItemUse(int BelongingCountNow, ItemStatus item_status)
     {
         BelongingCountNow -= 1;
-        belonging_items[item_status] = BelongingCountNow;
+        belonging_items[item_status].item_count = BelongingCountNow;
 
         if (BelongingCountNow > 0)
         {
@@ -242,7 +266,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
 
 
         //アイテム数を取得。
-        int ItemCount = belonging_items[item_status];
+        int ItemCount = belonging_items[item_status].item_count;
 
         //アイテムのUI専用DictionaryからTextUIを取得し、個数をテキストで表示させる。
         Text item_text = belonging_item_uis[item_status].ItemCountText;

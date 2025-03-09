@@ -188,10 +188,15 @@ public class ItemMenuController : SerializedMonoBehaviour
         NowSelectItemUIObject = ItemGroup.transform.GetChild(ItemIndex).gameObject;
         CommonItemSelect(NowSelectItemUIObject);
     }
+    public void OnCanItemUseChangeUI(bool can, ItemStatus _item_status)
+    {
+        //アイテムが使えるようにするときに実行する関数 UIなどの変更も加える必要があるためこの関数を実行すること
+    }
     public void ItemSelectByObject(GameObject TargetSelectObj)
     {
         CommonItemSelect(TargetSelectObj);
     }
+
     private void CommonItemSelect(GameObject selectObj)
     {
         Debug.Log("CommonItemSelect");
@@ -223,10 +228,15 @@ public class ItemMenuController : SerializedMonoBehaviour
     public void ItemUseFromMenu(GameObject item_ui_obj)
     {
         //アイテムメニューからアイテムを使う関数。
-
         ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
         //ItemStatusをItemUIクラスから取得する。
         ItemStatus item_status = item_ui.item_status;
+        if (!item_belongings_controller.WhichCanUseItem(item_status))
+        {
+            //この地点でアイテムが使えない状態ならこの関数を実行しない
+            Debug.Log($"{item_status.ItemName}というアイテムはロックされていて使えません！");
+            return;
+        }
 
         int item_ui_index = item_ui_obj.transform.GetSiblingIndex();
         //ItemSelect関数はIndexを指定しなければならないのでGetSiblingIndex(今子オブジェクトの中では何番目にいるのかを教えてくれるやつ)

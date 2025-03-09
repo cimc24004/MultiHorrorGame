@@ -10,8 +10,9 @@ public class ItemUI : MonoBehaviour
     public ItemBelongingsController item_belonging_controller;
     public ItemStatus item_status;
     public GameObject FocusUI;
+
+    public bool CanItemUse = true;
     public void OnClick()
     {
-        Debug.Log("OnClicked-----: ");
     }
 }

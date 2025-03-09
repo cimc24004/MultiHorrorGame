@@ -9,6 +9,10 @@ public class UIFadeController : MonoBehaviour
     private bool EndFadeOut;
     private bool StartFadeIn;
     [SerializeField]
+    private float Duration = 0.6f;
+    [SerializeField]
+    private float AutoFadeOutTime = 5;
+    [SerializeField]
     private CanvasGroup canvas_group;
     private Tween FadeOutTween;
     private Tween FadeInTween;
@@ -29,7 +33,7 @@ public class UIFadeController : MonoBehaviour
             EndFadeOutTimeNow += Time.deltaTime;
             if(EndFadeOutTime < EndFadeOutTimeNow)
             {
-                FadeOutTween = canvas_group.DOFade(0, 0.6f).SetEase(Ease.Linear).SetLink(this.gameObject);
+                FadeOutTween = canvas_group.DOFade(0, Duration).SetEase(Ease.Linear).SetLink(this.gameObject);
                 EndFadeOutTimeNow = 0;
                 EndFadeOut = false;
             }
@@ -37,9 +41,9 @@ public class UIFadeController : MonoBehaviour
 
         if (StartFadeIn)
         {
-            FadeInTween = canvas_group.DOFade(1, 0.6f).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
+            FadeInTween = canvas_group.DOFade(1, Duration).SetEase(Ease.Linear).SetLink(this.gameObject).OnComplete(() => {
                 StartFadeIn = false;
-                AutoFadeOut(3);
+                AutoFadeOut(AutoFadeOutTime);
             });
 
         }
