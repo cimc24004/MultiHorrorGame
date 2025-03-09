@@ -1082,15 +1082,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 419ffcd854f96d14bb95728dfa16e216,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5544217186971435265}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 419ffcd854f96d14bb95728dfa16e216,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2479603052934513378}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 419ffcd854f96d14bb95728dfa16e216,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1600551149241566020}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 419ffcd854f96d14bb95728dfa16e216,
         type: 3}
       insertIndex: -1
@@ -1103,10 +1095,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6845640820056623555}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 419ffcd854f96d14bb95728dfa16e216,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6448902664401236121}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 419ffcd854f96d14bb95728dfa16e216,
         type: 3}
       insertIndex: -1
@@ -1177,32 +1165,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChaseToTargetMode: 0
   speed: 0
-  StoppingDistance: 0.1
+  StoppingDistance: 0.5
   ArrivedTarget: 0
   ToTargetPosDistance: 0
   ChaseTargetPosition: {x: 0, y: 0, z: 0}
   MovePermit: 1
   DefaultStoppingDistance: 0
---- !u!114 &5544217186971435265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1364320428859499873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65e66ba283ab2ed45aab6edf764ceaba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ArriveSoundPlaceWaitTimeToReturnNow: 0
-  sound_by_obj: 0
-  MoveToSoundPlaceNow: 0
-  MoveToSoundObjectPlace: 0
-  sound_sensor_status: {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9,
-    type: 2}
-  original_sound_sensor_status: {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9,
-    type: 2}
 --- !u!195 &2479603052934513378
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1225,19 +1193,6 @@ NavMeshAgent:
   m_BaseOffset: -0.06
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
---- !u!114 &1600551149241566020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1364320428859499873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a246c2b2a29eece429eb2eb31f71ced8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NoticedSound: 0
 --- !u!114 &3453149994781896530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1299,39 +1254,6 @@ MonoBehaviour:
   StartPos: {fileID: 7617991875842903833}
   RaycastDistance: 0.8
   ray_obj: {fileID: 0}
---- !u!114 &6448902664401236121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1364320428859499873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4695cbbb645358547b8df649759c0c50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  ToNextRouteDistance: 0
-  WaitToMoveNextPointTime: 3
-  RoutingWalkSpeed: 1
-  NextRouteObject: {fileID: 0}
-  ReverseIndexChange: 0
-  ArrivedNextRouteMode: 0
-  RoutingMovePermit: 1
-  RouteIndexNow: 0
-  NearRouteObject: {fileID: 0}
-  ArrivedTarget: 0
-  OriginalRouting: 0
-  Routings: []
 --- !u!114 &7872165340444441950
 MonoBehaviour:
   m_ObjectHideFlags: 0
