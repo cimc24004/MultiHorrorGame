@@ -138,6 +138,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u795E\u68DA"
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,
+        type: 3}
+      propertyPath: m_TagString
+      value: Pray
+      objectReference: {fileID: 0}
     - target: {fileID: 6377094356225980380, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,
         type: 3}
       propertyPath: m_DirtyAABB
@@ -179,8 +189,84 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4530948120357372502}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2665154010786089112}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2818056805728107258}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5451307339631320422}
   m_SourcePrefab: {fileID: 100100000, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba, type: 3}
+--- !u!1 &3742337417179609094 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4552609106072536407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2665154010786089112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742337417179609094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aefdb4263df60245a426c82554e2412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurseDecreaseAmount: 10
+--- !u!114 &2818056805728107258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742337417179609094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d3a684997e8d904683d9fc468ccc3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NeedToPrayTime: 2
+  PrayNow: 0
+  PrayPermit: 1
+  PrayTimeNow: 0
+  PrayCompletedEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 2665154010786089112}
+        m_MethodName: CurseDecrease
+        m_Modes: 01000000
+--- !u!65 &5451307339631320422
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742337417179609094}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.52975845, z: 0.40615845}
+  m_Center: {x: 0, y: 0.17324638, z: 0.04145813}
 --- !u!4 &4081568173803233980 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 84c3e3c9541ed0d41a63a0cca8e7e0ba,

@@ -22,13 +22,14 @@ public class HorrorDirector : Singleton<HorrorDirector>
     private CinemachineImpulseSource cinemachine_impulse_source;
     private GameControllerOnAllScene game_controller_on_all_scene;
     private URPFxController urp_fx_controller;
-
+    private PlayerStatus player_status;
     public bool DiscoveryNow;
     // Start is called before the first frame update
     void Start()
     {
         cinemachine_impulse_source = this.gameObject.GetComponent<CinemachineImpulseSource>();
         MainDefaultBGM = MainBGM.clip;
+        player_status = PlayerStatus.instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         urp_fx_controller = game_controller_on_all_scene.gameObject.GetComponent<URPFxController>();
     }
@@ -37,6 +38,10 @@ public class HorrorDirector : Singleton<HorrorDirector>
     void Update()
     {
         
+    }
+    public void MikoApperance()
+    {
+
     }
     public void NearEnemy()
     {
@@ -65,6 +70,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
     [Button]
     public void DiscoveriedHorror()
     {
+
+        player_status.CurseIncrease(10.0f);
         ToEnemyNear.SetActive(false);
         DiscoveriedSound.SetActive(false);
         DiscoveriedSound.SetActive(true);
