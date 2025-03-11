@@ -23,6 +23,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     private GameControllerOnAllScene game_controller_on_all_scene;
     private URPFxController urp_fx_controller;
     private PlayerStatus player_status;
+    private CurseController curse_controller;
     public bool DiscoveryNow;
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
         cinemachine_impulse_source = this.gameObject.GetComponent<CinemachineImpulseSource>();
         MainDefaultBGM = MainBGM.clip;
         player_status = PlayerStatus.instance;
+        curse_controller = CurseController.instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         urp_fx_controller = game_controller_on_all_scene.gameObject.GetComponent<URPFxController>();
     }
@@ -71,7 +73,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public void DiscoveriedHorror()
     {
 
-        player_status.CurseIncrease(10.0f);
+        curse_controller.CurseIncrease(10.0f);
         ToEnemyNear.SetActive(false);
         DiscoveriedSound.SetActive(false);
         DiscoveriedSound.SetActive(true);

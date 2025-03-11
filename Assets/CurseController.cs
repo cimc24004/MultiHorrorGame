@@ -4,6 +4,8 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using System.Linq;
 using DG.Tweening;
+using UnityEngine.Events;
+using UnityEngine.UI;
 public class CurseController : Singleton<CurseController>
 {
     public enum CurseEventType
@@ -16,7 +18,20 @@ public class CurseController : Singleton<CurseController>
     [SerializeField] private GameObject MikoPrefab;
     [SerializeField] private Transform MikoApperancePlaceTrans;
 
+
+    [Header("現在の呪いゲージ値")]
+    public float CurseValueNow = 0;
+    [SerializeField]
+    [Header("呪いゲージのMAX値")]
+    private float CurseMaxValue = 100;
+
+    [SerializeField] private Slider CurseGageUI;
+
+    [SerializeField] public UnityEvent2 OnValueChangeCurseEvent;
+    [SerializeField] public UnityEvent2 OnCurseGageMaxEvent;
+
     private GameObject InstantiatedMiko;
+    private UIFadeController ui_fade_controller;
     private PlayerStatus player_status;
     private PlayerStaminaController player_stamina_controller;
     private ItemBelongingsController item_belongings_controller;
@@ -34,9 +49,20 @@ public class CurseController : Singleton<CurseController>
         item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = item_belongings_controller.item_menu_controller;
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
+        ui_fade_controller = CurseGageUI.GetComponent<UIFadeController>();
+        this.OnValueChangeCurseEvent.AddListener(() =>
+        {
+            ui_fade_controller.AutoFadeIn();
+        });
+        this.OnCurseGageMaxEvent.AddListener(() =>
+        {
+            CurseMaxed(5);
+        });
+
     }
     private void Update()
     {
+        CurseGageUI.DOValue(this.CurseValueNow / 100.0f, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
         if (CurseMaxedEventNow)
         {
             CurseMaxEventWhileTimeNow += Time.deltaTime;
@@ -96,7 +122,7 @@ public class CurseController : Singleton<CurseController>
             item_belongings_controller.CanUseItem(true, locked_item_status);
         }
         
-        player_status.CurseDecrease(player_status.CurseValueNow);
+        this.CurseDecrease(this.CurseValueNow);
         CurseMaxEventWhileTimeNow = 0;
         CurseMaxedEventNow = false;
     }
@@ -131,5 +157,36 @@ public class CurseController : Singleton<CurseController>
     {
         player_status.StaminaValueNow = 0;
         player_stamina_controller.ConsumeStamina();
+    }
+
+    [Button]
+    public void CurseIncrease(float CurseRetakePower)
+    {
+        OnValueChangeCurseEvent.Invoke();
+        if (CurseMaxValue >= CurseValueNow + CurseRetakePower)
+        {
+            CurseValueNow += CurseRetakePower;
+        }
+        else
+        {
+            CurseValueNow = CurseMaxValue;
+        }
+        Debug.Log("CurseValueNow: " + CurseValueNow);
+        if (CurseMaxValue <= CurseValueNow)
+        {
+            Debug.Log("CurseMaxValue <= CurseValueNow");
+            //呪いゲージがMAXを超えたなら
+            OnCurseGageMaxEvent.Invoke();
+        }
+    }
+    [Button]
+    public void CurseDecrease(float CurseReducedPower)
+    {
+        if ((CurseValueNow - CurseReducedPower) >= 0)
+        {
+            OnValueChangeCurseEvent.Invoke();
+
+            CurseValueNow -= CurseReducedPower;
+        }
     }
 }

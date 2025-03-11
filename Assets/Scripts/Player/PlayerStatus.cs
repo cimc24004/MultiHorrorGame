@@ -50,11 +50,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public float StaminaRetakePower;
     [Header("走れる最小スタミナ")]
     public float CanMinStaminaRun = 30;
-    [Header("現在の呪いゲージ値")]
-    public float CurseValueNow = 0;
-    [SerializeField]
-    [Header("呪いゲージのMAX値")]
-    private float CurseMaxValue = 100;
+
 
     public bool PlayerDeaded;
 
@@ -74,8 +70,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private CharacterController player_character_controller;
 
     private Tween crouchTween;
-    [SerializeField] public UnityEvent2 OnValueChangeCurseEvent;
-    [SerializeField] public UnityEvent2 OnCurseGageMaxEvent;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -228,35 +223,6 @@ public class PlayerStatus : Singleton<PlayerStatus>
         });
 
     }
-    [Button]
-    public void CurseIncrease(float CurseRetakePower)
-    {
-        OnValueChangeCurseEvent.Invoke();
-        if (CurseMaxValue >= CurseValueNow + CurseRetakePower)
-        {
-            CurseValueNow += CurseRetakePower;
-        }
-        else
-        {
-            CurseValueNow = CurseMaxValue;
-        }
-        Debug.Log("CurseValueNow: " + CurseValueNow);
-        if (CurseMaxValue <= CurseValueNow)
-        {
-            Debug.Log("CurseMaxValue <= CurseValueNow");
-            //呪いゲージがMAXを超えたなら
-            OnCurseGageMaxEvent.Invoke();
-        }
-    }
-    [Button]
-    public void CurseDecrease(float CurseReducedPower)
-    {
-        if ((CurseValueNow - CurseReducedPower) >= 0)
-        {
-            OnValueChangeCurseEvent.Invoke();
-
-            CurseValueNow -= CurseReducedPower;
-        }
-    }
+ 
 
 }
