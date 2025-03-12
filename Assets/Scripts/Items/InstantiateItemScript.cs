@@ -5,6 +5,8 @@ using UnityEngine.Events;
 public class InstantiateItemScript : MonoBehaviour
 {
     [SerializeField]
+    private float StartEventDelayTime = 0;
+    [SerializeField]
     private float DestroyTime;
     [SerializeField]
     private UnityEvent2 StartEvent;
@@ -17,13 +19,18 @@ public class InstantiateItemScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Invoke("StartEventInvoke", StartEventDelayTime);
         Destroy(this.gameObject,DestroyTime);
-        StartEvent.Invoke();
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateEvent?.Invoke();
+    }
+
+    private void StartEventInvoke()
+    {
+        StartEvent.Invoke();
     }
 }

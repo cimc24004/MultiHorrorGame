@@ -18,7 +18,7 @@ public class VisibledEnemyController : MonoBehaviour
     private RaycastHit hit;
     private EnemyFlinchController enemy_flinch_controller;
     private NavMeshAgent nav_mesh_agent;
-
+    private float NavMeshSpeed;
     private bool isVisible;
     // Start is called before the first frame update
     void Start()
@@ -36,6 +36,7 @@ public class VisibledEnemyController : MonoBehaviour
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
+        NavMeshSpeed = this.nav_mesh_agent.speed;
     }
 
     [Header("遮蔽物として判定するレイヤー")]
@@ -61,7 +62,7 @@ public class VisibledEnemyController : MonoBehaviour
             character_controller.enabled = false;
             enemy_to_player_kill_controller.enabled = false;
             m_Animator.speed = 0;
-            nav_mesh_agent.enabled = false;
+            nav_mesh_agent.speed = 0;
         }
         else
         {
@@ -70,7 +71,7 @@ public class VisibledEnemyController : MonoBehaviour
                 enemy_to_player_kill_controller.enabled = true;
                 character_controller.enabled = true;
                 m_Animator.speed = 1;
-                nav_mesh_agent.enabled = true;
+                nav_mesh_agent.speed = NavMeshSpeed;
                 follow_object_by_nav.MovePermit = true;
             }
         }
@@ -87,7 +88,6 @@ public class VisibledEnemyController : MonoBehaviour
 
         // 1. カメラの視野フラスタム内にいるかどうか
         Vector3 viewPos = PlayerCamera.WorldToViewportPoint(transform.position);
-        Debug.Log("viewPos: " + viewPos);
         // カメラの後方(z<0)にいる or 画面外(x,yが[0,1]範囲外)なら不可視と判断
         if (viewPos.z < 0f) return false;
         if (viewPos.x < 0f || viewPos.x > 1f || viewPos.y < -0.8f || viewPos.y > 0.95f)

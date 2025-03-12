@@ -26,6 +26,7 @@ public class CurseDecreaseController : MonoBehaviour
 
     public void CurseDecrease()
     {
+        Debug.Log("CurseDecrease!!!!!!!!!!!!!!!!!!!!!!");
         curse_controller.CurseDecrease(CurseDecreaseAmount);
     }
 }

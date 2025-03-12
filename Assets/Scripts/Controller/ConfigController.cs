@@ -50,7 +50,6 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
 
     private void Update()
     {
-        Debug.Log("player_input.currentActionMap['ESC'].triggered: " + player_input.currentActionMap.name);
         if (CommonActionESC.action.triggered)
         {
             if (!Opended)

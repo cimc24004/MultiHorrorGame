@@ -190,7 +190,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     }
     public void OnCanItemUseChangeUI(bool can, ItemStatus _item_status)
     {
-        //アイテムが使えるようにするときに実行する関数 UIなどの変更も加える必要があるためこの関数を実行すること
+        //アイテムが使えるようになるときに実行する関数 UIなどの変更も加える必要があるためこの関数を実行すること
     }
     public void ItemSelectByObject(GameObject TargetSelectObj)
     {

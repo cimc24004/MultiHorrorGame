@@ -65,7 +65,6 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                         the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
                     }
                 }
-                Debug.Log("EnemyName: " + this.gameObject.name + "\n\n" + "the_door_controller.NeededKey: " + the_door_controller.NeededKey + "discovery_player_controller.DiscoveryPlayerNow: " + discovery_player_controller.DiscoveryPlayerNow);
                 if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                 {
                     Debug.Log("î‡ÇâÛÇµÇΩÇ¢Ç∆évÇ¢Ç‹Ç∑ÅB");

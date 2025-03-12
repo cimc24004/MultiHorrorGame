@@ -120,13 +120,11 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
         else
         {
             //ゲームプレイ中でなければ再生をストップ
-            Debug.Log("GamePlayFalse KorondaVoiceReset");
             KorondaVoiceReset();
         }
     }
     private void KorondaVoiceReset()
     {
-        Debug.Log("KorondaReset");
         audio_source.Stop();
         VoiceEnd = true;
         VoiceStart = false;

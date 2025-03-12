@@ -202,7 +202,10 @@ public class EnemySoundSensor : MonoBehaviour
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
             Debug.Log("SoundSensor実行!!");
-            Debug.Log("NavMesh いけるかどうか！？！？！？: " + follow_object_nav.CanMoveCheck(TargetPos));
+            Debug.Log("-----------------NavMeshErrorCheck------------------------");
+            Debug.Log($"{this.gameObject.name}さんNavmeshAgentエラーが！？");
+            Debug.Log($"${this.gameObject.name}さんはNavMesh いけるかどうか！？！？！？: " + follow_object_nav.CanMoveCheck(TargetPos));
+            Debug.Log("----------------------------------------------------------");
             if (follow_object_nav.CanMoveCheck(TargetPos))
             {
                 //目標の地点がNavmeshの青枠内ならば 普通にその目標地点に向かう
