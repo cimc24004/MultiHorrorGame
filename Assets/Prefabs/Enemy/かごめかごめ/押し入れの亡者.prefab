@@ -1251,10 +1251,20 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8935245958271565609}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ea560b13fa772540aff7051251f8ff8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1629134356769206001}
   m_SourcePrefab: {fileID: 100100000, guid: 8ea560b13fa772540aff7051251f8ff8, type: 3}
 --- !u!137 &1754449666076557335 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7986814019933463497, guid: 8ea560b13fa772540aff7051251f8ff8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8543279719539647454}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2459633976227468659 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3121641373146499411, guid: 8ea560b13fa772540aff7051251f8ff8,
     type: 3}
   m_PrefabInstance: {fileID: 8543279719539647454}
   m_PrefabAsset: {fileID: 0}
@@ -1264,9 +1274,27 @@ SkinnedMeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 8543279719539647454}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2826704297057105451 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3335571722511510027, guid: 8ea560b13fa772540aff7051251f8ff8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8543279719539647454}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6851847154521984163 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6225816318827270275, guid: 8ea560b13fa772540aff7051251f8ff8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8543279719539647454}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &6924088168488588360 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7595146889812838506, guid: 8ea560b13fa772540aff7051251f8ff8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8543279719539647454}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7687649028977935964 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2035582688616703362, guid: 8ea560b13fa772540aff7051251f8ff8,
     type: 3}
   m_PrefabInstance: {fileID: 8543279719539647454}
   m_PrefabAsset: {fileID: 0}
@@ -2783,3 +2811,23 @@ MonoBehaviour:
       Data: 
   Death: 0
   DeathAudioSource: {fileID: 3928678732540154380}
+--- !u!114 &1629134356769206001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8813186536376409743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetChangeSilhouetteObjs:
+  - {fileID: 7687649028977935964}
+  - {fileID: 2459633976227468659}
+  - {fileID: 6851847154521984163}
+  - {fileID: 2826704297057105451}
+  ResetLayerName: Default
+  ToResetSilhouetteTime: 0
+  ToResetSilhouetteTimeNow: 0

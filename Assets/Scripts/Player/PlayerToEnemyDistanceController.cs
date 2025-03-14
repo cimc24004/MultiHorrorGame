@@ -21,7 +21,6 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
     {
         if (NearEnemy)
         {
-            horror_director.NearEnemy();
         }
     }
     // トリガーに敵が入った時
@@ -33,12 +32,7 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
             if (!enemiesInRange.Contains(other))
             {
                 enemiesInRange.Add(other);
-
-                // 初めての敵が入った場合、近づいたイベントを実行
-                if (enemiesInRange.Count == 1)
-                {
-                    OnEnemyApproach();
-                }
+                horror_director.AddNearEnemy();
             }
         }
     }
@@ -52,12 +46,7 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
             if (enemiesInRange.Contains(other))
             {
                 enemiesInRange.Remove(other);
-
-                // 全ての敵が範囲外に出た場合、離れたイベントを実行
-                if (enemiesInRange.Count == 0)
-                {
-                    OnEnemyLeave();
-                }
+                horror_director.RemoveNearEnemy();
             }
         }
     }
@@ -76,6 +65,6 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
         Debug.Log("敵が全て範囲外に離れた！");
         // 特定のイベントをここに実行
         NearEnemy = false;
-        horror_director.NearEnemyReset();
+        horror_director.ChangeHorrorState(HorrorState.None);
     }
 }

@@ -957,6 +957,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 480717729993225211}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: beaed61b383920a4186a5f2c183e73bd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2533835863556448511}
   m_SourcePrefab: {fileID: 100100000, guid: beaed61b383920a4186a5f2c183e73bd, type: 3}
 --- !u!4 &14252536498941331 stripped
 Transform:
@@ -973,6 +977,12 @@ Transform:
 --- !u!4 &133731302245016700 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1788387487356643269, guid: beaed61b383920a4186a5f2c183e73bd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1804460316311897017}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &375325662105413179 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2035582688616703362, guid: beaed61b383920a4186a5f2c183e73bd,
     type: 3}
   m_PrefabInstance: {fileID: 1804460316311897017}
   m_PrefabAsset: {fileID: 0}
@@ -2521,6 +2531,23 @@ MonoBehaviour:
   - {fileID: 2129573189765901382}
   - {fileID: 1738580012302248796}
   - {fileID: 7623251405736796666}
+--- !u!114 &2533835863556448511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570580655815950056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetChangeSilhouetteObjs:
+  - {fileID: 375325662105413179}
+  ResetLayerName: Default
+  ToResetSilhouetteTime: 0
+  ToResetSilhouetteTimeNow: 0
 --- !u!4 &1574799333831347403 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 923366284622909298, guid: beaed61b383920a4186a5f2c183e73bd,

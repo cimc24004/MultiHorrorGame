@@ -47,7 +47,7 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     private bool DiscoveriedEventOnce;
     private bool NonDiscoveriedEventOnce;
-
+    private SilhouetteChangeController silhouette_change_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +55,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
         material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
+        silhouette_change_controller = this.gameObject.GetComponent<SilhouetteChangeController>();
         Player = player_status.gameObject;
         PlayersHeadTransform = player_status.HeadPos;
         DefaultPos = this.transform.position;
@@ -84,11 +85,13 @@ public class DiscoveryPlayerController : MonoBehaviour
             InsidePlayer = false;
         if (DiscoveryPlayerNow)
         {
-            horror_director.DiscoveryNow = true;
+            //horror_director.DiscoveryNow = true;
             if (!DiscoveriedEventOnce)
             {
                 //visible_through_the_wall_controller.VisibleOnce = true;
-                horror_director.DiscoveriedHorror();
+                //horror_director.ChangeHorrorState(HorrorState.Discovered);
+                silhouette_change_controller?.SilhouetteChangeWithAutoReset(3);
+                horror_director.EnemyDiscoveredPlayer();
                 DiscoveriedEventOnce = true;
             }
             if (follow_object_nav.ArrivedTarget)
@@ -105,8 +108,8 @@ public class DiscoveryPlayerController : MonoBehaviour
             DiscoveriedEventOnce = false;
             if (!NonDiscoveriedEventOnce)
             {
-                horror_director.DiscoveryNow = false;
-                horror_director.ResetSetting();
+                //horror_director.DiscoveryNow = false;
+                horror_director.EnemyLostPlayer();
                 NonDiscoveriedEventOnce = true;
             }
         }

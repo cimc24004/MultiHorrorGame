@@ -115,6 +115,8 @@ public class CurseController : Singleton<CurseController>
         {
             if (InstantiatedMiko != null)
             {
+                DiscoveryPlayerController discovery_player_controller = InstantiatedMiko.gameObject.GetComponent<DiscoveryPlayerController>();
+                discovery_player_controller.DiscoveryPlayerNow = false;
                 Destroy(InstantiatedMiko);
             }
         }

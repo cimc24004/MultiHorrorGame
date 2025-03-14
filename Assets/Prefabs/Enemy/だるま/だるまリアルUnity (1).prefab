@@ -733,6 +733,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 71829854414955128}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1e6af67d225e85f4e9311765b8756175,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8626557712796505881}
     - targetCorrespondingSourceObject: {fileID: -5423259348222754125, guid: 1e6af67d225e85f4e9311765b8756175,
         type: 3}
       insertIndex: -1
@@ -742,6 +746,18 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6761711256123864779}
   m_SourcePrefab: {fileID: 100100000, guid: 1e6af67d225e85f4e9311765b8756175, type: 3}
+--- !u!1 &230618900759214040 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3247852405856916958, guid: 1e6af67d225e85f4e9311765b8756175,
+    type: 3}
+  m_PrefabInstance: {fileID: 5899185387267317242}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &252272904469178258 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5935283632719084136, guid: 1e6af67d225e85f4e9311765b8756175,
+    type: 3}
+  m_PrefabInstance: {fileID: 5899185387267317242}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1697230740672798778 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4155736658138710592, guid: 1e6af67d225e85f4e9311765b8756175,
@@ -763,6 +779,18 @@ MonoBehaviour:
   AddAngles: {x: 90, y: 0, z: 0}
   cameraRoot: {fileID: 0}
   rotateSpeed: 1
+--- !u!1 &3197721740240784121 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -162539559439640829, guid: 1e6af67d225e85f4e9311765b8756175,
+    type: 3}
+  m_PrefabInstance: {fileID: 5899185387267317242}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3302904857477534363 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8937494259723013985, guid: 1e6af67d225e85f4e9311765b8756175,
+    type: 3}
+  m_PrefabInstance: {fileID: 5899185387267317242}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6220778025668262417 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e6af67d225e85f4e9311765b8756175,
@@ -1075,6 +1103,27 @@ MonoBehaviour:
   UseCharacterController: 1
   ground_check: {fileID: 1425629801864483318}
   gravity: {x: 0, y: 0, z: 0}
+--- !u!114 &8626557712796505881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6710209561006137515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetChangeSilhouetteObjs:
+  - {fileID: 3302904857477534363}
+  - {fileID: 3197721740240784121}
+  - {fileID: 230618900759214040}
+  - {fileID: 252272904469178258}
+  - {fileID: 7899393017155166879}
+  ResetLayerName: Default
+  ToResetSilhouetteTime: 0
+  ToResetSilhouetteTimeNow: 0
 --- !u!1 &7305590118241509193 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5423259348222754125, guid: 1e6af67d225e85f4e9311765b8756175,
@@ -1096,6 +1145,12 @@ MonoBehaviour:
   AddAngles: {x: 90, y: 0, z: 0}
   cameraRoot: {fileID: 0}
   rotateSpeed: 1
+--- !u!1 &7899393017155166879 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4864356254048157851, guid: 1e6af67d225e85f4e9311765b8756175,
+    type: 3}
+  m_PrefabInstance: {fileID: 5899185387267317242}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6196824125604572597
 PrefabInstance:
   m_ObjectHideFlags: 0
