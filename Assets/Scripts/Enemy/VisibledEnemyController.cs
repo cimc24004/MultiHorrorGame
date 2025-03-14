@@ -56,24 +56,25 @@ public class VisibledEnemyController : MonoBehaviour
             isVisible = false;
 
         }
+        if(enemy_flinch_controller.FlinchNow){
+            m_Animator.speed = 1;
+            return;
+        }
         if (isVisible)
         {
+            
             follow_object_by_nav.MovePermit = false;
-            character_controller.enabled = false;
+            character_controller.Move(Vector3.zero);
             enemy_to_player_kill_controller.enabled = false;
             m_Animator.speed = 0;
             nav_mesh_agent.speed = 0;
         }
         else
         {
-            if (!enemy_flinch_controller.FlinchNow)
-            {
-                enemy_to_player_kill_controller.enabled = true;
-                character_controller.enabled = true;
-                m_Animator.speed = 1;
-                nav_mesh_agent.speed = NavMeshSpeed;
-                follow_object_by_nav.MovePermit = true;
-            }
+            enemy_to_player_kill_controller.enabled = true;
+            m_Animator.speed = 1;
+            nav_mesh_agent.speed = NavMeshSpeed;
+            follow_object_by_nav.MovePermit = true;
         }
     }
 

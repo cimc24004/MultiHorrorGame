@@ -13,31 +13,28 @@ public class HorizontalProjectile : SerializedMonoBehaviour
     public bool OnGround;
     //投げてから地面についたときのUnityイベント
     public UnityEvent OnGroundEvent;
-    //投げてから敵に触れたときのUnityイベント
-    public UnityEvent HitEnemyEvent;
-    [SerializeField] private bool InstantiateOnHit;
-    [ShowIf("InstantiateOnHit")]
-    [SerializeField] private GameObject InstantiatePrefab;
+
+    //Enemyにヒットしたときに何か生成するかどうか
+    [SerializeField] private bool InstantiateOnEnemyHit;
+    [ShowIf("InstantiateOnEnemyHit")]
+    [SerializeField] private GameObject InstantiatePrefabWhenEnemyHit;
     //初速度
     public float FirstSpeed = 1;
 
-    public ItemThrowController item_throw_controller;
     [Header("対称のレイヤーを指定")]
     public LayerMask col_layer;
 
     private Vector3 normal;
 
     private GameObject hited_obj;
+
+    private GameObject InstantiateObjWhenHitedEnemy;
+    private ItemObject item_object;
     // Start is called before the first frame update
     void Start()
     {
-        if (InstantiateOnHit)
-        {
-            HitEnemyEvent.AddListener(() =>
-            {
-                Instantiate(InstantiatePrefab, this.transform.position, Quaternion.identity);
-            });
-        }
+        item_object = this.gameObject.GetComponent<ItemObject>();
+
 
     }
 
@@ -84,15 +81,21 @@ public class HorizontalProjectile : SerializedMonoBehaviour
         hited_obj = other.gameObject;
         if (throw_now)
         {
+            //地面にぶつかったら
             if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0 && hited_obj.gameObject.tag != "WindowBorder")
             {
                 OnGround = true;
             }
 
-            if (other.gameObject.tag == "Enemy")
-            {
-                item_throw_controller.EnemyThrowCollisionEvent(other.gameObject);
-                HitEnemyEvent.Invoke();
+            if(hited_obj.tag == "Enemy"){
+                if(InstantiateOnEnemyHit){
+                    InstantiateObjWhenHitedEnemy = Instantiate(InstantiatePrefabWhenEnemyHit, this.transform.position, Quaternion.identity);
+                    ThrowedEnemyHitController throwed_enemy_hit_controller = InstantiateObjWhenHitedEnemy.GetComponent<ThrowedEnemyHitController>();
+                    Debug.Log("ThrowedEnemyHitController? " + throwed_enemy_hit_controller);
+                    throwed_enemy_hit_controller.HitedEnemy = hited_obj;
+                    throwed_enemy_hit_controller.item_status = item_object.item_status;
+                    throwed_enemy_hit_controller.EnemyThrowCollisionEvent();
+                }
             }
         }
 

@@ -41,18 +41,8 @@ public class ItemThrowController : MonoBehaviour
         GameObject obj = Instantiate(throw_obj, StartFiringPos.position, Quaternion.identity);
         //水平投射を行う為スクリプトを参照しの初速度を設定して発射。
         HorizontalProjectile horizontal_projectile = obj.GetComponent<HorizontalProjectile>();
-        horizontal_projectile.item_throw_controller = this;
         horizontal_projectile.Throw(ThrowFirstSpeed, this.transform.forward);
 
     }
-    public void EnemyThrowCollisionEvent(GameObject HitedEnemy)
-    {
-        //敵にアイテムが当たったときのイベント
-        if (item_status.MakingStopEnemyItem)
-        {
-            //敵を止めることができるアイテムだったら？
-            HitedEnemy.GetComponent<EnemyStatus>().StopEnemyByPlayer(item_status.status_of_making_stop_enemy.MakingStopTime);
-            
-        }
-    }
+
 }

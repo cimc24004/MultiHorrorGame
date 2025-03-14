@@ -301,10 +301,4 @@ public class HorrorDirector : Singleton<HorrorDirector>
         MainBGM.Play();
     }
 
-    private IEnumerator ResetCoroutine()
-    {
-        yield return null;
-
-
-    }
 }
