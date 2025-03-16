@@ -68,7 +68,7 @@ public class PlayerHideObjectAction : MonoBehaviour
     {
         player_character_controller.enabled = false;
         target_hide_object.HideTarget(this.gameObject);
-
+        this.gameObject.layer = LayerMask.NameToLayer("HidePlayer");
         //player_rigid.isKinematic = true;
         //player_collider.isTrigger = true;
         //player_character_controller.stepOffset = 0;
@@ -87,6 +87,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_status.HeadPos.position = player_status.StandHeadPos.position;
         player_status.CameraRoot.position = player_status.StandHeadPos.position;
         player_anim.SetBool("FaceDown", false);
+        this.gameObject.layer = LayerMask.NameToLayer("Player");
         charactor_move_permit.Move();
 
         player_move_script.NowSpeed = player_move_script.WalkSpeed;

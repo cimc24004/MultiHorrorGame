@@ -108,7 +108,6 @@ public class DiscoveryPlayerController : MonoBehaviour
             DiscoveriedEventOnce = false;
             if (!NonDiscoveriedEventOnce)
             {
-                //horror_director.DiscoveryNow = false;
                 horror_director.EnemyLostPlayer();
                 NonDiscoveriedEventOnce = true;
             }

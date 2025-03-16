@@ -2776,10 +2776,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f75222236447bde46aa99bf0ee6a1faf,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2032264274502747862}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f75222236447bde46aa99bf0ee6a1faf,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6772551113910756653}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f75222236447bde46aa99bf0ee6a1faf,
         type: 3}
@@ -3226,6 +3222,7 @@ MonoBehaviour:
   FlinchNow: 0
   FlinchTime: 0
   FlinchTimeNow: 0
+  ChangeApplyMotionWhenFlinch: 1
 --- !u!114 &7475603574156365704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4304,20 +4301,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaterialChange: 0
   ToReturnDefaultTimeFromStartChanged: 2
---- !u!114 &2032264274502747862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7435145462289832796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81c73316e19488a408688008003f9c14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Visible: 0
-  VisibleOnce: 0
 --- !u!143 &6772551113910756653
 CharacterController:
   m_ObjectHideFlags: 0

@@ -20,6 +20,8 @@ public class VisibledEnemyController : MonoBehaviour
     private NavMeshAgent nav_mesh_agent;
     private float NavMeshSpeed;
     private bool isVisible;
+
+    private Vector3 Move = new Vector3(0, 1, 0);
     // Start is called before the first frame update
     void Start()
     {
@@ -64,7 +66,7 @@ public class VisibledEnemyController : MonoBehaviour
         {
             
             follow_object_by_nav.MovePermit = false;
-            character_controller.Move(Vector3.zero);
+            character_controller.Move(Move * character_controller.velocity.y);
             enemy_to_player_kill_controller.enabled = false;
             m_Animator.speed = 0;
             nav_mesh_agent.speed = 0;

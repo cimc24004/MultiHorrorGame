@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyFlinchController : MonoBehaviour
 {
@@ -11,19 +12,29 @@ public class EnemyFlinchController : MonoBehaviour
     [SerializeField] public bool FlinchNow;
     [SerializeField] private float FlinchTime;
     [SerializeField] private float FlinchTimeNow;
-    private Vector3 move = new Vector3(0, 1, 0);
     private DiscoveryPlayerController discovery_player_controller;
     private Animator anim;
-
+    private Vector3 Move = new Vector3(0, 1, 0);
+    private NavMeshAgent nav_mesh_agent;
+    private float DefaultNavMeshSpeed;
+    private Animator m_Animator;
+    [Header("FlinchされたときにApplyMotionをチェックするかどうか")]
+    [SerializeField]
+    private bool ChangeApplyMotionWhenFlinch = false;
+    private bool DefaultApplyMotion;
     // Start is called before the first frame update
     void Start()
     {
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
+        m_Animator = this.gameObject.GetComponent<Animator>();
         enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         anim = this.gameObject.GetComponent<Animator>();
+        nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
+        DefaultNavMeshSpeed = nav_mesh_agent.speed;
+        DefaultApplyMotion = m_Animator.applyRootMotion;
     }
 
     // Update is called once per frame
@@ -38,7 +49,11 @@ public class EnemyFlinchController : MonoBehaviour
             discovery_player_controller.SightningPlayer = false;
             discovery_player_controller.SightningPlayerWhenHidePlayer = false;
             discovery_player_controller.enabled = false;
-            character_controller.Move(Vector3.zero);
+            nav_mesh_agent.speed = 0;
+            if(ChangeApplyMotionWhenFlinch){
+                m_Animator.applyRootMotion = false;
+            }
+            character_controller.Move(Move * character_controller.velocity.y);
             if (FlinchTime < FlinchTimeNow)
             {
                 FlinchEnd();
@@ -57,7 +72,11 @@ public class EnemyFlinchController : MonoBehaviour
     {
         anim.SetBool("Flinch", false);
         FlinchTimeNow = 0;
+        if(ChangeApplyMotionWhenFlinch){
+            m_Animator.applyRootMotion = DefaultApplyMotion;
+        }
         discovery_player_controller.enabled = true;
+        nav_mesh_agent.speed = DefaultNavMeshSpeed;
         enemy_to_player_kill_controller.enabled = true;
         follow_object_by_nav.MovePermit = true;
         enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
