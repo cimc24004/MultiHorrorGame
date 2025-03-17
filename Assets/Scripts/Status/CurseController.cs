@@ -18,7 +18,7 @@ public class CurseController : Singleton<CurseController>
     [SerializeField] private GameObject MikoPrefab;
     [SerializeField] private Transform MikoApperancePlaceTrans;
 
-
+    [SerializeField]
     [Header("現在の呪いゲージ値")]
     public float CurseValueNow = 0;
     [SerializeField]
@@ -37,12 +37,17 @@ public class CurseController : Singleton<CurseController>
     private ItemBelongingsController item_belongings_controller;
     private ItemMenuController item_menu_controller;
     private bool CurseMaxedEventNow;
+    [SerializeField]
     //呪いゲージがマックスになった時イベントが起こり続ける時間
     private float CurseMaxEventWhileTime;
+    [SerializeField]
     private float CurseMaxEventWhileTimeNow;
     private CurseEventType curse_event_type;
 
     private ItemStatus locked_item_status;
+    private HorrorDirector horror_director;
+
+    [SerializeField] private AudioClip AppearanceMikoBGM;
     private void Start()
     {
         player_status = PlayerStatus.instance;
@@ -50,13 +55,14 @@ public class CurseController : Singleton<CurseController>
         item_menu_controller = item_belongings_controller.item_menu_controller;
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
         ui_fade_controller = CurseGageUI.GetComponent<UIFadeController>();
+        horror_director = HorrorDirector.instance;
         this.OnValueChangeCurseEvent.AddListener(() =>
         {
             ui_fade_controller.AutoFadeIn();
         });
         this.OnCurseGageMaxEvent.AddListener(() =>
         {
-            CurseMaxed(5);
+            CurseMaxed(CurseMaxEventWhileTime);
         });
 
     }
@@ -118,6 +124,10 @@ public class CurseController : Singleton<CurseController>
                 DiscoveryPlayerController discovery_player_controller = InstantiatedMiko.gameObject.GetComponent<DiscoveryPlayerController>();
                 discovery_player_controller.DiscoveryPlayerNow = false;
                 Destroy(InstantiatedMiko);
+                if(horror_director.nearEnemyCount == 0 && horror_director.discoveredEnemyCount == 0){
+                    horror_director.ChangeHorrorState(HorrorState.None);
+                }
+                horror_director.MainBGMAutoChange = true;
             }
         }
         if (curse_event_type == CurseEventType.ItemLock)
@@ -139,6 +149,9 @@ public class CurseController : Singleton<CurseController>
         
         curse_event_type = CurseEventType.MikoInstantiate;
         InstantiatedMiko = Instantiate(MikoPrefab, MikoApperancePlaceTrans.position, Quaternion.identity);
+        horror_director.MikoApperanceSound.Play();
+        horror_director.MainBGM.clip = AppearanceMikoBGM;
+        horror_director.MainBGMAutoChange = false;
     }
     private void ItemLock()
     {

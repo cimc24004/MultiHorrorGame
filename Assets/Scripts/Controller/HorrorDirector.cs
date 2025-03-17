@@ -9,11 +9,11 @@ public enum HorrorState
     None,             // 通常状態
     EnemyNear,        // 敵が近い
     Discovered,       // 敵に見つかった
-    MikoAppearance    // 巫女が現れた
 }
 
 public class HorrorDirector : Singleton<HorrorDirector>
 {
+    public bool MainBGMAutoChange = true;
     [Title("メインBGM関連")]
     public GameObject Main;
     public AudioSource MainBGM;
@@ -27,23 +27,29 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public GameObject Discoveried;
     public GameObject DiscoveriedSound;
     public GameObject DiscoveryVolume;
+    [Title("巫女出現")]
+    public AudioSource MikoApperanceSound;
+
 
     private AudioClip MainDefaultBGM;
+    
     private CinemachineImpulseSource cinemachine_impulse_source;
     private GameControllerOnAllScene game_controller_on_all_scene;
     private URPFxController urp_fx_controller;
     private PlayerStatus player_status;
     private CurseController curse_controller;
+
+    
     [SerializeField]
     // 現在の状態
     private HorrorState currentState = HorrorState.None;
     [SerializeField]
     // 「近い敵」の数
-    private int nearEnemyCount = 0;
+    public int nearEnemyCount = 0;
 
     [SerializeField]
     // 「プレイヤーを発見している敵」の数
-    private int discoveredEnemyCount = 0;
+    public int discoveredEnemyCount = 0;
 
 
     //======================================================
@@ -164,9 +170,6 @@ public class HorrorDirector : Singleton<HorrorDirector>
             case HorrorState.Discovered:
                 DiscoveriedHorror();
                 break;
-            case HorrorState.MikoAppearance:
-                MikoApperance();
-                break;
         }
 
     }
@@ -185,9 +188,6 @@ public class HorrorDirector : Singleton<HorrorDirector>
                 // 発見状態の終了処理があれば
                 // 例: Discoveried.SetActive(false); ...
                 break;
-            case HorrorState.MikoAppearance:
-                // 巫女登場の終了処理があれば
-                break;
             case HorrorState.None:
             default:
                 // 特に無し
@@ -195,18 +195,6 @@ public class HorrorDirector : Singleton<HorrorDirector>
         }
     }
 
-    //======================================================
-    // 各状態ごとの演出メソッド
-    //======================================================
-
-    /// <summary>
-    /// 巫女が現れたときの演出
-    /// </summary>
-    public void MikoApperance()
-    {
-        Debug.Log("Miko Apperance!");
-        // 巫女演出を入れる
-    }
 
     /// <summary>
     /// 敵が近い(NearEnemy)ときの演出
@@ -290,13 +278,14 @@ public class HorrorDirector : Singleton<HorrorDirector>
         Discoveried.SetActive(false);
         // 近い演出のオブジェクトをOFF
         ToEnemyNear.SetActive(false);
-
         urp_fx_controller.CheapCameraChange(false);
         urp_fx_controller.VHSChange(false);
         urp_fx_controller.InteferecesChange(false);
 
         Main.SetActive(true);
-        MainBGM.clip = MainDefaultBGM;
+        if(MainBGMAutoChange){
+            MainBGM.clip = MainDefaultBGM;
+        }
         MainBGM.volume = 1;
         MainBGM.Play();
     }

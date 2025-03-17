@@ -98,7 +98,7 @@ public class EnemyStatus : MonoBehaviour
     public void StopEnemyByPlayer(float stop_time)
     {
         enemy_flinch_controller.FlinchStart(stop_time);
-        enemy_routing_controller.NearRouteSet();
+        enemy_routing_controller?.NearRouteSet();
 
     }
     

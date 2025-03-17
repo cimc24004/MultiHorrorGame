@@ -34,6 +34,7 @@ public class OshiireMouzyaController : MonoBehaviour
     private PlayerStatus player_status;
     private EnemyFlinchController enemy_flinch_controller;
     private EnemyDeathController enemy_death_controller;
+    [SerializeField] private GameObject AttackedDoorEffectPrefab;
 
     private FootStepSoundController player_foot_step_sound_controller;
     // Start is called before the first frame update
@@ -121,6 +122,8 @@ public class OshiireMouzyaController : MonoBehaviour
         }
         else
         {
+            GameObject effect = Instantiate(AttackedDoorEffectPrefab, door_attacked_controller.Doors[0].gameObject.transform.position + (Vector3.up * 0.2f), Quaternion.identity);
+            effect.transform.forward = this.transform.forward;
             BrokenOshiire = false;
             OshiireAttackSource.PlayOneShot(OshiireAttackAudioClip);
         }

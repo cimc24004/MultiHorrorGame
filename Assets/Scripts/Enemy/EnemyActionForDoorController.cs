@@ -28,6 +28,8 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     private DiscoveryPlayerController discovery_player_controller;
     private EnemySoundSensor enemy_sound_sensor;
     private CharacterController character_controller;
+
+    [SerializeField] private GameObject AttackedDoorEffectPrefab;
     // Start is called before the first frame update
     void Start()
     {
@@ -109,6 +111,8 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         }
         else
         {
+            GameObject effect = Instantiate(AttackedDoorEffectPrefab, the_door_controller.gameObject.transform.position + (Vector3.up * 0.2f), Quaternion.identity);
+            effect.transform.forward = this.transform.forward;
             DoorAttackSource.PlayOneShot(DoorAttackClip);
         }
     }
