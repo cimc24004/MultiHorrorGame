@@ -240,6 +240,7 @@ MonoBehaviour:
       m_Calls: []
   CurseMaxEventWhileTime: 60
   CurseMaxEventWhileTimeNow: 0
+  curse_event_type: 0
   AppearanceMikoBGM: {fileID: 8300000, guid: 0dc90beac808e51448ec438ebc68a19f, type: 3}
 --- !u!1 &4569975058844514793
 GameObject:
@@ -1217,8 +1218,30 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8880945690726183619, guid: d5071c61be89eda468f05513a220883b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1624113699113571794}
   m_SourcePrefab: {fileID: 100100000, guid: d5071c61be89eda468f05513a220883b, type: 3}
+--- !u!1 &2132733719395624840 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8880945690726183619, guid: d5071c61be89eda468f05513a220883b,
+    type: 3}
+  m_PrefabInstance: {fileID: 7397033787178603851}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1624113699113571794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132733719395624840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54d5d218cc3e19446b34ab05c792b1d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5945975582934548623 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3757077702912382404, guid: d5071c61be89eda468f05513a220883b,
@@ -1231,7 +1254,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 7397033787178603851}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2132733719395624840}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}

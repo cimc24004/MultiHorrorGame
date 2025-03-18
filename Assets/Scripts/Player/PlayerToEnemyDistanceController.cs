@@ -51,20 +51,4 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
         }
     }
 
-    // 敵が近づいたときのイベント
-    private void OnEnemyApproach()
-    {
-        Debug.Log("敵が範囲内に近づいた！");
-        // 特定のイベントをここに実行
-        NearEnemy = true;
-    }
-
-    // 敵が全て範囲外に出たときのイベント
-    private void OnEnemyLeave()
-    {
-        Debug.Log("敵が全て範囲外に離れた！");
-        // 特定のイベントをここに実行
-        NearEnemy = false;
-        horror_director.ChangeHorrorState(HorrorState.None);
-    }
 }

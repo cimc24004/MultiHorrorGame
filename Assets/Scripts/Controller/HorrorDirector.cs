@@ -9,6 +9,8 @@ public enum HorrorState
     None,             // 通常状態
     EnemyNear,        // 敵が近い
     Discovered,       // 敵に見つかった
+
+    PlayerKilled //殺される。
 }
 
 public class HorrorDirector : Singleton<HorrorDirector>
@@ -30,6 +32,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
     [Title("巫女出現")]
     public AudioSource MikoApperanceSound;
 
+    [Title("敵に殺される時の演出")]
+    public GameObject PlayerKill;
 
     private AudioClip MainDefaultBGM;
     
@@ -51,6 +55,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     // 「プレイヤーを発見している敵」の数
     public int discoveredEnemyCount = 0;
 
+    private bool dead_once;
 
     //======================================================
     // 初期化
@@ -68,6 +73,13 @@ public class HorrorDirector : Singleton<HorrorDirector>
     private void Update()
     {
         Debug.Log("Status: " + currentState);
+        if(player_status.PlayerDeaded){
+            discoveredEnemyCount = 0;
+            nearEnemyCount = 0;
+            ChangeHorrorState(HorrorState.PlayerKilled);
+        
+        }else{
+        }
     }
     //======================================================
     // 敵が「近い」状態を管理するメソッド
@@ -80,8 +92,6 @@ public class HorrorDirector : Singleton<HorrorDirector>
     {
         nearEnemyCount++;
 
-        // 「見つかっている状態(Discovered)」なら演出をスキップ
-        if (currentState == HorrorState.Discovered) return;
 
         // 0 -> 1 になったタイミングで NearEnemy 演出開始
         if (nearEnemyCount >= 1)
@@ -120,6 +130,13 @@ public class HorrorDirector : Singleton<HorrorDirector>
         ChangeHorrorState(HorrorState.Discovered);
     }
 
+    public void PlayerKilled(){
+        PlayerKill.SetActive(true);
+        Main.SetActive(false);
+        urp_fx_controller.CheapCameraChange(true);
+        urp_fx_controller.CorruptMemoryChange(true);
+        urp_fx_controller.HackedChange(true);
+    }
     /// <summary>
     /// 敵がプレイヤーを見失ったときに呼ぶ
     /// </summary>
@@ -169,6 +186,9 @@ public class HorrorDirector : Singleton<HorrorDirector>
                 break;
             case HorrorState.Discovered:
                 DiscoveriedHorror();
+                break;
+            case HorrorState.PlayerKilled:
+                PlayerKilled();
                 break;
         }
 
@@ -290,4 +310,5 @@ public class HorrorDirector : Singleton<HorrorDirector>
         MainBGM.Play();
     }
 
+    
 }

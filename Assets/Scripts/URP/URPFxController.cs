@@ -31,8 +31,8 @@ public class URPFxController : SerializedMonoBehaviour
     void Start()
     {
         CheapCameraChange(false);
-        //CorruptMemoryChange(false);
-        //HackedChange(false);
+        CorruptMemoryChange(false);
+        HackedChange(false);
         InteferecesChange(false);
         VHSChange(false);
     }
@@ -55,6 +55,8 @@ public class URPFxController : SerializedMonoBehaviour
             { "Interferences", interferences_settings.intensity },
             { "VHS", vhs_settings.intensity },
             { "CheapCamera", cheap_camera_settings.intensity },
+            {"CorruptMemory", corrupt_memory_settings.intensity},
+            {"Hacked", hacked_settings.intensity}
         };
     }
     [Button]
@@ -68,6 +70,10 @@ public class URPFxController : SerializedMonoBehaviour
         interferences_settings.intensity = intesity_settings_saved["Interferences"];
         vhs_settings.intensity = intesity_settings_saved["VHS"];
         cheap_camera_settings.intensity = intesity_settings_saved["CheapCamera"];
+        corrupt_memory_settings.intensity = intesity_settings_saved["CorruptMemory"];
+        hacked_settings.intensity = intesity_settings_saved["Hacked"];
+
+        
     }
     [Button]
     public void CorruptMemoryChange(bool enable)

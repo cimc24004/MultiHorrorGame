@@ -18,6 +18,48 @@ MonoBehaviour:
     LayerMask:
       serializedVersion: 2
       m_Bits: 4294967295
+--- !u!114 &-4846716810406308223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52cc32585eeb9bf459ef54c64ead17e3, type: 3}
+  m_Name: Hacked
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    intensity: 0
+    strength: 0.23
+    frameJump: 0.1
+    frameJumpSpeed: 1.51
+    jitter: 1
+    jitterSpeed: 0.2
+    jitterDensity: 15
+    blocks: 0.5
+    blockDensity: 50
+    blockAberration: {x: 1, y: 1}
+    blockNoise: {x: 5, y: 5}
+    waves: 1
+    waveSpeed: 10
+    waveRGBSplit: 30
+    scanlines: 0.2
+    scanlinesThreshold: 0.8
+    noise: 0.1
+    noiseSpeed: 0.1
+    brightness: 0
+    contrast: 1
+    gamma: 1
+    hue: 0
+    saturation: 1
+    affectSceneView: 0
+    filterMode: 1
+    whenToInsert: 550
+    ignoreDeltaTimeScale: 0
+    enableProfiling: 1
 --- !u!114 &-4846014625754469022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32,7 +74,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    intensity: 0.16
+    intensity: 0
     lensVignette: {x: 0, y: 0, z: 0}
     lensChromaticAberration: {x: 0, y: 0, z: 0, w: 0}
     lensRadialDistortion: {x: 0, y: 0, z: 0}
@@ -79,9 +121,10 @@ MonoBehaviour:
   - {fileID: 1748764305782123264}
   - {fileID: 2817268000119552737}
   - {fileID: -4846014625754469022}
+  - {fileID: -4846716810406308223}
   - {fileID: 413581522796231273}
   - {fileID: 4633081248121494718}
-  m_RendererFeatureMap: b5adbe515d46a732a335b17887d4355de336ca015813a51c00ab06eadedb4418e17a33d051f2182762ad8e875f7fbfbc693aef273456bd05be1cce19d9024c40
+  m_RendererFeatureMap: b5adbe515d46a732a335b17887d4355de336ca015813a51c00ab06eadedb4418e17a33d051f2182762ad8e875f7fbfbc8156d16cbd00bdbc693aef273456bd05be1cce19d9024c40
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -213,9 +256,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a876fb959c90104f9f622c14dcc7843, type: 3}
   m_Name: CorruptMemory
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   settings:
-    intensity: 0
+    intensity: 1
     complexity: 1.86
     density: 0.393
     speed: 25
@@ -238,7 +281,7 @@ MonoBehaviour:
     filterMode: 1
     whenToInsert: 550
     ignoreDeltaTimeScale: 0
-    enableProfiling: 0
+    enableProfiling: 1
 --- !u!114 &2817268000119552737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    intensity: 0.06
+    intensity: 0
     noise: 0.19
     noiseSpeed: 1.69
     noiseSize: 0.03
@@ -273,7 +316,7 @@ MonoBehaviour:
     filterMode: 1
     whenToInsert: 550
     ignoreDeltaTimeScale: 0
-    enableProfiling: 1
+    enableProfiling: 0
 --- !u!114 &3649963389624430005
 MonoBehaviour:
   m_ObjectHideFlags: 0

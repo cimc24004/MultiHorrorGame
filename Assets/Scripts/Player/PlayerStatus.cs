@@ -68,9 +68,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
     private CharacterController player_character_controller;
-
+    private HorrorDirector horror_director;
     private Tween crouchTween;
-
+    private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -83,6 +83,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
         player_hide_object_action = this.gameObject.GetComponent<PlayerHideObjectAction>();
         item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = ItemController.GetComponent<ItemMenuController>();
+        horror_director = HorrorDirector.instance;
+        player_to_enemy_distance_controller = this.gameObject.GetComponent<PlayerToEnemyDistanceController>();
     }
 
     // Update is called once per frame
@@ -154,6 +156,12 @@ public class PlayerStatus : Singleton<PlayerStatus>
             EnemyStatus enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
             EnemyFlinchController enemy_flinch_controller = enemy_status.enemy_flinch_controller;
             List<ItemStatus> item_statues = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
+            
+            player_to_enemy_distance_controller.enabled = false;
+            horror_director.nearEnemyCount = 0;
+            horror_director.discoveredEnemyCount = 0;
+            horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
+
             if (item_statues != null)
             {
                 Debug.Log("à´óÏëﬁéUÇ®Ç”ÇæÇÇÕÇ¬Ç«Ç§ÅI");
@@ -177,7 +185,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
         
         CameraEnemyFaceExpanding camera_enemy_face_expanding = KilledMeEnemy.GetComponent<CameraEnemyFaceExpanding>();
         camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
-
+        CameraShakeController camera_shake_controller = camera_enemy_face_expanding.FaceExpandingCameraObj.gameObject.GetComponent<CameraShakeController>();
+        camera_shake_controller.Shake();
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
         PlayerDeaded = true;
         player_character_controller.enabled = false;
@@ -188,7 +197,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
 
 
 
-        DOVirtual.DelayedCall(3, () =>
+        DOVirtual.DelayedCall(6, () =>
         {
             PlayerDeaded = false;
             camera_enemy_face_expanding.FaceExpandingUnActive();
