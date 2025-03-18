@@ -77,4 +77,6 @@ public class ItemStatus : SerializedScriptableObject
     [Header("アイテムを使用したときにスクリプトを実行する用のprefab")]
     [SerializeField] public GameObject InstantiateItemScriptPrefab;
 
+    [Header("アイテムを持てる限界個数")]
+    [SerializeField] public int MaxCanHave = 2;
 }

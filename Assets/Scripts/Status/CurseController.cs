@@ -42,6 +42,7 @@ public class CurseController : Singleton<CurseController>
     private float CurseMaxEventWhileTime;
     [SerializeField]
     private float CurseMaxEventWhileTimeNow;
+    [SerializeField]
     private CurseEventType curse_event_type;
 
     private ItemStatus locked_item_status;
@@ -121,13 +122,12 @@ public class CurseController : Singleton<CurseController>
         {
             if (InstantiatedMiko != null)
             {
-                DiscoveryPlayerController discovery_player_controller = InstantiatedMiko.gameObject.GetComponent<DiscoveryPlayerController>();
-                discovery_player_controller.DiscoveryPlayerNow = false;
-                Destroy(InstantiatedMiko);
                 if(horror_director.nearEnemyCount == 0 && horror_director.discoveredEnemyCount == 0){
+                    horror_director.EnemyLostPlayer();
                     horror_director.ChangeHorrorState(HorrorState.None);
                 }
                 horror_director.MainBGMAutoChange = true;
+                Destroy(InstantiatedMiko, 0.1f);
             }
         }
         if (curse_event_type == CurseEventType.ItemLock)

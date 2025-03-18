@@ -76,11 +76,15 @@ public class CrossHairEvent : MonoBehaviour
 
                 if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item"))
                 {
-                    ItemGetSource.Play();
 
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
-                    item_object.ItemGet(item_belonging_controller);
-                    Destroy(item_object.gameObject);
+                    bool item_geted = item_object.ItemGet(item_belonging_controller);
+
+                    if (item_geted)
+                    {
+                        ItemGetSource.Play();
+                    }
+
                     return;
                 }
                 if(raycast_hit.collider.gameObject.tag == "DeliverPlace")
