@@ -9,7 +9,7 @@ using UnityEngine.Events;
 using Sirenix.OdinInspector;
 public class PlayerStatus : Singleton<PlayerStatus>
 {
-    //‚±‚±‚Í’l‚Ìó‚¯“n‚µ‚âƒXƒ^ƒ~ƒi‚È‚Ç‚ÌŠÇ—B ƒvƒŒƒCƒ„[‚Ìó‘Ô‚È‚Ç‚à•Û‘¶‚·‚é
+    //ã“ã“ã¯å€¤ã®å—ã‘æ¸¡ã—ã‚„ã‚¹ã‚¿ãƒŸãƒŠãªã©ã®ç®¡ç†ã€‚ ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹ãªã©ã‚‚ä¿å­˜ã™ã‚‹
     public Transform CameraRoot;
     public Transform HeadPos;
     public Transform CrouchHeadPos;
@@ -20,12 +20,12 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public PlayerHideObjectAction player_hide_object_action;
 
     public NoticedUIController noticed_ui_controller;
-    //‰~ƒQ[ƒWUI‰æ‘œ
+    //å††ã‚²ãƒ¼ã‚¸UIç”»åƒ
     public GameObject GageCanvas;
     public Image GageImage;
-    //€‚ñ‚¾‚©‚Ç‚¤‚©
+    //æ­»ã‚“ã ã‹ã©ã†ã‹
     public bool Dead;
-    //ƒvƒŒƒCƒ„[‚ÌˆÚ“®ó‘Ô (‘–‚é •à‚­ ‚µ‚á‚ª‚Ş)
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•çŠ¶æ…‹ (èµ°ã‚‹ æ­©ã ã—ã‚ƒãŒã‚€)
     public enum PlayerMoveState
     {
         Walk,
@@ -34,21 +34,21 @@ public class PlayerStatus : Singleton<PlayerStatus>
         
     }
     public PlayerMoveState player_move_state;
-    [Header("ˆÚ“®‘¬“x")]
+    [Header("ç§»å‹•é€Ÿåº¦")]
     public float MoveSpeed;
 
 
-    //¡‰B‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
+    //ä»Šéš ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹
     public bool HidingNow;
     public float MoveX;
     public float MoveY;
-    [Header("ƒXƒ^ƒ~ƒiƒRƒXƒg")]
+    [Header("ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ")]
     public float StaminaCost = 0.3f;
-    [Header("Œ»İ‚ÌƒXƒ^ƒ~ƒi’l")]
+    [Header("ç¾åœ¨ã®ã‚¹ã‚¿ãƒŸãƒŠå€¤")]
     public float StaminaValueNow = 100f;
-    [Header("ƒXƒ^ƒ~ƒi1f‚É‚Â‚«‚Ì‰ñ•œ—Í")]
+    [Header("ã‚¹ã‚¿ãƒŸãƒŠ1fã«ã¤ãã®å›å¾©åŠ›")]
     public float StaminaRetakePower;
-    [Header("‘–‚ê‚éÅ¬ƒXƒ^ƒ~ƒi")]
+    [Header("èµ°ã‚Œã‚‹æœ€å°ã‚¹ã‚¿ãƒŸãƒŠ")]
     public float CanMinStaminaRun = 30;
 
 
@@ -139,7 +139,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     }
     public void StopEvent()
     {
-        //MoveSpeed=0‚Å‚È‚©‚Á‚½‚ç‰Ÿ‚µ“ü‚ê‚Æ‚©‚É‰B‚ê‚½‚Æ‚«‚É‚¸[‚Æ“G‚ª‘Ò‚Á‚Ä‚¢‚éƒoƒO‚ª¶‚¶‚éˆ×B
+        //MoveSpeed=0ã§ãªã‹ã£ãŸã‚‰æŠ¼ã—å…¥ã‚Œã¨ã‹ã«éš ã‚ŒãŸã¨ãã«ãšãƒ¼ã¨æ•µãŒå¾…ã£ã¦ã„ã‚‹ãƒã‚°ãŒç”Ÿã˜ã‚‹ç‚ºã€‚
         this.player_move_state = PlayerMoveState.Walk;
         this.MoveX = 0;
         this.MoveY = 0;
@@ -147,24 +147,19 @@ public class PlayerStatus : Singleton<PlayerStatus>
     }
     public void DeadEvent(GameObject KilledMeEnemy)
     {
-        //ƒvƒŒƒCƒ„[‚ª€‚Ê‚Æ‚«‚ÌƒCƒxƒ“ƒgB
-        Debug.Log("‚ ‚È‚½‚Í€‚É‚Ü‚µ‚½I");
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ­»ã¬ã¨ãã®ã‚¤ãƒ™ãƒ³ãƒˆã€‚
+        Debug.Log("ã‚ãªãŸã¯æ­»ã«ã¾ã—ãŸï¼");
         if (KilledMeEnemy.tag == "Enemy")
         {
-            //‹Ù‹}UŒ‚ƒAƒCƒeƒ€‚ğŠ‚µ‚Ä‚¢‚½‚çA
-            //‹Ù‹}UŒ‚ƒAƒCƒeƒ€‚ÅUŒ‚‚µ‚Ä“G‚ğ‚Ğ‚é‚Ü‚¹‚éB
+            //ç·Šæ€¥æ”»æ’ƒã‚¢ã‚¤ãƒ†ãƒ ã‚’æ‰€æŒã—ã¦ã„ãŸã‚‰ã€
+            //ç·Šæ€¥æ”»æ’ƒã‚¢ã‚¤ãƒ†ãƒ ã§æ”»æ’ƒã—ã¦æ•µã‚’ã²ã‚‹ã¾ã›ã‚‹ã€‚
             EnemyStatus enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
             EnemyFlinchController enemy_flinch_controller = enemy_status.enemy_flinch_controller;
             List<ItemStatus> item_statues = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
-            
-            player_to_enemy_distance_controller.enabled = false;
-            horror_director.nearEnemyCount = 0;
-            horror_director.discoveredEnemyCount = 0;
-            horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
 
             if (item_statues != null)
             {
-                Debug.Log("ˆ«—ì‘ŞU‚¨‚Ó‚¾‚ğ‚Í‚Â‚Ç‚¤I");
+                Debug.Log("æ‚ªéœŠé€€æ•£ãŠãµã ã‚’ã¯ã¤ã©ã†ï¼");
                 ItemStatus item_status = item_statues[0];
                 GameObject g = Instantiate(item_status.ItemThrowPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
                 item_belonging_controller.ItemUseFromBelonging(item_status);
@@ -172,21 +167,23 @@ public class PlayerStatus : Singleton<PlayerStatus>
                 enemy_flinch_controller.FlinchStart(item_status.StopEnemyTime);
                 return;
             }
+
             player_hide_object_action.HidingPermit = false;
         }
 
 
-        //‹°•|‰‰o—p‚ÌƒCƒxƒ“ƒg‚ğÀsB
+        //ææ€–æ¼”å‡ºç”¨ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’å®Ÿè¡Œã€‚
         anim.SetBool("AppearentDeath", true);
         MoveX = 0;
         MoveY = 0;
         
         player_hide_object_action.HidingPermit = true;
-        
+        player_to_enemy_distance_controller.enabled = false;
+        horror_director.nearEnemyCount = 0;
+        horror_director.discoveredEnemyCount = 0;
+        horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
         CameraEnemyFaceExpanding camera_enemy_face_expanding = KilledMeEnemy.GetComponent<CameraEnemyFaceExpanding>();
         camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
-        CameraShakeController camera_shake_controller = camera_enemy_face_expanding.FaceExpandingCameraObj.gameObject.GetComponent<CameraShakeController>();
-        camera_shake_controller.Shake();
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
         PlayerDeaded = true;
         player_character_controller.enabled = false;
@@ -197,7 +194,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
 
 
 
-        DOVirtual.DelayedCall(6, () =>
+        DOVirtual.DelayedCall(4, () =>
         {
             PlayerDeaded = false;
             camera_enemy_face_expanding.FaceExpandingUnActive();
@@ -206,13 +203,13 @@ public class PlayerStatus : Singleton<PlayerStatus>
     }
     public void CrouchStandCameraPosChange(bool Crouch)
     {
-        // ƒ^[ƒQƒbƒgˆÊ’u‚Ìİ’è
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä½ç½®ã®è¨­å®š
         Transform targetHeadPos = Crouch ? CrouchHeadPos : StandHeadPos;
 
-        // Šù‘¶‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ğ’â~
+        // æ—¢å­˜ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’åœæ­¢
         crouchTween?.Kill();
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“ŠJn
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–‹å§‹
         crouchTween = DOTween.To(
             () => CameraRoot.localPosition.y,
             y => CameraRoot.localPosition = new Vector3(CameraRoot.localPosition.x, y, CameraRoot.localPosition.z),
@@ -222,11 +219,11 @@ public class PlayerStatus : Singleton<PlayerStatus>
         .SetEase(Ease.OutQuad)
         .OnUpdate(() =>
         {
-            // •K—v‚Å‚ ‚ê‚ÎAXV’†‚Ìˆ—‚ğ‚±‚±‚É’Ç‰Á‰Â”\
+            // å¿…è¦ã§ã‚ã‚Œã°ã€æ›´æ–°ä¸­ã®å‡¦ç†ã‚’ã“ã“ã«è¿½åŠ å¯èƒ½
         })
         .OnComplete(() =>
         {
-            // ÅIˆÊ’u‚ğ³Šm‚Éİ’è
+            // æœ€çµ‚ä½ç½®ã‚’æ­£ç¢ºã«è¨­å®š
             CameraRoot.localPosition = targetHeadPos.localPosition;
             HeadPos.position = targetHeadPos.position;
         });
