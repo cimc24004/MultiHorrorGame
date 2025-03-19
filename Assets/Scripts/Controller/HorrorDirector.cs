@@ -55,8 +55,6 @@ public class HorrorDirector : Singleton<HorrorDirector>
     // 「プレイヤーを発見している敵」の数
     public int discoveredEnemyCount = 0;
 
-    private bool dead_once;
-
     //======================================================
     // 初期化
     //======================================================
@@ -94,7 +92,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
 
 
         // 0 -> 1 になったタイミングで NearEnemy 演出開始
-        if (nearEnemyCount >= 1)
+        if (nearEnemyCount >= 1 && discoveredEnemyCount == 0)
         {
             ChangeHorrorState(HorrorState.EnemyNear);
         }

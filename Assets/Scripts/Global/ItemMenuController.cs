@@ -16,6 +16,8 @@ public class ItemMenuController : SerializedMonoBehaviour
 
     public GameObject ItemGroup;
     private PlayerInput player_input;
+
+
     public CanvasGroup ItemCanvasGroup;
 
     //現在選択しているアイテム。
@@ -42,6 +44,8 @@ public class ItemMenuController : SerializedMonoBehaviour
     private ItemUI before_selected_item_ui;
     [SerializeField] private AudioSource LightOnAudioSource;
     [SerializeField] private AudioSource LightOffAudioSource;
+
+    [SerializeField] private ItemEquipController item_equip_controller;
     private void Start()
     {
         player_input = GameControllerOnAllScene.instance.player_input;
@@ -190,8 +194,17 @@ public class ItemMenuController : SerializedMonoBehaviour
     }
     public void OnCanItemUseChangeUI(bool can, ItemStatus _item_status)
     {
+        ItemUI item_ui = item_belongings_controller.belonging_item_uis[_item_status].ItemUI.GetComponent<ItemUI>();
+        item_ui.CanItemUse = can;
+        Debug.Log("OnCanItemUseChangeUI-------------: " + can);
         //アイテムが使えるようになるときに実行する関数 UIなどの変更も加える必要があるためこの関数を実行すること
+        if(can){
+            item_ui.LockedItemUI.SetActive(false);
+        }else{
+            item_ui.LockedItemUI.SetActive(true);
+        }
     }
+
     public void ItemSelectByObject(GameObject TargetSelectObj)
     {
         CommonItemSelect(TargetSelectObj);
@@ -206,13 +219,16 @@ public class ItemMenuController : SerializedMonoBehaviour
         //選択しているアイテムステータスも取得しておく。
         NowSelect_item_status = NowSelectItemUIObject.GetComponent<ItemUI>().item_status;
         
+        
+        item_equip_controller.EquipChange(NowSelect_item_status);
+
         if(before_selected_item_ui != null)
         {
             //前に選択していたアイテムがあった場合
             before_selected_item_ui.FocusUI.SetActive(false);
         }
 
-        before_selected_item_ui = item_belongings_controller.belonging_item_uis[NowSelect_item_status].ItemUIs.GetComponent<ItemUI>();
+        before_selected_item_ui = item_belongings_controller.belonging_item_uis[NowSelect_item_status].ItemUI.GetComponent<ItemUI>();
         
         before_selected_item_ui.FocusUI.SetActive(true);
 
@@ -231,6 +247,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
         //ItemStatusをItemUIクラスから取得する。
         ItemStatus item_status = item_ui.item_status;
+
         if (!item_belongings_controller.WhichCanUseItem(item_status))
         {
             //この地点でアイテムが使えない状態ならこの関数を実行しない

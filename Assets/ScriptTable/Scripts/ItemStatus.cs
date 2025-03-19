@@ -40,6 +40,8 @@ public class ItemStatus : SerializedScriptableObject
     }
     public ItemType item_type;
 
+
+
     [Required] public Sprite MenuSprite;
     [Required] public string ItemName;
     [TextArea]

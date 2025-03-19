@@ -11,6 +11,7 @@ public class ItemUI : MonoBehaviour
     public ItemStatus item_status;
     public GameObject FocusUI;
 
+    public GameObject LockedItemUI;
     public bool CanItemUse = true;
     public void OnClick()
     {

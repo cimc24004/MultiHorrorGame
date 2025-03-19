@@ -13,7 +13,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     {
         public Image ItemIcon;
         public Text ItemCountText;
-        public GameObject ItemUIs;
+        public GameObject ItemUI;
     }
     
     public class ItemCountWithPermit
@@ -73,7 +73,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             ItemStatusUI item_status_ui = new ItemStatusUI();
             item_status_ui.ItemIcon = item_ui.ItemIcon;
             item_status_ui.ItemCountText = item_ui.ItemCountText;
-            item_status_ui.ItemUIs = item_ui.gameObject;
+            item_status_ui.ItemUI = item_ui.gameObject;
 
             //UI情報たちを集めたDictionaryにUI情報のためだけに追加しておく。
             belonging_item_uis.Add(_item_status, item_status_ui);
@@ -113,7 +113,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             SetItemStatusToItemMenu(_item_status);
 
             //アイテムを拾ったらアイテムUIを選択するようにする。
-            item_menu_controller.ItemSelectByIndex(belonging_item_uis[_item_status].ItemUIs.transform.GetSiblingIndex());
+            item_menu_controller.ItemSelectByIndex(belonging_item_uis[_item_status].ItemUI.transform.GetSiblingIndex());
         }
     }
     //コントローラーにあるアイテム所持品からアイテムを消費する関数。
@@ -279,7 +279,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         else
         {
             //アイテムを使用したのち、-1となるとアイテムをこのアイテムメニューから完全消去。
-            Destroy(belonging_item_uis[item_status].ItemUIs);
+            Destroy(belonging_item_uis[item_status].ItemUI);
             belonging_item_uis.Remove(item_status);
 
         }
