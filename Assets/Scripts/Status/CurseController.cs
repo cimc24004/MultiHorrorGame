@@ -123,9 +123,9 @@ public class CurseController : Singleton<CurseController>
             if (InstantiatedMiko != null)
             {
                 if(horror_director.nearEnemyCount == 0 && horror_director.discoveredEnemyCount == 0){
-                    horror_director.EnemyLostPlayer();
                     horror_director.ChangeHorrorState(HorrorState.None);
                 }
+                horror_director.EnemyLostPlayer();
                 horror_director.MainBGMAutoChange = true;
                 Destroy(InstantiatedMiko, 0.1f);
             }

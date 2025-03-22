@@ -104,7 +104,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public void RemoveNearEnemy()
     {
         nearEnemyCount = Mathf.Max(nearEnemyCount - 1, 0);
-
+    
         // もし今が EnemyNear 状態で、カウントが 0 になったらリセット
         // （ただし既にDiscoveredになっていたらそちらが優先）
         if (nearEnemyCount == 0 && currentState == HorrorState.EnemyNear)

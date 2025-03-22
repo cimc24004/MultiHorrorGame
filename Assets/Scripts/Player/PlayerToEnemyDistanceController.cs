@@ -42,6 +42,7 @@ public class PlayerToEnemyDistanceController : MonoBehaviour
     {
         if (other.CompareTag("PlayerNearSensor")) // "Enemy"タグが付いたオブジェクトのみ反応
         {
+            Debug.Log("OntriggerExit PlayerNearSensor");
             // リストから敵を削除
             if (enemiesInRange.Contains(other))
             {
