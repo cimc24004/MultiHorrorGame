@@ -513,12 +513,13 @@ MonoBehaviour:
   ForPutItems:
   - {fileID: 11400000, guid: 8c1eb24ebe4226944aa8f2c68a69fa64, type: 2}
   - {fileID: 11400000, guid: 1b0da151341866b41a21bc45c8b74f2d, type: 2}
-  - {fileID: 11400000, guid: 80c52bb0b7c989849a6cb8f0a5616438, type: 2}
-  - {fileID: 11400000, guid: 0ffd72d9dbed94a4cb8cd11982cca58d, type: 2}
-  - {fileID: 11400000, guid: 73edfa8463b37c040a4d02cef1342e04, type: 2}
   - {fileID: 11400000, guid: 99da8d2bc3eb91543ae3b09b9a82825a, type: 2}
-  - {fileID: 11400000, guid: 31fc01b47a20331489639ff44ef08478, type: 2}
+  - {fileID: 11400000, guid: 80c52bb0b7c989849a6cb8f0a5616438, type: 2}
+  - {fileID: 11400000, guid: 760024501eaca1144ae90bad99ca9c46, type: 2}
+  - {fileID: 11400000, guid: 2ac7ef4a1c5977047b207781817f1493, type: 2}
+  - {fileID: 11400000, guid: 0ffd72d9dbed94a4cb8cd11982cca58d, type: 2}
   - {fileID: 11400000, guid: 921ed887d57b6394f85e2478e03e479f, type: 2}
+  - {fileID: 11400000, guid: 31fc01b47a20331489639ff44ef08478, type: 2}
   ForDeliverItem: {fileID: 11400000, guid: 8e7e848712e2abf40a33bb8db62c8b65, type: 2}
 --- !u!1 &6768719259319537026
 GameObject:
@@ -951,16 +952,6 @@ PrefabInstance:
       propertyPath: m_Cameras.Array.size
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3496563815641731507, guid: b7a55e36a4e1de149a940c27b2821974,
-        type: 3}
-      propertyPath: m_Cameras.Array.data[0]
-      value: 
-      objectReference: {fileID: 4620121014956799854}
-    - target: {fileID: 3496563815641731507, guid: b7a55e36a4e1de149a940c27b2821974,
-        type: 3}
-      propertyPath: m_Cameras.Array.data[1]
-      value: 
-      objectReference: {fileID: 2756041691521196401}
     - target: {fileID: 3788344176381129754, guid: b7a55e36a4e1de149a940c27b2821974,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1078,27 +1069,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5711834032776332426}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6690603575037627673, guid: b7a55e36a4e1de149a940c27b2821974,
-        type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 748356188241586190}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7a55e36a4e1de149a940c27b2821974, type: 3}
 --- !u!4 &288238147213574242 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2966742260994341116, guid: b7a55e36a4e1de149a940c27b2821974,
-    type: 3}
-  m_PrefabInstance: {fileID: 3254971474470320286}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &2756041691521196401 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 798428095997319663, guid: b7a55e36a4e1de149a940c27b2821974,
-    type: 3}
-  m_PrefabInstance: {fileID: 3254971474470320286}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &4620121014956799854 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 7869491532842405872, guid: b7a55e36a4e1de149a940c27b2821974,
     type: 3}
   m_PrefabInstance: {fileID: 3254971474470320286}
   m_PrefabAsset: {fileID: 0}
@@ -1108,29 +1083,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3254971474470320286}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8210686435914069383 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6690603575037627673, guid: b7a55e36a4e1de149a940c27b2821974,
-    type: 3}
-  m_PrefabInstance: {fileID: 3254971474470320286}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &748356188241586190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8210686435914069383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fd2cc91e083f5041b3fe1d3a9c554f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Target: {fileID: 4932896848663239556}
-  X: 0
-  Y: 0
-  Z: 0
-  TargetVector: {x: 0, y: 0, z: 0}
 --- !u!1001 &7397033787178603851
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1242,6 +1194,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54d5d218cc3e19446b34ab05c792b1d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
 --- !u!4 &5945975582934548623 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3757077702912382404, guid: d5071c61be89eda468f05513a220883b,

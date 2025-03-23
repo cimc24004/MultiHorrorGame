@@ -5,9 +5,9 @@ using Sirenix.OdinInspector;
 
 public class StatusOfMakingStopEnemy
 {
-    //“G‚ğ’â~‚³‚¹‚é‚½‚ß‚ÌƒXƒe[ƒ^ƒXƒNƒ‰ƒXB
+    //ï¿½Gï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ß‚ÌƒXï¿½eï¿½[ï¿½^ï¿½Xï¿½Nï¿½ï¿½ï¿½Xï¿½B
 
-    [Header("“G‚ğ’â~‚³‚¹‚éŠÔ")]
+    [Header("ï¿½Gï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½éï¿½ï¿½")]
     public float MakingStopTime;
 
 }
@@ -18,18 +18,18 @@ public class ItemStatus : SerializedScriptableObject
 {
     public class StealthStatus
     {
-        [Header("“G‚ª‘«‰¹‚ª•·‚±‚¦‚È‚­‚È‚é‚æ‚¤‚É‚·‚é•b”")]
+        [Header("ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½È‚ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½bï¿½ï¿½")]
         public float FootStepStealthTime;
     }
 
     public enum ItemType
     {
-        Consumable, //Á–Õ•i(ƒJƒM‚Æ‚©)
-        CanThrow, //“Š‚°‚ç‚ê‚é‚à‚ñ
-        Equip, //‘•”õ•i(‰ù’†“d“”‚Æ‚©)
-        Key, //”à‚ğŠJ‚¯‚é‚½‚ß‚ÌŒ®
-        Event, //ƒCƒxƒ“ƒg—p ÷‚Ì–Ø‚Ì‰º‚É”[‚ß‚é‚â‚ÂB
-        EmergencyAttack //•ß‚Ü‚Á‚½‚Æ‚«‚ÉUŒ‚‚Å‚«‚éƒAƒCƒeƒ€
+        Consumable, //ï¿½ï¿½ï¿½Õ•i(ï¿½Jï¿½Mï¿½Æ‚ï¿½)
+        CanThrow, //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        Equip, //ï¿½ï¿½ï¿½ï¿½ï¿½i(ï¿½ï¿½ï¿½ï¿½ï¿½dï¿½ï¿½ï¿½Æ‚ï¿½)
+        Key, //ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½é‚½ï¿½ß‚ÌŒï¿½
+        Event, //ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½p ï¿½ï¿½ï¿½Ì–Ø‚Ì‰ï¿½ï¿½É”[ï¿½ß‚ï¿½ï¿½ÂB
+        EmergencyAttack //ï¿½ß‚Ü‚ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ÉUï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½Aï¿½Cï¿½eï¿½ï¿½
     }
     public enum ApperanceRatio
     {
@@ -46,39 +46,39 @@ public class ItemStatus : SerializedScriptableObject
     [Required] public string ItemName;
     [TextArea]
     public string ItemDescription;
-    [Header("ƒ‰ƒ“ƒ_ƒ€‚Åˆø‚«o‚µ‚È‚Ç‚ÉƒAƒCƒeƒ€‚ğ¢Š«‚³‚¹‚é‚©B")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Åˆï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½È‚Ç‚ÉƒAï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‚©ï¿½B")]
     public bool PutInItemBox = true;
     [HideIf("item_type", ItemType.Equip)]
-    [Header("ƒ[ƒ‹ƒhã‚É’u‚­ƒAƒCƒeƒ€‚ÌPrefab‚Ì‚±‚ÆB")]
+    [Header("ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½É’uï¿½ï¿½ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½Prefabï¿½Ì‚ï¿½ï¿½ÆB")]
     public GameObject ItemPutObjectPrefab;
     [HideIf("item_type", ItemType.Equip)]
-    [Header("ƒAƒCƒeƒ€‚ğg—p‚µ‚½‚Æ‚«‚ÌPrefab(“Š‚°‚½‚è‚Ì‚Æ‚«‚Í)")]
+    [Header("ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½Prefab(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Æ‚ï¿½ï¿½ï¿½)")]
     public GameObject ItemThrowPrefab;
     [ShowIf("@item_type == ItemType.CanThrow || item_type == ItemType.EmergencyAttack")]
     public float StopEnemyTime = 3;
 
     [ShowIf("item_type", ItemType.Consumable)]
-    [Header("ƒAƒCƒeƒ€‚ÌŒø‰ÊŠÔ")]
+    [Header("ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ÌŒï¿½ï¿½Êï¿½ï¿½ï¿½")]
     public float ConsumableEffectTime;
 
 
     [ShowIf("item_type", ItemType.CanThrow)]
-    [Header("“G‚ğ’â~‚³‚¹‚é‚±‚Æ‚ª‚Å‚«‚éƒAƒCƒeƒ€‚©‚Ç‚¤‚©")]
+    [Header("ï¿½Gï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½é‚±ï¿½Æ‚ï¿½ï¿½Å‚ï¿½ï¿½ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½")]
     public bool MakingStopEnemyItem;
 
     [ShowIf("MakingStopEnemyItem", true)]
     public StatusOfMakingStopEnemy status_of_making_stop_enemy;
 
     [ShowIf("PutInItemBox")]
-    [Header("ƒ‰ƒ“ƒ_ƒ€‚Å‚±‚ÌƒAƒCƒeƒ€‚ªˆø‚©‚ê‚é‰Â”\«B")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ÌƒAï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â”ï¿½ï¿½ï¿½B")]
     [Required] public ApperanceRatio apperance_ratio;
 
-    [Header("ƒAƒCƒeƒ€‚ğ‰EƒNƒŠƒbƒN‚©‚çg—p‚Å‚«‚é‚©")]
+    [Header("ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½gï¿½pï¿½Å‚ï¿½ï¿½é‚©")]
     public bool ItemUseFromClick = true;
 
-    [Header("ƒAƒCƒeƒ€‚ğg—p‚µ‚½‚Æ‚«‚ÉƒXƒNƒŠƒvƒg‚ğÀs‚·‚é—p‚Ìprefab")]
+    [Header("ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ÉƒXï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½pï¿½ï¿½prefab")]
     [SerializeField] public GameObject InstantiateItemScriptPrefab;
 
-    [Header("ƒAƒCƒeƒ€‚ğ‚Ä‚éŒÀŠEŒÂ”")]
+    [Header("ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Eï¿½Âï¿½")]
     [SerializeField] public int MaxCanHave = 2;
 }
