@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using System.Linq;
+using TMPro;
 public class ItemBelongingsController : SerializedMonoBehaviour
 {
     //アイテムの持ち物を管理するコントローラー。
@@ -12,8 +13,9 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     public class ItemStatusUI
     {
         public Image ItemIcon;
-        public Text ItemCountText;
+        public TextMeshProUGUI ItemCountTextUI;
         public GameObject ItemUI;
+        public TextMeshProUGUI ItemNameTextUI;
     }
     
     public class ItemCountWithPermit
@@ -72,13 +74,11 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             //item_uiにUI情報を入れておく。
             ItemStatusUI item_status_ui = new ItemStatusUI();
             item_status_ui.ItemIcon = item_ui.ItemIcon;
-            item_status_ui.ItemCountText = item_ui.ItemCountText;
-            item_status_ui.ItemUI = item_ui.gameObject;
 
+            item_status_ui.ItemCountTextUI = item_ui.ItemCountTextUI;
+            item_status_ui.ItemUI = item_ui.gameObject;
             //UI情報たちを集めたDictionaryにUI情報のためだけに追加しておく。
             belonging_item_uis.Add(_item_status, item_status_ui);
-
-
 
             //UI専用Dictionaryに入れたらその入れたやつにまた新しく情報を追加。
             
@@ -86,7 +86,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
 
             //さらに持ってなかった時に取得した場合のみアイテム画像を指定。 1度だけのコールで済む。
             belonging_item_uis[_item_status].ItemIcon.sprite = _item_status.MenuSprite;
-            belonging_item_uis[_item_status].ItemCountText.text = "1";
+            belonging_item_uis[_item_status].ItemCountTextUI.text = "1";
 
             ItemCountWithPermit item_count_with_permit = new ItemCountWithPermit();
             item_count_with_permit.item_count = 1;
@@ -269,12 +269,12 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         int ItemCount = belonging_items[item_status].item_count;
 
         //アイテムのUI専用DictionaryからTextUIを取得し、個数をテキストで表示させる。
-        Text item_text = belonging_item_uis[item_status].ItemCountText;
+        TextMeshProUGUI item_count_text_ui = belonging_item_uis[item_status].ItemCountTextUI;
         Debug.Log("ItemCount-----:??? " + ItemCount);
         if (ItemCount > 0)
         {
             //item_icon.sprite = item_status.MenuSprite;
-            item_text.text = ItemCount.ToString();
+            item_count_text_ui.text = ItemCount.ToString();
         }
         else
         {

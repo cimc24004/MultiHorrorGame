@@ -38,6 +38,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     [Header("懐中電灯(?)オブジェクトをセット")]
     public GameObject LightObject;
     public TextMeshProUGUI item_description_text_ui;
+    public TextMeshProUGUI item_name_text_ui;
     public GameObject ItemDescriptionUI;
     
     private bool LightSwitchMode = false;
@@ -236,7 +237,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         NowItemSelectIndexX = selectObj.transform.GetSiblingIndex();
 
         item_description_text_ui.SetText(NowSelect_item_status.ItemDescription);
-
+        item_name_text_ui.SetText(NowSelect_item_status.ItemName);
         ItemMenuShowUpNow = true;
         //この時間を0にしておくことで選択したら非表示するまでの時間を伸ばせる。
         WaitHideTimeNow = 0;
