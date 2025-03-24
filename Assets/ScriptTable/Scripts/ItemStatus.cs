@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
+/// <summary>
+/// 敵を停止させるためのステータスクラス。
+/// </summary>
 public class StatusOfMakingStopEnemy
 {
-    //�G���~�����邽�߂̃X�e�[�^�X�N���X�B
-
-    [Header("�G���~�����鎞��")]
+    [Header("敵を止める時間")]
     public float MakingStopTime;
-
 }
 
 
@@ -18,19 +18,26 @@ public class ItemStatus : SerializedScriptableObject
 {
     public class StealthStatus
     {
-        [Header("�G���������������Ȃ��Ȃ�悤�ɂ���b��")]
+        [Header("足音を一定時間聞こえなくする")]
         public float FootStepStealthTime;
     }
 
+    /// <summary>
+    /// アイテムの種類
+    /// </summary>
     public enum ItemType
     {
-        Consumable, //���Օi(�J�M�Ƃ�)
-        CanThrow, //�����������
-        Equip, //�����i(�����d���Ƃ�)
-        Key, //�����J���邽�߂̌�
-        Event, //�C�x���g�p ���̖؂̉��ɔ[�߂��B
-        EmergencyAttack //�߂܂����Ƃ��ɍU���ł���A�C�e��
+        Consumable,      // 消費アイテム (例：回復など)
+        CanThrow,        // 投擲可能アイテム
+        Equip,           // 装備アイテム（武器や防具など）
+        Key,             // 扉の解錠などに使うキーアイテム
+        Event,           // イベント用（特定の場面でのみ使用）
+        EmergencyAttack  // 緊急時の攻撃アイテム
     }
+
+    /// <summary>
+    /// 出現率
+    /// </summary>
     public enum ApperanceRatio
     {
         EasyToHit,
@@ -38,47 +45,51 @@ public class ItemStatus : SerializedScriptableObject
         RareToHit,
         VeryRareToHit
     }
+
     public ItemType item_type;
-
-
 
     [Required] public Sprite MenuSprite;
     [Required] public string ItemName;
+
     [TextArea]
     public string ItemDescription;
-    [Header("�����_���ň����o���ȂǂɃA�C�e�������������邩�B")]
+
+    [Header("フィールドに配置されるアイテムかどうか")]
     public bool PutInItemBox = true;
+
     [HideIf("item_type", ItemType.Equip)]
-    [Header("���[���h��ɒu���A�C�e����Prefab�̂��ƁB")]
+    [Header("ワールド上に配置するときのアイテムPrefab")]
     public GameObject ItemPutObjectPrefab;
+
     [HideIf("item_type", ItemType.Equip)]
-    [Header("�A�C�e�����g�p�����Ƃ���Prefab(��������̂Ƃ���)")]
+    [Header("アイテムを投げた時に生成されるPrefab（投擲用）")]
     public GameObject ItemThrowPrefab;
+
     [ShowIf("@item_type == ItemType.CanThrow || item_type == ItemType.EmergencyAttack")]
+    [Header("敵を止めることができる時間")]
     public float StopEnemyTime = 3;
 
     [ShowIf("item_type", ItemType.Consumable)]
-    [Header("�A�C�e���̌��ʎ���")]
+    [Header("アイテムの効果時間")]
     public float ConsumableEffectTime;
 
-
     [ShowIf("item_type", ItemType.CanThrow)]
-    [Header("�G���~�����邱�Ƃ��ł���A�C�e�����ǂ���")]
+    [Header("敵を一時停止させるアイテムかどうか")]
     public bool MakingStopEnemyItem;
 
     [ShowIf("MakingStopEnemyItem", true)]
     public StatusOfMakingStopEnemy status_of_making_stop_enemy;
 
     [ShowIf("PutInItemBox")]
-    [Header("�����_���ł��̃A�C�e��������������B")]
+    [Header("フィールドアイテムとしての出現率")]
     [Required] public ApperanceRatio apperance_ratio;
 
-    [Header("�A�C�e�����E�N���b�N����g�p�ł��邩")]
+    [Header("アイテムをクリックで使用できるか")]
     public bool ItemUseFromClick = true;
 
-    [Header("�A�C�e�����g�p�����Ƃ��ɃX�N���v�g�����s����p��prefab")]
+    [Header("アイテム使用時にスクリプトを生成する際に使うPrefab")]
     [SerializeField] public GameObject InstantiateItemScriptPrefab;
 
-    [Header("�A�C�e�������Ă���E��")]
+    [Header("アイテムを所持できる最大数")]
     [SerializeField] public int MaxCanHave = 2;
 }
