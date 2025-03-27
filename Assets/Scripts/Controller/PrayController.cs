@@ -6,6 +6,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class PrayController : MonoBehaviour
 {
+    [Header("Notice用メッセージ")]
+    public string NoticeText = "お祈りする。";
     [Header("必要な祈り時間")]
     public float NeedToPrayTime;
     public bool PrayNow;
@@ -46,7 +48,7 @@ public class PrayController : MonoBehaviour
             if (cross_hair_status.RaycastHitedExistsByCrossHairEvent)
             {
                 //触れていたら
-                noticed_ui_controller.Notice("お祈りする。", 1);
+                noticed_ui_controller.Notice(NoticeText, 1);
                 GageCanvas.SetActive(true);
                 once = false;
             }
