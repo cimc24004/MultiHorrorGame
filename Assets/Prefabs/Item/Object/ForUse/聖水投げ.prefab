@@ -45,7 +45,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2560351184006967456}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -7387706064836869012, guid: 7e65387faf0b0e14b8dee01c65e670fd, type: 3}
 --- !u!23 &5036844258042664734
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2295699958525706655, guid: dfb33bece09d7bb40b6caafb7c6ebf97, type: 3}
+  - {fileID: 2100000, guid: 1f7b1b3558f53d34fba3c7d32fdbe988, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,8 +107,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.15289606, y: 0.6588532, z: 0.21968842}
+  m_Center: {x: -0.004428043, y: 0.0997784, z: 0.010623932}
 --- !u!114 &8036080520467748999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,21 +133,6 @@ MonoBehaviour:
   throw_now: 0
   OnGround: 0
   OnGroundEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2175855036313305512}
-        m_TargetAssemblyTypeName: DestroyEvent, Assembly-CSharp
-        m_MethodName: DODestroy
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  HitEnemyEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2175855036313305512}

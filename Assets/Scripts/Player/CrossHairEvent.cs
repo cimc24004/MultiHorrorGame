@@ -41,7 +41,7 @@ public class CrossHairEvent : MonoBehaviour
         Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.green);
         if (Physics.Raycast(main_ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
         {
-
+            //触れてる間に色々するとこ↓
             if (raycast_hit.collider.gameObject.tag == "Pray")
             {
                 if (RaycasstedObj != raycast_hit.collider.gameObject)

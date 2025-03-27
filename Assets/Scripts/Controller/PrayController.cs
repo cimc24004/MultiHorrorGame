@@ -22,6 +22,7 @@ public class PrayController : MonoBehaviour
     private bool AlreadyPrayCompleted;
     private CrossHairStatus cross_hair_status;
     private bool once;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -13,11 +13,13 @@ public class DeliverMemoryPlace : SerializedMonoBehaviour
     public int AlreadyDeliveredItemCount;
     private PlayerStatus player_status;
     private ItemDatabases item_databases;
+    private GameProgressController game_progress_controller;
     // Start is called before the first frame update
     void Start()
     {
         player_status = PlayerStatus.instance;
         item_databases = ItemDatabases.instance;
+        game_progress_controller = GameProgressController.instance;
     }
 
     // Update is called once per frame
@@ -52,6 +54,7 @@ public class DeliverMemoryPlace : SerializedMonoBehaviour
     {
         //アイテムがすべて納められたら？
         Debug.Log("クリアしました！！！！！！\n");
-        SceneManager.LoadScene("GameClear");
+        //SceneManager.LoadScene("GameClear");
+        game_progress_controller.OnDeliverSakura();
     }
 }
