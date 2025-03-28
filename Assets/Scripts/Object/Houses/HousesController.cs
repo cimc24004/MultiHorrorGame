@@ -13,7 +13,9 @@ public class HousesController : SerializedMonoBehaviour
     {
         house_directors = new List<HouseDirector>(FindObjectsOfType<HouseDirector>().ToList());
         game_progress_controller = GameProgressController.instance;
-        StartCoroutine(ButsudanRandomCreate());
+        if(house_directors.Count != 0){
+            StartCoroutine(ButsudanRandomCreate());
+        }
     }
 
     // Update is called once per frame
@@ -23,6 +25,7 @@ public class HousesController : SerializedMonoBehaviour
 
     private IEnumerator ButsudanRandomCreate()
     {
+
         List<int> histroy_r = new List<int>();
         foreach(HouseDirector house_director in house_directors)
         {
@@ -38,7 +41,7 @@ public class HousesController : SerializedMonoBehaviour
         while (true)
         {
             if (i >= game_progress_controller.NeedPrayCount) break;
-            //NeedPrayCount•ª‚¾‚¯Butsudan‚ğì¬‚·‚é‚Æ‚¢‚¤‚±‚Æ
+            //NeedPrayCountï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Butsudanï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
             int r = Random.Range(0, house_directors.Count);
             
