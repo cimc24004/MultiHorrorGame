@@ -49,7 +49,15 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: 
+    animationImportWarnings: "\nClip 'Human.rig|\u9996\u7121\u3057\u5DEB\u5973 Run'
+      has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'pelvis.L'
+      has translation animation that will be discarded.\n\t'pelvis.L' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n\t'upperleg01.R'
+      has translation animation that will be discarded.\n\t'spine05' has translation
+      animation that will be discarded.\n\t'spine05' is inbetween humanoid transforms
+      and has rotation animation that will be discarded.\n\t'spine01' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -61,7 +69,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: "\u9996\u7121\u3057\u5DEB\u5973 Run"
+      takeName: "Human.rig|\u3042"
+      internalID: -3806090142756176218
+      firstFrame: 1
+      lastFrame: 54
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -701,7 +738,7 @@ ModelImporter:
     - name: clavicle.L
       parentName: spine01
       position: {x: -0.0002277269, y: 0.00073766574, z: 0.00016511598}
-      rotation: {x: 0.029594764, y: -0.019385707, z: 0.604281, w: 0.7959855}
+      rotation: {x: 0.02959476, y: -0.019385707, z: 0.60428095, w: 0.7959855}
       scale: {x: 1.0000001, y: 1.0000007, z: 0.9999989}
     - name: shoulder01.L
       parentName: clavicle.L
@@ -741,7 +778,7 @@ ModelImporter:
     - name: finger1-2.L
       parentName: finger1-1.L
       position: {x: -7.45058e-10, y: 0.00027966328, z: -7.4505804e-11}
-      rotation: {x: 0.015445343, y: 0.011278098, z: 0.029972423, w: 0.99936783}
+      rotation: {x: 0.015445341, y: 0.011278098, z: 0.02997242, w: 0.99936783}
       scale: {x: 0.9999989, y: 0.99999815, z: 1.0000033}
     - name: finger1-3.L
       parentName: finger1-2.L
@@ -856,7 +893,7 @@ ModelImporter:
     - name: clavicle.R
       parentName: spine01
       position: {x: 0.0002277269, y: 0.00073766574, z: 0.00016511598}
-      rotation: {x: 0.029594764, y: 0.019385707, z: -0.604281, w: 0.7959855}
+      rotation: {x: 0.02959476, y: 0.019385707, z: -0.60428095, w: 0.7959855}
       scale: {x: 1.0000001, y: 1.0000005, z: 0.9999989}
     - name: shoulder01.R
       parentName: clavicle.R
@@ -936,7 +973,7 @@ ModelImporter:
     - name: metacarpal2.R
       parentName: wrist.R
       position: {x: -0.0000000010011717, y: 0.00028769617, z: -3.4458936e-10}
-      rotation: {x: -0.08416636, y: 0.7573666, z: -0.013983649, w: 0.6473919}
+      rotation: {x: -0.08416637, y: 0.7573666, z: -0.01398365, w: 0.6473919}
       scale: {x: 1.0000023, y: 1.0000002, z: 1.0000015}
     - name: finger3-1.R
       parentName: metacarpal2.R
@@ -1461,7 +1498,7 @@ ModelImporter:
     - name: risorius03.R
       parentName: risorius02.R
       position: {x: -7.4505804e-11, y: 0.00026854497, z: -1.11758706e-10}
-      rotation: {x: -0.48026264, y: -0.035482313, z: -0.007879574, w: 0.87637126}
+      rotation: {x: -0.48026267, y: -0.035482317, z: -0.007879575, w: 0.8763713}
       scale: {x: 0.99999964, y: 1, z: 0.9999999}
     - name: risorius03.R_end
       parentName: risorius03.R
