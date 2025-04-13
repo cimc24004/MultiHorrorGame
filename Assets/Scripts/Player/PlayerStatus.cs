@@ -19,7 +19,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public CrossHairEvent cross_hair_event;
     public PlayerHideObjectAction player_hide_object_action;
 
-    public NoticedUIController noticed_ui_controller;
+    public SubNoticedUIController sub_noticed_ui_controller;
+    public MainNoticedUIController main_noticed_ui_controller;
     //円ゲージUI画像
     public GameObject GageCanvas;
     public Image GageImage;

@@ -1,7 +1,7 @@
 using Unity.Splines.Examples;
 using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
 namespace Unity.Splines.Examples
 {
     [CustomEditor(typeof(AnimateCarAlongSpline))]
@@ -13,3 +13,4 @@ namespace Unity.Splines.Examples
         }
     }
 }
+#endif

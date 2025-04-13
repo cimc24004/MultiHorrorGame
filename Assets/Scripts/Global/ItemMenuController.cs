@@ -43,12 +43,14 @@ public class ItemMenuController : SerializedMonoBehaviour
     
     private bool LightSwitchMode = false;
     private ItemUI before_selected_item_ui;
+    private SubNoticedUIController sub_noticed_ui_controller;
     [SerializeField] private AudioSource LightOnAudioSource;
     [SerializeField] private AudioSource LightOffAudioSource;
 
     [SerializeField] private ItemEquipController item_equip_controller;
     private void Start()
     {
+        sub_noticed_ui_controller = PlayerStatus.instance.sub_noticed_ui_controller;
         player_input = GameControllerOnAllScene.instance.player_input;
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
         player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
@@ -203,6 +205,13 @@ public class ItemMenuController : SerializedMonoBehaviour
             item_ui.LockedItemUI.SetActive(false);
         }else{
             item_ui.LockedItemUI.SetActive(true);
+        }
+    }
+    public void OnItemGetChangeUI(bool NotHaveMore, ItemStatus _item_status){
+        if(NotHaveMore){
+            sub_noticed_ui_controller.Notice("これ以上、このアイテムは持てない。");
+        }else{
+            sub_noticed_ui_controller.Notice($"{_item_status.ItemName}を手に入れた。");
         }
     }
 

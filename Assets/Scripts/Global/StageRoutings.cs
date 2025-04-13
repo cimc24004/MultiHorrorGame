@@ -12,7 +12,7 @@ public class StageRoutings : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Routings = new List<GameObject>(GameObject.FindGameObjectsWithTag("Route"));
+        // Routings = new List<GameObject>(GameObject.FindGameObjectsWithTag("Route"));
         //Routings.Sort();
         gameObjs = Routings.OrderBy(x => x.transform.GetSiblingIndex()).ToList();
         

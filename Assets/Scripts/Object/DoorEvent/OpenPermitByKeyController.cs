@@ -13,15 +13,15 @@ public class OpenPermitByKeyController : MonoBehaviour
     public AudioClip NeedKeyAudioClip;
 
     private PlayerStatus player_status;
-    private NoticedUIController noticed_ui_controller;
+    private SubNoticedUIController sub_noticed_ui_controller;
     private void Start()
     {
         player_status = PlayerStatus.instance;
-        noticed_ui_controller = player_status.noticed_ui_controller;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
     }
     public void KeyUse()
     {
-        noticed_ui_controller.Notice("Œ®‚ªŠJ‚¢‚½");
+        sub_noticed_ui_controller.Notice("Œ®‚ªŠJ‚¢‚½");
         this.OpenPermit = true;
 
         KeyAudioSource.PlayOneShot(KeyUsedAudioClip);
@@ -29,7 +29,7 @@ public class OpenPermitByKeyController : MonoBehaviour
 
     public void NeedKeyForPlayer()
     {
-        noticed_ui_controller.Notice("Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é");
+        sub_noticed_ui_controller.Notice("Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é");
 
         KeyAudioSource.PlayOneShot(NeedKeyAudioClip);
     }

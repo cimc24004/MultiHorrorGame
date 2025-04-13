@@ -33,6 +33,7 @@ public class CurseController : Singleton<CurseController>
     private GameObject InstantiatedMiko;
     private UIFadeController ui_fade_controller;
     private PlayerStatus player_status;
+    private SubNoticedUIController sub_noticed_ui_controller;
     private PlayerStaminaController player_stamina_controller;
     private ItemBelongingsController item_belongings_controller;
     private ItemMenuController item_menu_controller;
@@ -57,6 +58,7 @@ public class CurseController : Singleton<CurseController>
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
         ui_fade_controller = CurseGageUI.GetComponent<UIFadeController>();
         horror_director = HorrorDirector.instance;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         this.OnValueChangeCurseEvent.AddListener(() =>
         {
             ui_fade_controller.AutoFadeIn();
@@ -97,9 +99,10 @@ public class CurseController : Singleton<CurseController>
         if (CurseMaxedEventNow) return;
 
         this.CurseMaxEventWhileTime = _CurseMaxEventWhileTime;
-
         this.CurseMaxEventWhileTimeNow = 0;
         int i = Random.Range(0, 3);
+        //ランダムで何かの関数を実行するとする
+        CurseMaxedEventNow = true;
         if(i == 0)
         {
             MikoInstantiate();
@@ -113,8 +116,7 @@ public class CurseController : Singleton<CurseController>
         {
             PlayerStaminaZero();
         }
-        //ランダムで何かの関数を実行するとする
-        CurseMaxedEventNow = true;
+
     }
     private void CurseMaxedReset()
     {
@@ -143,7 +145,10 @@ public class CurseController : Singleton<CurseController>
     }
     private void MikoInstantiate()
     {
-
+        sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
+        DOVirtual.DelayedCall(1, () => {
+            sub_noticed_ui_controller.Notice("闇に潜む巫女が目を覚ました……");
+        });
         //もうすでに作ってあるなら無視
         if (InstantiatedMiko != null) return;
         
@@ -157,18 +162,29 @@ public class CurseController : Singleton<CurseController>
     {
         if (!item_belongings_controller.ExistsItems())
         {
+
             return;
         }
-        int item_lock_random = Random.Range(0, item_belongings_controller.belonging_items.Count);
-        KeyValuePair<ItemStatus, ItemBelongingsController.ItemCountWithPermit> item_value_pair = item_belongings_controller.belonging_items.ElementAt(item_lock_random);
-        locked_item_status = item_value_pair.Key;
+        List<ItemStatus> target_item_statues = item_belongings_controller.belonging_items.Keys.Where(x => x.item_type == ItemStatus.ItemType.Consumable || x.item_type == ItemStatus.ItemType.CanThrow).ToList();
+        int item_lock_random = Random.Range(0, target_item_statues.Count);
+
+        ItemStatus taget_item_status = target_item_statues.ElementAt(item_lock_random);
+        locked_item_status = taget_item_status;
         //アイテムを使えなくする。
+        sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
+        DOVirtual.DelayedCall(1, () => {
+            sub_noticed_ui_controller.Notice($"{locked_item_status.ItemName}は呪いによって\nしばらくの間使用不能になった……");
+        });
         item_belongings_controller.CanUseItem(false, locked_item_status);
         curse_event_type = CurseEventType.ItemLock;
     }
     private void PlayerStaminaZero()
     {
         curse_event_type = CurseEventType.PlayerStamina;
+        sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
+        DOVirtual.DelayedCall(1, () => {
+            sub_noticed_ui_controller.Notice("しばらくの間スタミナが枯渇し、\n動きが鈍くなる……");
+        });
     }
 
     private void PlayerStaminaZeroUpdate()

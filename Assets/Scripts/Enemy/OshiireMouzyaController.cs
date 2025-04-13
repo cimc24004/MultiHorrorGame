@@ -34,6 +34,7 @@ public class OshiireMouzyaController : MonoBehaviour
     private PlayerStatus player_status;
     private EnemyFlinchController enemy_flinch_controller;
     private EnemyDeathController enemy_death_controller;
+    private EnemyToPlayerKillController enemy_to_player_kill_controller;
     [SerializeField] private GameObject AttackedDoorEffectPrefab;
 
     private FootStepSoundController player_foot_step_sound_controller;
@@ -46,7 +47,7 @@ public class OshiireMouzyaController : MonoBehaviour
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        
+        enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
         player_status = PlayerStatus.instance;
         player_foot_step_sound_controller = player_status.foot_step_sound_controller;
 
@@ -74,6 +75,7 @@ public class OshiireMouzyaController : MonoBehaviour
                 if (!BrokenOshiire)
                 {
                     follow_object_by_nav.MovePermit = false;
+                    enemy_to_player_kill_controller.enabled = false;
                 }
             }
 
@@ -84,6 +86,7 @@ public class OshiireMouzyaController : MonoBehaviour
 
         if (OshiireAttackMode)
         {
+            // m_Animator.SetBool("DoorAttack", true);
             if (!BrokenOshiire)
             {
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
@@ -100,6 +103,7 @@ public class OshiireMouzyaController : MonoBehaviour
             ToDeathWaitTimeNowFromBrokeOshiire += Time.deltaTime;
             if(ToDeathWaitTimeNowFromBrokeOshiire > ToDeathWaitTimeFromBrokeOshiire)
             {
+                enemy_to_player_kill_controller.enabled = true;
                 follow_object_by_nav.MovePermit = false;
                 enemy_death_controller.DeadStart();
                 discovery_player_controller.DiscoveryPlayerNow = false;

@@ -271,6 +271,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
         urp_fx_controller.CheapCameraChange(false);
         urp_fx_controller.VHSChange(false);
         urp_fx_controller.InteferecesChange(true);
+        urp_fx_controller.HackedChange(true);
 
         Main.SetActive(false);
         DiscoveryVolume.SetActive(true);
@@ -282,6 +283,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
         {
             DiscoveryVolume.SetActive(false);
             urp_fx_controller.InteferecesChange(false);
+            urp_fx_controller.HackedChange(false);
         });
     }
 

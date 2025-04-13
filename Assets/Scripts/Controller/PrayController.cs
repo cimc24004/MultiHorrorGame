@@ -20,7 +20,7 @@ public class PrayController : MonoBehaviour
     private bool touch;
     private PlayerStatus player_status;
     private GameObject GageCanvas;
-    private NoticedUIController noticed_ui_controller;
+    private MainNoticedUIController main_noticed_ui_controller;
     private bool AlreadyPrayCompleted;
     private CrossHairStatus cross_hair_status;
     private bool once;
@@ -31,7 +31,7 @@ public class PrayController : MonoBehaviour
         player_status = PlayerStatus.instance;
         cross_hair_status = player_status.cross_hair_event.gameObject.GetComponent<CrossHairStatus>();
         GageCanvas = player_status.GageCanvas;
-        noticed_ui_controller = player_status.noticed_ui_controller;
+        main_noticed_ui_controller = player_status.main_noticed_ui_controller;
     }
 
     // Update is called once per frame
@@ -48,7 +48,7 @@ public class PrayController : MonoBehaviour
             if (cross_hair_status.RaycastHitedExistsByCrossHairEvent)
             {
                 //êGÇÍÇƒÇ¢ÇΩÇÁ
-                noticed_ui_controller.Notice(NoticeText, 1);
+                main_noticed_ui_controller.Notice(NoticeText);
                 GageCanvas.SetActive(true);
                 once = false;
             }

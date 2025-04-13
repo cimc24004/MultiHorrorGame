@@ -40,7 +40,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     public ItemMenuController item_menu_controller;
     private ItemThrowController item_throw_controller;
     private PlayerStatus player_status;
-    private NoticedUIController noticed_ui_controller;
+    private SubNoticedUIController sub_noticed_ui_controller;
     private EnemyDatabases enemy_databases;
     private EnemyAllController enemy_all_controller;
     // Start is called before the first frame update
@@ -49,7 +49,7 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         player_status = PlayerStatus.instance;
         item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
         item_throw_controller = this.gameObject.GetComponent<ItemThrowController>();
-        noticed_ui_controller = player_status.noticed_ui_controller;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         enemy_all_controller = EnemyDatabases.instance.gameObject.GetComponent<EnemyAllController>();
     }
 

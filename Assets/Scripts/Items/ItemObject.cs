@@ -27,7 +27,7 @@ public class ItemObject : MonoBehaviour
         }
 
         Debug.Log($"Contains: {Contains}     NotHaveMore: {NotHaveMore}");
-
+        item_belonging_controller.item_menu_controller.OnItemGetChangeUI(NotHaveMore, item_status);
         if (!NotHaveMore)
         {
             item_belonging_controller.ItemAddToBelonging(item_status);
@@ -40,6 +40,5 @@ public class ItemObject : MonoBehaviour
             //‚±‚ÌƒAƒCƒeƒ€‚Í‚±‚êˆÈã‚Ä‚Ü‚¹‚ñ
             return false;
         }
-
     }
 }

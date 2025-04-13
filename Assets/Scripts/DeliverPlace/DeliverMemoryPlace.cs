@@ -34,13 +34,13 @@ public class DeliverMemoryPlace : SerializedMonoBehaviour
         {
             //持ち物に納めるアイテムが存在したらアイテムを使用します。
             
-            player_status.noticed_ui_controller.Notice("サクラの思い出の品を納めた。");
+            player_status.sub_noticed_ui_controller.Notice("サクラの思い出の品を納めた。");
             item_belongings_controller.ItemUseFromBelonging(item_databases.ForDeliverItem);
         }
         else
         {
             //なかったらできないこととする。
-            player_status.noticed_ui_controller.Notice("思い出の品を持っていない。");
+            player_status.sub_noticed_ui_controller.Notice("思い出の品を持っていない。");
             return;
         }
         AlreadyDeliveredItemCount += 1;

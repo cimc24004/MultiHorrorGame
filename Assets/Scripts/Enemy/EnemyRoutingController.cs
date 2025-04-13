@@ -97,25 +97,17 @@ public class EnemyRoutingController : SerializedMonoBehaviour
         if (!ArrivedNextRouteMode)
         {
             //まだ到着していない最中でしたら
-            follow_object_by_nav.StoppingDistance = 1;
+            //follow_object_by_nav.StoppingDistance = 0.8f;
             ToNextRouteDistance = (float)Math.Round(Vector3.Distance(NextRouteObject.transform.position, this.transform.position), 1);
             //if (follow_object_by_nav.ArrivedTarget) ArrivedTarget = true;
-            if (ToNextRouteDistance <= follow_object_by_nav.StoppingDistance)
+            if (ToNextRouteDistance <= follow_object_by_nav.StoppingDistance + 0.1f)
             {
-                if (this.gameObject.name == "泣き霊")
-                {
-                    Debug.Log($"NextRouteObjectとの距離は{Vector3.Distance(NextRouteObject.transform.position, this.transform.position)}");
-                    Debug.Log("ToNextRouteDistance <= follow_object_by_nav.StoppingDistance");
-                }
-
                 ArrivedTarget = true;
             }
             //FollowObjectByNavがArrivedtargetになったら　これは一フレームだけしかTrueにならないので、継続させるために
             //ArrivedTarget変数を宣言しておいて、そこに収納しておく。。
             if (ArrivedTarget)
             {
-                if (this.gameObject.name == "泣き霊")
-                    Debug.Log($"!ArrivedNextRouteMode && ArrivedTarget=trueなのでストップ！ EnemyMoveStateは->{enemy_status.enemy_move_state.ToString()}");
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //いま向かっているルートに到着したら少し待ってから次のルートにいく。
                 WaitToMoveNextPointTimeNow += Time.deltaTime;
@@ -128,8 +120,6 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             }
             else
             {
-                if (this.gameObject.name == "泣き霊")
-                    Debug.Log($"!ArrivedNextRouteModeかつ ArrivedTarget==false");
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
             }
         }
