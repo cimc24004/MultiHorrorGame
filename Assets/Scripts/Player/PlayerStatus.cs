@@ -164,6 +164,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
                 ItemStatus item_status = item_statues[0];
                 GameObject g = Instantiate(item_status.ItemThrowPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
                 item_belonging_controller.ItemUseFromBelonging(item_status);
+                sub_noticed_ui_controller.Notice($"{item_status.ItemName}を使用");
                 Destroy(g, item_status.StopEnemyTime);
                 enemy_flinch_controller.FlinchStart(item_status.StopEnemyTime);
                 return;

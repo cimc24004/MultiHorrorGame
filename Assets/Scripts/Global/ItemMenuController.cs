@@ -257,14 +257,13 @@ public class ItemMenuController : SerializedMonoBehaviour
         ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
         //ItemStatusをItemUIクラスから取得する。
         ItemStatus item_status = item_ui.item_status;
-
         if (!item_belongings_controller.WhichCanUseItem(item_status))
         {
             //この地点でアイテムが使えない状態ならこの関数を実行しない
-            Debug.Log($"{item_status.ItemName}というアイテムはロックされていて使えません！");
+            sub_noticed_ui_controller.Notice($"{item_status.ItemName}は使用できません。");
             return;
         }
-
+        sub_noticed_ui_controller.Notice($"{item_status.ItemName}を使用した。");
         int item_ui_index = item_ui_obj.transform.GetSiblingIndex();
         //ItemSelect関数はIndexを指定しなければならないのでGetSiblingIndex(今子オブジェクトの中では何番目にいるのかを教えてくれるやつ)
         //を使用してindexを取得。

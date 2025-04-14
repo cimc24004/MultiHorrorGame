@@ -120,6 +120,7 @@ public class CurseController : Singleton<CurseController>
     }
     private void CurseMaxedReset()
     {
+        sub_noticed_ui_controller.Notice("ô‚¢‚Ì‰e‹¿‚ª‚·‚×‚ÄÁ–Å‚µ‚½cc");
         if(curse_event_type == CurseEventType.MikoInstantiate)
         {
             if (InstantiatedMiko != null)

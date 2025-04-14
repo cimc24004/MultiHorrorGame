@@ -25,7 +25,8 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     }
     //アイテム持ち物コントローラー 
 
-
+    //マックスで持てる数
+    public int maxCarryableItems = 6;
     //持っているアイテムの情報。
     public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items = new Dictionary<ItemStatus, ItemCountWithPermit>();
     public Dictionary<ItemStatus, ItemStatusUI> belonging_item_uis = new Dictionary<ItemStatus, ItemStatusUI>();
