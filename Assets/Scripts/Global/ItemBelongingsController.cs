@@ -44,6 +44,9 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     private SubNoticedUIController sub_noticed_ui_controller;
     private EnemyDatabases enemy_databases;
     private EnemyAllController enemy_all_controller;
+    private ItemDatabases item_databases;
+
+    [SerializeField] private List<ItemStatus> InitialItemStatuses;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,7 +54,11 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
         item_throw_controller = this.gameObject.GetComponent<ItemThrowController>();
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+        item_databases = ItemDatabases.instance;
         enemy_all_controller = EnemyDatabases.instance.gameObject.GetComponent<EnemyAllController>();
+        foreach(ItemStatus _itemStatus in InitialItemStatuses){
+            ItemAddToBelonging(_itemStatus);
+        }
     }
 
     //アイテムをこのコントローラーに追加する関数 外部から実行する。　主にCrossHairEvent.csから
@@ -60,44 +67,43 @@ public class ItemBelongingsController : SerializedMonoBehaviour
     {
         if (!belonging_items.ContainsKey(_item_status))
         {
-            //所持品に取得したアイテムがなければアイテムメニューに追加する。
-            GameObject item_ui_obj = Instantiate(ItemUIPrefab, ItemGroup.transform);
-            //アイテムメニューに追加するにはPrefabをInstanteateする。
-
-
-            //ItemUIとはアイテムメニューにあるアイテムのUI。
-
-            ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
-            
-            item_ui.item_belonging_controller = this;
-            item_ui.item_status = _item_status;
-            
-            //item_uiにUI情報を入れておく。
-            ItemStatusUI item_status_ui = new ItemStatusUI();
-            item_status_ui.ItemIcon = item_ui.ItemIcon;
-
-            item_status_ui.ItemCountTextUI = item_ui.ItemCountTextUI;
-            item_status_ui.ItemUI = item_ui.gameObject;
-            //UI情報たちを集めたDictionaryにUI情報のためだけに追加しておく。
-            belonging_item_uis.Add(_item_status, item_status_ui);
-
-            //UI専用Dictionaryに入れたらその入れたやつにまた新しく情報を追加。
-            
-            //所持品には持っていなかったアイテムなのでカウント数は 1 
-
-            //さらに持ってなかった時に取得した場合のみアイテム画像を指定。 1度だけのコールで済む。
-            belonging_item_uis[_item_status].ItemIcon.sprite = _item_status.MenuSprite;
-            belonging_item_uis[_item_status].ItemCountTextUI.text = "1";
-
             ItemCountWithPermit item_count_with_permit = new ItemCountWithPermit();
             item_count_with_permit.item_count = 1;
             item_count_with_permit.CanUse = true;
 
             belonging_items.Add(_item_status, item_count_with_permit);
+            if(_item_status.item_type != ItemStatus.ItemType.Event){
+                //イベント用アイテムでなければアイテムを追加
+                //所持品に取得したアイテムがなければアイテムメニューに追加する。
+                GameObject item_ui_obj = Instantiate(ItemUIPrefab, ItemGroup.transform);
+                //アイテムメニューに追加するにはPrefabをInstanteateする。
 
-            //アイテムを拾ったらアイテムUIを選択するようにする。
-            Debug.Log(item_ui_obj.gameObject);
-            item_menu_controller.ItemSelectByIndex(item_ui_obj.transform.GetSiblingIndex());
+
+                //ItemUIとはアイテムメニューにあるアイテムのUI。
+
+                ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
+                
+                item_ui.item_belonging_controller = this;
+                item_ui.item_status = _item_status;
+                
+                //item_uiにUI情報を入れておく。
+                ItemStatusUI item_status_ui = new ItemStatusUI();
+                item_status_ui.ItemIcon = item_ui.ItemIcon;
+
+                item_status_ui.ItemCountTextUI = item_ui.ItemCountTextUI;
+                item_status_ui.ItemUI = item_ui.gameObject;
+                //UI情報たちを集めたDictionaryにUI情報のためだけに追加しておく。
+                belonging_item_uis.Add(_item_status, item_status_ui);
+                //UI専用Dictionaryに入れたらその入れたやつにまた新しく情報を追加。
+                
+                //所持品には持っていなかったアイテムなのでカウント数は 1 
+
+                //さらに持ってなかった時に取得した場合のみアイテム画像を指定。 1度だけのコールで済む。
+                belonging_item_uis[_item_status].ItemIcon.sprite = _item_status.MenuSprite;
+                belonging_item_uis[_item_status].ItemCountTextUI.text = "1";
+                //アイテムを拾ったらアイテムUIを選択するようにする。
+                item_menu_controller.ItemSelectByIndex(item_ui_obj.transform.GetSiblingIndex());
+            }
         }
         else
         {
@@ -183,6 +189,59 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         //スクリプト用Prefabを生成する。 数秒で消えるやつ
         GameObject InstantiateItemScriptPrefab = Instantiate(item_status.InstantiateItemScriptPrefab);
         InstantiateItemScriptPrefab.GetComponent<InstantiateItemScript>().item_status = item_status;
+    }
+
+    //アイテムを捨てる
+    public void ItemDump(ItemStatus _item_status){
+        if (!ExistsItems())
+        {
+            return;
+        }
+
+        // 選択中アイテムがnull、あるいは所持品に含まれていなければ何もしない
+        if (_item_status == null || !belonging_items.ContainsKey(_item_status))
+        {
+            return;
+        }
+
+        // 所持数を1減らす
+        int currentCount = belonging_items[_item_status].item_count;
+        currentCount--;
+
+        // UIなどで「捨てた」ことを通知したい場合はここで
+        sub_noticed_ui_controller.Notice($"{_item_status.ItemName} を捨てた。");
+
+        // もし所持数が 0 になれば辞書から削除する
+        if (currentCount <= 0)
+        {
+            item_menu_controller.item_equip_controller.EquipChange(_item_status, false);
+            // UIアイコンを破壊してから辞書から削除
+            if (belonging_items.Count > 1)
+            {
+                item_menu_controller.ItemSelectAuto(_item_status);
+            }
+            Destroy(belonging_item_uis[_item_status].ItemUI);
+            belonging_item_uis.Remove(_item_status);
+            belonging_items.Remove(_item_status);
+            // 何かワールド上にアイテムをスポーンさせたければここで
+            // Instantiate(...);
+
+            // まだ他のアイテムを持っていれば一番前のアイテムを再選択する（例）
+
+            // else
+            // {
+            //     // アイテムが0個なら選択中アイテムを null にしておく
+            //     item_menu_controller.NowSelectItemUIObject = null;
+            // }
+        }
+        else
+        {
+            // 数を減らしただけの場合は、UIの表示だけ更新しておく
+            belonging_items[_item_status].item_count = currentCount;
+            SetItemStatusToItemMenu(_item_status);
+        }
+        // ワールド上に落とす処理が必要ならここ
+        Instantiate(_item_status.ItemPutObjectPrefab, player_status.HeadPos.position, Quaternion.identity);
     }
     public bool ExistsItems()
     {

@@ -14,11 +14,11 @@ public class EnemyFlinchController : MonoBehaviour
     [SerializeField] private float FlinchTimeNow;
     private DiscoveryPlayerController discovery_player_controller;
     private Animator anim;
-    private Vector3 Move = new Vector3(0, 1, 0);
+    private Vector3 Move = new Vector3(0, -1, 0);
     private NavMeshAgent nav_mesh_agent;
     private float DefaultNavMeshSpeed;
     private Animator m_Animator;
-    [Header("FlinchされたときにApplyMotionをチェックするかどうか")]
+    [Header("FlinchされたときにApplyMotionをチェック外すかどうか")]
     [SerializeField]
     private bool ChangeApplyMotionWhenFlinch = false;
     private bool DefaultApplyMotion;
@@ -53,7 +53,7 @@ public class EnemyFlinchController : MonoBehaviour
             if(ChangeApplyMotionWhenFlinch){
                 m_Animator.applyRootMotion = false;
             }
-            character_controller.Move(Move * character_controller.velocity.y);
+            character_controller.Move(Move);
             if (FlinchTime < FlinchTimeNow)
             {
                 FlinchEnd();

@@ -32,8 +32,16 @@ public class ItemEquipController : SerializedMonoBehaviour
     // Odin InspectorのButton属性を使ってエディタ上から呼び出せるメソッド
     // 引数のItemStatusに基づき装備を変更する処理
     [Button]
-    public void EquipChange(ItemStatus item_status)
+    public void EquipChange(ItemStatus item_status, bool _equip = true)
     {
+        if(!_equip){
+            //装備を強制で外す場合
+            if(BeforeEquip != null)
+            {
+                BeforeEquip.SetActive(false);
+            }            
+            return;
+        }
         // 渡されたItemStatusが装備用でない場合、現在の装備を解除する
         if(item_status.item_type != ItemStatus.ItemType.Equip)
         {

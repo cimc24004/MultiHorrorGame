@@ -26,6 +26,8 @@ public class ItemRandomCreateIndividual : SerializedMonoBehaviour
         }
         Debug.Log("ItemRandomCreateFromIndividual-------------------");
         GameObject random_created_item = item_databases.RandomItemCreate(ItemToParent);
-
+        if(random_created_item != null){
+            random_created_item.isStatic = true;
+        }
     }
 }

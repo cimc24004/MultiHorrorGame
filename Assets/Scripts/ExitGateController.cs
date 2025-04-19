@@ -10,6 +10,12 @@ public class ExitGateController : MonoBehaviour
 
     [SerializeField] private bool OnCompleteDoorOpen;
     private GameProgressController game_progress_controller;
+    private float BeforePrayNow = 0;
+
+    [SerializeField] private AudioSource OpenAudioSource;
+    [SerializeField] private AudioSource CloseAudioSource;
+    [SerializeField] private AudioSource OpenCompletedAudioSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,23 +36,29 @@ public class ExitGateController : MonoBehaviour
             //サクラの木に納めてないならドアを開けられない
             this.gameObject.tag = "Untagged";
             this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-
+            
         }
-        if(!pray_controller.PrayNow){
+        if(this.gameObject.name == "Gate"){
+            Debug.Log("Gateはpray_controller.PrayNow: " + pray_controller.PrayNow);
+        }
+        if(pray_controller.PrayTimeNow == BeforePrayNow){
             ExitGateOpenPause();
         }else{
             ExitGateOpen();
         }
+        BeforePrayNow = pray_controller.PrayTimeNow;
     }
 
     public void ExitGateOpen(){
         //ゲートがオープンする。
         m_Animator.speed = 1;
+        OpenAudioSource.enabled = true;
     }
 
     public void ExitGateOpenPause(){
         //ゲートがオープンするのをpauseする。
         m_Animator.speed = 0;
+        OpenAudioSource.enabled = false;
     }
 
     public void OnCanThroughDoor(){
@@ -58,6 +70,8 @@ public class ExitGateController : MonoBehaviour
         m_Animator.speed = 0;
         this.gameObject.tag = "Untagged";
         this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        OpenCompletedAudioSource.enabled = true;
         OnCompleteDoorOpen = true;
+        OpenCompletedAudioSource.gameObject.SetActive(true);
     }
 }

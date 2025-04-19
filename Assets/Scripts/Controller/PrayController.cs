@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class PrayController : MonoBehaviour
 {
     [Header("Notice用メッセージ")]
-    public string NoticeText = "お祈りする。";
+    [SerializeField]
+    private string NoticeMessage;
     [Header("必要な祈り時間")]
     public float NeedToPrayTime;
     public bool PrayNow;
@@ -23,12 +24,17 @@ public class PrayController : MonoBehaviour
     private MainNoticedUIController main_noticed_ui_controller;
     private bool AlreadyPrayCompleted;
     private CrossHairStatus cross_hair_status;
+    private CharacterMovePermit player_character_move_permit;
     private bool once;
+    private bool PrayNowOnce;
+    [Header("PrayNowがTrueの時はプレイヤーは動けないかどうか")]
+    [SerializeField] private bool PlayerStopOnPrayNow;
 
     // Start is called before the first frame update
     void Start()
     {
         player_status = PlayerStatus.instance;
+        player_character_move_permit = player_status.gameObject.GetComponent<CharacterMovePermit>();
         cross_hair_status = player_status.cross_hair_event.gameObject.GetComponent<CrossHairStatus>();
         GageCanvas = player_status.GageCanvas;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
@@ -45,18 +51,20 @@ public class PrayController : MonoBehaviour
 
         if (cross_hair_status.HitedTag == "Pray")
         {
-            if (cross_hair_status.RaycastHitedExistsByCrossHairEvent)
+            if (cross_hair_status.RaycastHitedExistsByCrossHairEvent && cross_hair_status.HitedObj == this.gameObject)
             {
                 //触れていたら
-                main_noticed_ui_controller.Notice(NoticeText);
                 GageCanvas.SetActive(true);
+                main_noticed_ui_controller.Notice(this.NoticeMessage, 1);
                 once = false;
             }
         }
-
-        if (PrayNow && PrayPermit && !AlreadyPrayCompleted)
-        {
+        if (PrayNow && PrayPermit && !AlreadyPrayCompleted){
+            Debug.Log("PrayNowwwwwwwwwww");
             GageCanvas.SetActive(true);
+            if(PlayerStopOnPrayNow){
+                player_character_move_permit.Stop();
+            }
             player_status.GageImage.fillAmount = PrayTimeNow / NeedToPrayTime;
             PrayTimeNow += Time.deltaTime;
             if (PrayTimeNow > NeedToPrayTime)
@@ -65,6 +73,10 @@ public class PrayController : MonoBehaviour
                 PrayCompleted();
             }
             PrayNow = false;
+            if(PlayerStopOnPrayNow){
+                player_character_move_permit.Move();
+            }
+
         }
     }
     public void OnTouchOn()

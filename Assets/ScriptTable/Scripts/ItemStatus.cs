@@ -57,7 +57,7 @@ public class ItemStatus : SerializedScriptableObject
     [Header("フィールドに配置されるアイテムかどうか")]
     public bool PutInItemBox = true;
 
-    [HideIf("item_type", ItemType.Equip)]
+    // [HideIf("item_type", ItemType.Equip)]
     [Header("ワールド上に配置するときのアイテムPrefab")]
     public GameObject ItemPutObjectPrefab;
 

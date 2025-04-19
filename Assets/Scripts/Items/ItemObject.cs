@@ -17,7 +17,7 @@ public class ItemObject : MonoBehaviour
     public bool ItemGet(ItemBelongingsController item_belonging_controller)
     {
         var differentItems = item_belonging_controller.belonging_items
-        .Where(kvp => kvp.Key != item_status)
+        .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         bool NotHaveMore = (item_belonging_controller.maxCarryableItems <= differentItems.Count) 
@@ -25,7 +25,7 @@ public class ItemObject : MonoBehaviour
 
         item_belonging_controller.item_menu_controller.OnItemGetChangeUI(NotHaveMore, item_status);
         
-        if (!NotHaveMore)
+        if (!NotHaveMore || item_status.item_type == ItemStatus.ItemType.Event)
         {
             item_belonging_controller.ItemAddToBelonging(item_status);
             ItemGetAddEvent.Invoke();

@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 public class CrossHairEvent : MonoBehaviour
 {
     //�^�񒆂̃N���X�w�A���烌�C�L���X�g���΂����ꂪ���̂ɓ��������Ƃ��ɔ���������C�x���g�B
@@ -57,7 +59,7 @@ public class CrossHairEvent : MonoBehaviour
                 raycast_hit.collider.gameObject.tag == "Door" || raycast_hit.collider.gameObject.tag == "Drawer" ||
                 raycast_hit.collider.gameObject.tag == "Light" || raycast_hit.collider.gameObject.tag == "Pray" || raycast_hit.collider.gameObject.tag == "DeliverPlace"
                 || raycast_hit.collider.gameObject.tag == "ReadEvent" || raycast_hit.collider.gameObject.tag == "Window"
-                || raycast_hit.collider.gameObject.tag == "Cabinet")
+                || raycast_hit.collider.gameObject.tag == "Cabinet" || raycast_hit.collider.gameObject.tag == "GameClear")
             {
                 //ターゲットのオブジェクトにレイキャストが当たっているなら当たってますよ変数をTrueにしておく
                 cross_hair_status.HitedTag = RaycasstedObj.tag;
@@ -128,6 +130,9 @@ public class CrossHairEvent : MonoBehaviour
                 {
                     ReadEventController read_event_controller = raycast_hit.collider.gameObject.GetComponent<ReadEventController>();
                     read_event_controller.ReadEventStart();
+                }
+                if(raycast_hit.collider.gameObject.tag == "GameClear"){
+                    SceneManager.LoadScene("GameClear");
                 }
             }
 

@@ -55,7 +55,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
 
     public bool PlayerDeaded;
 
-
+    [SerializeField] private GameObject FlashLightBatteryUI;
     private float offsetY;
     private CharacterMovePermit player_move_permit;
     private PlayerStaminaController player_stamina_controller;
@@ -72,6 +72,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private HorrorDirector horror_director;
     private Tween crouchTween;
     private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
+    private FlashLightController flash_light_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -85,6 +86,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
         item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = ItemController.GetComponent<ItemMenuController>();
         horror_director = HorrorDirector.instance;
+        flash_light_controller = FlashLightController.instance;
         player_to_enemy_distance_controller = this.gameObject.GetComponent<PlayerToEnemyDistanceController>();
     }
 
@@ -190,7 +192,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
         PlayerDeaded = true;
         player_character_controller.enabled = false;
         player_move_permit.Stop();
-        item_menu_controller.LightObject.SetActive(false);
+        flash_light_controller.LightObject.SetActive(false);
         item_menu_controller.enabled = false;
 
 

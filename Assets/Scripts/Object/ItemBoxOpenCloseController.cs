@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using DG.Tweening;
 public class ItemBoxOpenCloseController : SerializedMonoBehaviour
 {
     //アイテムが入っているボックス用の開け閉めController
     //引き出しや戸など
+    [SerializeField] private UnityEvent OpenAddEvent;
     public bool AnimationCompleted = true;
     public Transform OpenPos;
     public float duration = 0.3f;
@@ -50,7 +52,7 @@ public class ItemBoxOpenCloseController : SerializedMonoBehaviour
         item_random_create_individual.ItemRandomCreateFromIndividual(AlreadyOpened);
 
         AlreadyOpened = true;
-
+        OpenAddEvent.Invoke();
 
         AnimationCompleted = false;
 

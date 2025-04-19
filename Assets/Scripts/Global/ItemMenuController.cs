@@ -33,21 +33,16 @@ public class ItemMenuController : SerializedMonoBehaviour
     public bool ItemMenuShowUpNow;
     public bool ItemMenuShowUpCommand;
 
-    public bool HaveLight = true;
-    [ShowIf("HaveLight", true)]
-    [Header("懐中電灯(?)オブジェクトをセット")]
-    public GameObject LightObject;
+
     public TextMeshProUGUI item_description_text_ui;
     public TextMeshProUGUI item_name_text_ui;
     public GameObject ItemDescriptionUI;
     
-    private bool LightSwitchMode = false;
     private ItemUI before_selected_item_ui;
     private SubNoticedUIController sub_noticed_ui_controller;
-    [SerializeField] private AudioSource LightOnAudioSource;
-    [SerializeField] private AudioSource LightOffAudioSource;
 
-    [SerializeField] private ItemEquipController item_equip_controller;
+
+    [SerializeField] public ItemEquipController item_equip_controller;
     private void Start()
     {
         sub_noticed_ui_controller = PlayerStatus.instance.sub_noticed_ui_controller;
@@ -68,27 +63,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         {
             ItemDescriptionUI.SetActive(true);
         }
-        //懐中電灯を持っていたら
-        if (HaveLight)
-        {
-            if (player_input.currentActionMap["LightSwitchAction"].triggered)
-            {
-                if (!LightSwitchMode)
-                {
-                    //ライトをつける。
-                    LightObject.SetActive(true);
-                    LightOnAudioSource.Play();
-                    LightSwitchMode = true;
-                }
-                else
-                {
-                    //ライトをけす。
-                    LightOffAudioSource.Play();
-                    LightObject.SetActive(false);
-                    LightSwitchMode = false;
-                }
-            }
-        }
+
 
         //ホイールの値を1,-1,0で返すようにする為のやつ。
         if (scroll_value_float > 0) scroll_value = 1;
@@ -123,6 +98,11 @@ public class ItemMenuController : SerializedMonoBehaviour
                 }
             }
 
+            if(player_input.currentActionMap["ItemDump"].triggered){
+                if(NowSelect_item_status != null){
+                    item_belongings_controller.ItemDump(NowSelect_item_status);
+                }
+            }
  
             if (player_input.currentActionMap["ItemUse"].triggered)
             {
@@ -194,6 +174,14 @@ public class ItemMenuController : SerializedMonoBehaviour
         //GetChildで何番目のオブジェクトを取得するというコード。
         NowSelectItemUIObject = ItemGroup.transform.GetChild(ItemIndex).gameObject;
         CommonItemSelect(NowSelectItemUIObject);
+    }
+    public void ItemSelectAuto(ItemStatus _item_status){
+        int SiblingIndex = item_belongings_controller.belonging_item_uis[_item_status].ItemUI.transform.GetSiblingIndex();
+        if(SiblingIndex == 0){
+            ItemSelectByIndex(1);
+        }else{
+            ItemSelectByIndex(SiblingIndex - 1);
+        }
     }
     public void OnCanItemUseChangeUI(bool can, ItemStatus _item_status)
     {

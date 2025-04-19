@@ -38,11 +38,12 @@ public class MainNoticedUIController : SerializedMonoBehaviour
     [Button]
     public void Notice(string _sentence,float _display_time = 1)
     {
-        notice_uis_tween.Kill();
+
+        //notice_uis_tween?.Kill();
         NoticeUIs.alpha = 1;
         notice_time_now = 0;
         notice_now = true;
-        m_notice_text_ui.text = _sentence;
+        m_notice_text_ui.SetText(_sentence);
         notice_time = _display_time;
 
     }
