@@ -27,6 +27,7 @@ public class EnemyStatus : MonoBehaviour
     public GameObject FaceExpandingCamera;
 
     public Transform EyePosition;
+    [SerializeField] public CharacterAudioController character_audio_controller;
     private FollowObjectByNav follow_object_by_nav;
     private DiscoveryPlayerController discovery_player_controller;
     private Animator anim;

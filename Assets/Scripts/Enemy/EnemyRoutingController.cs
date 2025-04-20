@@ -99,8 +99,8 @@ public class EnemyRoutingController : SerializedMonoBehaviour
             //‚Ü‚¾“’…‚µ‚Ä‚¢‚È‚¢Å’†‚Å‚µ‚½‚ç
             //follow_object_by_nav.StoppingDistance = 0.8f;
             ToNextRouteDistance = (float)Math.Round(Vector3.Distance(NextRouteObject.transform.position, this.transform.position), 1);
-            //if (follow_object_by_nav.ArrivedTarget) ArrivedTarget = true;
-            if (ToNextRouteDistance <= follow_object_by_nav.StoppingDistance + 0.1f)
+            // if (follow_object_by_nav.ArrivedTarget) ArrivedTarget = true;
+            if (ToNextRouteDistance <= follow_object_by_nav.StoppingDistance + 0.2f)
             {
                 ArrivedTarget = true;
             }

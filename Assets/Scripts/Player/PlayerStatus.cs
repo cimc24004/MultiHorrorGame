@@ -207,31 +207,25 @@ public class PlayerStatus : Singleton<PlayerStatus>
     }
     public void CrouchStandCameraPosChange(bool Crouch)
     {
-        // ターゲット位置の設定
-        Transform targetHeadPos = Crouch ? CrouchHeadPos : StandHeadPos;
+        Transform tgt = Crouch ? CrouchHeadPos : StandHeadPos;
 
-        // 既存のアニメーションを停止
         crouchTween?.Kill();
 
-        // アニメーション開始
+        Vector3 srcLocal = CameraRoot.localPosition;   // 現在のローカル座標を保持
+        float   targetY  = tgt.localPosition.y;        // 変えるのは Y だけ
+
         crouchTween = DOTween.To(
             () => CameraRoot.localPosition.y,
-            y => CameraRoot.localPosition = new Vector3(CameraRoot.localPosition.x, y, CameraRoot.localPosition.z),
-            targetHeadPos.localPosition.y,
+            y  => CameraRoot.localPosition = new Vector3(srcLocal.x, y, srcLocal.z),
+            targetY,
             0.2f
         )
         .SetEase(Ease.OutQuad)
-        .OnUpdate(() =>
-        {
-            // 必要であれば、更新中の処理をここに追加可能
-        })
         .OnComplete(() =>
         {
-            // 最終位置を正確に設定
-            CameraRoot.localPosition = targetHeadPos.localPosition;
-            HeadPos.position = targetHeadPos.position;
+            // XZ はそのまま、Y だけ確定
+            CameraRoot.localPosition = new Vector3(srcLocal.x, targetY, srcLocal.z);
         });
-
     }
  
 

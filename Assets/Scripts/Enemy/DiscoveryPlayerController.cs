@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class DiscoveryPlayerController : MonoBehaviour
@@ -11,10 +12,14 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     [SerializeField]
     private DiscoveryPlayerStatus original_discovery_player_status;
-    
     [SerializeField]
     private DiscoveryPlayerStatus discovery_player_status;
 
+    [Header("追いかけてるときに音声を流すかどうか PlayOnAwake限定")]
+    [SerializeField]
+    private bool IsAudioPlayOnChase;
+    [ShowIf("IsAudioPlayOnChase")]
+    private CharacterAudioController character_audio_controller;
 
     //プレイヤーを視認しているかどうか
     public bool SightningPlayer;
@@ -62,6 +67,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
+        character_audio_controller = enemy_status.character_audio_controller;
         time_manager = TimeManager.instance;
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         horror_director = HorrorDirector.instance;
@@ -88,8 +94,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             //horror_director.DiscoveryNow = true;
             if (!DiscoveriedEventOnce)
             {
-                //visible_through_the_wall_controller.VisibleOnce = true;
-                //horror_director.ChangeHorrorState(HorrorState.Discovered);
+                character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Chase);
                 silhouette_change_controller?.SilhouetteChangeWithAutoReset(3);
                 horror_director.EnemyDiscoveredPlayer();
                 DiscoveriedEventOnce = true;
@@ -109,6 +114,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             if (!NonDiscoveriedEventOnce)
             {
                 horror_director.EnemyLostPlayer();
+                character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Normal);
                 NonDiscoveriedEventOnce = true;
             }
         }
