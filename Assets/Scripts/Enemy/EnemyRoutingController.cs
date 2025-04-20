@@ -77,6 +77,10 @@ public class EnemyRoutingController : SerializedMonoBehaviour
                     else
                     {
                         RouteIndexNow -= 1;
+                        if(RouteIndexNow < 0){
+                            RouteIndexNow += 1;
+                            ReverseIndexChange = false;
+                        }
                     }
                 }
                 NextRouteSet();
