@@ -2,150 +2,225 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMoveScript : MonoBehaviour
 {
-    //プレイヤー移動スクリプト
-    //private Rigidbody rigid;
-    private CharacterController character_controller;
-    public Vector3 MoveDirection;
-    public float RunSpeed = 3;
-    public float WalkSpeed = 1;
-    public float CrouchSpeed = 1;
-    public float NowSpeed;
-    public bool CrouchNow;
-    //このカメラの方向とプレイヤーの向く方向が同じになるようにする。
+    // Inspectorで調整
+    [Header("移動速度")]
+    public float RunSpeed = 3f;
+    public float WalkSpeed = 1f;
+    public float CrouchSpeed = 1f;
+    [Header("回転の滑らかさ（大きいほど速く追従）")]
+    [SerializeField] private float rotationSmoothSpeed = 5f;
+    [Header("カメラ参照")]
     public GameObject DirectionCamera;
 
-    private bool RunWalkTriggerChange;
-    private PlayerInput player_input;
-    private Vector3 MoveKeyValue;
-    
-    private InputAction MoveAction;
-    private InputAction RunChangeAction;
-    private InputAction CrouchChangeAction;
-    private TimeManager time_manager;
-    private PlayerStatus player_status;
-    private PlayerStaminaController player_stamina_controller;
-    // Start is called before the first frame update
+    // 内部用
+    private CharacterController characterController;
+    private PlayerInput playerInput;
+    private InputAction moveAction;
+    private InputAction runChangeAction;
+    private InputAction crouchChangeAction;
+    private Vector3 moveDirection = Vector3.zero;
+    private Quaternion targetRotation;
+    public float NowSpeed;
+    private float defaultRunSpeed;
+    private float defaultWalkSpeed;
+    private float defaultCrouchSpeed;
+    private bool runWalkTriggerChange = false;
+    public bool CrouchNow = false;
+
+    private PlayerStatus playerStatus;
+    private PlayerStaminaController staminaController;
+    private SubNoticedUIController subNoticedUI;
+    private TimeManager timeManager;
+
+    // 移動速度アップ用
+    private bool moveSpeedUpNow = false;
+    private float moveSpeedUpDuration;
+    private float moveSpeedUpTimer = 0f;
+
     void Start()
     {
-        //rigid = this.gameObject.GetComponent<Rigidbody>();
-        character_controller = this.gameObject.GetComponent<CharacterController>();
-        player_stamina_controller = this.gameObject.GetComponent<PlayerStaminaController>();
-        NowSpeed = WalkSpeed;
-        player_input = GameControllerOnAllScene.instance.player_input;
-        MoveAction = player_input.currentActionMap["Move"];
-        RunChangeAction = player_input.currentActionMap["RunChange"];
-        CrouchChangeAction = player_input.currentActionMap["CrouchChange"];
+        characterController = GetComponent<CharacterController>();
+        playerInput = GameControllerOnAllScene.instance.player_input;
+        moveAction = playerInput.currentActionMap["Move"];
+        runChangeAction = playerInput.currentActionMap["RunChange"];
+        crouchChangeAction = playerInput.currentActionMap["CrouchChange"];
 
-        time_manager = TimeManager.instance;
-        player_status = PlayerStatus.instance;
+        defaultRunSpeed = RunSpeed;
+        defaultWalkSpeed = WalkSpeed;
+        defaultCrouchSpeed = CrouchSpeed;
+        NowSpeed = WalkSpeed;
+
+        playerStatus = PlayerStatus.instance;
+        staminaController = GetComponent<PlayerStaminaController>();
+        subNoticedUI = playerStatus.sub_noticed_ui_controller;
+        timeManager = TimeManager.instance;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        MoveKeyValue = MoveAction.ReadValue<Vector2>();
-        player_status.MoveY = MoveKeyValue.y;
-        player_status.MoveX = MoveKeyValue.x;
-
-        if (MoveKeyValue.magnitude != 0)
+        // ── 入力取得＆方向・回転ターゲット設定 ──
+        Vector2 input = moveAction.ReadValue<Vector2>();
+        if (input.sqrMagnitude > 0.01f)
         {
-            this.transform.localRotation = Quaternion.Euler(0, DirectionCamera.transform.rotation.eulerAngles.y, 0);
-            MoveDirection = (this.transform.forward * MoveKeyValue.y) + (this.transform.right * MoveKeyValue.x);
-            if(character_controller.enabled)
-            {
-                character_controller.Move(MoveDirection * Time.deltaTime * NowSpeed);
-            }
-            player_status.MoveSpeed = NowSpeed;
+            // カメラ基準の前・右ベクトル
+            Quaternion camRot = Quaternion.Euler(0f, DirectionCamera.transform.eulerAngles.y, 0f);
+            Vector3 forward = camRot * Vector3.forward;
+            Vector3 right   = camRot * Vector3.right;
+
+            // 移動方向
+            moveDirection = (forward * input.y + right * input.x).normalized;
+            // 回転ターゲット
+            targetRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
+            playerStatus.MoveSpeed = NowSpeed;
         }
         else
         {
-            if (character_controller.enabled)
-                character_controller.Move(Vector3.Scale(Vector3.up,character_controller.velocity) * Time.deltaTime);
-            player_status.MoveSpeed = 0;
+            moveDirection = Vector3.zero;
+            playerStatus.MoveSpeed = 0f;
         }
 
-        if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Run || player_status.player_move_state == PlayerStatus.PlayerMoveState.Walk)
-        {
-            if (RunChangeAction.triggered)
-            {
-                if (player_stamina_controller.StaminaCheck())
-                {
-                    RunWalkTriggerChange = true;
-                }
-                else
-                {
-                    RunWalkTriggerChange = false;
-                }
+        // ── 走る／歩く切り替え処理 ──
+        HandleRunWalk();
 
-            }
-            if (RunWalkTriggerChange)
+        // ── しゃがみ切り替え処理 ──
+        HandleCrouch();
+
+        // ── スピードアップタイマー更新 ──
+        if (moveSpeedUpNow)
+        {
+            moveSpeedUpTimer += Time.deltaTime;
+            if (moveSpeedUpTimer >= moveSpeedUpDuration)
             {
-                if (RunChangeAction.IsPressed())
+                RunSpeed    = defaultRunSpeed;
+                WalkSpeed   = defaultWalkSpeed;
+                CrouchSpeed = defaultCrouchSpeed;
+                ResetMoveSpeed();
+                moveSpeedUpNow   = false;
+                moveSpeedUpTimer = 0f;
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        // ── 実際の移動 ──
+        if (moveDirection != Vector3.zero)
+        {
+            characterController.Move(moveDirection * NowSpeed * Time.fixedDeltaTime);
+        }
+        else
+        {
+            // Y方向の慣性（必要なら重力に置き換えてOK）
+            characterController.Move(
+                Vector3.Scale(Vector3.up, characterController.velocity) 
+                * Time.fixedDeltaTime
+            );
+        }
+    }
+
+    void LateUpdate()
+    {
+        // ── 滑らか回転 ──
+        if (moveDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSmoothSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    private void HandleRunWalk()
+    {
+        if (playerStatus.player_move_state == PlayerStatus.PlayerMoveState.Run ||
+            playerStatus.player_move_state == PlayerStatus.PlayerMoveState.Walk)
+        {
+            if (runChangeAction.triggered)
+            {
+                // 押した瞬間にスタミナチェック
+                runWalkTriggerChange = staminaController.StaminaCheck();
+            }
+
+            if (runWalkTriggerChange && runChangeAction.IsPressed())
+            {
+                // 長押し中
+                if (!staminaController.StaminaIncreaseNow)
                 {
-                    if (!player_stamina_controller.StaminaIncreaseNow)
+                    if (playerStatus.StaminaValueNow > 0)
                     {
-                        if (player_status.StaminaValueNow > 0)
-                        {
-                            //RunChangeキーを長押ししている場合はRunSpeedを代入
-                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Run;
-                            NowSpeed = RunSpeed;
-                        }
-                        else
-                        {
-                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
-                            NowSpeed = WalkSpeed;
-                        }
+                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Run;
+                        NowSpeed = RunSpeed;
                     }
                     else
                     {
-                        if (player_stamina_controller.StaminaCheck())
-                        {
-                            //RunChangeキーを長押ししている場合はRunSpeedを代入
-                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Run;
-                            NowSpeed = RunSpeed;
-                        }
-                        else
-                        {
-                            player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
-                            NowSpeed = WalkSpeed;
-                        }
+                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                        NowSpeed = WalkSpeed;
                     }
-
-
+                }
+                else
+                {
+                    if (staminaController.StaminaCheck())
+                    {
+                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Run;
+                        NowSpeed = RunSpeed;
+                    }
+                    else
+                    {
+                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                        NowSpeed = WalkSpeed;
+                    }
                 }
             }
 
-
-
-            if (RunChangeAction.WasReleasedThisFrame())
+            if (runChangeAction.WasReleasedThisFrame())
             {
-                //RunChangeキーを離した場合はWalkSpeedに戻す。
-                player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed = WalkSpeed;
-                RunWalkTriggerChange = false;
+                runWalkTriggerChange = false;
             }
         }
-        if (CrouchChangeAction.triggered)
+    }
+
+    private void HandleCrouch()
+    {
+        if (crouchChangeAction.triggered)
         {
             if (!CrouchNow)
             {
-                //しゃがむ
-                player_status.player_move_state = PlayerStatus.PlayerMoveState.Crouch;
-                player_status.CrouchStandCameraPosChange(true);
+                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Crouch;
+                playerStatus.CrouchStandCameraPosChange(true);
                 NowSpeed = CrouchSpeed;
                 CrouchNow = true;
             }
             else
             {
-                player_status.player_move_state = PlayerStatus.PlayerMoveState.Walk;
-                player_status.CrouchStandCameraPosChange(false);
+                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                playerStatus.CrouchStandCameraPosChange(false);
                 NowSpeed = WalkSpeed;
                 CrouchNow = false;
             }
         }
-
     }
 
+    // 外部から呼べるスピードアップ
+    public void MoveSpeedUp(float addSpeed, float effectTime)
+    {
+        RunSpeed    += addSpeed;
+        WalkSpeed   += addSpeed * 0.5f;
+        CrouchSpeed += addSpeed * 0.25f;
+        moveSpeedUpDuration = effectTime;
+        moveSpeedUpNow      = true;
+        moveSpeedUpTimer    = 0f;
+    }
+
+    // 効果終了時の通知
+    private void ResetMoveSpeed()
+    {
+        subNoticedUI.Notice("脚力が元に戻った");
+    }
 }

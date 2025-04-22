@@ -23,7 +23,6 @@ public class OtonashiGusaController : MonoBehaviour
     public void OtonashiGusaUse()
     {
         Debug.Log("OtonashiGusaUse00------------");
-        foot_step_sound_controller.AutoFootStepSoundLevelChange = false;
         foot_step_sound_controller.FootStepCant(instantiate_item_script.item_status.ConsumableEffectTime);
 
     }

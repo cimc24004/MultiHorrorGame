@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
+using System.Linq;
 public class ItemMenuController : SerializedMonoBehaviour
 {
     //アイテムのメニューコントローラー　
@@ -225,7 +226,7 @@ public class ItemMenuController : SerializedMonoBehaviour
             //前に選択していたアイテムがあった場合
             before_selected_item_ui.FocusUI.SetActive(false);
         }
-
+        Debug.Log(item_belongings_controller.belonging_item_uis.ContainsKey(NowSelect_item_status));
         before_selected_item_ui = item_belongings_controller.belonging_item_uis[NowSelect_item_status].ItemUI.GetComponent<ItemUI>();
         
         before_selected_item_ui.FocusUI.SetActive(true);

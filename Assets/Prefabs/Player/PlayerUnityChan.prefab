@@ -6137,13 +6137,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def0de1343d5bc449a0294d95ecd7b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveDirection: {x: 0, y: 0, z: 0}
-  RunSpeed: 4
+  RunSpeed: 3.5
   WalkSpeed: 2
   CrouchSpeed: 1
+  rotationSmoothSpeed: 5
+  DirectionCamera: {fileID: 0}
   NowSpeed: 0
   CrouchNow: 0
-  DirectionCamera: {fileID: 0}
 --- !u!114 &6936642782527425598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15635,16 +15635,6 @@ PrefabInstance:
     - target: {fileID: 4339725872412752605, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4393960173864736346, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
-        type: 3}
-      propertyPath: MaxDistance
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 4393960173864736346, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
-        type: 3}
-      propertyPath: rolloffMode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8483580507634944193, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,

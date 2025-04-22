@@ -1,0 +1,77 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using DG.Tweening;
+using Sirenix.OdinInspector;
+public class ObjectBuffController : SerializedMonoBehaviour
+{
+    //オブジェクトを破壊->バフをつけるコントローラー
+    [SerializeField] private GameObject PartedObj;
+    [SerializeField] private GameObject JoinedObj;
+    [SerializeField] private float BrokenBlendDuration;
+    private PrayController pray_controller;
+    private SkinnedMeshRenderer PartedSkinnedMeshRenderer;
+    private AudioSource audio_source;
+    public enum BuffType{
+        Speed,
+        Otonashi,
+        ItemDrop
+    }
+    [SerializeField]
+    public BuffType buff_effect_type;
+    [ShowIf("buff_effect_type", BuffType.ItemDrop)]
+    [SerializeField]
+    private GameObject InstantiateItemPrefabOnDestroy;
+
+    private PlayerStatus player_status;
+    private PlayerMoveScript player_move_script;
+    private FootStepSoundController foot_step_sound_controller;
+    private SubNoticedUIController sub_noticed_ui_controller;
+    // Start is called before the first frame update
+    void Start()
+    {
+        pray_controller = this.gameObject.GetComponent<PrayController>();
+        pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroy);
+        PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
+        player_status = PlayerStatus.instance;
+        player_move_script = player_status.gameObject.GetComponent<PlayerMoveScript>();
+        foot_step_sound_controller = player_status.foot_step_sound_controller;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+        audio_source = this.gameObject.GetComponent<AudioSource>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    //バラバラにして破壊する
+    public void ObjectPartDestroy(){
+        PartedObj.SetActive(true);
+        JoinedObj.SetActive(false);
+        audio_source.Play();
+        DOTween.To(
+            () => PartedSkinnedMeshRenderer.GetBlendShapeWeight(0),
+            x  => PartedSkinnedMeshRenderer.SetBlendShapeWeight(0, x),
+            130f,
+            BrokenBlendDuration
+        ).SetEase(Ease.Linear).OnComplete(() => {
+            OnBrokenCompleted();
+            Destroy(this.gameObject, 1f);
+        });   
+    }
+    [Button]
+    public void OnBrokenCompleted(){
+        if(buff_effect_type == BuffType.Speed){
+            sub_noticed_ui_controller.Notice("脚力が上がった。");
+            player_move_script.MoveSpeedUp(1, 60);
+        }else if(buff_effect_type == BuffType.ItemDrop){
+
+            Instantiate(InstantiateItemPrefabOnDestroy, this.transform.position, Quaternion.identity);
+        }else if(buff_effect_type == BuffType.Otonashi){
+            sub_noticed_ui_controller.Notice("自分の足音が消えた");
+            foot_step_sound_controller.FootStepCant(60);
+        }
+    }
+}

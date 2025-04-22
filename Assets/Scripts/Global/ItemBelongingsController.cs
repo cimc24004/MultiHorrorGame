@@ -58,6 +58,8 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         enemy_all_controller = EnemyDatabases.instance.gameObject.GetComponent<EnemyAllController>();
         foreach(ItemStatus _itemStatus in InitialItemStatuses){
             ItemAddToBelonging(_itemStatus);
+            this.item_menu_controller.OnItemGetChangeUI(false, _itemStatus);
+
         }
     }
 

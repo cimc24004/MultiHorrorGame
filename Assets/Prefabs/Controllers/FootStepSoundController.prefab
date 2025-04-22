@@ -54,6 +54,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  FootStepSoundLevel: 0
+  AutoFootStepSoundLevelChange: 0
   audio_source: {fileID: 4393960173864736346}
   FootStepPlayFromUpdate: 0
   OnlyOneFootStepSound: 0
@@ -74,7 +76,8 @@ AudioSource:
   m_GameObject: {fileID: 2339356044274829683}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 856837d781241e24c97402d8c7beca72,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: a62172e6f7275ff4f94c17edc8dfdd0d, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -85,8 +88,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 10
+  MinDistance: 0
+  MaxDistance: 20.41
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -97,7 +100,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 1.1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -105,8 +108,17 @@ AudioSource:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1
-      value: 0
+      time: 0.67893106
+      value: 0.28679264
+      inSlope: -1.0874772
+      outSlope: -1.0874772
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.6601439
+      outWeight: 0.27368745
+    - serializedVersion: 3
+      time: 0.96280235
+      value: 0.002105713
       inSlope: 0
       outSlope: 0
       tangentMode: 0
