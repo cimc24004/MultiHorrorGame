@@ -8,12 +8,6 @@ public class OshiireMouzyaController : MonoBehaviour
     private Collidered OshiireAttackRange;
     [SerializeField]
     private DoorAttackedController door_attacked_controller;
-    [SerializeField]
-    private AudioSource OshiireAttackSource;
-    [SerializeField]
-    private AudioClip OshiireAttackAudioClip;
-    [SerializeField]
-    private AudioClip OshiireBrokeAudioClip;
 
     [SerializeField]
     private float ToDeathWaitTimeFromBrokeOshiire = 1;
@@ -28,6 +22,8 @@ public class OshiireMouzyaController : MonoBehaviour
     private DiscoveryPlayerController discovery_player_controller;
     [SerializeField]
     private bool OshiireAttackMode;
+    [SerializeField]
+    private TheDoorController target_the_door_controller;
     private Animator m_Animator;
     private bool BrokenOshiire;
     private EnemyStatus enemy_status;
@@ -38,12 +34,14 @@ public class OshiireMouzyaController : MonoBehaviour
     [SerializeField] private GameObject AttackedDoorEffectPrefab;
 
     private FootStepSoundController player_foot_step_sound_controller;
+    private EnemyActionForDoorController enemy_action_for_door_controller;
     // Start is called before the first frame update
     void Start()
     {
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         m_Animator = this.gameObject.GetComponent<Animator>();
         enemy_death_controller = this.gameObject.GetComponent<EnemyDeathController>();
+        enemy_action_for_door_controller = this.gameObject.GetComponent<EnemyActionForDoorController>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
@@ -66,7 +64,7 @@ public class OshiireMouzyaController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (OshiireAttackRange.Collider)
+        if (OshiireAttackRange.Collider && !BrokenOshiire)
         {
             if(!(player_foot_step_sound_controller.FootStepSoundLevel == 0))
             {
@@ -75,6 +73,7 @@ public class OshiireMouzyaController : MonoBehaviour
                 if (!BrokenOshiire)
                 {
                     follow_object_by_nav.MovePermit = false;
+                    enemy_action_for_door_controller.door_attacked_controller = this.door_attacked_controller;
                     enemy_to_player_kill_controller.enabled = false;
                 }
             }
@@ -86,16 +85,28 @@ public class OshiireMouzyaController : MonoBehaviour
 
         if (OshiireAttackMode)
         {
-            // m_Animator.SetBool("DoorAttack", true);
+            enemy_action_for_door_controller.enabled = true;
+            enemy_action_for_door_controller.AutoDoorAttack = false;
+            m_Animator.SetBool("DoorAttack", true);
             if (!BrokenOshiire)
             {
+                follow_object_by_nav.enabled = false;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
-                OshiireAttackWaitTimeNow += Time.deltaTime;
-                if(OshiireAttackWaitTimeNow > OshiireAttackWaitTime)
-                {
-                    AttackToOshiire(1);
-                    OshiireAttackWaitTimeNow = 0;
+
+                if(enemy_action_for_door_controller.DoorBroken){
+                    follow_object_by_nav.enabled = true;
+                    m_Animator.SetBool("DoorAttack", false);
+                    enemy_action_for_door_controller.door_attacked_controller = null;
+                    enemy_action_for_door_controller.the_door_controller = null;
+                    enemy_action_for_door_controller.DoorAttackNow = false;
+                    enemy_action_for_door_controller.AutoDoorAttack = true;
+                    enemy_action_for_door_controller.DoorBroken = false;
+                    follow_object_by_nav.MovePermit = true;
+                    enemy_to_player_kill_controller.enabled = true;
+                    BrokenOshiire = true;
+                    OshiireAttackMode = false;
                 }
+
             }
         }
         if (BrokenOshiire)
@@ -103,33 +114,11 @@ public class OshiireMouzyaController : MonoBehaviour
             ToDeathWaitTimeNowFromBrokeOshiire += Time.deltaTime;
             if(ToDeathWaitTimeNowFromBrokeOshiire > ToDeathWaitTimeFromBrokeOshiire)
             {
-                enemy_to_player_kill_controller.enabled = true;
-                follow_object_by_nav.MovePermit = false;
                 enemy_death_controller.DeadStart();
                 discovery_player_controller.DiscoveryPlayerNow = false;
             }
         }
     }
 
-    public void AttackToOshiire(int AttackDoorPlusCount)
-    {
-        if (BrokenOshiire) return;
-        bool broken = door_attacked_controller.DoorAttacked(AttackDoorPlusCount);
-        if (broken)
-        {
-            this.gameObject.transform.SetParent(null);
-            follow_object_by_nav.MovePermit = true;
-            BrokenOshiire = true;
-            OshiireAttackMode = false;
-            OshiireAttackSource.PlayOneShot(OshiireBrokeAudioClip);
-            OshiireAttackSource.PlayOneShot(OshiireAttackAudioClip);
-        }
-        else
-        {
-            GameObject effect = Instantiate(AttackedDoorEffectPrefab, door_attacked_controller.Doors[0].gameObject.transform.position + (Vector3.up * 0.2f), Quaternion.identity);
-            effect.transform.forward = this.transform.forward;
-            BrokenOshiire = false;
-            OshiireAttackSource.PlayOneShot(OshiireAttackAudioClip);
-        }
-    }
+
 }

@@ -9,7 +9,9 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
     //音が鳴るアイテムに音センサーコライダーをつけ、Enemyにもセンサーコライダーをつける。
     //こうすることで高さにも対応したセンサー機能ようなのができる。
     public bool NoticedSound;
+    [SerializeField]
     private bool InSoundRange;
+    [SerializeField]
     private SoundObjectEventWithEnemySensor sound_object_event_with_sensor;
     private EnemySoundSensor enemy_sound_sensor;
     private EnemyStatus enemy_status;

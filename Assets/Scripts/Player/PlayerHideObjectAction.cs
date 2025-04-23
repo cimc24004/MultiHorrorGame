@@ -17,10 +17,12 @@ public class PlayerHideObjectAction : MonoBehaviour
     private CharacterController player_character_controller;
     private PlayerInput player_input;
     private PlayerMoveScript player_move_script;
+    private CrossHairStatus cross_hair_status;
     // Start is called before the first frame update
     void Start()
     {
         player_status = this.gameObject.GetComponent<PlayerStatus>();
+        cross_hair_status = player_status.cross_hair_event.cross_hair_status;
         player_rigid = this.gameObject.GetComponent<Rigidbody>();
         player_collider = this.gameObject.GetComponent<Collider>();
         player_anim = this.gameObject.GetComponent<Animator>();
@@ -37,6 +39,12 @@ public class PlayerHideObjectAction : MonoBehaviour
         {
             HideAction = false;
             return;
+        }
+        if (cross_hair_status.HitedTag == "Hide"){
+
+            if (cross_hair_status.RaycastHitedExistsByCrossHairEvent && cross_hair_status.HitedObj == this.gameObject){
+
+            }
         }
         if (player_status.HidingNow)
         {

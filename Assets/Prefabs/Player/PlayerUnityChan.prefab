@@ -6065,6 +6065,7 @@ GameObject:
   - component: {fileID: 6939560754763208192}
   - component: {fileID: 9023457538613697648}
   - component: {fileID: 5474756954540797281}
+  - component: {fileID: 8402728259244179986}
   m_Layer: 6
   m_Name: PlayerUnityChan
   m_TagString: Player
@@ -6140,8 +6141,7 @@ MonoBehaviour:
   RunSpeed: 3.5
   WalkSpeed: 2
   CrouchSpeed: 1
-  rotationSmoothSpeed: 5
-  DirectionCamera: {fileID: 0}
+  rotationSmoothSpeed: 1
   NowSpeed: 0
   CrouchNow: 0
 --- !u!114 &6936642782527425598
@@ -7446,6 +7446,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 2
+--- !u!114 &8402728259244179986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0d4191b244b9a74191e311ee68897f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DirectionCamera: {fileID: 0}
 --- !u!1 &7660362891355367674
 GameObject:
   m_ObjectHideFlags: 0
@@ -9200,26 +9213,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4521428385488458392, guid: 81d9ab2315d8f924f9faa01974390eea,
         type: 3}
-    - target: {fileID: 4521428385488458392, guid: 81d9ab2315d8f924f9faa01974390eea,
-        type: 3}
-      propertyPath: serializationData.SerializedFormat
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4959379707324448688, guid: 81d9ab2315d8f924f9faa01974390eea,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -22
-      objectReference: {fileID: 0}
-    - target: {fileID: 6649423400864953785, guid: 81d9ab2315d8f924f9faa01974390eea,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 23.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6649423400864953785, guid: 81d9ab2315d8f924f9faa01974390eea,
-        type: 3}
-      propertyPath: m_fontSizeBase
-      value: 23.7
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -9,7 +9,7 @@ public class KubinashiMikoController : MonoBehaviour
     private EnemyStatus enemy_status;
     private DiscoveryPlayerController discovery_player_controller;
     private HorrorDirector horror_director;
-
+    private EnemyActionForDoorController enemy_action_for_door_controller;
     private bool no_discovery_player_once = false;
     // Start is called before the first frame update
     void Start()
@@ -19,6 +19,7 @@ public class KubinashiMikoController : MonoBehaviour
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         horror_director = HorrorDirector.instance;
+        enemy_action_for_door_controller = this.gameObject.GetComponent<EnemyActionForDoorController>();
     }
 
     // Update is called once per frame
@@ -32,7 +33,9 @@ public class KubinashiMikoController : MonoBehaviour
                 horror_director.ResetSetting();
                 no_discovery_player_once = true;
             }
-            follow_object_by_nav.ChaseToTargetSet(true, player_status.gameObject.transform.position, 2);
+            if(!enemy_action_for_door_controller.DoorAttackNow){
+                follow_object_by_nav.ChaseToTargetSet(true, player_status.gameObject.transform.position, 2);
+            }
         }else{
             no_discovery_player_once = false;
         }

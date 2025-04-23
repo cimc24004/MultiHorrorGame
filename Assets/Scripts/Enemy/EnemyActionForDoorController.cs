@@ -11,16 +11,18 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     [SerializeField] private int BrokeDoorPlusCount = 1;
     public DoorOpenCloseController door_open_close_controller;
     public TheDoorController the_door_controller;
+    public DoorAttackedController door_attacked_controller;
     public Transform RaycastStartTransform;
     public RaycastHit raycast_hit;
     public GameObject raycast_hit_obj;
     public LayerMask layer_mask;
 
-
+    public bool DoorAttackNow;
     public AudioSource DoorAttackSource;
     public AudioClip DoorAttackClip;
     public AudioClip DoorBrokenClip;
-
+    public bool AutoDoorAttack = true;
+    public bool DoorBroken = false;
     private FollowObjectByNav follow_object_by_nav;
     private EnemyStatus enemy_status;
     private NavMeshAgent nav_mesh_agent;
@@ -45,6 +47,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!AutoDoorAttack) return;
         anim.SetBool("DoorAttack", false);
         //レイキャストを正面から当てて、ドアに当たったら開けるようにする。
         if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, RaycastDistance, layer_mask))
@@ -76,15 +79,18 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                     follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,1);
                     follow_object_by_nav.StoppingDistance = 2;
                     character_controller.Move(Vector3.zero);
+                    DoorAttackNow = true;
                     anim.SetBool("DoorAttack", true);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                     discovery_player_controller.enabled = true;
+                }else{
+                    DoorAttackNow = false;
                 }
 
             }
             else
             {
-
+                DoorAttackNow = false;
             }
         }
         else
@@ -95,14 +101,17 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     }
     public void AttackToDoor()
     {
-        DoorAttackedController door_attacked_controller = the_door_controller.door_attacked_controller;
-        if(the_door_controller == null || door_attacked_controller == null)
+        
+        if(the_door_controller != null){
+            door_attacked_controller = the_door_controller.door_attacked_controller;
+        }
+        if(door_attacked_controller == null)
         {
             return;
         }
-        bool broken = the_door_controller.door_attacked_controller.DoorAttacked(BrokeDoorPlusCount);
+        DoorBroken = this.door_attacked_controller.DoorAttacked(BrokeDoorPlusCount);
         follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
-        if (broken)
+        if (DoorBroken)
         {
             follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
             follow_object_by_nav.MovePermit = true;
@@ -111,8 +120,8 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         }
         else
         {
-            GameObject effect = Instantiate(AttackedDoorEffectPrefab, the_door_controller.gameObject.transform.position + (Vector3.up * 0.2f), Quaternion.identity);
-            effect.transform.forward = this.transform.forward;
+            // GameObject effect = Instantiate(AttackedDoorEffectPrefab, the_door_controller.gameObject.transform.position + (Vector3.up * 0.2f), Quaternion.identity);
+            // effect.transform.forward = this.transform.forward;
             DoorAttackSource.PlayOneShot(DoorAttackClip);
         }
     }

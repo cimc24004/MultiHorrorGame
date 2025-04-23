@@ -21,6 +21,7 @@ public class PrayController : MonoBehaviour
     private bool touch;
     private PlayerStatus player_status;
     private GameObject GageCanvas;
+    private Image GageImageUI;
     private MainNoticedUIController main_noticed_ui_controller;
     private bool AlreadyPrayCompleted;
     private CrossHairStatus cross_hair_status;
@@ -35,8 +36,9 @@ public class PrayController : MonoBehaviour
     {
         player_status = PlayerStatus.instance;
         player_character_move_permit = player_status.gameObject.GetComponent<CharacterMovePermit>();
-        cross_hair_status = player_status.cross_hair_event.gameObject.GetComponent<CrossHairStatus>();
+        cross_hair_status = player_status.cross_hair_event.cross_hair_status;
         GageCanvas = player_status.GageCanvas;
+        GageImageUI = player_status.GageImage;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
     }
 

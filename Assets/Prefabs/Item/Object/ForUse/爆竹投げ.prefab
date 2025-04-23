@@ -351,59 +351,6 @@ MonoBehaviour:
   ItemGetAddEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &6004684370138334408
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9222868617790242169}
-  - component: {fileID: 3088869625913239283}
-  m_Layer: 8
-  m_Name: SoundSensorWithEnemyRange
-  m_TagString: SoundObjectRange
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &9222868617790242169
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6004684370138334408}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 5007184443225665439}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &3088869625913239283
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6004684370138334408}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 150, y: 20, z: 150}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &4699819560823428267
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -517,4 +464,78 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1620636520166436, guid: 2c932be947f0f6e4fae1e733f7b73295,
     type: 3}
   m_PrefabInstance: {fileID: 4699819560823428267}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6965895448842463573
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5007184443225665439}
+    m_Modifications:
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3746776766512655773, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_Name
+      value: SoundSensorWithEnemyRange
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 101b21450c9a2304287cf2b48bd8d532, type: 3}
+--- !u!4 &9222868617790242169 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,
+    type: 3}
+  m_PrefabInstance: {fileID: 6965895448842463573}
   m_PrefabAsset: {fileID: 0}

@@ -25,7 +25,7 @@ public class HorizontalProjectile : SerializedMonoBehaviour
     public LayerMask col_layer;
 
     private Vector3 normal;
-
+    [SerializeField]
     private GameObject hited_obj;
 
     private GameObject InstantiateObjWhenHitedEnemy;
@@ -82,7 +82,7 @@ public class HorizontalProjectile : SerializedMonoBehaviour
         if (throw_now)
         {
             //’n–Ê‚É‚Ô‚Â‚©‚Á‚½‚ç
-            if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0 && hited_obj.gameObject.tag != "WindowBorder")
+            if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0)
             {
                 OnGround = true;
             }

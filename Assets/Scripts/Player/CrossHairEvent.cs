@@ -11,13 +11,14 @@ public class CrossHairEvent : MonoBehaviour
     public ItemBelongingsController item_belonging_controller;
     private PlayerInput player_input;
     public PlayerHideObjectAction player_hide_object_action;
-    public GameObject Player;
+    private PlayerStatus player_status;
+    private GameObject Player;
     //�N���X�w�A�����΂����C�L���X�g�̋����B
     public float RaycastDistance = 3;
 
     Camera MainCamera;
     private RaycastHit raycast_hit;
-    private CrossHairStatus cross_hair_status;
+    public CrossHairStatus cross_hair_status;
     public GameObject RaycasstedObj;
 
     public AudioSource ItemGetSource;
@@ -32,7 +33,8 @@ public class CrossHairEvent : MonoBehaviour
     {
         MainCamera = Camera.main;
         player_input = GameControllerOnAllScene.instance.player_input;
-        cross_hair_status = this.gameObject.GetComponent<CrossHairStatus>();
+        player_status = PlayerStatus.instance;
+        this.Player = player_status.gameObject;
     }
 
     // Update is called once per frame
@@ -49,6 +51,8 @@ public class CrossHairEvent : MonoBehaviour
                 if (RaycasstedObj != raycast_hit.collider.gameObject)
                 {
                     pray_controller = raycast_hit.collider.gameObject.GetComponent<PrayController>();
+                    player_status.GageImage.fillAmount = 0;
+
                 }
                 pray_controller.OnTouchOn();
             }

@@ -10,8 +10,8 @@ public class ObjectBuffController : SerializedMonoBehaviour
     [SerializeField] private GameObject JoinedObj;
     [SerializeField] private float BrokenBlendDuration;
     private PrayController pray_controller;
+    private SoundObjectEventWithEnemySensor sound_object_event_with_enemy_sensor;
     private SkinnedMeshRenderer PartedSkinnedMeshRenderer;
-    private AudioSource audio_source;
     public enum BuffType{
         Speed,
         Otonashi,
@@ -37,7 +37,7 @@ public class ObjectBuffController : SerializedMonoBehaviour
         player_move_script = player_status.gameObject.GetComponent<PlayerMoveScript>();
         foot_step_sound_controller = player_status.foot_step_sound_controller;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
-        audio_source = this.gameObject.GetComponent<AudioSource>();
+        sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
     }
 
     // Update is called once per frame
@@ -50,7 +50,7 @@ public class ObjectBuffController : SerializedMonoBehaviour
     public void ObjectPartDestroy(){
         PartedObj.SetActive(true);
         JoinedObj.SetActive(false);
-        audio_source.Play();
+        sound_object_event_with_enemy_sensor.SensorSoundPlay();
         DOTween.To(
             () => PartedSkinnedMeshRenderer.GetBlendShapeWeight(0),
             x  => PartedSkinnedMeshRenderer.SetBlendShapeWeight(0, x),
@@ -58,7 +58,7 @@ public class ObjectBuffController : SerializedMonoBehaviour
             BrokenBlendDuration
         ).SetEase(Ease.Linear).OnComplete(() => {
             OnBrokenCompleted();
-            Destroy(this.gameObject, 1f);
+            Destroy(this.gameObject, 1.1f);
         });   
     }
     [Button]

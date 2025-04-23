@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
 public class PlayerMoveScript : MonoBehaviour
 {
     // Inspectorで調整
@@ -12,10 +11,10 @@ public class PlayerMoveScript : MonoBehaviour
     public float WalkSpeed = 1f;
     public float CrouchSpeed = 1f;
     [Header("回転の滑らかさ（大きいほど速く追従）")]
-    [SerializeField] private float rotationSmoothSpeed = 5f;
+    [SerializeField] private float rotationSmoothSpeed = 5f;  // 使わないけど残しておく
     [Header("カメラ参照")]
-    public GameObject DirectionCamera;
-
+    private GameObject DirectionCamera;
+    private PlayerCameraController player_camera_controller;
     // 内部用
     private CharacterController characterController;
     private PlayerInput playerInput;
@@ -23,7 +22,6 @@ public class PlayerMoveScript : MonoBehaviour
     private InputAction runChangeAction;
     private InputAction crouchChangeAction;
     private Vector3 moveDirection = Vector3.zero;
-    private Quaternion targetRotation;
     public float NowSpeed;
     private float defaultRunSpeed;
     private float defaultWalkSpeed;
@@ -36,7 +34,7 @@ public class PlayerMoveScript : MonoBehaviour
     private SubNoticedUIController subNoticedUI;
     private TimeManager timeManager;
 
-    // 移動速度アップ用
+    // スピードアップ用
     private bool moveSpeedUpNow = false;
     private float moveSpeedUpDuration;
     private float moveSpeedUpTimer = 0f;
@@ -58,23 +56,22 @@ public class PlayerMoveScript : MonoBehaviour
         staminaController = GetComponent<PlayerStaminaController>();
         subNoticedUI = playerStatus.sub_noticed_ui_controller;
         timeManager = TimeManager.instance;
+        player_camera_controller = this.gameObject.GetComponent<PlayerCameraController>();
+        DirectionCamera = player_camera_controller.DirectionCamera;
     }
 
     void Update()
     {
-        // ── 入力取得＆方向・回転ターゲット設定 ──
+        // 入力取得＆移動方向設定
         Vector2 input = moveAction.ReadValue<Vector2>();
+        playerStatus.MoveY = input.y;
+        playerStatus.MoveX = input.x;
         if (input.sqrMagnitude > 0.01f)
         {
-            // カメラ基準の前・右ベクトル
             Quaternion camRot = Quaternion.Euler(0f, DirectionCamera.transform.eulerAngles.y, 0f);
             Vector3 forward = camRot * Vector3.forward;
             Vector3 right   = camRot * Vector3.right;
-
-            // 移動方向
             moveDirection = (forward * input.y + right * input.x).normalized;
-            // 回転ターゲット
-            targetRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
             playerStatus.MoveSpeed = NowSpeed;
         }
         else
@@ -83,13 +80,11 @@ public class PlayerMoveScript : MonoBehaviour
             playerStatus.MoveSpeed = 0f;
         }
 
-        // ── 走る／歩く切り替え処理 ──
+        // 走る／歩く処理
         HandleRunWalk();
-
-        // ── しゃがみ切り替え処理 ──
+        // しゃがみ処理
         HandleCrouch();
-
-        // ── スピードアップタイマー更新 ──
+        // スピードアップタイマー
         if (moveSpeedUpNow)
         {
             moveSpeedUpTimer += Time.deltaTime;
@@ -107,32 +102,16 @@ public class PlayerMoveScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        // ── 実際の移動 ──
+        // 実際の移動
         if (moveDirection != Vector3.zero)
-        {
             characterController.Move(moveDirection * NowSpeed * Time.fixedDeltaTime);
-        }
         else
-        {
-            // Y方向の慣性（必要なら重力に置き換えてOK）
-            characterController.Move(
-                Vector3.Scale(Vector3.up, characterController.velocity) 
-                * Time.fixedDeltaTime
-            );
-        }
+            characterController.Move(Vector3.up * characterController.velocity.y * Time.fixedDeltaTime);
     }
 
     void LateUpdate()
     {
-        // ── 滑らか回転 ──
-        if (moveDirection != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                rotationSmoothSpeed * Time.deltaTime
-            );
-        }
+
     }
 
     private void HandleRunWalk()
@@ -141,39 +120,22 @@ public class PlayerMoveScript : MonoBehaviour
             playerStatus.player_move_state == PlayerStatus.PlayerMoveState.Walk)
         {
             if (runChangeAction.triggered)
-            {
-                // 押した瞬間にスタミナチェック
                 runWalkTriggerChange = staminaController.StaminaCheck();
-            }
 
             if (runWalkTriggerChange && runChangeAction.IsPressed())
             {
-                // 長押し中
-                if (!staminaController.StaminaIncreaseNow)
+                bool canRun = staminaController.StaminaIncreaseNow
+                    ? staminaController.StaminaCheck()
+                    : (playerStatus.StaminaValueNow > 0);
+                if (canRun)
                 {
-                    if (playerStatus.StaminaValueNow > 0)
-                    {
-                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Run;
-                        NowSpeed = RunSpeed;
-                    }
-                    else
-                    {
-                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
-                        NowSpeed = WalkSpeed;
-                    }
+                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Run;
+                    NowSpeed = RunSpeed;
                 }
                 else
                 {
-                    if (staminaController.StaminaCheck())
-                    {
-                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Run;
-                        NowSpeed = RunSpeed;
-                    }
-                    else
-                    {
-                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
-                        NowSpeed = WalkSpeed;
-                    }
+                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                    NowSpeed = WalkSpeed;
                 }
             }
 
@@ -207,7 +169,6 @@ public class PlayerMoveScript : MonoBehaviour
         }
     }
 
-    // 外部から呼べるスピードアップ
     public void MoveSpeedUp(float addSpeed, float effectTime)
     {
         RunSpeed    += addSpeed;
@@ -218,7 +179,6 @@ public class PlayerMoveScript : MonoBehaviour
         moveSpeedUpTimer    = 0f;
     }
 
-    // 効果終了時の通知
     private void ResetMoveSpeed()
     {
         subNoticedUI.Notice("脚力が元に戻った");

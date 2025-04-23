@@ -347,7 +347,7 @@ Transform:
   m_GameObject: {fileID: 8897745171868026069}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.182, z: 0}
+  m_LocalPosition: {x: 0.007, y: 1.182, z: 0.155}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1505,15 +1505,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OshiireAttackRange: {fileID: 4025585364353337323}
   door_attacked_controller: {fileID: 0}
-  OshiireAttackSource: {fileID: 5863089618976448100}
-  OshiireAttackAudioClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777,
-    type: 3}
-  OshiireBrokeAudioClip: {fileID: 8300000, guid: 5a9945f6fab4959418fbd76c3aec7b79,
-    type: 3}
   ToDeathWaitTimeFromBrokeOshiire: 10
   OshiireAttackWaitTime: 1
   OshiireAttackWaitTimeNow: 0
   OshiireAttackMode: 0
+  target_the_door_controller: {fileID: 0}
   AttackedDoorEffectPrefab: {fileID: 9106265002187385468, guid: e3bc59c5b786c904c8e4917940946e74,
     type: 3}
 --- !u!114 &3726776348388475724
@@ -1547,9 +1543,9 @@ MonoBehaviour:
   DiscoveryPlayerNow: 0
   DiscoveryPlayerBySightning: 0
   EyePosition: {fileID: 3698561623734633006}
-  original_discovery_player_status: {fileID: 11400000, guid: a471b8f764bacc2489838ef4d0c0b857,
+  original_discovery_player_status: {fileID: 11400000, guid: 7b7bc4df6b27a604ba142c7cde0e0150,
     type: 2}
-  discovery_player_status: {fileID: 11400000, guid: a471b8f764bacc2489838ef4d0c0b857,
+  discovery_player_status: {fileID: 11400000, guid: 7b7bc4df6b27a604ba142c7cde0e0150,
     type: 2}
   IsAudioPlayOnChase: 0
   SightningPlayer: 0
@@ -1651,7 +1647,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8813186536376409743}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
   m_Name: 
@@ -1660,7 +1656,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 266824
   StartPos: {fileID: 3698561623734633006}
-  RaycastDistance: 0.8
+  RaycastDistance: 1.1
   ray_obj: {fileID: 0}
 --- !u!114 &1430194522841201995
 MonoBehaviour:
@@ -2793,7 +2789,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8813186536376409743}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1f1cd1e3cf1b094181823f8e80b2d05, type: 3}
   m_Name: 
@@ -2808,17 +2804,21 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   RaycastDistance: 1
-  BrokeDoorPlusCount: 1
+  BrokeDoorPlusCount: 2
   door_open_close_controller: {fileID: 0}
   the_door_controller: {fileID: 0}
+  door_attacked_controller: {fileID: 0}
   RaycastStartTransform: {fileID: 3698561623734633006}
   raycast_hit_obj: {fileID: 0}
   layer_mask:
     serializedVersion: 2
     m_Bits: 135688
+  DoorAttackNow: 0
   DoorAttackSource: {fileID: 5863089618976448100}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 2feb94a928460904caf8c8cdcfe30ebd, type: 3}
+  AutoDoorAttack: 1
+  DoorBroken: 0
   AttackedDoorEffectPrefab: {fileID: 9106265002187385468, guid: e3bc59c5b786c904c8e4917940946e74,
     type: 3}
 --- !u!114 &8935245958271565609
