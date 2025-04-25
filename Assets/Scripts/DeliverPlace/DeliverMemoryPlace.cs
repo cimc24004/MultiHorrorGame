@@ -30,7 +30,7 @@ public class DeliverMemoryPlace : SerializedMonoBehaviour
     [Button]
     public void Deliver(ItemBelongingsController item_belongings_controller)
     {
-        if (item_belongings_controller.ExistItemUIItemStatusByFind(item_databases.ForDeliverItem))
+        if (item_belongings_controller.ExistBelongingItemByFind(item_databases.ForDeliverItem))
         {
             //持ち物に納めるアイテムが存在したらアイテムを使用します。
             

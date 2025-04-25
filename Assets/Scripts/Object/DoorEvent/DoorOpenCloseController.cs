@@ -22,7 +22,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     private Vector3 DefaultRotateVector;
 
     [Required] public TheDoorController the_door_controller;
-    public float duration = 0.3f;
+    public float Duration = 0.5f;
 
     public UnityEvent OpenCompleted;
     public UnityEvent CloseCompleted;
@@ -108,7 +108,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         if (open_type == OpenType.SideOpen)
         {
             // ローカル座標系で移動
-            this.transform.DOLocalMove(OpenLocalPosition, duration)
+            this.transform.DOLocalMove(OpenLocalPosition, Duration)
                 .SetEase(Ease.Linear)
                 .SetLink(this.gameObject)
                 .OnComplete(() =>
@@ -119,7 +119,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         }
         else if (open_type == OpenType.Rotate)
         {
-            this.transform.DOLocalRotate(TargetRotateVector, duration, RotateMode.Fast)
+            this.transform.DOLocalRotate(TargetRotateVector, Duration, RotateMode.Fast)
                 .SetEase(Ease.Linear)
                 .SetLink(this.gameObject)
                 .OnUpdate(() =>
@@ -150,7 +150,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         if (open_type == OpenType.SideOpen)
         {
             // ローカル座標系で移動
-            this.transform.DOLocalMove(DefaultLocalPosition, duration)
+            this.transform.DOLocalMove(DefaultLocalPosition, Duration)
                 .SetEase(Ease.Linear)
                 .SetLink(this.gameObject)
                 .OnComplete(() =>
@@ -161,7 +161,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         }
         else if (open_type == OpenType.Rotate)
         {
-            this.transform.DOLocalRotate(DefaultRotateVector, duration, RotateMode.Fast)
+            this.transform.DOLocalRotate(DefaultRotateVector, Duration, RotateMode.Fast)
                 .SetEase(Ease.Linear)
                 .SetLink(this.gameObject)
                 .OnUpdate(() =>

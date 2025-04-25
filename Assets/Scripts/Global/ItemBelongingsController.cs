@@ -257,6 +257,14 @@ public class ItemBelongingsController : SerializedMonoBehaviour
             return false;
         }
     }
+    public bool ExistBelongingItemByFind(ItemStatus item_status){
+        if (belonging_items.ContainsKey(item_status))
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
     public bool ExistItemUIItemStatusByFind(ItemStatus item_status)
     {
         //アイテムメニューに指定したItemStatusが存在しない場合。
