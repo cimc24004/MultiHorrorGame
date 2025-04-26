@@ -329,6 +329,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 575013917172829890}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: adfcea2e6f1535c4ab66cedf112fe113,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6535687018867813307}
   m_SourcePrefab: {fileID: 100100000, guid: adfcea2e6f1535c4ab66cedf112fe113, type: 3}
 --- !u!1 &7323219938815168963 stripped
 GameObject:
@@ -369,7 +373,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a684997e8d904683d9fc468ccc3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NeedToPrayTime: 3
+  NoticeMessage: "\u304A\u7948\u308A\u3059\u308B"
+  NeedToPrayTime: 7
   PrayNow: 0
   PrayPermit: 1
   PrayTimeNow: 0
@@ -381,6 +386,12 @@ MonoBehaviour:
         m_Target: {fileID: 575013917172829890}
         m_MethodName: CurseDecrease
         m_Modes: 01000000
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 6535687018867813307}
+        m_MethodName: Play
+        m_Modes: 01000000
+  PlayerStopOnPrayNow: 0
 --- !u!114 &575013917172829890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,7 +404,103 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aefdb4263df60245a426c82554e2412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurseDecreaseAmount: 10
+  CurseDecreaseAmount: 30
+--- !u!82 &6535687018867813307
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7323219938815168963}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 38db2e0eebb06894f9e60c02247dfb94, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &7992373212502723449 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: adfcea2e6f1535c4ab66cedf112fe113,

@@ -9,7 +9,7 @@ public class PlayerCameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DirectionCamera = Camera.main.gameObject;
+        //DirectionCamera = Camera.main.gameObject;
     }
 
     // Update is called once per frame

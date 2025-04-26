@@ -38,23 +38,18 @@ public class HousesController : SerializedMonoBehaviour
 
         int i = 0;
 
-        while (true)
+        // 1. House をシャッフル
+        var shuffled = house_directors.OrderBy(_ => Random.value).ToList();
+        // 2. 必要数分だけループ
+        for (int idx = 0; idx < Mathf.Min(game_progress_controller.NeedPrayCount, shuffled.Count); idx++)
         {
-            if (i >= game_progress_controller.NeedPrayCount) break;
-            //NeedPrayCount������Butsudan���쐬����Ƃ�������
-
-            int r = Random.Range(0, house_directors.Count);
-            
-            List<GameObject> Butsudans = house_directors[r].Butsudans;
-            
-            int r_2 = Random.Range(0, house_directors[r].Butsudans.Count);
-            
-            if (!Butsudans[r_2].activeSelf && !house_directors[r].ButsudanExists)
-            {
-                house_directors[r].ButsudanExists = true;
-                Butsudans[r_2].SetActive(true);
-                i++;
-            }
+            var hd = shuffled[idx];
+            // hd.Butsudans からランダムに１つ選ぶ
+            int j = Random.Range(0, hd.Butsudans.Count);
+            hd.Butsudans[j].SetActive(true);
+            hd.ButsudanExists = true;
+            // 少し待って次のフレームに続行
+            // yield return null;
         }
 
     }
