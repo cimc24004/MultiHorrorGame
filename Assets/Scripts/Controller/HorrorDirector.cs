@@ -290,6 +290,9 @@ public class HorrorDirector : Singleton<HorrorDirector>
     /// <summary>
     /// 全部リセットして None 状態に戻す
     /// </summary>
+    public void MainBGMReset(){
+        MainBGM.clip = MainDefaultBGM;
+    }
     public void ResetSetting()
     {
         Debug.Log("ResetSettingResetSettingResetSettingResetSettingResetSettingResetSettingResetSettingHOrrorDirector");

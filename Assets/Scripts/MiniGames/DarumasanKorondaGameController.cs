@@ -42,12 +42,14 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
     private Tween LookAtPlayerTween;
     private PlayerInput player_input;
     private GameControllerOnAllScene game_controller_on_all_scene;
+    private DiscoveryPlayerController discovery_player_controller;
     private InputAction look_action;
     // Start is called before the first frame update
 
     void Start()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
+        discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
         player_status = PlayerStatus.instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         player_input = game_controller_on_all_scene.player_input;
@@ -100,6 +102,7 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
                         Debug.Log("ボイス あなたは動きましたね？？");
                         DarumasanParent.transform.SetParent(null);
                         character_move_permit.Move();
+                        discovery_player_controller.DiscoveryPlayerNow = true;
                         this.gameObject.SetActive(false);
                         KorondaVoiceReset();
                     }

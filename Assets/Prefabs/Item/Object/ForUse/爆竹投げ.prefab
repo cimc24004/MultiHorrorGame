@@ -139,6 +139,18 @@ MonoBehaviour:
   OnGroundEvent:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 6004684370138334408}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 2168927718610686170}
         m_TargetAssemblyTypeName: SoundObjectEventWithEnemySensor, Assembly-CSharp
         m_MethodName: SensorSoundPlay
@@ -169,6 +181,7 @@ MonoBehaviour:
   col_layer:
     serializedVersion: 2
     m_Bits: 4264461
+  hited_obj: {fileID: 0}
 --- !u!114 &2168927718610686170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -528,11 +541,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoundSensorWithEnemyRange
       objectReference: {fileID: 0}
+    - target: {fileID: 3746776766512655773, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 101b21450c9a2304287cf2b48bd8d532, type: 3}
+--- !u!1 &6004684370138334408 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3746776766512655773, guid: 101b21450c9a2304287cf2b48bd8d532,
+    type: 3}
+  m_PrefabInstance: {fileID: 6965895448842463573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9222868617790242169 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,

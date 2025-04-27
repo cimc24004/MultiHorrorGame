@@ -11,6 +11,7 @@ public class ObjectBuffController : SerializedMonoBehaviour
     [SerializeField] private float BrokenBlendDuration;
     private PrayController pray_controller;
     private SoundObjectEventWithEnemySensor sound_object_event_with_enemy_sensor;
+    [SerializeField] private GameObject SoundObjectSoundArea;
     private SkinnedMeshRenderer PartedSkinnedMeshRenderer;
     public enum BuffType{
         Speed,
@@ -50,6 +51,7 @@ public class ObjectBuffController : SerializedMonoBehaviour
     public void ObjectPartDestroy(){
         PartedObj.SetActive(true);
         JoinedObj.SetActive(false);
+        SoundObjectSoundArea.gameObject.SetActive(true);
         sound_object_event_with_enemy_sensor.SensorSoundPlay();
         DOTween.To(
             () => PartedSkinnedMeshRenderer.GetBlendShapeWeight(0),

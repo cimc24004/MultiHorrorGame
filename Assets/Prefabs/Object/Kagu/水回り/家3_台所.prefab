@@ -535,6 +535,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u5BB63_\u53F0\u6240"
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0ce1169ecd58b784b9da7fc420b37d39,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -571,6 +576,10 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 4426796575161227158}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0ce1169ecd58b784b9da7fc420b37d39,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6168468263119539703}
     - targetCorrespondingSourceObject: {fileID: -7422151822734960208, guid: 0ce1169ecd58b784b9da7fc420b37d39,
         type: 3}
       insertIndex: -1
@@ -717,7 +726,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 30, z: 0}
   the_door_controller: {fileID: 5161556413837349499}
-  duration: 0.5
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls:
@@ -955,7 +964,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 150, z: 0}
   the_door_controller: {fileID: 7618073703530152313}
-  duration: 0.5
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls:
@@ -1181,7 +1190,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 30, z: 0}
   the_door_controller: {fileID: 442915876212778768}
-  duration: 0.5
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls:
@@ -1413,7 +1422,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 150, z: 0}
   the_door_controller: {fileID: 8783884178927063201}
-  duration: 0.5
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls:
@@ -1586,6 +1595,33 @@ MonoBehaviour:
     SerializationNodes: []
   ItemToParent: {fileID: 6325156022713149738}
   FrequencyItemApperance: 6
+--- !u!1 &9142584035331080617 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0ce1169ecd58b784b9da7fc420b37d39,
+    type: 3}
+  m_PrefabInstance: {fileID: 8224015389241916664}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &6168468263119539703
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9142584035331080617}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4499147, y: 0.8316188, z: 1.8382144}
+  m_Center: {x: -2.5749574, y: 0.5847522, z: -3.8650496}
 --- !u!1001 &8839502534170947171
 PrefabInstance:
   m_ObjectHideFlags: 0

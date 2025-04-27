@@ -12,7 +12,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     public DoorOpenCloseController door_open_close_controller;
     public TheDoorController the_door_controller;
     public DoorAttackedController door_attacked_controller;
-    public Transform RaycastStartTransform;
+    public List<Transform> rayStarts;
     public RaycastHit raycast_hit;
     public GameObject raycast_hit_obj;
     public LayerMask layer_mask;
@@ -47,57 +47,63 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!AutoDoorAttack) return;
+        if (!AutoDoorAttack) return;
+
         anim.SetBool("DoorAttack", false);
-        //レイキャストを正面から当てて、ドアに当たったら開けるようにする。
-        if (Physics.Raycast(RaycastStartTransform.position, RaycastStartTransform.transform.forward, out raycast_hit, RaycastDistance, layer_mask))
+        DoorAttackNow = false;
+
+
+        foreach (Transform start in rayStarts)
         {
-
-            if (raycast_hit.collider.gameObject.tag == "Door")
+            if (start == null) continue;                     // 念のため空チェック
+            Debug.DrawRay(start.position, start.forward * RaycastDistance, Color.red);
+            
+            if (Physics.Raycast(start.position, start.forward, out raycast_hit, RaycastDistance, layer_mask))
             {
-                Debug.Log("DoorHit: " + raycast_hit.collider.gameObject);
-                if(raycast_hit_obj != raycast_hit.collider.gameObject || door_open_close_controller == null)
+                if (raycast_hit.collider.gameObject.tag == "Door")
                 {
-                    door_open_close_controller = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
-                }
-                raycast_hit_obj = raycast_hit.collider.gameObject;
+                    // ── ここから先は元の一連の処理そのまま ─────────
+                    Debug.Log("DoorHit: " + raycast_hit.collider.gameObject);
 
-                the_door_controller = door_open_close_controller.the_door_controller;
-                if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
-                {
-                    //ドアの開け閉めアニメーションが終わっていた場合だけ開け閉めできるようにするよ。
-                    if (!discovery_player_controller.DiscoveryPlayerNow) { 
-                        the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                    if (raycast_hit_obj != raycast_hit.collider.gameObject || door_open_close_controller == null)
+                    {
+                        door_open_close_controller = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     }
-                }
-                if(the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
-                {
-                    Debug.Log("扉を壊したいと思います。");
-                    //if ((door_open_close_controller.open_type == DoorOpenCloseController.OpenType.Rotate && the_door_controller.door_status == TheDoorController.DoorStatus.Opened))
-                    //    return;
-                    discovery_player_controller.enabled = false;
-                    follow_object_by_nav.ChaseToTargetSet(true,the_door_controller.gameObject.transform.position,1);
-                    follow_object_by_nav.StoppingDistance = 2;
-                    character_controller.Move(Vector3.zero);
-                    DoorAttackNow = true;
-                    anim.SetBool("DoorAttack", true);
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
-                    discovery_player_controller.enabled = true;
-                }else{
-                    DoorAttackNow = false;
-                }
+                    raycast_hit_obj = raycast_hit.collider.gameObject;
 
-            }
-            else
-            {
-                DoorAttackNow = false;
+                    the_door_controller = door_open_close_controller.the_door_controller;
+
+                    if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
+                    {
+                        if (!discovery_player_controller.DiscoveryPlayerNow)
+                        {
+                            the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                        }
+                    }
+
+                    if (the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
+                    {
+                        Debug.Log("扉を壊したいと思います。");
+                        discovery_player_controller.enabled = false;
+                        follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 1);
+                        follow_object_by_nav.StoppingDistance = 2;
+                        character_controller.Move(Vector3.zero);
+
+                        DoorAttackNow = true;
+                        anim.SetBool("DoorAttack", true);
+                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+                        discovery_player_controller.enabled = true;
+                    }
+                    else
+                    {
+                        DoorAttackNow = false;
+                    }
+
+                    // どれか 1 本当たったら break でループ終了
+                    break;
+                }
             }
         }
-        else
-        {
-
-        }
-        Debug.DrawRay(RaycastStartTransform.position, RaycastStartTransform.transform.forward * 1f, Color.red);
     }
     public void AttackToDoor()
     {

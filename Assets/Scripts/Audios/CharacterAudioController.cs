@@ -38,20 +38,23 @@ public class CharacterAudioController : SerializedMonoBehaviour
     /// 指定したステータスの音を再生
     /// </summary>
     void Update(){
-        if(currentAudioData.AutoAudioPlayOnUpdate){
-            AudioPlayIntervalTimeNow += Time.deltaTime;
-            if(AudioPlayIntervalTimeNow > currentAudioData.AudioPlayInterval){
-                PlayAudio(current_character_behavior_state);
+        if(currentAudioData != null){
+            if(currentAudioData.AutoAudioPlayOnUpdate){
+                AudioPlayIntervalTimeNow += Time.deltaTime;
+                if(AudioPlayIntervalTimeNow > currentAudioData.AudioPlayInterval){
+                    PlayAudio(current_character_behavior_state);
 
-                AudioPlayIntervalTimeNow = 0;
+                    AudioPlayIntervalTimeNow = 0;
+                }
             }
         }
-
     }
 
     public void ChangeCharacterBehaviorState(CharacterBehaviorState state){
         current_character_behavior_state = state;
-        currentAudioData = characterAudioDatas[current_character_behavior_state];
+        if(characterAudioDatas.ContainsKey(current_character_behavior_state)){
+            currentAudioData = characterAudioDatas[current_character_behavior_state];
+        }
         AudioPlayIntervalTimeNow = 0;
     }
     public void PlayAudio(CharacterBehaviorState state)

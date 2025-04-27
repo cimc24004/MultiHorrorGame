@@ -6,68 +6,90 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
 {
     //敵につける音センサーイベントスクリプト(プレイヤーの足音以外のアイテムから出る音など)
 
-    //音が鳴るアイテムに音センサーコライダーをつけ、Enemyにもセンサーコライダーをつける。
-    //こうすることで高さにも対応したセンサー機能ようなのができる。
     public bool NoticedSound;
-    [SerializeField]
-    private bool InSoundRange;
-    [SerializeField]
-    private SoundObjectEventWithEnemySensor sound_object_event_with_sensor;
+    [SerializeField] private bool InSoundRange;
+    [SerializeField] private SoundObjectEventWithEnemySensor sound_object_event_with_sensor;
     private EnemySoundSensor enemy_sound_sensor;
     private EnemyStatus enemy_status;
     private FollowObjectByNav follow_object_by_nav;
     private bool once;
 
     private bool before_enemy_sound_sensor_mode = false;
+    [SerializeField] private GameObject hited_collider;
+
+    // ───── 追加した設定 ───────────────────────
+    [Header("BoxCast 設定")]
+    [SerializeField] private Vector3 boxHalfSize = new Vector3(2f, 1f, 2f);
+    [Tooltip("SoundObjectRange 用レイヤーマスク")]
+    [SerializeField] private LayerMask soundObjectLayerMask;
+    // private List<GameObject> triggeries;
     // Start is called before the first frame update
     void Start()
     {
-        enemy_status = this.gameObject.GetComponent<EnemyStatus>();
-        follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
+        enemy_status       = GetComponent<EnemyStatus>();
+        follow_object_by_nav = GetComponent<FollowObjectByNav>();
+        enemy_sound_sensor = GetComponent<EnemySoundSensor>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //(敵のセンサー範囲内かつ音範囲内)
+        // ── ここで BoxCast（実質 OverlapBox） ──────────
+        Collider[] hits = Physics.OverlapBox(
+            transform.position,
+            boxHalfSize,
+            Quaternion.identity,
+            soundObjectLayerMask);
+        
+        if (hits.Length > 0)
+        {
+            // いずれかの SoundObjectRange が範囲内
+            hited_collider = hits[0].gameObject;
+            if(hited_collider.tag == "SoundObjectRange"){
+                sound_object_event_with_sensor = hits[0].transform.parent
+                                                    .GetComponent<SoundObjectEventWithEnemySensor>();
+                InSoundRange = true;
+            }
+        }
+        else
+        {
+            InSoundRange = false;
+        }
+
+        // ── 以降は元のロジックそのまま ────────────────
         if (InSoundRange)
         {
-            //敵が音に気づいた場合。
             if (sound_object_event_with_sensor.enemy_sound_sensor_mode)
             {
-                //SoundObject(非常ベルや投擲アイテム)の音がなっている最中ならば
-                //enemy_sound_sensor.ArriveSoundPlaceWaitTimeToReturnNow = 0;
-                enemy_sound_sensor.SoundSeonsor(sound_object_event_with_sensor.gameObject.transform.position, enemy_sound_sensor.sound_sensor_status.SpeedRunWhenRealizeSound, true);
-                enemy_sound_sensor.sound_by_obj = true;
+                enemy_sound_sensor.SoundSeonsor(
+                    sound_object_event_with_sensor.transform.position,
+                    enemy_sound_sensor.sound_sensor_status.SpeedRunWhenRealizeSound,
+                    true);
 
+                enemy_sound_sensor.sound_by_obj = true;
             }
             before_enemy_sound_sensor_mode = sound_object_event_with_sensor.enemy_sound_sensor_mode;
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "SoundObjectRange")
-        {
-            sound_object_event_with_sensor = other.transform.parent.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
+    // OnTrigger 系は不要になったのでコメントアウト
+    /*
+    private void OnTriggerEnter(Collider other) { }
+    
+    private void OnTriggerExit(Collider other) { }
+    */
+    // private void OnTriggerStay(Collider other)
+    // {
+    //     if(!triggeries.Contains(other.gameObject)){
+    //         triggeries.Add(other.gameObject);
+    //     }
+    // }
 
-
-            //sound_object_event_with_sensor.SoundStopEvent.AddListener(() =>
-            //{
-            //    //音が終了したらsound_by_objをfalseにします。
-            //    Debug.Log("soundobject_event_with_sensorのSoundStopEventが実行したああああ");
-            //    enemy_sound_sensor.sound_by_obj = false;
-            //}); 
-            
-            InSoundRange = true;
-        }
-    }
-    private void OnTriggerExit(Collider other)
+    // デバッグ用: シーンビューで検知範囲を表示
+    private void OnDrawGizmosSelected()
     {
-        if (other.gameObject.tag == "SoundObjectRange")
-        {
-            InSoundRange = false;
-        }
+        Gizmos.color = Color.cyan;
+        Gizmos.matrix = Matrix4x4.TRS(transform.position, Quaternion.identity, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, boxHalfSize * 2f);
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
+using UnityEngine.SceneManagement;
 public class PlayerStatus : Singleton<PlayerStatus>
 {
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
@@ -200,6 +201,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
 
         DOVirtual.DelayedCall(4, () =>
         {
+            SceneManager.LoadScene("GameOver");
             PlayerDeaded = false;
             camera_enemy_face_expanding.FaceExpandingUnActive();
             player_continue_controller.Continue();

@@ -218,7 +218,6 @@ public class ItemMenuController : SerializedMonoBehaviour
         //選択しているアイテムステータスも取得しておく。
         NowSelect_item_status = NowSelectItemUIObject.GetComponent<ItemUI>().item_status;
         
-        
         item_equip_controller.EquipChange(NowSelect_item_status);
 
         if(before_selected_item_ui != null)

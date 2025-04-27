@@ -128,6 +128,7 @@ public class CurseController : Singleton<CurseController>
                 if(horror_director.nearEnemyCount == 0 && horror_director.discoveredEnemyCount == 0){
                     horror_director.ChangeHorrorState(HorrorState.None);
                 }
+                horror_director.MainBGMReset();
                 horror_director.EnemyLostPlayer();
                 horror_director.MainBGMAutoChange = true;
                 Destroy(InstantiatedMiko, 0.1f);
@@ -161,12 +162,13 @@ public class CurseController : Singleton<CurseController>
     }
     private void ItemLock()
     {
-        if (!item_belongings_controller.ExistsItems())
+        if(!item_belongings_controller.ExistsItems()) return;
+        List<ItemStatus> target_item_statues = item_belongings_controller.belonging_items.Keys.Where(x => x.item_type == ItemStatus.ItemType.Consumable || x.item_type == ItemStatus.ItemType.CanThrow).ToList();
+        if (target_item_statues.Count == 0)
         {
 
             return;
         }
-        List<ItemStatus> target_item_statues = item_belongings_controller.belonging_items.Keys.Where(x => x.item_type == ItemStatus.ItemType.Consumable || x.item_type == ItemStatus.ItemType.CanThrow).ToList();
         int item_lock_random = Random.Range(0, target_item_statues.Count);
 
         ItemStatus taget_item_status = target_item_statues.ElementAt(item_lock_random);

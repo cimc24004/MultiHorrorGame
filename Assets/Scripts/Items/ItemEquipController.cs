@@ -7,7 +7,7 @@ using System;
 public class ItemEquipController : SerializedMonoBehaviour
 {
     // 装備アイテムとその状態を保持する辞書
-    [SerializeField] private Dictionary<ItemStatus, GameObject> equip_items_with_item_status;
+    [SerializeField] public Dictionary<ItemStatus, GameObject> equip_items_with_item_status;
 
     // 現在の装備アイテムのGameObject
     [SerializeField]
@@ -43,7 +43,7 @@ public class ItemEquipController : SerializedMonoBehaviour
             return;
         }
         // 渡されたItemStatusが装備用でない場合、現在の装備を解除する
-        if(item_status.item_type != ItemStatus.ItemType.Equip)
+        if(!equip_items_with_item_status.ContainsKey(item_status))
         {
             // 既に装備されているアイテムがあれば非表示にする
             if(BeforeEquip != null)
@@ -54,7 +54,6 @@ public class ItemEquipController : SerializedMonoBehaviour
             BeforeEquip = null;
             return;
         }
-        
         // 辞書から該当する装備アイテムを取得する
         equip_item = equip_items_with_item_status[item_status];
         

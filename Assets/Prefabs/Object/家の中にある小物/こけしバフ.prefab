@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8401892083771370792}
   - component: {fileID: 7249485413587140290}
   - component: {fileID: 7531673272568342387}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: "\u3053\u3051\u3057\u30D0\u30D5"
   m_TagString: Pray
   m_Icon: {fileID: 0}
@@ -64,6 +64,7 @@ MonoBehaviour:
   PartedObj: {fileID: 5285584866980737948}
   JoinedObj: {fileID: 7552577209784783921}
   BrokenBlendDuration: 0.3
+  SoundObjectSoundArea: {fileID: 6600211863804720227}
   buff_effect_type: 0
   InstantiateItemPrefabOnDestroy: {fileID: 0}
 --- !u!65 &2233011697925142868
@@ -99,8 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a684997e8d904683d9fc468ccc3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NoticeMessage: "\u58CA\u3059"
-  NeedToPrayTime: 6
+  NoticeMessage: "\u58CA\u3059 (\u97F3\u304C\u306A\u308A\u307E\u3059)"
+  NeedToPrayTime: 4
   PrayNow: 0
   PrayPermit: 1
   PrayTimeNow: 0
@@ -234,6 +235,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanCheckActionUIController
       objectReference: {fileID: 0}
+    - target: {fileID: 2901038860396023613, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164552987168250338, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -298,6 +309,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5291952721162681464, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7836069159154365488, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
@@ -402,7 +418,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 33dc76acf74efe641bde51afc0560c1d,
         type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 33dc76acf74efe641bde51afc0560c1d,
         type: 3}
@@ -502,7 +518,7 @@ PrefabInstance:
     - target: {fileID: 3338559265406706585, guid: c96bdb0599b05c84fadc8a18e3be8763,
         type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3338559265406706585, guid: c96bdb0599b05c84fadc8a18e3be8763,
         type: 3}
@@ -624,6 +640,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoundSensorWithEnemyRange
       objectReference: {fileID: 0}
+    - target: {fileID: 3746776766512655773, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3746776766512655773, guid: 101b21450c9a2304287cf2b48bd8d532,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5365488718369951654, guid: 101b21450c9a2304287cf2b48bd8d532,
         type: 3}
       propertyPath: m_Size.x
@@ -639,6 +665,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 101b21450c9a2304287cf2b48bd8d532, type: 3}
+--- !u!1 &6600211863804720227 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3746776766512655773, guid: 101b21450c9a2304287cf2b48bd8d532,
+    type: 3}
+  m_PrefabInstance: {fileID: 7523140198327802366}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8589053895189564882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2257960533695124524, guid: 101b21450c9a2304287cf2b48bd8d532,

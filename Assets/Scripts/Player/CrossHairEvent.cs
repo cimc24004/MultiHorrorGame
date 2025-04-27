@@ -42,7 +42,7 @@ public class CrossHairEvent : MonoBehaviour
     {
         //�J�����̒������烌�C�L���X�g���΂��B
         main_ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.green);
+        Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.yellow);
         if (Physics.Raycast(main_ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
         {
             //触れてる間に色々するとこ↓

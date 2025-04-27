@@ -117,7 +117,17 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4705765331427787557}
+    - targetCorrespondingSourceObject: {fileID: -7029948723529949830, guid: 96682b83f21f88e4fa9999ffc2f11854,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3961125908857034705}
   m_SourcePrefab: {fileID: 100100000, guid: 96682b83f21f88e4fa9999ffc2f11854, type: 3}
+--- !u!4 &2854809052557607147 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -3542852092398272455, guid: 96682b83f21f88e4fa9999ffc2f11854,
+    type: 3}
+  m_PrefabInstance: {fileID: 7587179436699418834}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7117781928385458870 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8391222552659086748, guid: 96682b83f21f88e4fa9999ffc2f11854,
@@ -205,20 +215,31 @@ MonoBehaviour:
   open_type: 1
   ToOpenTransform: {fileID: 0}
   TargetRotateVector: {x: 0, y: 0, z: 94.2}
-  DefaultRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 8666587660339034825}
-  duration: 0.2
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ItemRandomCreateIndividual, Assembly-CSharp
+        m_MethodName: ItemRandomCreateFromIndividual
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemApperanceWhenOpended: 0
-  AlreadyOpended: 0
+  ItemAppearanceWhenOpened: 1
+  AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!65 &8298389062844251376
 BoxCollider:
@@ -337,3 +358,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3961125908857034705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591612026295901608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de933ddb1e858d642952719a7c98eeeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  ItemToParent: {fileID: 2854809052557607147}
+  FrequencyItemApperance: 6

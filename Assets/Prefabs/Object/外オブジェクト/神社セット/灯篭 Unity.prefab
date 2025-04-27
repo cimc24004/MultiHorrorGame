@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 544584602094375843}
   - component: {fileID: 7836489650546137815}
   - component: {fileID: 2534085107161827767}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 131989311
+    m_Bits: 131988799
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -184,7 +184,12 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 0724bb11703b95a40909224e9aea8de3,
         type: 3}
       propertyPath: m_Layer
-      value: 17
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0724bb11703b95a40909224e9aea8de3,
+        type: 3}
+      propertyPath: m_TagString
+      value: Light
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -198,6 +203,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3339399116460074967}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0724bb11703b95a40909224e9aea8de3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8568421869155406570}
   m_SourcePrefab: {fileID: 100100000, guid: 0724bb11703b95a40909224e9aea8de3, type: 3}
 --- !u!1 &2562563625419132592 stripped
 GameObject:
@@ -226,6 +235,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.6189998, y: 1.5815847, z: 0.6189998}
   m_Center: {x: 0, y: -0.37457478, z: 0.007427454}
+--- !u!114 &8568421869155406570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2562563625419132592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e5d6d6ace3c04499433bc97fdc13d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  turn_status: 0
+  LightObj: {fileID: 4284974542374338473}
+  IsHimoAudioPlay: 0
+  IsLightOnAudio: 0
+  IsLightAudio: 0
+  IsBlinkingLightOnAnimation: 0
+  HimoAudioSource: {fileID: 0}
+  LightOnAudioSource: {fileID: 0}
+  LightAudioSource: {fileID: 0}
+  originalIntensity: 0
 --- !u!4 &2944191589548921866 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0724bb11703b95a40909224e9aea8de3,

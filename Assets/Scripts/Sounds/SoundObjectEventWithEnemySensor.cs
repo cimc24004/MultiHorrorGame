@@ -42,7 +42,10 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
         }
     }
 
-
+    void OnDestroy()
+    {
+        SensorSoundStop();
+    }
     public void SensorSoundPlay()
     {
 
