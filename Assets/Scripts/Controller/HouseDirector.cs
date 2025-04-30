@@ -6,6 +6,7 @@ using Sirenix.Serialization;
 
 public class HouseDirector : SerializedMonoBehaviour
 {
+    public SilhouetteChangeController silhouette_change_controller;
     //public GameObject Butsudan;
     public List<GameObject> Butsudans;
     public bool ButsudanExists;

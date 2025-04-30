@@ -70,8 +70,9 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                         door_open_close_controller = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     }
                     raycast_hit_obj = raycast_hit.collider.gameObject;
-
-                    the_door_controller = door_open_close_controller.the_door_controller;
+                    if(door_open_close_controller != null){
+                        the_door_controller = door_open_close_controller.the_door_controller;
+                    }
 
                     if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
                     {
@@ -84,15 +85,9 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                     if (the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                     {
                         Debug.Log("î‡ÇâÛÇµÇΩÇ¢Ç∆évÇ¢Ç‹Ç∑ÅB");
-                        discovery_player_controller.enabled = false;
-                        follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 1);
-                        follow_object_by_nav.StoppingDistance = 2;
-                        character_controller.Move(Vector3.zero);
 
                         DoorAttackNow = true;
-                        anim.SetBool("DoorAttack", true);
-                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
-                        discovery_player_controller.enabled = true;
+
                     }
                     else
                     {
@@ -103,6 +98,15 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                     break;
                 }
             }
+        }
+        if(DoorAttackNow && the_door_controller != null){
+            discovery_player_controller.enabled = false;
+            follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 1);
+            follow_object_by_nav.StoppingDistance = 2;
+            character_controller.Move(Vector3.zero);
+            anim.SetBool("DoorAttack", true);
+            enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+            discovery_player_controller.enabled = true;
         }
     }
     public void AttackToDoor()
@@ -120,7 +124,6 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
         if (DoorBroken)
         {
             follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
-            follow_object_by_nav.MovePermit = true;
             DoorAttackSource.PlayOneShot(DoorBrokenClip);
             DoorAttackSource.PlayOneShot(DoorAttackClip);
         }

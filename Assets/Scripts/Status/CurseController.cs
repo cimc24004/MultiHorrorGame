@@ -31,13 +31,12 @@ public class CurseController : Singleton<CurseController>
     [SerializeField] public UnityEvent2 OnCurseGageMaxEvent;
 
     private GameObject InstantiatedMiko;
-    private UIFadeController ui_fade_controller;
     private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
     private PlayerStaminaController player_stamina_controller;
     private ItemBelongingsController item_belongings_controller;
     private ItemMenuController item_menu_controller;
-    private bool CurseMaxedEventNow;
+    public bool CurseMaxedEventNow;
     [SerializeField]
     //呪いゲージがマックスになった時イベントが起こり続ける時間
     private float CurseMaxEventWhileTime;
@@ -56,12 +55,10 @@ public class CurseController : Singleton<CurseController>
         item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = item_belongings_controller.item_menu_controller;
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
-        ui_fade_controller = CurseGageUI.GetComponent<UIFadeController>();
         horror_director = HorrorDirector.instance;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         this.OnValueChangeCurseEvent.AddListener(() =>
         {
-            ui_fade_controller.AutoFadeIn();
         });
         this.OnCurseGageMaxEvent.AddListener(() =>
         {
@@ -84,6 +81,7 @@ public class CurseController : Singleton<CurseController>
 
             if(CurseMaxEventWhileTimeNow > CurseMaxEventWhileTime)
             {
+                this.CurseDecrease(this.CurseValueNow);
                 CurseMaxedReset();
             }
         }
@@ -118,7 +116,7 @@ public class CurseController : Singleton<CurseController>
         }
 
     }
-    private void CurseMaxedReset()
+    public void CurseMaxedReset()
     {
         sub_noticed_ui_controller.Notice("呪いの影響がすべて消滅した……");
         if(curse_event_type == CurseEventType.MikoInstantiate)
@@ -141,7 +139,6 @@ public class CurseController : Singleton<CurseController>
             item_belongings_controller.CanUseItem(true, locked_item_status);
         }
         
-        this.CurseDecrease(this.CurseValueNow);
         CurseMaxEventWhileTimeNow = 0;
         CurseMaxedEventNow = false;
     }

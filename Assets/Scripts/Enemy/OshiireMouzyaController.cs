@@ -8,7 +8,8 @@ public class OshiireMouzyaController : MonoBehaviour
     private Collidered OshiireAttackRange;
     [SerializeField]
     private DoorAttackedController door_attacked_controller;
-
+    [SerializeField]
+    private PlayerNearSensor player_near_sensor;
     [SerializeField]
     private float ToDeathWaitTimeFromBrokeOshiire = 1;
     private float ToDeathWaitTimeNowFromBrokeOshiire = 0;
@@ -48,7 +49,7 @@ public class OshiireMouzyaController : MonoBehaviour
         enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
         player_status = PlayerStatus.instance;
         player_foot_step_sound_controller = player_status.foot_step_sound_controller;
-
+        player_near_sensor.IsNearToKillEffect = false;
 
         foreach (Transform door in door_attacked_controller.gameObject.transform)
         {
@@ -103,6 +104,7 @@ public class OshiireMouzyaController : MonoBehaviour
                     enemy_action_for_door_controller.DoorBroken = false;
                     follow_object_by_nav.MovePermit = true;
                     enemy_to_player_kill_controller.enabled = true;
+                    player_near_sensor.IsNearToKillEffect = true;
                     BrokenOshiire = true;
                     OshiireAttackMode = false;
                 }

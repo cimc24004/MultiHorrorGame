@@ -59,7 +59,7 @@ public class FollowObjectByNav : MonoBehaviour
         //追いかけるターゲットと自分との距離
         ToTargetPosDistance = Math.Round(Vector3.Distance(ChaseTargetPosition, this.transform.position), 1, MidpointRounding.ToEven);
         PosGetByFinder(ChaseTargetPosition);
-        nav_mesh_agent.SetDestination(ChaseTargetPosition);
+        nav_mesh_agent?.SetDestination(ChaseTargetPosition);
         if (ChaseToTargetMode)
         {
 

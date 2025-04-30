@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using Cinemachine;
 using Sirenix.OdinInspector;
+using UnityEngine.Rendering;
 
 public enum HorrorState
 {
@@ -24,17 +25,25 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public GameObject ToEnemyNear;
     public AudioSource ToEnemyNearBGMAudioSource;
     public AudioSource ToEnemyNearHeartBeatSoundSource;
-
+    [SerializeField] private AudioSource GhostAppearToNearBGM;
+    [SerializeField] private AudioFadeController ToEnemyNearBGMAudioFadeController;
+    [SerializeField] private AudioFadeController ToEnemyNearHeartBeatController;
     [Title("敵に発見された時の演出関連")]
     public GameObject Discoveried;
     public GameObject DiscoveriedSound;
     public GameObject DiscoveryVolume;
+
     [Title("巫女出現")]
     public AudioSource MikoApperanceSound;
 
     [Title("敵に殺される時の演出")]
     public GameObject PlayerKill;
 
+    [Title("敵に殺されそう&&近づいてくるときの演出")]
+    [SerializeField] private AudioSource EnemyNearToKillBGM;
+    [SerializeField] private float maxDetectDistance = 15f;
+    [SerializeField] private float minDetectDistance = 2f;
+    [SerializeField] private PostProcessVolumeController EnemyNearToKillVolumeController;
     private AudioClip MainDefaultBGM;
     
     private CinemachineImpulseSource cinemachine_impulse_source;
@@ -42,8 +51,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
     private URPFxController urp_fx_controller;
     private PlayerStatus player_status;
     private CurseController curse_controller;
-
-    
+    private ClosestEnemyController closest_enemy_controller;
+    [Header("For Debug")]
     [SerializeField]
     // 現在の状態
     private HorrorState currentState = HorrorState.None;
@@ -66,11 +75,35 @@ public class HorrorDirector : Singleton<HorrorDirector>
         curse_controller = CurseController.instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         urp_fx_controller = game_controller_on_all_scene.GetComponent<URPFxController>();
+        closest_enemy_controller = ClosestEnemyController.instance;
     }
 
     private void Update()
     {
-        Debug.Log("Status: " + currentState);
+        if (closest_enemy_controller.ClosestEnemyWithDistance.Key != null && closest_enemy_controller.ClosestEnemyWithDistance.Value.player_near_sensor.IsNearToKillEffect)
+        {
+            // 距離を 0?1 正規化
+            float dist = closest_enemy_controller.ClosestEnemyWithDistance.Value.Distance;
+            float t = Mathf.Clamp01(
+                (maxDetectDistance - dist) / (maxDetectDistance - minDetectDistance)
+            );
+
+            // シーン内で毎フレームフェード値を更新
+            EnemyNearToKillVolumeController.FadeTo(
+                t,
+                duration: 0.1f,            // サクッと追従したいなら短時間
+                onUpdate: fadeVal =>
+                {
+                    EnemyNearToKillBGM.volume = fadeVal;  // 同期して音量もコントロール
+                }
+            );
+        }
+        else
+        {
+            // 敵がいなければ 0 へフェードアウト
+            EnemyNearToKillVolumeController.FadeTo(0f, 0.2f, fadeVal => EnemyNearToKillBGM.volume = fadeVal);
+        }
+
         if(player_status.PlayerDeaded){
             discoveredEnemyCount = 0;
             nearEnemyCount = 0;
@@ -94,6 +127,9 @@ public class HorrorDirector : Singleton<HorrorDirector>
         // 0 -> 1 になったタイミングで NearEnemy 演出開始
         if (nearEnemyCount >= 1 && discoveredEnemyCount == 0)
         {
+            if(nearEnemyCount == 1){
+                GhostAppearToNearBGM.Play();
+            }
             ChangeHorrorState(HorrorState.EnemyNear);
         }
     }
@@ -130,7 +166,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
 
     public void PlayerKilled(){
         PlayerKill.SetActive(true);
-        Main.SetActive(false);
+        // Main.SetActive(false);
         urp_fx_controller.CheapCameraChange(true);
         urp_fx_controller.CorruptMemoryChange(true);
         urp_fx_controller.HackedChange(true);
@@ -220,9 +256,14 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public void NearEnemy()
     {
         Debug.Log("NearEnemy関数が実行されました");
-        Main.SetActive(false);
+        // Main.SetActive(false);
         ToEnemyNear.SetActive(true);
+        ToEnemyNearBGMAudioFadeController.PlayWithFadeIn(1, () => {
 
+        });
+        ToEnemyNearHeartBeatController.PlayWithFadeIn(1, () => {
+
+        });
         urp_fx_controller.CheapCameraChange(true);
         urp_fx_controller.VHSChange(true);
     }
@@ -233,22 +274,14 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public void NearEnemyReset()
     {
         // フェードアウト等をしたあと、最終的に None へ
-        ToEnemyNearBGMAudioSource.DOFade(0, 1)
-            .SetEase(Ease.Linear)
-            .SetLink(this.gameObject)
-            .OnComplete(() =>
-            {
-                ToEnemyNearBGMAudioSource.volume = 1;
-            });
 
-        ToEnemyNearHeartBeatSoundSource.DOFade(0, 1)
-            .SetEase(Ease.Linear)
-            .SetLink(this.gameObject)
-            .OnComplete(() =>
-            {
-                ToEnemyNearHeartBeatSoundSource.volume = 1;
-            });
+        ToEnemyNearBGMAudioFadeController.FadeOutAndStop(0, () => {
+            // ToEnemyNearBGMAudioSource.volume = 1;
+        });
 
+        ToEnemyNearHeartBeatController.FadeOutAndStop(0,() => {
+            // ToEnemyNearHeartBeatSoundSource.volume = 1;
+        });
         urp_fx_controller.CheapCameraChange(false);
         urp_fx_controller.VHSChange(false);
 
@@ -273,7 +306,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
         urp_fx_controller.InteferecesChange(true);
         urp_fx_controller.HackedChange(true);
 
-        Main.SetActive(false);
+        // Main.SetActive(false);
         DiscoveryVolume.SetActive(true);
 
         Discoveried.SetActive(true);
@@ -295,7 +328,6 @@ public class HorrorDirector : Singleton<HorrorDirector>
     }
     public void ResetSetting()
     {
-        Debug.Log("ResetSettingResetSettingResetSettingResetSettingResetSettingResetSettingResetSettingHOrrorDirector");
         //StartCoroutine(ResetCoroutine());
         // 見つかった演出のオブジェクトをOFF
         Discoveried.SetActive(false);
@@ -305,12 +337,12 @@ public class HorrorDirector : Singleton<HorrorDirector>
         urp_fx_controller.VHSChange(false);
         urp_fx_controller.InteferecesChange(false);
 
-        Main.SetActive(true);
+        // Main.SetActive(true);
         if(MainBGMAutoChange){
             MainBGM.clip = MainDefaultBGM;
         }
-        MainBGM.volume = 1;
-        MainBGM.Play();
+        // MainBGM.volume = 1;
+        // MainBGM.Play();
     }
 
     

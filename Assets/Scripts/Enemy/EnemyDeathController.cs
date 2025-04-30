@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using DG.Tweening;
+using UnityEngine.AI;
 public class EnemyDeathController : SerializedMonoBehaviour
 {
     public bool Death;
@@ -12,10 +13,16 @@ public class EnemyDeathController : SerializedMonoBehaviour
     private float DeathAlpha;
     [SerializeField]
     private AudioSource DeathAudioSource;
+    private NavMeshAgent nav_mesh_agent;
+    private CharacterController character_controller;
+    private FollowObjectByNav follow_object_by_nav;
     // Start is called before the first frame update
     void Start()
     {
+        nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
+        character_controller = this.gameObject.GetComponent<CharacterController>();
         m_Animator = this.gameObject.GetComponent<Animator>();
+        follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
     }
 
     // Update is called once per frame
@@ -30,6 +37,9 @@ public class EnemyDeathController : SerializedMonoBehaviour
         if (Death) return;
         DeathAudioSource.Play();
         Death = true;
+        nav_mesh_agent.enabled = false;
+        character_controller.Move(Vector3.zero);
+        follow_object_by_nav.MovePermit = false;
         m_Animator.SetBool("Death", Death);
     }
     public void DeathAnimationEnd()

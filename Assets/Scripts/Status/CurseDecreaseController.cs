@@ -25,6 +25,9 @@ public class CurseDecreaseController : MonoBehaviour
     public void CurseDecrease()
     {
         Debug.Log("CurseDecrease!!!!!!!!!!!!!!!!!!!!!!");
+        if(curse_controller.CurseMaxedEventNow){
+            curse_controller.CurseMaxedReset();
+        }
         player_status.sub_noticed_ui_controller.Notice("呪い値が下がった");
         curse_controller.CurseDecrease(CurseDecreaseAmount);
     }

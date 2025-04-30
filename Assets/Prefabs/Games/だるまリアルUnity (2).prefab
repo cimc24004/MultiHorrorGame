@@ -173,7 +173,8 @@ AudioSource:
   m_GameObject: {fileID: 1317808033924946747}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: cebcfbf431daf3644901a9fec6bd3d1b,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -285,7 +286,7 @@ Transform:
   m_GameObject: {fileID: 1789835179188744174}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0274, y: 0.3291, z: 0.049}
+  m_LocalPosition: {x: -0.0274, y: 0.3291, z: 0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -589,6 +590,7 @@ GameObject:
   - component: {fileID: 677841691579338456}
   - component: {fileID: 3561855710536013457}
   - component: {fileID: 5884450085060208609}
+  - component: {fileID: 1200482745416050406}
   m_Layer: 7
   m_Name: "\u3060\u308B\u307E\u30EA\u30A2\u30EBUnity (2)"
   m_TagString: Enemy
@@ -883,7 +885,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 463432
   StartPos: {fileID: 3727253099503095796}
-  RaycastDistance: 1
+  RaycastDistance: 1.5
   ray_obj: {fileID: 0}
 --- !u!114 &677841691579338456
 MonoBehaviour:
@@ -1082,9 +1084,37 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1200482745416050406}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   StopEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1200482745416050406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2424068193693033414}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943dd1ad765af247928a156a38b5162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FlinchNow: 0
+  FlinchTime: 0
+  FlinchTimeNow: 0
+  ChangeApplyMotionWhenFlinch: 0
 --- !u!1 &2700028143499077335
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,9 +4,10 @@ using UnityEngine;
 using System.Linq;
 using Sirenix.OdinInspector;
 using FronkonGames.Glitches.Hacked;
-public class HousesController : SerializedMonoBehaviour
+public class HousesController : Singleton<HousesController>
 {
     public List<HouseDirector> house_directors;
+    public List<SilhouetteChangeController> silhouette_change_controllers;
     private GameProgressController game_progress_controller;
     // Start is called before the first frame update
     void Start()
@@ -15,6 +16,11 @@ public class HousesController : SerializedMonoBehaviour
         game_progress_controller = GameProgressController.instance;
         if(house_directors.Count != 0){
             StartCoroutine(ButsudanRandomCreate());
+        }
+        foreach(HouseDirector house_director in house_directors){
+            if(house_director.silhouette_change_controller != null){
+                silhouette_change_controllers.Add(house_director.silhouette_change_controller);
+            }
         }
     }
 

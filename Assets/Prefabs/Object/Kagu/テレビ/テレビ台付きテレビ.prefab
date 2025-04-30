@@ -10,9 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 3121960717316172698}
   - component: {fileID: 7767993382255284180}
-  m_Layer: 0
+  - component: {fileID: 3569733836840379603}
+  - component: {fileID: 8206295099804101119}
+  m_Layer: 3
   m_Name: "\u30C6\u30EC\u30D3\u53F0\u4ED8\u304D\u30C6\u30EC\u30D3"
-  m_TagString: Untagged
+  m_TagString: Pray
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -55,6 +57,45 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.70842934, y: 0.9018612, z: 0.9233475}
   m_Center: {x: 0.14578533, y: -0.049069405, z: 0.038326263}
+--- !u!114 &3569733836840379603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7742523276481067708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d3a684997e8d904683d9fc468ccc3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NoticeMessage: "\u30C6\u30EC\u30D3\u306E\u96FB\u6E90\u3092\u3064\u3051\u308B"
+  NeedToPrayTime: 5
+  PrayNow: 0
+  PrayPermit: 1
+  PrayTimeNow: 0
+  PrayCompletedEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 8206295099804101119}
+        m_MethodName: Reveal
+        m_Modes: 01000000
+  PlayerStopOnPrayNow: 1
+--- !u!114 &8206295099804101119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7742523276481067708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ab91bb44ffc984c8fc826b15bf9b94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  silhouette_change_reset_interval_time: 20
 --- !u!1001 &5482229355500647399
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -117,6 +158,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: "\u30C6\u30EC\u30D3\u53F0"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6798102767668744433, guid: 327b73612b024544a888a8d51dbd4e3c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -191,6 +237,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: "\u30C6\u30EC\u30D3"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3090772834397102959, guid: 5edf1fcba977998498a2942efe77d82c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

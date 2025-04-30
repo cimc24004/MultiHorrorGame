@@ -9,6 +9,8 @@ public class SisenAsobiDousiController : MonoBehaviour
     private EnemyRoutingController enemy_routing_controller;
     private HeadLookatTargetController head_look_at_target_controller;
     [SerializeField]
+    private PlayerNearSensor player_near_sensor;
+    [SerializeField]
     private SkinnedMeshRenderer HumanKaradaMeshRenderer;
     [SerializeField]
     private AudioSource ScreamAudioSource;
@@ -48,6 +50,7 @@ public class SisenAsobiDousiController : MonoBehaviour
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         urp_fx_controller = GameControllerOnAllScene.instance.gameObject.GetComponent<URPFxController>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
+        player_near_sensor.IsNearToKillEffect = false;
     }
 
     // Update is called once per frame
@@ -79,6 +82,7 @@ public class SisenAsobiDousiController : MonoBehaviour
         }
         if (!discovery_player_controller.DiscoveryPlayerNow)
         {
+            player_near_sensor.IsNearToKillEffect = false;
             if (!MouthOpenNow)
             {
                 if (head_look_at_target_controller.LookAtTargetNow && discovery_player_controller.SightningPlayer)
@@ -130,6 +134,7 @@ public class SisenAsobiDousiController : MonoBehaviour
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                 discovery_player_controller.DiscoveryPlayerNow = true;
                 urp_fx_controller.InteferecesChange(false);
+                player_near_sensor.IsNearToKillEffect = true;
                 MouthOpenNow = false;
                 MouthOpenTimeNow = 0;
             }else

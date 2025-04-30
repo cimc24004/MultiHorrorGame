@@ -377,7 +377,8 @@ AudioSource:
   m_GameObject: {fileID: 8624507085980813984}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 6ee7c1a2796d5dc409bc038a9dd05eae,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: d2a997d035a3ee84d88903c903120c32, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -1037,6 +1038,11 @@ PrefabInstance:
     - target: {fileID: 7778245600807515336, guid: e526fad9fe145684da79294aa4a10fc7,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969463070807449204, guid: e526fad9fe145684da79294aa4a10fc7,
+        type: 3}
+      propertyPath: IsNearEffect
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1044,6 +1050,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e526fad9fe145684da79294aa4a10fc7, type: 3}
+--- !u!114 &4656590219881474820 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8969463070807449204, guid: e526fad9fe145684da79294aa4a10fc7,
+    type: 3}
+  m_PrefabInstance: {fileID: 4388308162955031920}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86a83b7fefd87cf4682c5d96d08c9ea8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8900387700497736965 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5143920509784543349, guid: e526fad9fe145684da79294aa4a10fc7,
@@ -2274,7 +2292,7 @@ MonoBehaviour:
   NoticedSound: 0
   InSoundRange: 0
   sound_object_event_with_sensor: {fileID: 0}
-  colliders: {fileID: 0}
+  hited_collider: {fileID: 0}
   boxHalfSize: {x: 2, y: 1, z: 2}
   soundObjectLayerMask:
     serializedVersion: 2
@@ -3565,6 +3583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2927464b73e44c4f81b7e4aeeb052e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player_near_sensor: {fileID: 4656590219881474820}
   HumanKaradaMeshRenderer: {fileID: 5595777167115342555}
   ScreamAudioSource: {fileID: 4076067894010094536}
   MouthOpenNow: 0
