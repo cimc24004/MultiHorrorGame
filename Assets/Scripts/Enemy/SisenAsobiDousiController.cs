@@ -28,6 +28,7 @@ public class SisenAsobiDousiController : MonoBehaviour
     private EnemyToPlayerKillController enemy_to_player_kill_controller;
     private CharacterController character_controller;
     private bool _once_look;
+    [SerializeField]
     private bool previousFlinchNow = false;
     [SerializeField]
     private bool PermitMouthOpen = true;

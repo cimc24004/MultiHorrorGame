@@ -206,15 +206,15 @@ public class HorrorDirector : Singleton<HorrorDirector>
     {
         Debug.Log("ChangeHorrorStateです！！！！！！！！: " + newState);
         // 同じ状態なら変化しない
-        //if (currentState == newState) return;
+        // if (currentState == newState) return;
         //一度リセットしてから新しいStateに切り替える。 同時に同じ演出は行わない設定になってる。
-        ResetSetting();
+        // ResetSetting();
         //ExitCurrentState();
         currentState = newState;
         switch (newState)
         {
             case HorrorState.None:
-                MainBGMReset();
+                // MainBGMReset();
                 ResetSetting();
                 break;
             case HorrorState.EnemyNear:
@@ -263,6 +263,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     {
         Debug.Log("NearEnemy関数が実行されました");
         // Main.SetActive(false);
+        ResetSetting();
         ToEnemyNear.SetActive(true);
         ToEnemyNearBGMAudioFadeController.PlayWithFadeIn(1, () => {
 
@@ -302,6 +303,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     /// </summary>
     public void DiscoveriedHorror()
     {
+        ResetSetting();
         curse_controller.CurseIncrease(10.0f);
 
         DiscoveriedSound.SetActive(false);

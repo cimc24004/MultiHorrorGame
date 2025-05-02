@@ -16,7 +16,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     public RaycastHit raycast_hit;
     public GameObject raycast_hit_obj;
     public LayerMask layer_mask;
-
+    public bool DoorTouchNow = false;
     public bool DoorAttackNow;
     public AudioSource DoorAttackSource;
     public AudioClip DoorAttackClip;
@@ -48,7 +48,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     void Update()
     {
         if (!AutoDoorAttack) return;
-
+        if(DoorTouchNow) DoorTouchNow = false;
         anim.SetBool("DoorAttack", false);
         DoorAttackNow = false;
 
@@ -60,10 +60,12 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
             
             if (Physics.Raycast(start.position, start.forward, out raycast_hit, RaycastDistance, layer_mask))
             {
+                Debug.Log("raycast_hit_collider.gameObject.parent: " + raycast_hit.collider.gameObject.transform.parent.gameObject);
                 if (raycast_hit.collider.gameObject.tag == "Door")
                 {
+                    DoorTouchNow = true;
                     // ── ここから先は元の一連の処理そのまま ─────────
-                    Debug.Log("DoorHit: " + raycast_hit.collider.gameObject);
+                    Debug.Log("DoorHitしました。ターゲットは: " + raycast_hit.collider.gameObject);
 
                     if (raycast_hit_obj != raycast_hit.collider.gameObject || door_open_close_controller == null)
                     {
@@ -99,7 +101,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                 }
             }
         }
-        if(DoorAttackNow && the_door_controller != null){
+        if(DoorTouchNow && the_door_controller != null){
             discovery_player_controller.enabled = false;
             follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 1);
             follow_object_by_nav.StoppingDistance = 2;
