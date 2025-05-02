@@ -9,6 +9,7 @@ public class CrossHairEvent : MonoBehaviour
     //�^�񒆂̃N���X�w�A���烌�C�L���X�g���΂����ꂪ���̂ɓ��������Ƃ��ɔ���������C�x���g�B
     public LayerMask TargetLayerMaskViewToPoint;
     public ItemBelongingsController item_belonging_controller;
+    public AudioDatas KeyAudioDatas;
     private PlayerInput player_input;
     public PlayerHideObjectAction player_hide_object_action;
     private PlayerStatus player_status;

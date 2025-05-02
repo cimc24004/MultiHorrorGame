@@ -1,62 +1,82 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using Sirenix.OdinInspector;
-using FronkonGames.Glitches.Hacked;
+
 public class HousesController : Singleton<HousesController>
 {
-    public List<HouseDirector> house_directors;
-    public List<SilhouetteChangeController> silhouette_change_controllers;
-    private GameProgressController game_progress_controller;
-    // Start is called before the first frame update
-    void Start()
-    {
-        house_directors = new List<HouseDirector>(FindObjectsOfType<HouseDirector>().ToList());
-        game_progress_controller = GameProgressController.instance;
-        if(house_directors.Count != 0){
-            StartCoroutine(ButsudanRandomCreate());
-        }
-        foreach(HouseDirector house_director in house_directors){
-            if(house_director.silhouette_change_controller != null){
-                silhouette_change_controllers.Add(house_director.silhouette_change_controller);
-            }
-        }
-    }
+    [Header("必ず ON にする仏壇の総数")]
+    [MinValue(1)]
+    public int TotalButsudanToSpawn = 5;
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
+    private List<HouseDirector> house_directors;
 
-    private IEnumerator ButsudanRandomCreate()
+    // ------------------------------- Unity -------------------------------
+    private void Start()
     {
+        house_directors = FindObjectsOfType<HouseDirector>().ToList();
 
-        List<int> histroy_r = new List<int>();
-        foreach(HouseDirector house_director in house_directors)
+        // ① すべての仏壇 & 付随オブジェクトを OFF
+        foreach (var hd in house_directors)
         {
-            foreach(GameObject Butsudan in house_director.Butsudans)
+            foreach (var g in hd.Groups)
             {
-                Butsudan.gameObject.SetActive(false);
+                if (g.Butsudan) g.Butsudan.SetActive(false);
+
+                foreach (var p in g.ExtraPackages)
+                    foreach (var o in p.Objs)
+                        if (o) o.SetActive(false);
             }
         }
-        yield return null;
 
-        int i = 0;
+        // ② コルーチン開始
+        if (house_directors.Count > 0)
+            StartCoroutine(SpawnButsudans());
+    }
 
-        // 1. House をシャッフル
-        var shuffled = house_directors.OrderBy(_ => Random.value).ToList();
-        // 2. 必要数分だけループ
-        for (int idx = 0; idx < Mathf.Min(game_progress_controller.NeedPrayCount, shuffled.Count); idx++)
+    // ------------------------- 仏壇ランダム生成 -------------------------
+    private IEnumerator SpawnButsudans()
+    {
+        // HouseDirector と Group のペアを列挙
+        var pairs = new List<(HouseDirector hd, ButsudanGroup grp)>();
+        foreach (var hd in house_directors)
+            foreach (var g in hd.Groups)
+                if (g.Butsudan) pairs.Add((hd, g));
+
+        if (pairs.Count == 0) yield break;
+
+        // シャッフル
+        pairs = pairs.OrderBy(_ => Random.value).ToList();
+
+        // 指定数をクリップ
+        int spawnNum = Mathf.Min(TotalButsudanToSpawn, pairs.Count);
+
+        for (int i = 0; i < spawnNum; i++)
         {
-            var hd = shuffled[idx];
-            // hd.Butsudans からランダムに１つ選ぶ
-            int j = Random.Range(0, hd.Butsudans.Count);
-            hd.Butsudans[j].SetActive(true);
-            hd.ButsudanExists = true;
-            // 少し待って次のフレームに続行
-            // yield return null;
-        }
+            var (hd, grp) = pairs[i];
 
+            // 1) 仏壇 ON
+            grp.Butsudan.SetActive(true);
+            hd.ButsudanExists = true;
+
+            // 2) ExtraPackages から 1 つ必ず発動
+            if (grp.ExtraPackages.Count > 0)
+            {
+                var pack = ChooseOnePackage(grp.ExtraPackages);
+                foreach (var obj in pack.Objs)
+                    if (obj) obj.SetActive(true);
+            }
+
+            yield return null;   // 負荷分散
+        }
+    }
+
+    // ------------------------ Helper ------------------------
+    private RandomSpawnPackage ChooseOnePackage(List<RandomSpawnPackage> packs)
+    {
+        var cands = packs.Where(p => Random.value <= p.SpawnChance).ToList();
+        if (cands.Count == 0) cands = packs;        // 全外れなら強制採用
+        return cands[Random.Range(0, cands.Count)];
     }
 }

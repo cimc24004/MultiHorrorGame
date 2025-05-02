@@ -48,7 +48,7 @@ public class CurseController : Singleton<CurseController>
     private ItemStatus locked_item_status;
     private HorrorDirector horror_director;
 
-    [SerializeField] private AudioClip AppearanceMikoBGM;
+    [SerializeField] public AudioClip AppearanceMikoBGM;
     private void Start()
     {
         player_status = PlayerStatus.instance;
@@ -153,9 +153,8 @@ public class CurseController : Singleton<CurseController>
         
         curse_event_type = CurseEventType.MikoInstantiate;
         InstantiatedMiko = Instantiate(MikoPrefab, MikoApperancePlaceTrans.position, Quaternion.identity);
-        horror_director.MikoApperanceSound.Play();
-        horror_director.MainBGM.clip = AppearanceMikoBGM;
-        horror_director.MainBGMAutoChange = false;
+        horror_director.MikoApperance();
+
     }
     private void ItemLock()
     {

@@ -240,6 +240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5254176062421632356}
   - component: {fileID: 3561881122076416084}
+  - component: {fileID: 4989584552171119532}
   m_Layer: 0
   m_Name: MainBGM
   m_TagString: Untagged
@@ -358,6 +359,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4989584552171119532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742431467355340031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf81836b6032d5a4da9132963a25b2dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 3561881122076416084}
+  fadeDuration: 1
 --- !u!1 &4176664149414353653
 GameObject:
   m_ObjectHideFlags: 0
@@ -2298,7 +2313,8 @@ MonoBehaviour:
   ToEnemyNearHeartBeatSoundSource: {fileID: 7719726726537439951}
   GhostAppearToNearBGM: {fileID: 4966784897985012135}
   ToEnemyNearBGMAudioFadeController: {fileID: 8655981323009013509}
-  ToEnemyNearHeartBeatController: {fileID: 8761885374044551044}
+  ToEnemyNearHeartBeatAudioFadeController: {fileID: 8761885374044551044}
+  MainBGMAudioFadeController: {fileID: 4989584552171119532}
   Discoveried: {fileID: 6656055123007663505}
   DiscoveriedSound: {fileID: 6472892478755688593}
   DiscoveryVolume: {fileID: 8111917302440586952}

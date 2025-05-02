@@ -251,7 +251,9 @@ public class ItemMenuController : SerializedMonoBehaviour
             sub_noticed_ui_controller.Notice($"{item_status.ItemName}は使用できません。");
             return;
         }
-        sub_noticed_ui_controller.Notice($"{item_status.ItemName}を使用した。");
+        if(item_status.item_type != ItemStatus.ItemType.Key){
+            sub_noticed_ui_controller.Notice($"{item_status.ItemName}を使用した。");
+        }
         int item_ui_index = item_ui_obj.transform.GetSiblingIndex();
         //ItemSelect関数はIndexを指定しなければならないのでGetSiblingIndex(今子オブジェクトの中では何番目にいるのかを教えてくれるやつ)
         //を使用してindexを取得。

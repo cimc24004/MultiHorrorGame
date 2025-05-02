@@ -27,7 +27,8 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public AudioSource ToEnemyNearHeartBeatSoundSource;
     [SerializeField] private AudioSource GhostAppearToNearBGM;
     [SerializeField] private AudioFadeController ToEnemyNearBGMAudioFadeController;
-    [SerializeField] private AudioFadeController ToEnemyNearHeartBeatController;
+    [SerializeField] private AudioFadeController ToEnemyNearHeartBeatAudioFadeController;
+    [SerializeField] private AudioFadeController MainBGMAudioFadeController;
     [Title("ìGÇ…î≠å©Ç≥ÇÍÇΩéûÇÃââèoä÷òA")]
     public GameObject Discoveried;
     public GameObject DiscoveriedSound;
@@ -213,6 +214,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
         switch (newState)
         {
             case HorrorState.None:
+                MainBGMReset();
                 ResetSetting();
                 break;
             case HorrorState.EnemyNear:
@@ -227,7 +229,11 @@ public class HorrorDirector : Singleton<HorrorDirector>
         }
 
     }
-
+    public void MikoApperance(){
+        this.MainBGM.clip = curse_controller.AppearanceMikoBGM;
+        MainBGMAudioFadeController.PlayWithFadeIn(1);
+        this.MainBGMAutoChange = false;
+    }
     /// <summary>
     /// åªèÛë‘Ç©ÇÁó£íEÇ∑ÇÈÇ∆Ç´ÇÃå„èàóù
     /// </summary>
@@ -261,7 +267,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
         ToEnemyNearBGMAudioFadeController.PlayWithFadeIn(1, () => {
 
         });
-        ToEnemyNearHeartBeatController.PlayWithFadeIn(1, () => {
+        ToEnemyNearHeartBeatAudioFadeController.PlayWithFadeIn(1, () => {
 
         });
         urp_fx_controller.CheapCameraChange(true);
@@ -279,7 +285,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
             // ToEnemyNearBGMAudioSource.volume = 1;
         });
 
-        ToEnemyNearHeartBeatController.FadeOutAndStop(0,() => {
+        ToEnemyNearHeartBeatAudioFadeController.FadeOutAndStop(0,() => {
             // ToEnemyNearHeartBeatSoundSource.volume = 1;
         });
         urp_fx_controller.CheapCameraChange(false);
@@ -325,6 +331,10 @@ public class HorrorDirector : Singleton<HorrorDirector>
     /// </summary>
     public void MainBGMReset(){
         MainBGM.clip = MainDefaultBGM;
+        MainBGMAudioFadeController.PlayWithFadeIn(1);
+        if(MainBGMAutoChange){
+            MainBGM.clip = MainDefaultBGM;
+        }
     }
     public void ResetSetting()
     {
@@ -336,11 +346,9 @@ public class HorrorDirector : Singleton<HorrorDirector>
         urp_fx_controller.CheapCameraChange(false);
         urp_fx_controller.VHSChange(false);
         urp_fx_controller.InteferecesChange(false);
-
         // Main.SetActive(true);
-        if(MainBGMAutoChange){
-            MainBGM.clip = MainDefaultBGM;
-        }
+
+        // MainBGMAudioFadeController.PlayWithFadeIn(1);
         // MainBGM.volume = 1;
         // MainBGM.Play();
     }

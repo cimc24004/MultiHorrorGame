@@ -5,7 +5,12 @@ using UnityEngine;
 public class Butsudan : MonoBehaviour
 {
     private PrayToDeliverItemAppearPlace pray_to_deliver_item_appear_place;
-
+    private enum ButsudanDefenseType{
+        JapaneseNingyo,
+        Darumasan,
+        OshiireNoMouja,
+        None
+    }
     private void Start()
     {
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;

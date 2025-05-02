@@ -23,6 +23,7 @@ public class AudioFadeController : MonoBehaviour
         if (!audioSource) return;
 
         KillTween();
+        audioSource.Stop();
         audioSource.volume = 0f;
         audioSource.Play();
 

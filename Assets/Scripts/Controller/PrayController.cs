@@ -17,7 +17,7 @@ public class PrayController : MonoBehaviour
     public float PrayTimeNow;
 
     public UnityEvent2 PrayCompletedEvent;
-
+    [SerializeField] private UnityEvent2 PrayStartEvent;
     private bool touch;
     private PlayerStatus player_status;
     private GameObject GageCanvas;
@@ -27,6 +27,7 @@ public class PrayController : MonoBehaviour
     private CrossHairStatus cross_hair_status;
     private CharacterMovePermit player_character_move_permit;
     private bool once;
+    private bool PrayForStartOnce;
     private bool PrayNowOnce;
     [Header("PrayNowÇ™TrueÇÃéûÇÕÉvÉåÉCÉÑÅ[ÇÕìÆÇØÇ»Ç¢Ç©Ç«Ç§Ç©")]
     [SerializeField] private bool PlayerStopOnPrayNow;
@@ -66,6 +67,10 @@ public class PrayController : MonoBehaviour
             GageCanvas.SetActive(true);
             if(PlayerStopOnPrayNow){
                 player_character_move_permit.Stop();
+            }
+            if(!PrayForStartOnce){
+                PrayStartEvent.Invoke();
+                PrayForStartOnce = true;
             }
             player_status.GageImage.fillAmount = PrayTimeNow / NeedToPrayTime;
             PrayTimeNow += Time.deltaTime;

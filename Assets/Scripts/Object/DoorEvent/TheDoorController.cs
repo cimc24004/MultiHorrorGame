@@ -31,8 +31,9 @@ public class TheDoorController : SerializedMonoBehaviour
     private TimeManager time_manager;
     private float CompletedWaitTimeNow;
 
-    [ShowIf("NeededKey")]
-    [Required] public OpenPermitByKeyController open_permit_by_key_controller;
+    // [ShowIf("NeededKey")]
+    [Header("鍵をかけたい場合はこちらを入れてください")]
+    public OpenPermitByKeyController open_permit_by_key_controller;
 
     public DoorAttackedController door_attacked_controller;
     private void Start()
@@ -55,6 +56,11 @@ public class TheDoorController : SerializedMonoBehaviour
 
 
     }
+    public void DoorLock(){
+        //ドアを強制的にロックする関数
+        NeededKey = true;
+        open_permit_by_key_controller.OpenPermit = false;
+    }
     public void DoorOpenClosedChangeByStatus(GameObject EventActionMan)
     {
         //EventActionMan: この関数を行った実行人物(プレイヤーや敵など)
@@ -64,7 +70,7 @@ public class TheDoorController : SerializedMonoBehaviour
         //鍵が必要なドアならまず鍵をこのドアに使ったかどうかを判定。 使ってなかったらreturn; 開けないよ。
         if (NeededKey)
         {
-
+            //NeededKeyがtrueだけではロックされたことにはならない。
             if (!open_permit_by_key_controller.OpenPermit) {
 
                 //鍵がかかっている

@@ -13,9 +13,9 @@ public class HousesRevealController : MonoBehaviour
 
     }
 
-    public void Reveal(){
-        foreach(SilhouetteChangeController silhouette_change_controller in houses_controller.silhouette_change_controllers){
-            silhouette_change_controller.SilhouetteChangeWithAutoReset(silhouette_change_reset_interval_time);
-        }
-    }
+    // public void Reveal(){
+    //     foreach(SilhouetteChangeController silhouette_change_controller in houses_controller.silhouette_change_controllers){
+    //         silhouette_change_controller.SilhouetteChangeWithAutoReset(silhouette_change_reset_interval_time);
+    //     }
+    // }
 }
