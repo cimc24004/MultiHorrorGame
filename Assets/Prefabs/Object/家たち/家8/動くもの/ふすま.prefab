@@ -131,6 +131,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2727771884300159416}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2e40b53d2325cfd45bd9df8299dfcd1d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5235987459337935129}
     - targetCorrespondingSourceObject: {fileID: -2459875658324418586, guid: 2e40b53d2325cfd45bd9df8299dfcd1d,
         type: 3}
       insertIndex: -1
@@ -193,6 +197,19 @@ MonoBehaviour:
   Doors:
   - {fileID: 9160404678887055557}
   - {fileID: 5508513986092989536}
+--- !u!114 &5235987459337935129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3332072510431674994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1657c175730b89428524f1993c7bfba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OpenPermit: 0
 --- !u!1 &5508513986092989536 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7966484914801804099, guid: 2e40b53d2325cfd45bd9df8299dfcd1d,
@@ -246,7 +263,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 9041515092389422418}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 2117263393817438437}
-  duration: 0.7
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -286,7 +303,7 @@ MonoBehaviour:
   NeededKey: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 5235987459337935129}
   door_attacked_controller: {fileID: 2727771884300159416}
 --- !u!82 &7340351839870440818
 AudioSource:
@@ -443,7 +460,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 374913404028207036}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 48284833700572683}
-  duration: 0.7
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -483,7 +500,7 @@ MonoBehaviour:
   NeededKey: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 5235987459337935129}
   door_attacked_controller: {fileID: 2727771884300159416}
 --- !u!82 &8151947320087181267
 AudioSource:

@@ -35,32 +35,33 @@ public class HousesController : Singleton<HousesController>
             StartCoroutine(SpawnButsudans());
     }
 
-    // ------------------------- 仏壇ランダム生成 -------------------------
     private IEnumerator SpawnButsudans()
     {
-        // HouseDirector と Group のペアを列挙
-        var pairs = new List<(HouseDirector hd, ButsudanGroup grp)>();
-        foreach (var hd in house_directors)
-            foreach (var g in hd.Groups)
-                if (g.Butsudan) pairs.Add((hd, g));
+        // ① HouseDirector をシャッフル
+        var shuffledHouses = house_directors.OrderBy(_ => Random.value).ToList();
 
-        if (pairs.Count == 0) yield break;
+        // ② 「出現させる家数」を決定
+        int houseCountToUse = Mathf.Min(TotalButsudanToSpawn, shuffledHouses.Count);
 
-        // シャッフル
-        pairs = pairs.OrderBy(_ => Random.value).ToList();
-
-        // 指定数をクリップ
-        int spawnNum = Mathf.Min(TotalButsudanToSpawn, pairs.Count);
-
-        for (int i = 0; i < spawnNum; i++)
+        // ③ 上から houseCountToUse 軒ぶんループ
+        for (int i = 0; i < houseCountToUse; i++)
         {
-            var (hd, grp) = pairs[i];
+            var hd = shuffledHouses[i];
+
+            if (hd.Groups == null || hd.Groups.Count == 0)       // グループ無い家はスキップ
+                continue;
+
+            // ── この家の仏壇グループから 1 つランダム選択 ──
+            var grp = hd.Groups[Random.Range(0, hd.Groups.Count)];
+
+            if (grp.Butsudan == null)                            // 仏壇が設定されていない
+                continue;
 
             // 1) 仏壇 ON
             grp.Butsudan.SetActive(true);
             hd.ButsudanExists = true;
 
-            // 2) ExtraPackages から 1 つ必ず発動
+            // 2) ExtraPackages から 1 パッケージ必ず発動
             if (grp.ExtraPackages.Count > 0)
             {
                 var pack = ChooseOnePackage(grp.ExtraPackages);
@@ -68,15 +69,24 @@ public class HousesController : Singleton<HousesController>
                     if (obj) obj.SetActive(true);
             }
 
-            yield return null;   // 負荷分散
+            yield return null;                                   // 1フレーム分散
         }
     }
 
     // ------------------------ Helper ------------------------
     private RandomSpawnPackage ChooseOnePackage(List<RandomSpawnPackage> packs)
     {
-        var cands = packs.Where(p => Random.value <= p.SpawnChance).ToList();
-        if (cands.Count == 0) cands = packs;        // 全外れなら強制採用
-        return cands[Random.Range(0, cands.Count)];
+        if (packs == null || packs.Count == 0) return null;
+
+        // ① SpawnChance 昇順で並べ替え（低確率 → 高確率）
+        var ordered = packs.OrderBy(p => p.SpawnChance).ToList();
+
+        // ② 順に抽選して最初に当たった 1 つを返す
+        foreach (var p in ordered)
+            if (Random.value <= p.SpawnChance)
+                return p;                        // 当選！
+
+        // ③ 全ハズレ → 並べ替え済みリストからランダム選択
+        return ordered[Random.Range(0, ordered.Count)];
     }
 }

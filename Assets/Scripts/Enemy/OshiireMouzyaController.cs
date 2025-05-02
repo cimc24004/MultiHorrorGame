@@ -23,8 +23,6 @@ public class OshiireMouzyaController : MonoBehaviour
     private DiscoveryPlayerController discovery_player_controller;
     [SerializeField]
     private bool OshiireAttackMode;
-    [SerializeField]
-    private TheDoorController target_the_door_controller;
     private Animator m_Animator;
     private bool BrokenOshiire;
     private EnemyStatus enemy_status;

@@ -111,6 +111,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8713422292947459307}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f391129ba8e0444cb1d4325b8e4ac9c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 805327252948256062}
     - targetCorrespondingSourceObject: {fileID: 8767282694164357152, guid: 1f391129ba8e0444cb1d4325b8e4ac9c,
         type: 3}
       insertIndex: -1
@@ -204,7 +208,7 @@ MonoBehaviour:
   NeededKey: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 805327252948256062}
   door_attacked_controller: {fileID: 8713422292947459307}
 --- !u!114 &4364573995771806151
 MonoBehaviour:
@@ -232,7 +236,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 4670283627217715811}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 2070503877069703677}
-  duration: 0.7
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -364,6 +368,19 @@ MonoBehaviour:
   Doors:
   - {fileID: 6493017121302584800}
   - {fileID: 2315322424972959560}
+--- !u!114 &805327252948256062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418540335717974161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1657c175730b89428524f1993c7bfba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OpenPermit: 0
 --- !u!4 &4670283627217715811 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7160828641272610723, guid: 1f391129ba8e0444cb1d4325b8e4ac9c,
@@ -424,7 +441,7 @@ MonoBehaviour:
   NeededKey: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 805327252948256062}
   door_attacked_controller: {fileID: 8713422292947459307}
 --- !u!114 &3094639870985098719
 MonoBehaviour:
@@ -452,7 +469,7 @@ MonoBehaviour:
   ToOpenTransform: {fileID: 1494515265736814906}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 406358483089244375}
-  duration: 0.7
+  Duration: 0.5
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []
