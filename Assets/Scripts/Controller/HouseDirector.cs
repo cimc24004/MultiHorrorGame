@@ -24,8 +24,8 @@ public class RandomSpawnPackage
 }
 public class HouseDirector : SerializedMonoBehaviour
 {
-    public SilhouetteChangeController silhouette_change_controller;
-    //public GameObject Butsudan;
+    [SerializeField]private Collidered SilhouetteChangeAreaCollidered;
+    private HousesController houses_controller;  
     public bool ButsudanExists;
     [LabelText("仏壇 + 付随オブジェクトセット")]
     public List<ButsudanGroup> Groups = new();   // Butsudan は必ずこちらにも含まれる
@@ -37,7 +37,7 @@ public class HouseDirector : SerializedMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        houses_controller = HousesController.instance;
         foreach(GameObject obj in RandomObjs)
         {
             obj.SetActive(false);
@@ -57,6 +57,6 @@ public class HouseDirector : SerializedMonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+ 
     }
 }

@@ -9,14 +9,12 @@ public class HousesController : Singleton<HousesController>
     [Header("必ず ON にする仏壇の総数")]
     [MinValue(1)]
     public int TotalButsudanToSpawn = 5;
-
-    private List<HouseDirector> house_directors;
+    public List<HouseDirector> house_directors;
 
     // ------------------------------- Unity -------------------------------
     private void Start()
     {
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
-
         // ① すべての仏壇 & 付随オブジェクトを OFF
         foreach (var hd in house_directors)
         {

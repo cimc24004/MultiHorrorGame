@@ -6,6 +6,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System;
 public class CurseController : Singleton<CurseController>
 {
     public enum CurseEventType
@@ -98,7 +99,7 @@ public class CurseController : Singleton<CurseController>
 
         this.CurseMaxEventWhileTime = _CurseMaxEventWhileTime;
         this.CurseMaxEventWhileTimeNow = 0;
-        int i = Random.Range(0, 3);
+        int i = UnityEngine.Random.Range(0, 3);
         //ÉâÉìÉ_ÉÄÇ≈âΩÇ©ÇÃä÷êîÇé¿çsÇ∑ÇÈÇ∆Ç∑ÇÈ
         CurseMaxedEventNow = true;
         if(i == 0)
@@ -108,7 +109,9 @@ public class CurseController : Singleton<CurseController>
         }
         else if(i == 1)
         {
-            ItemLock();
+            ItemLock(() => {
+                CurseMaxed(CurseMaxEventWhileTime);
+            });
         }
         else if(i == 2)
         {
@@ -156,16 +159,16 @@ public class CurseController : Singleton<CurseController>
         horror_director.MikoApperance();
 
     }
-    private void ItemLock()
+    private void ItemLock(Action ActionWhenNoneItems)
     {
         if(!item_belongings_controller.ExistsItems()) return;
         List<ItemStatus> target_item_statues = item_belongings_controller.belonging_items.Keys.Where(x => x.item_type == ItemStatus.ItemType.Consumable || x.item_type == ItemStatus.ItemType.CanThrow).ToList();
         if (target_item_statues.Count == 0)
         {
-
+            ActionWhenNoneItems.Invoke();
             return;
         }
-        int item_lock_random = Random.Range(0, target_item_statues.Count);
+        int item_lock_random = UnityEngine.Random.Range(0, target_item_statues.Count);
 
         ItemStatus taget_item_status = target_item_statues.ElementAt(item_lock_random);
         locked_item_status = taget_item_status;

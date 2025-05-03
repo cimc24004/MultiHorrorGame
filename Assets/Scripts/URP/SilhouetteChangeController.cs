@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SilhouetteChangeController : MonoBehaviour
 {
+    public bool SilhouetteNow;
     [SerializeField]
     private List<GameObject> TargetChangeSilhouetteObjs;
     [Header("シルエット表示を辞めて、初期化するときのレイヤーネーム")]
@@ -15,7 +16,6 @@ public class SilhouetteChangeController : MonoBehaviour
     private float ToResetSilhouetteTime;
     [SerializeField]
     private float ToResetSilhouetteTimeNow;
-
     private bool SilhouetteAutoResetStart;
     void Update()
     {
@@ -29,6 +29,7 @@ public class SilhouetteChangeController : MonoBehaviour
         }
     }
     public void SilhouetteChange(bool _silhouette){
+        SilhouetteNow = _silhouette;
         if(_silhouette){
             foreach(GameObject target in TargetChangeSilhouetteObjs ){
                 target.gameObject.layer = LayerMask.NameToLayer("NoSilhouette");

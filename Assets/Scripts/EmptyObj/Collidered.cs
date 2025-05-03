@@ -9,26 +9,27 @@ public class Collidered : MonoBehaviour
     public bool Collider;
     public GameObject CollideredObj;
     [SerializeField]
-    private UnityEvent OnTriggerEvent;
+    public UnityEvent OnTriggerEnterEvent;
     [SerializeField]
-    private UnityEvent OnTriggerExitEvent;
+    public UnityEvent OnTriggerStayEvent;
+    [SerializeField]
+    public UnityEvent OnTriggerExitEvent;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (TargetTags.Contains(other.gameObject.tag))
+        {
+            OnTriggerEnterEvent.Invoke();
+            CollideredObj = other.gameObject;
+            Collider = true;
+        }
     }
     private void OnTriggerStay(Collider other)
     {
         if (TargetTags.Contains(other.gameObject.tag))
         {
-            OnTriggerEvent.Invoke();
+            OnTriggerStayEvent.Invoke();
             CollideredObj = other.gameObject;
             Collider = true;
         }

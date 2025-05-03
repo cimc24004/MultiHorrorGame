@@ -199,7 +199,10 @@ public class ItemBelongingsController : SerializedMonoBehaviour
         {
             return;
         }
-
+        //捨てられないアイテムなら捨てません。
+        if(_item_status.CanItemDump == false){
+            return;
+        }
         // 選択中アイテムがnull、あるいは所持品に含まれていなければ何もしない
         if (_item_status == null || !belonging_items.ContainsKey(_item_status))
         {

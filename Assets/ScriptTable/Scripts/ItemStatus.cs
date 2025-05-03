@@ -86,7 +86,8 @@ public class ItemStatus : SerializedScriptableObject
 
     [Header("アイテムをクリックで使用できるか")]
     public bool ItemUseFromClick = true;
-
+    [Header("アイテムを捨てることができるか")]
+    public bool CanItemDump = true;
     [Header("アイテム使用時にスクリプトを生成する際に使うPrefab")]
     [SerializeField] public GameObject InstantiateItemScriptPrefab;
 

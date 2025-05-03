@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using Sirenix.OdinInspector;
 public class EnemyActionForDoorController : SerializedMonoBehaviour
 {
-    //“G‚ªƒhƒA‚ğŠJ‚¯‚½‚èA‰ó‚µ‚½‚è‚·‚éƒRƒ“ƒgƒ[ƒ‰[
+    //ï¿½Gï¿½ï¿½ï¿½hï¿½Aï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ó‚µ‚ï¿½ï¿½è‚·ï¿½ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[
     
     [SerializeField] private float RaycastDistance = 1f;
     [SerializeField] private int BrokeDoorPlusCount = 1;
@@ -18,6 +18,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     public LayerMask layer_mask;
     public bool DoorTouchNow = false;
     public bool DoorAttackNow;
+    public bool DoorOpenClosePermit = true;
     public AudioSource DoorAttackSource;
     public AudioClip DoorAttackClip;
     public AudioClip DoorBrokenClip;
@@ -55,17 +56,17 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
 
         foreach (Transform start in rayStarts)
         {
-            if (start == null) continue;                     // ”O‚Ì‚½‚ß‹óƒ`ƒFƒbƒN
+            if (start == null) continue;                     // ï¿½Oï¿½Ì‚ï¿½ï¿½ß‹ï¿½`ï¿½Fï¿½bï¿½N
             Debug.DrawRay(start.position, start.forward * RaycastDistance, Color.red);
             
             if (Physics.Raycast(start.position, start.forward, out raycast_hit, RaycastDistance, layer_mask))
             {
-                Debug.Log("raycast_hit_collider.gameObject.parent: " + raycast_hit.collider.gameObject.transform.parent.gameObject);
+                Debug.Log("raycast_hit_collider.gameObject: " + raycast_hit.collider.gameObject);
                 if (raycast_hit.collider.gameObject.tag == "Door")
                 {
                     DoorTouchNow = true;
-                    // „Ÿ„Ÿ ‚±‚±‚©‚çæ‚ÍŒ³‚Ìˆê˜A‚Ìˆ—‚»‚Ì‚Ü‚Ü „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-                    Debug.Log("DoorHit‚µ‚Ü‚µ‚½Bƒ^[ƒQƒbƒg‚Í: " + raycast_hit.collider.gameObject);
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÍŒï¿½ï¿½Ìˆï¿½Aï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Ü‚ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    Debug.Log("DoorHitï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½Bï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½ï¿½: " + raycast_hit.collider.gameObject);
 
                     if (raycast_hit_obj != raycast_hit.collider.gameObject || door_open_close_controller == null)
                     {
@@ -75,18 +76,20 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                     if(door_open_close_controller != null){
                         the_door_controller = door_open_close_controller.the_door_controller;
                     }
-
-                    if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
-                    {
-                        if (!discovery_player_controller.DiscoveryPlayerNow)
+                    if(DoorOpenClosePermit){
+                        if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
                         {
-                            the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                            if (!discovery_player_controller.DiscoveryPlayerNow)
+                            {
+                                the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                            }
                         }
                     }
 
+
                     if (the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
                     {
-                        Debug.Log("”à‚ğ‰ó‚µ‚½‚¢‚Æv‚¢‚Ü‚·B");
+                        Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ó‚µ‚ï¿½ï¿½ï¿½ï¿½Ævï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B");
 
                         DoorAttackNow = true;
 
@@ -96,14 +99,14 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                         DoorAttackNow = false;
                     }
 
-                    // ‚Ç‚ê‚© 1 –{“–‚½‚Á‚½‚ç break ‚Åƒ‹[ƒvI—¹
+                    // ï¿½Ç‚ê‚© 1 ï¿½{ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ break ï¿½Åƒï¿½ï¿½[ï¿½vï¿½Iï¿½ï¿½
                     break;
                 }
             }
         }
-        if(DoorTouchNow && the_door_controller != null){
+        if(DoorAttackNow && the_door_controller != null){
             discovery_player_controller.enabled = false;
-            follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 1);
+            follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 0);
             follow_object_by_nav.StoppingDistance = 2;
             character_controller.Move(Vector3.zero);
             anim.SetBool("DoorAttack", true);
