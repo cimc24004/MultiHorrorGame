@@ -33,7 +33,7 @@ public class KubinashiMikoController : MonoBehaviour
     {
         if (!discovery_player_controller.DiscoveryPlayerNow)
         {
-            enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+            // 
             discovery_player_controller.DiscoveryPlayerNow = true;
             if(!no_discovery_player_once){
                 horror_director.ResetSetting();
@@ -43,5 +43,9 @@ public class KubinashiMikoController : MonoBehaviour
         }else{
             no_discovery_player_once = false;
         }
+        // if(!enemy_action_for_door_controller.DoorAttackNow){
+        //     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+        //     follow_object_by_nav.ChaseToTargetSet(true, player_status.gameObject.transform.position, 2);
+        // }
     }
 }
