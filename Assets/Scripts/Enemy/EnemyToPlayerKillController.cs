@@ -1,51 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyToPlayerKillController : MonoBehaviour
 {
-    //Enemyにつけるスクリプト。 見つかっている状態でプレイヤーに触れたらプレイヤーを殺す。（プレイヤーを見ている状態で。）
-    private DiscoveryPlayerController discovery_player_controller;
-    //ObjectもRaycast判定にしないと壁を貫通して殺す判定になっちゃうのでObjectとかDoorとかも追加しておく。
-    public LayerMask layer_mask;
-    private GameObject Player;
-    private PlayerStatus player_status;
-    private RaycastHit raycast_hit;
-    //Rayを飛ばすスタートPosition
-    public Transform StartPos;
-    public float RaycastDistance = 1;
-    private Vector3 Direction;
-    [SerializeField]private GameObject ray_obj;
-    // Start is called before the first frame update
+    public Transform boxCenter;                  // 範囲の中心（敵の目の前に置く）
+    public Vector3   boxHalfExtents = new(0.3f, 0.6f, 0.4f);
+    public LayerMask layerMask;    // Player レイヤーだけにしておく
+
+    private DiscoveryPlayerController discovery;
+    private PlayerStatus              playerStatus;
+    private Collider[] hitBuffer = new Collider[4];   // 最大ヒット数を決め打ちで確保
+
     void Start()
     {
-        Player = PlayerStatus.instance.gameObject;
-        player_status = PlayerStatus.instance;
-        discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
+        discovery    = GetComponent<DiscoveryPlayerController>();
+        playerStatus = PlayerStatus.instance;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Direction = (player_status.HeadPos.position - StartPos.position).normalized;
-        if (!player_status.Dead)
+        if (playerStatus.Dead || playerStatus.HidingNow || !discovery.DiscoveryPlayerNow)
+            return;
+
+        // Box の向きは敵の forward に合わせる
+        Quaternion orientation = boxCenter.rotation;
+
+        int hitCount = Physics.OverlapBoxNonAlloc(
+            boxCenter.position,
+            boxHalfExtents,
+            hitBuffer,
+            orientation,
+            layerMask,
+            QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < hitCount; i++)
         {
-            if (discovery_player_controller.DiscoveryPlayerNow && !player_status.HidingNow)
+            if (hitBuffer[i].CompareTag("Player"))
             {
-                //プレイヤーが死んでいないかつプレイヤーが見つかっていたら。
-                if (Physics.Raycast(StartPos.position, Direction, out raycast_hit, RaycastDistance, layer_mask))
-                {
-                    ray_obj = raycast_hit.collider.gameObject;
-                    Debug.Log("RayCastHiTColliderGameObjecttag: " + raycast_hit.collider.gameObject);
-                    //敵の目からのレイキャストを飛ばす。　プレイヤーの方向を見てるときだけ殺せるようにしておく。
-                    if(raycast_hit.collider.gameObject.tag == "Player")
-                    {
-                        player_status.DeadEvent(this.gameObject);
-                    }
-                }
+                playerStatus.DeadEvent(this.gameObject);
+                break;
             }
         }
-
     }
 
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        if (!boxCenter) return;
+        Gizmos.color = Color.cyan;
+        Matrix4x4 m = Matrix4x4.TRS(boxCenter.position, boxCenter.rotation, Vector3.one);
+        Gizmos.matrix = m;
+        Gizmos.DrawWireCube(Vector3.zero, boxHalfExtents * 2);
+    }
+#endif
 }

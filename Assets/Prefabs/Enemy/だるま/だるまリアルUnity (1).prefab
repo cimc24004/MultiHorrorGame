@@ -160,6 +160,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &6159581510482384821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7280769742722118679}
+  m_Layer: 0
+  m_Name: KillStartPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7280769742722118679
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6159581510482384821}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.72633046, z: -0, w: 0.68734574}
+  m_LocalPosition: {x: -0.02, y: 0.304, z: 0.358}
+  m_LocalScale: {x: 1.0648199, y: 1, z: 1.00019}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6220778025668262417}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7102433623305378679
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,6 +872,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e6af67d225e85f4e9311765b8756175,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 7280769742722118679}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e6af67d225e85f4e9311765b8756175,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 5339302577916997224}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e6af67d225e85f4e9311765b8756175,
         type: 3}
@@ -935,6 +970,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8626557712796505881}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1e6af67d225e85f4e9311765b8756175,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3863580666123914231}
     - targetCorrespondingSourceObject: {fileID: -5423259348222754125, guid: 1e6af67d225e85f4e9311765b8756175,
         type: 3}
       insertIndex: -1
@@ -1207,7 +1246,9 @@ MonoBehaviour:
   layer_mask:
     serializedVersion: 2
     m_Bits: 135752
+  DoorTouchNow: 0
   DoorAttackNow: 0
+  DoorOpenClosePermit: 1
   DoorAttackSource: {fileID: 737149869875355185}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 2feb94a928460904caf8c8cdcfe30ebd, type: 3}
@@ -1268,12 +1309,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layer_mask:
+  boxCenter: {fileID: 7280769742722118679}
+  boxHalfExtents: {x: 0.2, y: 0.2, z: 0.2}
+  layerMask:
     serializedVersion: 2
-    m_Bits: 463432
-  StartPos: {fileID: 5339302577916997224}
-  RaycastDistance: 1
-  ray_obj: {fileID: 0}
+    m_Bits: 332361
 --- !u!114 &3914677381759993291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1324,6 +1364,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  SilhouetteNow: 0
+  SilhouetteAutoHideInRange: 0
+  CollideredForSilhouetteAutoHide: {fileID: 0}
   TargetChangeSilhouetteObjs:
   - {fileID: 3302904857477534363}
   - {fileID: 3197721740240784121}
@@ -1333,6 +1385,20 @@ MonoBehaviour:
   ResetLayerName: Default
   ToResetSilhouetteTime: 0
   ToResetSilhouetteTimeNow: 0
+--- !u!114 &3863580666123914231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6710209561006137515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08af4969f6d251a47980d6b8fba930f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WalkSpeed: 1
+  RunSpeed: 2
 --- !u!1 &7305590118241509193 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5423259348222754125, guid: 1e6af67d225e85f4e9311765b8756175,

@@ -9,8 +9,6 @@ public class DiscoveryPlayerStatus : ScriptableObject
     public float VisionFieldAngle;
     [Header("Playerを見つけられる範囲")]
     public float PlayerDiscoveryRange;
-    [Header("Playerを見つけた時追いかけるスピード")]
-    public float SpeedWhenDiscoveried;
     [Header("視認できるオブジェクトのレイヤー")]
     public LayerMask layerMask;
     //特定のレイヤーオブジェクトのみで視野判定を行っていくための設定
@@ -18,9 +16,4 @@ public class DiscoveryPlayerStatus : ScriptableObject
     //プレイヤーが自分の視界から外れている間の時間
     [Header("プレイヤーが敵の視界から外れている間の追いかけるのを諦めるまでの時間")]
     public float SightOutPlayerTime = 1;
-
-    [Header("プレイヤーを追いかけるのをあきらめた後、戻るときの歩く速さ。")]
-    public float SppedWhenReturned = 1;
-
-
 }

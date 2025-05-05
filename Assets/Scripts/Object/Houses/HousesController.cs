@@ -10,7 +10,7 @@ public class HousesController : Singleton<HousesController>
     [MinValue(1)]
     public int TotalButsudanToSpawn = 5;
     public List<HouseDirector> house_directors;
-
+    public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers;
     // ------------------------------- Unity -------------------------------
     private void Start()
     {
@@ -30,10 +30,14 @@ public class HousesController : Singleton<HousesController>
 
         // ② コルーチン開始
         if (house_directors.Count > 0)
-            StartCoroutine(SpawnButsudans());
+            SpawnButsudans();
     }
-
-    private IEnumerator SpawnButsudans()
+    public void RevealButusdans(float RevealTime){
+        foreach(SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers){
+            silhouette_change_controller.SilhouetteChangeWithAutoReset(RevealTime);
+        }
+    }
+    private void SpawnButsudans()
     {
         // ① HouseDirector をシャッフル
         var shuffledHouses = house_directors.OrderBy(_ => Random.value).ToList();
@@ -57,6 +61,7 @@ public class HousesController : Singleton<HousesController>
 
             // 1) 仏壇 ON
             grp.Butsudan.SetActive(true);
+            ButudansSilhouetteChangeControllers.Add(grp.Butsudan.GetComponent<SilhouetteChangeController>());
             hd.ButsudanExists = true;
 
             // 2) ExtraPackages から 1 パッケージ必ず発動
@@ -67,7 +72,6 @@ public class HousesController : Singleton<HousesController>
                     if (obj) obj.SetActive(true);
             }
 
-            yield return null;                                   // 1フレーム分散
         }
     }
 

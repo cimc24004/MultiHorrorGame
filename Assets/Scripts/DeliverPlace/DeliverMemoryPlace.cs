@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
-public class DeliverMemoryPlace : SerializedMonoBehaviour
+public class DeliverMemoryPlace : Singleton<DeliverMemoryPlace>
 {
     [Header("届けなければいけないアイテムを指定")]
     public ItemStatus DeliverEventItemStatus;

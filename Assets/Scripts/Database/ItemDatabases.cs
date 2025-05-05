@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Sirenix.OdinInspector;
 using System.IO;
-
+using System.Linq;
 public class ItemDatabases : Singleton<ItemDatabases>
 {
     [Header("ワールドにランダム生成されるアイテムたち")]
@@ -31,7 +31,12 @@ public class ItemDatabases : Singleton<ItemDatabases>
             }
         }
     #endif
-
+    public ItemStatus ItemFindByType(ItemStatus.ItemType item_type){
+        return ForPutItems.Find((x) => x.item_type == item_type);
+    }
+    public GameObject ItemCreate(ItemStatus item_status, Transform Parent){
+        return Instantiate(item_status.ItemPutObjectPrefab,Parent.transform.position,Quaternion.identity, Parent.transform);
+    }
     public GameObject RandomItemCreate(Transform Parent)
     {
         int r = Random.Range(0, 100);

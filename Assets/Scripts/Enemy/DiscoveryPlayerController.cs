@@ -12,6 +12,7 @@ public class DiscoveryPlayerController : MonoBehaviour
 
     [SerializeField]
     private DiscoveryPlayerStatus original_discovery_player_status;
+    private MoveSpeedController move_speed_controller;
     [SerializeField]
     private DiscoveryPlayerStatus discovery_player_status;
 
@@ -61,6 +62,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
         silhouette_change_controller = this.gameObject.GetComponent<SilhouetteChangeController>();
+        move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
         Player = player_status.gameObject;
         PlayersHeadTransform = player_status.HeadPos;
         DefaultPos = this.transform.position;
@@ -243,7 +245,7 @@ public class DiscoveryPlayerController : MonoBehaviour
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
             }
 
-            follow_object_nav.ChaseToTargetSet(true, Player.transform.position, discovery_player_status.SpeedWhenDiscoveried);
+            follow_object_nav.ChaseToTargetSet(true, Player.transform.position, move_speed_controller.RunSpeed);
         }
         else
         {

@@ -10,6 +10,7 @@ public class EnemySoundSensor : MonoBehaviour
     private GameObject Player;
     private PlayerStatus player_status;
     private EnemyRoutingController enemy_routing_controller;
+    private MoveSpeedController move_speed_controller;
     private EnemyStatus enemy_status;
     private FootStepSoundController player_foot_step_sound_controller;
     public float ArriveSoundPlaceWaitTimeToReturnNow;
@@ -44,17 +45,17 @@ public class EnemySoundSensor : MonoBehaviour
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         player_status = PlayerStatus.instance;
+        move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
         player_foot_step_sound_controller = player_status.foot_step_sound_controller;
         enemy_databases = EnemyDatabases.instance;
         sound_sensor_status = original_sound_sensor_status;
-        enemy_all_controller = enemy_databases.gameObject.GetComponent<EnemyAllController>();
+        enemy_all_controller = EnemyAllController.instance;
         Player = player_status.gameObject;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
         time_manager = TimeManager.instance;
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
-
     }
     private void Update()
     {
@@ -140,7 +141,7 @@ public class EnemySoundSensor : MonoBehaviour
                 if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerRunDistance)
                 {
                     Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
-                    SoundSeonsor(Player.transform.position, sound_sensor_status.SpeedWalkWhenRealizeSound, false);
+                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
@@ -157,7 +158,7 @@ public class EnemySoundSensor : MonoBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
-                    SoundSeonsor(Player.transform.position, sound_sensor_status.SpeedWalkWhenRealizeSound, false);
+                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
@@ -176,7 +177,7 @@ public class EnemySoundSensor : MonoBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
-                    SoundSeonsor(Player.transform.position, sound_sensor_status.SpeedWalkWhenRealizeSound, false);
+                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false);
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)

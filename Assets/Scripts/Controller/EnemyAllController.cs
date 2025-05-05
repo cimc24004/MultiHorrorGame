@@ -4,14 +4,16 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 public class EnemyAllController : Singleton<EnemyAllController>
 {
+    private SubNoticedUIController sub_noticed_ui_controller;
     [SerializeField]
-    private List<EnemySoundSensor> enemy_sound_sensors;
+    public List<EnemySoundSensor> enemy_sound_sensors;
     [SerializeField]
-    private List<DiscoveryPlayerController> discovery_player_controllers;
+    public List<DiscoveryPlayerController> discovery_player_controllers;
+    public List<MoveSpeedController> enemy_move_speed_controllers;
     private void Start()
     {
         AllSetStatusList();
-
+        sub_noticed_ui_controller = PlayerStatus.instance.sub_noticed_ui_controller;
     }
     [Button]
     public void AllSetStatusList()
@@ -33,5 +35,10 @@ public class EnemyAllController : Singleton<EnemyAllController>
             discovery_player_controller.DiscoveryPlayerStatusChange(_discovery_player_status, _originalMode);
         }
     }
-
+    public void IncreaseEnemiesMoveSpeed(){
+        //すべての敵のスピードを上げる関数
+        foreach(MoveSpeedController move_speed_controller in enemy_move_speed_controllers){
+            move_speed_controller.MoveSpeedUpAndAnimSpeedUp(0.2f, 0.2f, 0.1f);
+        }
+    }
 }

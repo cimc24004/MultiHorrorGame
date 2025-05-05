@@ -16,7 +16,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public Transform CrouchHeadPos;
     public Transform StandHeadPos;
     public Transform FaceDownHeadPos;
-
+    public PlayerMoveScript player_move_script;
     public CrossHairEvent cross_hair_event;
     public PlayerHideObjectAction player_hide_object_action;
 
@@ -53,7 +53,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     [Header("走れる最小スタミナ")]
     public float CanMinStaminaRun = 30;
 
-
+    public AudioDatas HideActionAudioDatas;
     public bool PlayerDeaded;
 
     [SerializeField] private GameObject FlashLightBatteryUI;
@@ -61,7 +61,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
     private CharacterMovePermit player_move_permit;
     private PlayerStaminaController player_stamina_controller;
     private Animator anim;
-    private bool Crouch;
+    public bool Crouch;
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
@@ -94,6 +94,8 @@ public class PlayerStatus : Singleton<PlayerStatus>
     // Update is called once per frame
     void Update()
     {
+        anim.SetFloat("MoveY", this.MoveY);
+        anim.SetFloat("MoveX", this.MoveX);
         if(player_move_state == PlayerMoveState.Crouch)
         {
             Crouch = true;
@@ -126,9 +128,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
         {
             foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
         }
-        anim.SetBool("Crouch", Crouch);
-        anim.SetFloat("MoveY", MoveY);
-        anim.SetFloat("MoveX", MoveX);
+
     }
     private void FixedUpdate()
     {

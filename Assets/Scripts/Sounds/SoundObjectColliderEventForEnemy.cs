@@ -9,6 +9,8 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
     public bool NoticedSound;
     [SerializeField] private bool InSoundRange;
     [SerializeField] private SoundObjectEventWithEnemySensor sound_object_event_with_sensor;
+    [SerializeField] private SoundObjectEventWithEnemySensor before_sound_object_event_with_sensor;
+
     private EnemySoundSensor enemy_sound_sensor;
     private EnemyStatus enemy_status;
     private FollowObjectByNav follow_object_by_nav;
@@ -22,6 +24,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
     [SerializeField] private Vector3 boxHalfSize = new Vector3(2f, 1f, 2f);
     [Tooltip("SoundObjectRange 用レイヤーマスク")]
     [SerializeField] private LayerMask soundObjectLayerMask;
+    private MoveSpeedController move_speed_controller;
     // private List<GameObject> triggeries;
     // Start is called before the first frame update
     void Start()
@@ -29,6 +32,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
         enemy_status       = GetComponent<EnemyStatus>();
         follow_object_by_nav = GetComponent<FollowObjectByNav>();
         enemy_sound_sensor = GetComponent<EnemySoundSensor>();
+        move_speed_controller = this.GetComponent<MoveSpeedController>();
     }
 
     // Update is called once per frame
@@ -46,8 +50,13 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
             // いずれかの SoundObjectRange が範囲内
             hited_collider = hits[0].gameObject;
             if(hited_collider.tag == "SoundObjectRange"){
-                sound_object_event_with_sensor = hits[0].transform.parent
+                if((sound_object_event_with_sensor != before_sound_object_event_with_sensor) || sound_object_event_with_sensor == null){
+                    sound_object_event_with_sensor = hits[0].transform.parent
                                                     .GetComponent<SoundObjectEventWithEnemySensor>();
+                }
+
+
+                before_sound_object_event_with_sensor = sound_object_event_with_sensor;
                 InSoundRange = true;
             }
         }
@@ -63,7 +72,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
             {
                 enemy_sound_sensor.SoundSeonsor(
                     sound_object_event_with_sensor.transform.position,
-                    enemy_sound_sensor.sound_sensor_status.SpeedRunWhenRealizeSound,
+                    move_speed_controller.RunSpeed,
                     true);
 
                 enemy_sound_sensor.sound_by_obj = true;

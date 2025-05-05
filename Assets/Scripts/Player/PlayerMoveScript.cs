@@ -21,8 +21,10 @@ public class PlayerMoveScript : MonoBehaviour
     private InputAction moveAction;
     private InputAction runChangeAction;
     private InputAction crouchChangeAction;
+    private Animator anim;
     private Vector3 moveDirection = Vector3.zero;
     public float NowSpeed;
+    public bool MovePermit = true;
     private float defaultRunSpeed;
     private float defaultWalkSpeed;
     private float defaultCrouchSpeed;
@@ -46,7 +48,7 @@ public class PlayerMoveScript : MonoBehaviour
         moveAction = playerInput.currentActionMap["Move"];
         runChangeAction = playerInput.currentActionMap["RunChange"];
         crouchChangeAction = playerInput.currentActionMap["CrouchChange"];
-
+        anim = this.gameObject.GetComponent<Animator>();
         defaultRunSpeed = RunSpeed;
         defaultWalkSpeed = WalkSpeed;
         defaultCrouchSpeed = CrouchSpeed;
@@ -62,10 +64,18 @@ public class PlayerMoveScript : MonoBehaviour
 
     void Update()
     {
+        if(!MovePermit){
+            characterController.Move(Vector3.zero);
+            // playerStatus.MoveY = 0;
+            // playerStatus.MoveX = 0;
+            return;
+        }
         // “ü—Íæ“¾•ˆÚ“®•ûŒüİ’è
         Vector2 input = moveAction.ReadValue<Vector2>();
         playerStatus.MoveY = input.y;
         playerStatus.MoveX = input.x;
+        anim.SetBool("Crouch", playerStatus.Crouch);
+
         if (input.sqrMagnitude > 0.01f)
         {
             Quaternion camRot = Quaternion.Euler(0f, DirectionCamera.transform.eulerAngles.y, 0f);
@@ -102,6 +112,7 @@ public class PlayerMoveScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(!MovePermit) return;
         // ÀÛ‚ÌˆÚ“®
         if (moveDirection != Vector3.zero)
             characterController.Move(moveDirection * NowSpeed * Time.fixedDeltaTime);

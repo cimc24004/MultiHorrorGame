@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExitGateController : MonoBehaviour
+public class ExitGateController : Singleton<ExitGateController>
 {
     private Animator m_Animator;
     private PrayController pray_controller;

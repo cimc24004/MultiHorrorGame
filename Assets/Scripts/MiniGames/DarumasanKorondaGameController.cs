@@ -43,7 +43,6 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
     private PlayerInput player_input;
     private GameControllerOnAllScene game_controller_on_all_scene;
     private DiscoveryPlayerController discovery_player_controller;
-    private InputAction look_action;
     // Start is called before the first frame update
 
     void Start()
@@ -54,7 +53,6 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         player_input = game_controller_on_all_scene.player_input;
         player_character_controller = player_status.gameObject.GetComponent<CharacterController>();
-        look_action = player_input.currentActionMap["Look"];
     }
 
     // Update is called once per frame
@@ -95,14 +93,15 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
                 {
                     //こっちを振り返っている間。
                     //プレイヤーが動いたらこっちも動作し始める。
-                    Debug.Log("このときの視点のMagnitude!?!?:  : " + look_action.ReadValue<Vector2>().magnitude);
                     Debug.Log("player_character_controllerのMagnitude!?!?:  : " + player_character_controller.velocity.magnitude);
-                    if (player_character_controller.velocity.magnitude > 0 || look_action.ReadValue<Vector2>().magnitude > 1f)
+                    if (player_character_controller.velocity.magnitude > 0)
                     {
                         Debug.Log("ボイス あなたは動きましたね？？");
                         DarumasanParent.transform.SetParent(null);
                         character_move_permit.Move();
-                        discovery_player_controller.DiscoveryPlayerNow = true;
+                        DOVirtual.DelayedCall(0.1f, () => {
+                            discovery_player_controller.DiscoveryPlayerNow = true;
+                        });
                         this.gameObject.SetActive(false);
                         KorondaVoiceReset();
                     }

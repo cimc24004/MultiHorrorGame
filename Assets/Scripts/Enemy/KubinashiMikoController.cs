@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using GSpawn_Pro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,6 +16,7 @@ public class KubinashiMikoController : MonoBehaviour
     private HorrorDirector horror_director;
     private EnemyActionForDoorController enemy_action_for_door_controller;
     private bool no_discovery_player_once = false;
+    [SerializeField] private float DiscoveryPlayerTimeNow;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,14 +37,19 @@ public class KubinashiMikoController : MonoBehaviour
         {
             // 
             discovery_player_controller.DiscoveryPlayerNow = true;
+            no_discovery_player_once = false;
+
+        }else{
             if(!no_discovery_player_once){
-                horror_director.ResetSetting();
+                DOVirtual.DelayedCall(3, () => {
+                    horror_director.EnemyLostPlayer();
+                });
                 no_discovery_player_once = true;
             }
 
-        }else{
-            no_discovery_player_once = false;
         }
+
+
         // if(!enemy_action_for_door_controller.DoorAttackNow){
         //     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
         //     follow_object_by_nav.ChaseToTargetSet(true, player_status.gameObject.transform.position, 2);

@@ -16,12 +16,8 @@ public class SoundSensorStatus : SerializedScriptableObject
     [Header("プレイヤーがしゃがみ歩きしてるとき")]
     public float RealizeSoundPlayerCrouchWalkDistance;
     [Space]
-    [Header("音が鳴ったさきのポイント歩き移動する速さ")]
-    public float SpeedWalkWhenRealizeSound = 1;
     [Header("音が鳴ったさきのポイント走り移動する速さ")]
     public float SpeedRunWhenRealizeSound = 4;
-    [Header("探すのをあきらめて戻るときの歩く速さ")]
-    public float SpeedWhenReturn = 1;
 
     public void AllStatusChange(float _change)
     {

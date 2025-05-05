@@ -16,7 +16,8 @@ public class CrossHairEvent : MonoBehaviour
     private GameObject Player;
     //�N���X�w�A�����΂����C�L���X�g�̋����B
     public float RaycastDistance = 3;
-
+    //クリックイベント
+    public bool CrossHairEventRaycastPermit = true;
     Camera MainCamera;
     private RaycastHit raycast_hit;
     public CrossHairStatus cross_hair_status;
@@ -29,12 +30,14 @@ public class CrossHairEvent : MonoBehaviour
     private TheDoorController the_door_controller;
     private Ray main_ray;
     private GameStateController game_state_controller;
+    private MainNoticedUIController main_noticed_ui_controller;
     // Start is called before the first frame update
     void Start()
     {
         MainCamera = Camera.main;
         player_input = GameControllerOnAllScene.instance.player_input;
         player_status = PlayerStatus.instance;
+        main_noticed_ui_controller = player_status.main_noticed_ui_controller;
         this.Player = player_status.gameObject;
     }
 
@@ -57,7 +60,9 @@ public class CrossHairEvent : MonoBehaviour
                 }
                 pray_controller.OnTouchOn();
             }
-
+            if(raycast_hit.collider.gameObject.tag == "HideActionObject"){
+                main_noticed_ui_controller.Notice("隠れる", 1);
+            }
             RaycasstedObj = raycast_hit.collider.gameObject;
             if (raycast_hit.collider.gameObject.layer == LayerMask.NameToLayer("Item") ||
                 raycast_hit.collider.gameObject.tag == "HideActionObject" ||
@@ -76,7 +81,7 @@ public class CrossHairEvent : MonoBehaviour
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             }
 
-
+            if(!CrossHairEventRaycastPermit) return;
             if (player_input.currentActionMap["RaycastAction"].triggered)
             {
                 Debug.Log("RaycastAction---------------------Triggered!!!!!!!!!!!!!!!!!!!!!");
@@ -154,6 +159,7 @@ public class CrossHairEvent : MonoBehaviour
                         pray_controller.Pray();
                     }
                 }
+            }else{
             }
         }
         else

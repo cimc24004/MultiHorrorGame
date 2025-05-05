@@ -31,32 +31,36 @@ public class SubNoticedUIController : SerializedMonoBehaviour
     /// 名前を変えず "Notice()" のまま利用できるように実装。
     /// </summary>
     /// <param name="message">表示したい文字列</param>
-    public void Notice(string message)
+    public void Notice(string message, float WaitStart = 0)
     {
-        // プレハブを生成して、親をnoticeRootに設定
-        GameObject noticeObj = Instantiate(noticePrefab, noticeRoot);
-        NoticeUIData notice_ui_data = noticeObj.GetComponent<NoticeUIData>();
-        // テキストをセット（プレハブ内にTextコンポーネントがある想定）
-        TextMeshProUGUI textComp = notice_ui_data.NoticeTextUI;
-        textComp.text = message;
+        DOVirtual.DelayedCall(WaitStart, () => {
+            // プレハブを生成して、親をnoticeRootに設定
+            GameObject noticeObj = Instantiate(noticePrefab, noticeRoot);
+            NoticeUIData notice_ui_data = noticeObj.GetComponent<NoticeUIData>();
+            // テキストをセット（プレハブ内にTextコンポーネントがある想定）
+            TextMeshProUGUI textComp = notice_ui_data.NoticeTextUI;
+            textComp.text = message;
 
-        // RectTransformを取得してリストに加える
-        RectTransform rect = noticeObj.GetComponent<RectTransform>();
-        noticeList.Add(rect);
-        notie_audio_source.Play();
-        // 追加時はアニメーションしないで即座に並べる
-        LayoutNoticesImmediate();
+            // RectTransformを取得してリストに加える
+            RectTransform rect = noticeObj.GetComponent<RectTransform>();
+            noticeList.Add(rect);
+            notie_audio_source.Play();
+            // 追加時はアニメーションしないで即座に並べる
+            LayoutNoticesImmediate();
 
-        // もし6つ以上になったら古いNoticeを自動的に削除する
-        // if (noticeList.Count >= 6)
-        // {
-        //     RemoveOldestNotice();
-        // }
-        // テスト用: 3秒後に自動的に古いNoticeを削除するサンプル
-        DOVirtual.DelayedCall(5, () =>
-        {
-            RemoveOldestNotice();
+            // もし6つ以上になったら古いNoticeを自動的に削除する
+            // if (noticeList.Count >= 6)
+            // {
+            //     RemoveOldestNotice();
+            // }
+            // テスト用: 3秒後に自動的に古いNoticeを削除するサンプル
+            DOVirtual.DelayedCall(5, () =>
+            {
+                RemoveOldestNotice();
+            });
+
         });
+
 
     }
 

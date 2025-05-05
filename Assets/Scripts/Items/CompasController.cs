@@ -21,12 +21,20 @@ public class CompasController : MonoBehaviour
     private PlayerStatus player_status;
     private GameObject Player;
     private GameObject MainCamera;
-
+    private DeliverMemoryPlace deliver_memory_place;
+    private PrayToDeliverItemAppearPlace pray_to_deliver_item_appear_place;
+    private ExitGateController exit_gate_controller;
     void Start()
     {
         player_status = PlayerStatus.instance;
         Player = player_status.gameObject;
-        MainCamera = Camera.main.gameObject;
+        MainCamera = player_status.virtual_camera.gameObject;
+        pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
+        deliver_memory_place = DeliverMemoryPlace.instance;
+        exit_gate_controller = ExitGateController.instance;
+        BlueTargetDirectionTransform = pray_to_deliver_item_appear_place.gameObject.transform;
+        RedTargetDirectionTransform = deliver_memory_place.gameObject.transform;
+        GreenTargetDirectionTransform = exit_gate_controller.gameObject.transform;
     }
 
     void Update()

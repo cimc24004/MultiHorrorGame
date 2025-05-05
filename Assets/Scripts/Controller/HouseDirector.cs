@@ -24,7 +24,6 @@ public class RandomSpawnPackage
 }
 public class HouseDirector : SerializedMonoBehaviour
 {
-    [SerializeField]private Collidered SilhouetteChangeAreaCollidered;
     private HousesController houses_controller;  
     public bool ButsudanExists;
     [LabelText("仏壇 + 付随オブジェクトセット")]
@@ -34,6 +33,8 @@ public class HouseDirector : SerializedMonoBehaviour
     public List<GameObject> RandomObjs;
     [Header("ランダムの確率")]
     public int RandomObjProbablity;
+    // [Header("テレビがあるなら指定")]
+    // public GameObject TV;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,10 +54,5 @@ public class HouseDirector : SerializedMonoBehaviour
             }
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
- 
-    }
+    
 }

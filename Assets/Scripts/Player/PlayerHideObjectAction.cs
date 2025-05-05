@@ -95,6 +95,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_status.HeadPos.position = player_status.StandHeadPos.position;
         player_status.CameraRoot.position = player_status.StandHeadPos.position;
         player_anim.SetBool("FaceDown", false);
+        player_anim.SetBool("Crouch", false);
         this.gameObject.layer = LayerMask.NameToLayer("Player");
         charactor_move_permit.Move();
 
@@ -118,6 +119,7 @@ public class PlayerHideObjectAction : MonoBehaviour
             //ç¿ÇÈÉ^ÉCÉvÇ»ÇÁ
             player_status.HeadPos.position = player_status.CrouchHeadPos.position;
             player_status.CameraRoot.position = player_status.CrouchHeadPos.position;
+            player_anim.SetBool("Crouch", true);
         }
         else if(hide_type_target_object == TargetHideObject.HideType.FaceDown)
         {

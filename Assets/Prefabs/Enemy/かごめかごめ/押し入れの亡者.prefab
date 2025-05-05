@@ -246,6 +246,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &5662676366278442137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3471810470257500249}
+  m_Layer: 0
+  m_Name: KillStartPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3471810470257500249
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662676366278442137}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.004, y: 0.748, z: 0.374}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8144032983511778357}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6384129304485551082
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,7 +347,10 @@ MonoBehaviour:
   - Player
   Collider: 0
   CollideredObj: {fileID: 0}
-  OnTriggerEvent:
+  OnTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerStayEvent:
     m_PersistentCalls:
       m_Calls: []
   OnTriggerExitEvent:
@@ -1463,6 +1497,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8ea560b13fa772540aff7051251f8ff8,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 3471810470257500249}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8ea560b13fa772540aff7051251f8ff8,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 8942546805822085960}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8ea560b13fa772540aff7051251f8ff8,
         type: 3}
@@ -1557,6 +1595,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1923694315143183212}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ea560b13fa772540aff7051251f8ff8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3338440943374987068}
   m_SourcePrefab: {fileID: 100100000, guid: 8ea560b13fa772540aff7051251f8ff8, type: 3}
 --- !u!137 &1754449666076557335 stripped
 SkinnedMeshRenderer:
@@ -1710,7 +1752,6 @@ MonoBehaviour:
   OshiireAttackWaitTime: 1
   OshiireAttackWaitTimeNow: 0
   OshiireAttackMode: 0
-  target_the_door_controller: {fileID: 0}
   AttackedDoorEffectPrefab: {fileID: 9106265002187385468, guid: e3bc59c5b786c904c8e4917940946e74,
     type: 3}
 --- !u!114 &3726776348388475724
@@ -1853,12 +1894,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layer_mask:
+  boxCenter: {fileID: 3471810470257500249}
+  boxHalfExtents: {x: 0.2, y: 0.2, z: 0.2}
+  layerMask:
     serializedVersion: 2
-    m_Bits: 266824
-  StartPos: {fileID: 3698561623734633006}
-  RaycastDistance: 1.5
-  ray_obj: {fileID: 0}
+    m_Bits: 332361
 --- !u!114 &1430194522841201995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3005,7 +3045,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   RaycastDistance: 1
-  BrokeDoorPlusCount: 2
+  BrokeDoorPlusCount: 1
   door_open_close_controller: {fileID: 0}
   the_door_controller: {fileID: 0}
   door_attacked_controller: {fileID: 0}
@@ -3017,7 +3057,9 @@ MonoBehaviour:
   layer_mask:
     serializedVersion: 2
     m_Bits: 135752
+  DoorTouchNow: 0
   DoorAttackNow: 0
+  DoorOpenClosePermit: 1
   DoorAttackSource: {fileID: 5863089618976448100}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 2feb94a928460904caf8c8cdcfe30ebd, type: 3}
@@ -3136,6 +3178,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  SilhouetteNow: 0
+  SilhouetteAutoHideInRange: 0
+  CollideredForSilhouetteAutoHide: {fileID: 0}
   TargetChangeSilhouetteObjs:
   - {fileID: 7687649028977935964}
   - {fileID: 2459633976227468659}
@@ -3159,3 +3213,17 @@ MonoBehaviour:
   EnemyOnDestroyEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3338440943374987068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8813186536376409743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08af4969f6d251a47980d6b8fba930f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WalkSpeed: 1
+  RunSpeed: 2.5

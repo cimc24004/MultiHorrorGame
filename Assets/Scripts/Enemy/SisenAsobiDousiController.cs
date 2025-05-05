@@ -9,6 +9,10 @@ public class SisenAsobiDousiController : MonoBehaviour
     private EnemyRoutingController enemy_routing_controller;
     private HeadLookatTargetController head_look_at_target_controller;
     [SerializeField]
+    private Material NormalBodyMaterial;
+    [SerializeField]
+    private Material ChasePlayerBodyMaterial;
+    [SerializeField]
     private PlayerNearSensor player_near_sensor;
     [SerializeField]
     private SkinnedMeshRenderer HumanKaradaMeshRenderer;
@@ -37,6 +41,7 @@ public class SisenAsobiDousiController : MonoBehaviour
     private EnemyFlinchController enemy_flinch_controller;
 
     private EnemySoundSensor enemy_sound_sensor;
+    private Material BeforeHumanKaradaMaterial;
     // Start is called before the first frame update
     void Start()
     {
@@ -75,7 +80,19 @@ public class SisenAsobiDousiController : MonoBehaviour
 
         if (discovery_player_controller.DiscoveryPlayerNow && !MouthOpenNow)
         {
+
             HumanKaradaMeshRenderer.SetBlendShapeWeight(0, 200);
+        }
+        if(MouthOpenNow || discovery_player_controller.DiscoveryPlayerNow){
+            if(BeforeHumanKaradaMaterial != ChasePlayerBodyMaterial){
+                HumanKaradaMeshRenderer.material = ChasePlayerBodyMaterial;
+            }
+            BeforeHumanKaradaMaterial = ChasePlayerBodyMaterial;
+        }else{
+            if(!BeforeHumanKaradaMaterial != NormalBodyMaterial){
+                HumanKaradaMeshRenderer.material = NormalBodyMaterial;
+            }
+            BeforeHumanKaradaMaterial = NormalBodyMaterial;
         }
         if (!PermitMouthOpen)
         {
@@ -120,6 +137,7 @@ public class SisenAsobiDousiController : MonoBehaviour
 
                 }
             }
+        }else{
         }
 
 

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4641070394582186768
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4242411931776191449}
+  m_Layer: 7
+  m_Name: KillStartPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4242411931776191449
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4641070394582186768}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.026, z: 0.427}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2197759253583897682}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7478258993258170304
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,6 +907,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: beaed61b383920a4186a5f2c183e73bd,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 4242411931776191449}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: beaed61b383920a4186a5f2c183e73bd,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 4460306889983438991}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: beaed61b383920a4186a5f2c183e73bd,
         type: 3}
@@ -974,6 +1009,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3636883779522693404}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: beaed61b383920a4186a5f2c183e73bd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5509705559195539453}
   m_SourcePrefab: {fileID: 100100000, guid: beaed61b383920a4186a5f2c183e73bd, type: 3}
 --- !u!4 &14252536498941331 stripped
 Transform:
@@ -1186,11 +1225,12 @@ MonoBehaviour:
   NoticedSound: 0
   InSoundRange: 0
   sound_object_event_with_sensor: {fileID: 0}
+  before_sound_object_event_with_sensor: {fileID: 0}
   hited_collider: {fileID: 0}
   boxHalfSize: {x: 2, y: 1, z: 2}
   soundObjectLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!114 &8090342889002532603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1247,12 +1287,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layer_mask:
+  boxCenter: {fileID: 4242411931776191449}
+  boxHalfExtents: {x: 0.2, y: 0.2, z: 0.2}
+  layerMask:
     serializedVersion: 2
-    m_Bits: 266824
-  StartPos: {fileID: 5884479297622418975}
-  RaycastDistance: 1
-  ray_obj: {fileID: 0}
+    m_Bits: 463433
 --- !u!114 &4383937671889774609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1338,7 +1377,9 @@ MonoBehaviour:
   layer_mask:
     serializedVersion: 2
     m_Bits: 4680
+  DoorTouchNow: 0
   DoorAttackNow: 0
+  DoorOpenClosePermit: 1
   DoorAttackSource: {fileID: 2014274513533028525}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 2feb94a928460904caf8c8cdcfe30ebd, type: 3}
@@ -2575,6 +2616,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  SilhouetteNow: 0
+  SilhouetteAutoHideInRange: 0
+  CollideredForSilhouetteAutoHide: {fileID: 0}
   TargetChangeSilhouetteObjs:
   - {fileID: 375325662105413179}
   ResetLayerName: Default
@@ -2676,6 +2729,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5509705559195539453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570580655815950056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08af4969f6d251a47980d6b8fba930f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WalkSpeed: 1
+  RunSpeed: 2.5
 --- !u!4 &1574799333831347403 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 923366284622909298, guid: beaed61b383920a4186a5f2c183e73bd,

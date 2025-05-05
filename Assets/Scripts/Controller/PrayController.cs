@@ -25,18 +25,14 @@ public class PrayController : MonoBehaviour
     private MainNoticedUIController main_noticed_ui_controller;
     private bool AlreadyPrayCompleted;
     private CrossHairStatus cross_hair_status;
-    private CharacterMovePermit player_character_move_permit;
     private bool once;
     private bool PrayForStartOnce;
     private bool PrayNowOnce;
-    [Header("PrayNowÇ™TrueÇÃéûÇÕÉvÉåÉCÉÑÅ[ÇÕìÆÇØÇ»Ç¢Ç©Ç«Ç§Ç©")]
-    [SerializeField] private bool PlayerStopOnPrayNow;
 
     // Start is called before the first frame update
     void Start()
     {
         player_status = PlayerStatus.instance;
-        player_character_move_permit = player_status.gameObject.GetComponent<CharacterMovePermit>();
         cross_hair_status = player_status.cross_hair_event.cross_hair_status;
         GageCanvas = player_status.GageCanvas;
         GageImageUI = player_status.GageImage;
@@ -65,9 +61,6 @@ public class PrayController : MonoBehaviour
         if (PrayNow && PrayPermit && !AlreadyPrayCompleted){
             Debug.Log("PrayNowwwwwwwwwww");
             GageCanvas.SetActive(true);
-            if(PlayerStopOnPrayNow){
-                player_character_move_permit.Stop();
-            }
             if(!PrayForStartOnce){
                 PrayStartEvent.Invoke();
                 PrayForStartOnce = true;
@@ -80,10 +73,6 @@ public class PrayController : MonoBehaviour
                 PrayCompleted();
             }
             PrayNow = false;
-            if(PlayerStopOnPrayNow){
-                player_character_move_permit.Move();
-            }
-
         }
     }
     public void OnTouchOn()

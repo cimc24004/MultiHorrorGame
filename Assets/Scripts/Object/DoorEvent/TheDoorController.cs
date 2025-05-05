@@ -30,7 +30,7 @@ public class TheDoorController : SerializedMonoBehaviour
     private PlayerStatus player_status;
     private TimeManager time_manager;
     private float CompletedWaitTimeNow;
-
+    private NeedKeysController need_keys_controller;
     // [ShowIf("NeededKey")]
     [Header("Œ®‚ğ‚©‚¯‚½‚¢ê‡‚Í‚±‚¿‚ç‚ğ“ü‚ê‚Ä‚­‚¾‚³‚¢")]
     public OpenPermitByKeyController open_permit_by_key_controller;
@@ -40,6 +40,7 @@ public class TheDoorController : SerializedMonoBehaviour
     {
         player_status = PlayerStatus.instance;
         time_manager = TimeManager.instance;
+        need_keys_controller = NeedKeysController.instance;
     }
     private void Update()
     {
