@@ -107,7 +107,7 @@ public class DiscoveryPlayerController : MonoBehaviour
             }
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
-            enemy_routing_controller?.PermitFunction(false);
+            // enemy_routing_controller?.PermitFunction(false);
             NonDiscoveriedEventOnce = false;
         }
         else

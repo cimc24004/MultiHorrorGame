@@ -591,6 +591,7 @@ GameObject:
   - component: {fileID: 3561855710536013457}
   - component: {fileID: 5884450085060208609}
   - component: {fileID: 1200482745416050406}
+  - component: {fileID: 4692708623761978663}
   m_Layer: 7
   m_Name: "\u3060\u308B\u307E\u30EA\u30A2\u30EBUnity (2)"
   m_TagString: Enemy
@@ -618,6 +619,7 @@ Transform:
   - {fileID: 4167956816871302411}
   - {fileID: 3239397519410896804}
   - {fileID: 3727253099503095796}
+  - {fileID: 8666042448882347039}
   - {fileID: 6402144504430589331}
   - {fileID: 162965367845439732}
   - {fileID: 2689686861697180032}
@@ -835,7 +837,9 @@ MonoBehaviour:
   layer_mask:
     serializedVersion: 2
     m_Bits: 135752
+  DoorTouchNow: 0
   DoorAttackNow: 0
+  DoorOpenClosePermit: 1
   DoorAttackSource: {fileID: 9019714122537870313}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 5a9945f6fab4959418fbd76c3aec7b79, type: 3}
@@ -881,12 +885,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layer_mask:
+  boxCenter: {fileID: 8666042448882347039}
+  boxHalfExtents: {x: 0.2, y: 0.2, z: 0.3}
+  layerMask:
     serializedVersion: 2
-    m_Bits: 463432
-  StartPos: {fileID: 3727253099503095796}
-  RaycastDistance: 1.5
-  ray_obj: {fileID: 0}
+    m_Bits: 332360
 --- !u!114 &677841691579338456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1115,6 +1118,20 @@ MonoBehaviour:
   FlinchTime: 0
   FlinchTimeNow: 0
   ChangeApplyMotionWhenFlinch: 0
+--- !u!114 &4692708623761978663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2424068193693033414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08af4969f6d251a47980d6b8fba930f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WalkSpeed: 1
+  RunSpeed: 2
 --- !u!1 &2700028143499077335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1233,6 +1250,37 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &4608664578798038455
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8666042448882347039}
+  m_Layer: 0
+  m_Name: KillRayStartPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8666042448882347039
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4608664578798038455}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0274, y: 0.3291, z: 0.311}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3093926220511132028}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4765804837085516370
 GameObject:
   m_ObjectHideFlags: 0

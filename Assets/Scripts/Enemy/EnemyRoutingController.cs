@@ -172,7 +172,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     public void NextRouteSet(GameObject _NextRouteObject = null)
     {
         //次に行くルートを設定する関数。
-
+        RouteIndexNow = Mathf.Clamp(RouteIndexNow, 0, Routings.Count - 1);
         //次に行くルートに指定がなかったらIndexで順番通りに行く。
         if(_NextRouteObject == null)
         {
