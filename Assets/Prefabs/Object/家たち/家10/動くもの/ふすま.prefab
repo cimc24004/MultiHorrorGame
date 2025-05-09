@@ -98,27 +98,19 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -9049132808808881180, guid: 914c86019fa034c4c999f231ce826cb4,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8011215040675428314}
-    - targetCorrespondingSourceObject: {fileID: -9049132808808881180, guid: 914c86019fa034c4c999f231ce826cb4,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7194211949011495360}
-    - targetCorrespondingSourceObject: {fileID: -9049132808808881180, guid: 914c86019fa034c4c999f231ce826cb4,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2914006571843634234}
     - targetCorrespondingSourceObject: {fileID: -9049132808808881180, guid: 914c86019fa034c4c999f231ce826cb4,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4846124298427969653}
-    - targetCorrespondingSourceObject: {fileID: -2922767352018641119, guid: 914c86019fa034c4c999f231ce826cb4,
+    - targetCorrespondingSourceObject: {fileID: -9049132808808881180, guid: 914c86019fa034c4c999f231ce826cb4,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8230054512429091217}
-    - targetCorrespondingSourceObject: {fileID: -2922767352018641119, guid: 914c86019fa034c4c999f231ce826cb4,
+      addedObject: {fileID: 4275935486670505508}
+    - targetCorrespondingSourceObject: {fileID: -9049132808808881180, guid: 914c86019fa034c4c999f231ce826cb4,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6375600758149362118}
+      addedObject: {fileID: 4215862968547165358}
     - targetCorrespondingSourceObject: {fileID: -2922767352018641119, guid: 914c86019fa034c4c999f231ce826cb4,
         type: 3}
       insertIndex: -1
@@ -127,6 +119,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1722208603231283168}
+    - targetCorrespondingSourceObject: {fileID: -2922767352018641119, guid: 914c86019fa034c4c999f231ce826cb4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 561281783002951349}
+    - targetCorrespondingSourceObject: {fileID: -2922767352018641119, guid: 914c86019fa034c4c999f231ce826cb4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8823958931857214257}
   m_SourcePrefab: {fileID: 100100000, guid: 914c86019fa034c4c999f231ce826cb4, type: 3}
 --- !u!1 &2833999471186425789 stripped
 GameObject:
@@ -170,74 +170,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3140427658601106156}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8011215040675428314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3025873551093016840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  TriggerChangeModeOpenClose: 1
-  open_type: 0
-  ToOpenTransform: {fileID: 5882151495330583460}
-  TargetRotateVector: {x: 0, y: 0, z: 0}
-  the_door_controller: {fileID: 7194211949011495360}
-  Duration: 0.5
-  OpenCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  CloseCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
-  CloseClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
-  CloseCompletedClip: {fileID: 0}
-  ItemAppearanceWhenOpened: 0
-  AlreadyOpened: 0
-  move_x_y_z: 0
---- !u!114 &7194211949011495360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3025873551093016840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  door_open_close_controllers:
-  - {fileID: 8011215040675428314}
-  door_status: 0
-  NeededKey: 0
-  OpenedClosedCompletedAnimation: 1
-  OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 2251327550010937624}
-  door_attacked_controller: {fileID: 7892632931721547650}
 --- !u!82 &2914006571843634234
 AudioSource:
   m_ObjectHideFlags: 0
@@ -249,6 +181,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -355,6 +288,74 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.047836747, y: 1.8899997, z: 0.92833906}
   m_Center: {x: 0.00030942445, y: -0.000013887882, z: -0.00023937225}
+--- !u!114 &4275935486670505508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3025873551093016840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  TriggerChangeModeOpenClose: 1
+  open_type: 0
+  ToOpenTransform: {fileID: 5882151495330583460}
+  TargetRotateVector: {x: 0, y: 0, z: 0}
+  the_door_controller: {fileID: 4215862968547165358}
+  Duration: 0.5
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+  CloseCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+  OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
+  CloseClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
+  CloseCompletedClip: {fileID: 0}
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
+  move_x_y_z: 0
+--- !u!114 &4215862968547165358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3025873551093016840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  door_open_close_controllers:
+  - {fileID: 4275935486670505508}
+  door_status: 0
+  NeededKey: 0
+  OpenedClosedCompletedAnimation: 1
+  OpenedClosedCompleted: 1
+  open_permit_by_key_controller: {fileID: 2251327550010937624}
+  door_attacked_controller: {fileID: 7892632931721547650}
 --- !u!4 &5764453349632611527 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1987642597483307477, guid: 914c86019fa034c4c999f231ce826cb4,
@@ -373,74 +374,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3140427658601106156}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8230054512429091217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8999657451962422733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  TriggerChangeModeOpenClose: 1
-  open_type: 0
-  ToOpenTransform: {fileID: 5764453349632611527}
-  TargetRotateVector: {x: 0, y: 0, z: 0}
-  the_door_controller: {fileID: 6375600758149362118}
-  Duration: 0.5
-  OpenCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  CloseCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
-  CloseClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
-  CloseCompletedClip: {fileID: 0}
-  ItemAppearanceWhenOpened: 0
-  AlreadyOpened: 0
-  move_x_y_z: 0
---- !u!114 &6375600758149362118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8999657451962422733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  door_open_close_controllers:
-  - {fileID: 8230054512429091217}
-  door_status: 0
-  NeededKey: 0
-  OpenedClosedCompletedAnimation: 1
-  OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 2251327550010937624}
-  door_attacked_controller: {fileID: 7892632931721547650}
 --- !u!82 &8754709154340050024
 AudioSource:
   m_ObjectHideFlags: 0
@@ -452,6 +385,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -558,3 +492,71 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.047836713, y: 1.8900001, z: 0.928339}
   m_Center: {x: -0.00030999255, y: -0.000014394522, z: 0.00023937225}
+--- !u!114 &561281783002951349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999657451962422733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  TriggerChangeModeOpenClose: 1
+  open_type: 0
+  ToOpenTransform: {fileID: 5764453349632611527}
+  TargetRotateVector: {x: 0, y: 0, z: 0}
+  the_door_controller: {fileID: 8823958931857214257}
+  Duration: 0.5
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+  CloseCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+  OpenClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
+  CloseClip: {fileID: 8300000, guid: ab2cff6281038c3479be353ace705e3c, type: 3}
+  CloseCompletedClip: {fileID: 0}
+  ItemAppearanceWhenOpened: 0
+  AlreadyOpened: 0
+  move_x_y_z: 0
+--- !u!114 &8823958931857214257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999657451962422733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  door_open_close_controllers:
+  - {fileID: 561281783002951349}
+  door_status: 0
+  NeededKey: 0
+  OpenedClosedCompletedAnimation: 1
+  OpenedClosedCompleted: 1
+  open_permit_by_key_controller: {fileID: 2251327550010937624}
+  door_attacked_controller: {fileID: 7892632931721547650}

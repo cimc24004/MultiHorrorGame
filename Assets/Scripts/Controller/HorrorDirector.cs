@@ -231,6 +231,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     }
     public void MikoApperance(){
         this.MainBGM.clip = curse_controller.AppearanceMikoBGM;
+        MikoApperanceSound.Play();
         MainBGMAudioFadeController.PlayWithFadeIn(1);
         this.MainBGMAutoChange = false;
     }

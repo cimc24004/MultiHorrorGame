@@ -132,7 +132,9 @@ public class CurseController : Singleton<CurseController>
                 horror_director.MainBGMReset();
                 horror_director.EnemyLostPlayer();
                 horror_director.MainBGMAutoChange = true;
+
                 Destroy(InstantiatedMiko, 0.1f);
+                InstantiatedMiko = null;
             }
         }
         if (curse_event_type == CurseEventType.ItemLock)

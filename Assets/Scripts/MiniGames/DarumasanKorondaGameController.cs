@@ -94,17 +94,20 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
                     //こっちを振り返っている間。
                     //プレイヤーが動いたらこっちも動作し始める。
                     Debug.Log("player_character_controllerのMagnitude!?!?:  : " + player_character_controller.velocity.magnitude);
-                    if (player_character_controller.velocity.magnitude > 0)
-                    {
-                        Debug.Log("ボイス あなたは動きましたね？？");
-                        DarumasanParent.transform.SetParent(null);
-                        character_move_permit.Move();
-                        DOVirtual.DelayedCall(0.1f, () => {
-                            discovery_player_controller.DiscoveryPlayerNow = true;
-                        });
-                        this.gameObject.SetActive(false);
-                        KorondaVoiceReset();
+                    if(!LookAtPlayerTween.IsPlaying()){
+                        if (player_character_controller.velocity.magnitude > 0)
+                        {
+                            Debug.Log("ボイス あなたは動きましたね？？");
+                            DarumasanParent.transform.SetParent(null);
+                            character_move_permit.Move();
+                            DOVirtual.DelayedCall(0.1f, () => {
+                                discovery_player_controller.DiscoveryPlayerNow = true;
+                            });
+                            this.gameObject.SetActive(false);
+                            KorondaVoiceReset();
+                        }
                     }
+
                 }
             }
             if (VoiceStart)
