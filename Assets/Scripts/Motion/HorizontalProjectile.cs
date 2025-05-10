@@ -5,23 +5,23 @@ using UnityEngine.Events;
 using Sirenix.OdinInspector;
 public class HorizontalProjectile : SerializedMonoBehaviour
 {
-    //…•½“ŠË‚ğs‚¤‚½‚ß‚ÌƒXƒNƒŠƒvƒgB
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë‚ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ß‚ÌƒXï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½B
     public bool throw_now;
 
     private Rigidbody rigid;
-    //“Š‚°‚Ä‚©‚ç’n–Ê‚É‚Â‚¢‚½B
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½nï¿½Ê‚É‚Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
     public bool OnGround;
-    //“Š‚°‚Ä‚©‚ç’n–Ê‚É‚Â‚¢‚½‚Æ‚«‚ÌUnityƒCƒxƒ“ƒg
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½nï¿½Ê‚É‚Â‚ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½Unityï¿½Cï¿½xï¿½ï¿½ï¿½g
     public UnityEvent OnGroundEvent;
 
-    //Enemy‚Éƒqƒbƒg‚µ‚½‚Æ‚«‚É‰½‚©¶¬‚·‚é‚©‚Ç‚¤‚©
+    //Enemyï¿½Éƒqï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½
     [SerializeField] private bool InstantiateOnEnemyHit;
     [ShowIf("InstantiateOnEnemyHit")]
     [SerializeField] private GameObject InstantiatePrefabWhenEnemyHit;
-    //‰‘¬“x
+    //ï¿½ï¿½ï¿½ï¿½ï¿½x
     public float FirstSpeed = 1;
 
-    [Header("‘ÎÌ‚ÌƒŒƒCƒ„[‚ğw’è")]
+    [Header("ï¿½ÎÌ‚Ìƒï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½wï¿½ï¿½")]
     public LayerMask col_layer;
 
     private Vector3 normal;
@@ -41,17 +41,17 @@ public class HorizontalProjectile : SerializedMonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //“Š‚°‚½‚Æ‚«‚É‚µ‚©Às‚³‚ê‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¨‚­B
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½B
         if (OnGround && throw_now)
         {
-            //’n–Ê‚É“’…‚µ‚½‚Æ‚«‚ÍƒIƒuƒWƒFƒNƒg‚ªŠŠ‚ç‚È‚¢‚æ‚¤‚ÉÃ~‚µ‚½‚¢‚Ì‚ÅisKinematic=true‚É‚·‚éB
+            //ï¿½nï¿½Ê‚É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ÍƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½ÉÃ~ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½isKinematic=trueï¿½É‚ï¿½ï¿½ï¿½B
             Debug.DrawRay(this.transform.position,normal * 10, Color.blue);
             if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0)
             {
                 if (Vector3.Dot(Vector3.up, normal) >= 0.5f)
                 {
 
-                    //’n–Ê‚ÉÕ“Ë‚µ‚½Û‚Íiskinematic = true‚É‚·‚éB
+                    //ï¿½nï¿½Ê‚ÉÕ“Ë‚ï¿½ï¿½ï¿½ï¿½Û‚ï¿½iskinematic = trueï¿½É‚ï¿½ï¿½ï¿½B
                     OnGroundEvent.Invoke();
                     rigid.isKinematic = true;
                     OnGround = false;
@@ -64,16 +64,16 @@ public class HorizontalProjectile : SerializedMonoBehaviour
 
     public void Throw(float _FirstSpeed, Vector3 _forward)
     {
-        //•¨‚ğ…•½“ŠË‚Å“Š‚°‚éŠÖ”B ItemThrowController‚È‚Ç‚©‚çÀs‚·‚éB
+        //ï¿½ï¿½ï¿½ğ…•ï¿½ï¿½ï¿½ï¿½Ë‚Å“ï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½ï¿½B ItemThrowControllerï¿½È‚Ç‚ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½B
         this.gameObject.isStatic = false;
         Debug.Log("throwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
         rigid = this.gameObject.GetComponent<Rigidbody>();
         rigid.isKinematic = false;
         this.FirstSpeed = _FirstSpeed;
 
-        //‰‘¬“x‚Æ_forwardİ’è‚µ‚ÄÅ‰‚¾‚¯‘¬“x‚Â‚¯‚Ä‚ ‚°‚ê‚Î…•½“ŠË‚É‚È‚é.
+        //ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½_forwardï¿½İ’è‚µï¿½ÄÅï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Â‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½Îï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë‚É‚È‚ï¿½.
         throw_now = true;
-        rigid.velocity = _forward * _FirstSpeed;
+        rigid.linearVelocity = _forward * _FirstSpeed;
     }
     private void OnCollisionEnter(Collision other)
     {
@@ -81,7 +81,7 @@ public class HorizontalProjectile : SerializedMonoBehaviour
         hited_obj = other.gameObject;
         if (throw_now)
         {
-            //’n–Ê‚É‚Ô‚Â‚©‚Á‚½‚ç
+            //ï¿½nï¿½Ê‚É‚Ô‚Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0)
             {
                 OnGround = true;

@@ -101,10 +101,9 @@ public class DiscoveryPlayerController : MonoBehaviour
                 horror_director.EnemyDiscoveredPlayer();
                 DiscoveriedEventOnce = true;
             }
-            if (follow_object_nav.ArrivedTarget)
-            {
-                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
-            }
+            // if (follow_object_nav.ArrivedTarget)
+            // {
+            // }
             DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
             // enemy_routing_controller?.PermitFunction(false);
@@ -235,9 +234,10 @@ public class DiscoveryPlayerController : MonoBehaviour
     }
     private void DiscoveryPlayer(bool _discovery)
     {
+        DiscoveryPlayerNow = _discovery;
+        if (!_discovery) return;
         //敵に見つかったとき、または見つかってる状態をリセットしたい時に使う。
         //Trueならば見つかったときのイベント、Falseならば見つからなくなったときにリセットするための関数
-        DiscoveryPlayerNow = _discovery;
         if (_discovery)
         {
             if (!follow_object_nav.ArrivedTarget)

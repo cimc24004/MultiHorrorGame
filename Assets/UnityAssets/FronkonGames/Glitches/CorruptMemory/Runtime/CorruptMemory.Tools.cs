@@ -62,7 +62,7 @@ namespace FronkonGames.Glitches.CorruptMemory
       {
         if (renderFeature == null)
         {
-          UniversalRenderPipelineAsset pipelineAsset = (UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset;
+          UniversalRenderPipelineAsset pipelineAsset = (UniversalRenderPipelineAsset)GraphicsSettings.defaultRenderPipeline;
           if (pipelineAsset != null)
           {
             FieldInfo propertyInfo = pipelineAsset.GetType().GetField(RenderListFieldName, bindingFlags);

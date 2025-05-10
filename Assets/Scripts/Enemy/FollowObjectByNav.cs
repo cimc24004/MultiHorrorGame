@@ -31,6 +31,7 @@ public class FollowObjectByNav : MonoBehaviour
     private CharacterController character_controller;
     private Vector3 Vector3Move;
     private NavMeshHit nav_mesh_hit;
+    private EnemyStatus enemy_status;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +39,7 @@ public class FollowObjectByNav : MonoBehaviour
         //rigid = this.gameObject.GetComponent<Rigidbody>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
         time_manager = TimeManager.instance;
+        enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         this.DefaultStoppingDistance = StoppingDistance;
         //デフォルトでは探索結果の0番目を指定する
         if (nav_mesh_agent.path.corners.Length >= 1)
@@ -81,6 +83,7 @@ public class FollowObjectByNav : MonoBehaviour
                 //ターゲットの位置に到着したらChaseToTargetModeはFalseにしてリセット
                 Vector3Move = Vector3.down * character_controller.velocity.y;
                 ChaseToTargetMode = false;
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             }
             else
             {
