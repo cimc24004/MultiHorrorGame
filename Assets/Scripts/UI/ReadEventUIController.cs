@@ -12,6 +12,7 @@ public class ReadEventUIController : MonoBehaviour
 
     // シングルトンなど他システムへの参照
     private GameControllerOnAllScene game_controller_on_all_scene;
+    private PlayerStatus player_status;
     private AudioSource audio_source;
     private PlayerInput player_input;
     private GameStateController game_state_controller;
@@ -47,7 +48,8 @@ public class ReadEventUIController : MonoBehaviour
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
-        player_input = game_controller_on_all_scene.player_input;
+        player_status = PlayerStatus.instance;
+        player_input = player_status.player_input;
         game_state_controller = game_controller_on_all_scene.GetComponent<GameStateController>();
         ESCAction = player_input.actions.FindActionMap("ReadEvent")["ESC"];
         NextPageAction = player_input.actions.FindActionMap("ReadEvent")["NextPage"];

@@ -13,6 +13,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 9
+--- !u!114 &-8804608691882422520
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 639247ca83abc874e893eb93af2b5e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 0
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -21,17 +34,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: skin1
-  m_Shader: {fileID: 4800000, guid: 69c1f799e772cb6438f56c23efccb782, type: 3}
-  m_Parent: {fileID: 2100000, guid: 1927b5d43c3b0d9459719718aaaafcbc, type: 2}
-  m_ModifiedSerializedProperties: 4
+  m_Shader: {fileID: -6465566751694194690, guid: 00191177e5fd5c4468ad546ce87ef329,
+    type: 3}
+  m_Parent: {fileID: 2100000, guid: 8f7260ae490a6f64e97398d880b66e55, type: 2}
+  m_ModifiedSerializedProperties: 20
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  m_CustomRenderQueue: 2000
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - SHADOWCASTER
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -58,19 +75,29 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0
     - _AlphaCutoff: 0.5
+    - _CastShadows: 0
     - _ColorNoiseSpread: 2
+    - _Cull: 2
     - _CullFarDistance: 20
     - _CullFarStart: 60
     - _Cutoff: 0.5
     - _DISTANCEBLEND: 0
+    - _DstBlend: 0
+    - _Emission: 1
     - _InitialBend: 0
+    - _QueueControl: 0
     - _ShiverDirectionality: 0
     - _ShiverDrag: 0
     - _Smoothness: 0.5
     - _Specular: 0.3
+    - _SrcBlend: 1
     - _Stiffness: 1
+    - _Surface: 0
+    - _ZWrite: 1
     m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DryColor: {r: 0.8196079, g: 0.8196079, b: 0.8196079, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HealthyColor: {r: 1, g: 1, b: 1, a: 0}

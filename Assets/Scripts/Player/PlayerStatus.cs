@@ -16,10 +16,9 @@ public class PlayerStatus : Singleton<PlayerStatus>
     public Transform CrouchHeadPos;
     public Transform StandHeadPos;
     public Transform FaceDownHeadPos;
-    public PlayerMoveScript player_move_script;
     public CrossHairEvent cross_hair_event;
     public PlayerHideObjectAction player_hide_object_action;
-
+    public PlayerInput player_input;
     public SubNoticedUIController sub_noticed_ui_controller;
     public MainNoticedUIController main_noticed_ui_controller;
     //円ゲージUI画像
@@ -169,6 +168,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
                 item_belonging_controller.ItemUseFromBelonging(item_status);
                 sub_noticed_ui_controller.Notice($"{item_status.ItemName}を使用");
                 Destroy(g, item_status.StopEnemyTime);
+                g = null;
                 enemy_flinch_controller.FlinchStart(item_status.StopEnemyTime);
                 return;
             }

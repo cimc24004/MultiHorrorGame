@@ -15,17 +15,14 @@ public class GameStateController : MonoBehaviour
     [Header("現在のゲームの状態 メニュー画面だったり、スタート画面ならUIが選択")]
     public GameState game_state;
     private PlayerInput player_input;
+    private PlayerStatus player_status;
     // Start is called before the first frame update
     void Start()
     {
-        player_input = this.gameObject.GetComponent<PlayerInput>();
+        player_status = PlayerStatus.instance;
+        player_input = player_status.GetComponent<PlayerInput>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void ActionByModeSelect(GameState game_state, bool cursor_display)
     {
@@ -48,6 +45,7 @@ public class GameStateController : MonoBehaviour
         player_input.actions.FindActionMap("GamePlayAndMenuCommon").Enable();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        Debug.Log("GameplayModeGameplayModeGameplayModeGameplayModeGameplayMode");
         EventSystem.current.sendNavigationEvents = true;
     }
 

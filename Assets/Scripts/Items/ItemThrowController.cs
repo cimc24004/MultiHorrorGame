@@ -9,19 +9,18 @@ public class ItemThrowController : MonoBehaviour
 
     //↓仮に投げるアイテムをセットしてるだけ。
     public GameObject camera;
-    private GameControllerOnAllScene game_controller_on_all_scene;
     public PlayerInput player_input;
     public Transform StartFiringPos;
     public float ThrowFirstSpeed = 1;
     public ItemStatus item_status;
-
+    private PlayerStatus player_status;
    
     // Start is called before the first frame update
     void Start()
     {
         camera = Camera.main.gameObject;
-        game_controller_on_all_scene = GameControllerOnAllScene.instance;
-        player_input = game_controller_on_all_scene.player_input;
+        player_status = PlayerStatus.instance;
+        player_input = player_status.player_input;
         
     }
 

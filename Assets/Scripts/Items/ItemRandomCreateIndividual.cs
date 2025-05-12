@@ -40,7 +40,7 @@ public class ItemRandomCreateIndividual : SerializedMonoBehaviour
         if(need_keys_controller.NeedKeyCheck() && !Keyhaved){
             if(key_r == 0){
                 //キーが当たったら
-                random_created_item = item_databases.ItemCreate(item_databases.ItemFindByType(ItemStatus.ItemType.Key),ItemToParent);
+                random_created_item = item_databases.ItemCreate(item_databases.ItemFindByType(ItemStatus.ItemType.Key),ItemToParent, ItemToParent.transform.position);
             }else{
                 //キーが
                 random_created_item = item_databases.RandomItemCreate(ItemToParent);
@@ -48,7 +48,6 @@ public class ItemRandomCreateIndividual : SerializedMonoBehaviour
         }else{
             random_created_item = item_databases.RandomItemCreate(ItemToParent);
         }
-
         Debug.Log("ItemRandomCreateFromIndividual-------------------");
         if(random_created_item != null){
             random_created_item.isStatic = true;

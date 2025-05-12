@@ -44,7 +44,8 @@ public class PlayerMoveScript : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-        playerInput = GameControllerOnAllScene.instance.player_input;
+        playerStatus = PlayerStatus.instance;
+        playerInput = playerStatus.player_input;
         moveAction = playerInput.currentActionMap["Move"];
         runChangeAction = playerInput.currentActionMap["RunChange"];
         crouchChangeAction = playerInput.currentActionMap["CrouchChange"];
@@ -54,7 +55,6 @@ public class PlayerMoveScript : MonoBehaviour
         defaultCrouchSpeed = CrouchSpeed;
         NowSpeed = WalkSpeed;
 
-        playerStatus = PlayerStatus.instance;
         staminaController = GetComponent<PlayerStaminaController>();
         subNoticedUI = playerStatus.sub_noticed_ui_controller;
         timeManager = TimeManager.instance;

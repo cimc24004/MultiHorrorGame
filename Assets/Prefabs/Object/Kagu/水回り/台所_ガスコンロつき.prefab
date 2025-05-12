@@ -847,13 +847,13 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: -70, z: 0}
   the_door_controller: {fileID: 6738268490683360683}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5627639537964285932}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+        m_MethodName: SendMessageUpwards
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -862,13 +862,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &6738268490683360683
@@ -934,6 +937,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1112,7 +1116,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: 70, z: 0}
   the_door_controller: {fileID: 1582711080476538961}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5297543650661863914}
@@ -1127,13 +1131,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &1582711080476538961
@@ -1199,6 +1206,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1338,7 +1346,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: 70, z: 0}
   the_door_controller: {fileID: 7924090974575230783}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7561842655384550397}
@@ -1353,13 +1361,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7924090974575230783
@@ -1425,6 +1436,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1564,7 +1576,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: 70, z: 0}
   the_door_controller: {fileID: 3403862540522171546}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3703628642148150528}
@@ -1579,13 +1591,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &3403862540522171546
@@ -1651,6 +1666,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1823,7 +1839,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: -70, z: 0}
   the_door_controller: {fileID: 7957089938478800079}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3138972480210784090}
@@ -1838,13 +1854,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7957089938478800079
@@ -1910,6 +1929,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2073,7 +2093,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: -70, z: 0}
   the_door_controller: {fileID: 4035595674465531060}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5127579972765843089}
@@ -2088,13 +2108,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &4035595674465531060
@@ -2160,6 +2183,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

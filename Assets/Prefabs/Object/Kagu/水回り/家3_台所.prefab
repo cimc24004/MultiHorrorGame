@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1677041245160126290}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.4829988, y: 0.1411, z: -3.594}
+  m_LocalPosition: {x: -2.4829988, y: 0.223, z: -3.594}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 4878361839729137947}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.4829988, y: 0.1411, z: -4.069}
+  m_LocalPosition: {x: -2.4829988, y: 0.223, z: -4.069}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 6718628822719904131}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.4829988, y: 0.1411, z: -3.145}
+  m_LocalPosition: {x: -2.4829988, y: 0.223, z: -3.145}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -118,7 +118,7 @@ Transform:
   m_GameObject: {fileID: 6819857490683418276}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.483, y: 0.1411, z: -4.609}
+  m_LocalPosition: {x: -2.483, y: 0.223, z: -4.609}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -862,9 +862,21 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: 30, z: 0}
   the_door_controller: {fileID: 5161556413837349499}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 7148895897926673124}
+        m_TargetAssemblyTypeName: ItemRandomCreateIndividual, Assembly-CSharp
+        m_MethodName: ItemRandomCreateFromIndividual
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 5975915798310347102}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -877,13 +889,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &5161556413837349499
@@ -926,6 +941,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1100,7 +1116,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: 150, z: 0}
   the_door_controller: {fileID: 7618073703530152313}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5247437794854725773}
@@ -1115,13 +1131,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &7618073703530152313
@@ -1164,6 +1183,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1326,7 +1346,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: 30, z: 0}
   the_door_controller: {fileID: 442915876212778768}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8571873559549574163}
@@ -1341,13 +1361,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &442915876212778768
@@ -1390,6 +1413,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1558,7 +1582,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: 150, z: 0}
   the_door_controller: {fileID: 8783884178927063201}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3116359003397515420}
@@ -1573,13 +1597,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: a355d5734fb68394e81792600333bb14, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 0a8661f60a412914a87e19f8edf5e0f8, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &8783884178927063201
@@ -1622,6 +1649,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

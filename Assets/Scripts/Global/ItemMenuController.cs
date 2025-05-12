@@ -42,12 +42,13 @@ public class ItemMenuController : SerializedMonoBehaviour
     private ItemUI before_selected_item_ui;
     private SubNoticedUIController sub_noticed_ui_controller;
 
-
+    private PlayerStatus player_status;
     [SerializeField] public ItemEquipController item_equip_controller;
     private void Start()
     {
-        sub_noticed_ui_controller = PlayerStatus.instance.sub_noticed_ui_controller;
-        player_input = GameControllerOnAllScene.instance.player_input;
+        player_status = PlayerStatus.instance;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+        player_input = player_status.player_input;
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
         player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
     }

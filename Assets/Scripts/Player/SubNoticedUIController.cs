@@ -76,7 +76,7 @@ public class SubNoticedUIController : SerializedMonoBehaviour
 
         // 削除（フェードアウトなどを挟むならここでCanvasGroupをTweenする）
         Destroy(target.gameObject);
-
+        target = null;
         // 残った要素をアニメーションで上へスライドさせる
         SlideUpNotices();
     }

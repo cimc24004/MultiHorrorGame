@@ -28,7 +28,7 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_anim = this.gameObject.GetComponent<Animator>();
         player_character_controller = this.gameObject.GetComponent<CharacterController>();
         charactor_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
-        player_input = GameControllerOnAllScene.instance.player_input;
+        player_input = player_status.player_input;
         player_move_script = this.gameObject.GetComponent<PlayerMoveScript>();
     }
 

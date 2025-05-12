@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 
 public class DoorOpenCloseController : SerializedMonoBehaviour
 {
+
     private Vector3 DefaultLocalPosition;
     private Vector3 OpenLocalPosition;
     [Header("開けたときにトリガーを切り替えるかどうか")]
@@ -20,10 +21,9 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [Header("どのくらい開けるか")]
     public Vector3 TargetRotateVector;
     private Vector3 DefaultRotateVector;
-
     [Required] public TheDoorController the_door_controller;
     public float Duration = 0.5f;
-
+    public UnityEvent OpenStartEvent;
     public UnityEvent OpenCompleted;
     public UnityEvent CloseCompleted;
 
@@ -104,7 +104,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
         {
             audio_source.PlayOneShot(OpenClip);
         }
-
+        OpenStartEvent.Invoke();
         if (open_type == OpenType.SideOpen)
         {
             // ローカル座標系で移動

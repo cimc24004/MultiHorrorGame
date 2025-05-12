@@ -17,10 +17,10 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
 
         public GameObject UI;
 
-        public ConfigStatus(string name, float value)
+        public ConfigStatus(string name, float _value)
         {
             this.config_name = name;
-            this.value = value;
+            this.value = _value;
         }
 
     }

@@ -34,8 +34,11 @@ public class ItemDatabases : Singleton<ItemDatabases>
     public ItemStatus ItemFindByType(ItemStatus.ItemType item_type){
         return ForPutItems.Find((x) => x.item_type == item_type);
     }
-    public GameObject ItemCreate(ItemStatus item_status, Transform Parent){
-        return Instantiate(item_status.ItemPutObjectPrefab,Parent.transform.position,Quaternion.identity, Parent.transform);
+    public GameObject ItemCreate(ItemStatus item_status, Transform Parent, Vector3 Position){
+        GameObject item_obj = Instantiate(item_status.ItemPutObjectPrefab,Position,item_status.ItemPutObjectPrefab.transform.rotation, Parent.transform);
+        item_obj.transform.localPosition = Vector3.zero;
+        item_obj.GetComponent<Rigidbody>().isKinematic = true;
+        return item_obj;
     }
     public GameObject RandomItemCreate(Transform Parent)
     {
@@ -97,8 +100,9 @@ public class ItemDatabases : Singleton<ItemDatabases>
         Debug.Log($"resulted_itemsCOunt: {resulted_items.Count} r={r}");
         int result_r = Random.Range(0,resulted_items.Count);
         ItemStatus decided_result_item = resulted_items[result_r];
+
         Debug.Log($"アイテムは....{decided_result_item.apperance_ratio.ToString()}の{decided_result_item.ItemName}が当たりました！");
-        return Instantiate(decided_result_item.ItemPutObjectPrefab,Parent.transform.position,Quaternion.identity, Parent.transform);
+        return ItemCreate(decided_result_item, Parent, Parent.transform.position);
     }
 
 }

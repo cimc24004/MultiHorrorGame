@@ -7,9 +7,6 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
 {
     public Transform DeliverItemApperancePlace;
 
-    [Header("出現させる敵")]
-    public GameObject ApperanceEnemy;
-    public Transform ApperanceEnemyPos;
 
     [Header("アイテムを取得したときのイベント")]
     public UnityEvent2 ItemGetedEvent;
@@ -20,9 +17,6 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
     private AudioSource audio_source;
 
     private GameProgressController game_progress_controller;
-
-
-    public GameObject enemy;
 
     // Start is called before the first frame update
     void Start()
@@ -55,22 +49,13 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
 
         GameObject item = Instantiate(item_databases.ForDeliverItem.ItemPutObjectPrefab, DeliverItemApperancePlace.transform.position, Quaternion.identity);
         ItemObject item_object_script = item.GetComponent<ItemObject>();
-        EnemySoundSensor enemy_sound_sensor = null;
-        DiscoveryPlayerController discovery_player_controller = null;
-        EnemyRoutingController enemy_routing_controller = null;
         //アイテムを取得したときのイベント。
         item_object_script.ItemGetAddEvent.AddListener(() => {
-            enemy_sound_sensor = enemy.GetComponent<EnemySoundSensor>();
-            discovery_player_controller = enemy.GetComponent<DiscoveryPlayerController>();
-            enemy_routing_controller = enemy.GetComponent<EnemyRoutingController>();
             game_progress_controller.OnItemGeted();
             ItemGetedEvent.Invoke();
         });
         door_open_close_controller.OpenCompleted.AddListener(() => {
             Debug.Log("aaaaaaaaaaaaaaaaaaaaDoorOpenClosepedtd!!");
-            enemy_sound_sensor.enabled = true;
-            discovery_player_controller.enabled = true;
-            enemy_routing_controller.enabled = true;
         });
         audio_source.Play();
     }

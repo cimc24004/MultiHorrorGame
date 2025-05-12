@@ -31,8 +31,8 @@ public class FlashLightController : Singleton<FlashLightController>
     void Start()
     {
         player_status = PlayerStatus.instance;
+        player_input = player_status.player_input;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
-        player_input = GameControllerOnAllScene.instance.player_input;
         flash_light_battery_ui_controller = FlashLightBatteryUIController.instance;
     }
 

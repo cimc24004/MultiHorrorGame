@@ -22,6 +22,7 @@ public class JapaneseNingyoPlace : SerializedMonoBehaviour
         discovery_player_controller.DiscoveryPlayerBySightning = false;
 
         Destroy(EnemyNingyoApperancePlaceTransform.gameObject, 0.1f);
+        EnemyNingyoApperancePlaceTransform = null;
     }
     [Button]
     public void EnemyNingyoDiscoveryPlayer(){

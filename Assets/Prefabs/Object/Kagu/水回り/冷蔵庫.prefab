@@ -74,6 +74,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: c41e4204b90e4d846b20645f98747028, type: 3}
+  m_Resource: {fileID: 8300000, guid: c41e4204b90e4d846b20645f98747028, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.3
   m_Pitch: 1
@@ -266,7 +267,7 @@ PrefabInstance:
     - target: {fileID: -8391222552659086748, guid: 0dd884cf0891add4aa63de900005e2bb,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -7146521406498821007, guid: 0dd884cf0891add4aa63de900005e2bb,
         type: 3}
@@ -332,6 +333,10 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 8635834081445555000}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -8391222552659086748, guid: 0dd884cf0891add4aa63de900005e2bb,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2300694309403446710}
     - targetCorrespondingSourceObject: {fileID: -516098083770646512, guid: 0dd884cf0891add4aa63de900005e2bb,
         type: 3}
       insertIndex: -1
@@ -406,7 +411,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: -80, z: 0}
   the_door_controller: {fileID: 1715789804478567745}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1754493530485448176}
@@ -421,13 +426,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: c77892beb08c9df458edf8dfc752267c, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9f4e456e42ed1e046a6d14caa0b3ee2c, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &1715789804478567745
@@ -491,6 +499,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -605,6 +614,33 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1301205922614780839}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1838221162620162499 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8391222552659086748, guid: 0dd884cf0891add4aa63de900005e2bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1301205922614780839}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2300694309403446710
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1838221162620162499}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.1501293, y: 6.606049, z: 3.5844715}
+  m_Center: {x: -0.21857093, y: 0.0000009536743, z: -0.00000017881399}
 --- !u!4 &2447090718415970089 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -5477749408508380018, guid: 0dd884cf0891add4aa63de900005e2bb,
@@ -650,7 +686,7 @@ MonoBehaviour:
   TargetRotateVector: {x: 0, y: -80, z: 0}
   the_door_controller: {fileID: 1249821650539821123}
   Duration: 0.5
-  OpenCompleted:
+  OpenStartEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2212337557172839779}
@@ -665,13 +701,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OpenCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   CloseCompleted:
     m_PersistentCalls:
       m_Calls: []
   OpenClip: {fileID: 8300000, guid: c77892beb08c9df458edf8dfc752267c, type: 3}
   CloseClip: {fileID: 0}
   CloseCompletedClip: {fileID: 8300000, guid: 9f4e456e42ed1e046a6d14caa0b3ee2c, type: 3}
-  ItemAppearanceWhenOpened: 0
+  ItemAppearanceWhenOpened: 1
   AlreadyOpened: 0
   move_x_y_z: 0
 --- !u!114 &1249821650539821123
@@ -735,6 +774,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -900,17 +940,17 @@ PrefabInstance:
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.5
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.12
+      value: 1.42
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.81
+      value: 1.76
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
@@ -1021,17 +1061,17 @@ PrefabInstance:
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.5
+      value: 0.040000316
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.38
+      value: 1.6799994
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.81
+      value: 1.7600007
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}

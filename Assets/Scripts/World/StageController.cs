@@ -24,15 +24,12 @@ public class StageController : Singleton<StageController>
         game_state_controller = game_controller_on_all_scene.gameObject.GetComponent<GameStateController>();
         game_state_controller.ActionByModeSelect(game_state, CursorVisible);
         StartEvent.Invoke();
-        Cursor.lockState = DefaultCursorLockMode;
-        if(DefaultCursorLockMode != CursorLockMode.None)
-            Cursor.visible = false;
+
         NowSceneName = SceneManager.GetActiveScene().name;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 }
