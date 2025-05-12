@@ -11,13 +11,16 @@ public class ClosestEnemyController : Singleton<ClosestEnemyController>
     }
     //EnemyNearSensorの範囲内にいる敵たち
     private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
+    private PlayerStatus player_status;
     public Dictionary<GameObject, ClosestEnemyWithDistanceValue> EnemiesInRangeWithToPlayerDistance = new Dictionary<GameObject, ClosestEnemyWithDistanceValue>();
     
     public KeyValuePair<GameObject,ClosestEnemyWithDistanceValue> ClosestEnemyWithDistance = new KeyValuePair<GameObject, ClosestEnemyWithDistanceValue>();
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
-        player_to_enemy_distance_controller = PlayerStatus.instance.gameObject.GetComponent<PlayerToEnemyDistanceController>();
+        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
+        player_status = PlayerStatus.LocalInstance;
+        player_to_enemy_distance_controller = player_status.gameObject.GetComponent<PlayerToEnemyDistanceController>();
 
     }
 

@@ -44,12 +44,12 @@ public class EnemySoundSensor : MonoBehaviour
     {
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
         player_foot_step_sound_controller = player_status.foot_step_sound_controller;
         enemy_databases = EnemyDatabases.instance;
         sound_sensor_status = original_sound_sensor_status;
-        enemy_all_controller = EnemyAllController.instance;
+        enemy_all_controller = EnemyAllController.Instance;
         Player = player_status.gameObject;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();

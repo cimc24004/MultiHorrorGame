@@ -39,7 +39,7 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     void Start()
     {
         //StageRoutingsからルーティングたちを取得。
-        stage_routings = StageController.instance.gameObject.GetComponent<StageRoutings>();
+        stage_routings = StageController.Instance.gameObject.GetComponent<StageRoutings>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         time_manager = TimeManager.instance;

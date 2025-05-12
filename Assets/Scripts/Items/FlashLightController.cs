@@ -30,7 +30,7 @@ public class FlashLightController : Singleton<FlashLightController>
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         player_input = player_status.player_input;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         flash_light_battery_ui_controller = FlashLightBatteryUIController.instance;

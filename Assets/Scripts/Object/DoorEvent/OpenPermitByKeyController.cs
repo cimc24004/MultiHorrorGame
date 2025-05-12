@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class OpenPermitByKeyController : MonoBehaviour
+public class OpenPermitByKeyController : NetworkBehaviour
 {
     //鍵によって開けるコントローラー 鍵つきのドアにしたい場合だけこのスクリプトをアタッチ。
     public bool OpenPermit = false;
@@ -13,7 +14,14 @@ public class OpenPermitByKeyController : MonoBehaviour
     private AudioSource KeyAudioSource;
     private void Start()
     {
-        player_status = PlayerStatus.instance;
+        // player_status = PlayerStatus.LocalInstance;
+        // cross_hair_event = player_status.cross_hair_event;
+        // sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+        // key_audio_datas = cross_hair_event.KeyAudioDatas;
+        // KeyAudioSource = key_audio_datas.audioSource;
+    }
+    public override void OnNetworkSpawn(){
+        player_status = PlayerStatus.LocalInstance;
         cross_hair_event = player_status.cross_hair_event;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         key_audio_datas = cross_hair_event.KeyAudioDatas;

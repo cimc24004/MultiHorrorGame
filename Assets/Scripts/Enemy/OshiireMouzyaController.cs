@@ -45,7 +45,7 @@ public class OshiireMouzyaController : MonoBehaviour
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         player_foot_step_sound_controller = player_status.foot_step_sound_controller;
         player_near_sensor.IsNearToKillEffect = false;
 

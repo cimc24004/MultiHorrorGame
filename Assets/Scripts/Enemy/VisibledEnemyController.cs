@@ -25,7 +25,7 @@ public class VisibledEnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         m_Animator = this.gameObject.GetComponent<Animator>();
         PlayerHeadPos = player_status.HeadPos.position;

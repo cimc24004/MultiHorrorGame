@@ -38,7 +38,7 @@ public class TheDoorController : SerializedMonoBehaviour
     public DoorAttackedController door_attacked_controller;
     private void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         time_manager = TimeManager.instance;
         need_keys_controller = NeedKeysController.instance;
     }

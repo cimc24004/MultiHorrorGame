@@ -48,7 +48,7 @@ public class ReadEventUIController : MonoBehaviour
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         player_input = player_status.player_input;
         game_state_controller = game_controller_on_all_scene.GetComponent<GameStateController>();
         ESCAction = player_input.actions.FindActionMap("ReadEvent")["ESC"];

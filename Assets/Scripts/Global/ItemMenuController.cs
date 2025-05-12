@@ -46,7 +46,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     [SerializeField] public ItemEquipController item_equip_controller;
     private void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         player_input = player_status.player_input;
         item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();

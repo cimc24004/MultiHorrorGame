@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-
-public class CurseDecreaseController : MonoBehaviour
+using Unity.Netcode;
+public class CurseDecreaseController : NetworkBehaviour
 {
     private PlayerStatus player_status;
     private GameObject CrossHairCanvas;
@@ -11,9 +12,15 @@ public class CurseDecreaseController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        // player_status = PlayerStatus.LocalInstance;
+        // CrossHairCanvas = player_status.cross_hair_event.gameObject;
+        // curse_controller = CurseController.instance;
+    }
+    public override void OnNetworkSpawn()
+    {
+        player_status = PlayerStatus.LocalInstance;
         CrossHairCanvas = player_status.cross_hair_event.gameObject;
-        curse_controller = CurseController.instance;
+        curse_controller = CurseController.Instance;
     }
 
     // Update is called once per frame

@@ -44,7 +44,7 @@ public class PlayerMoveScript : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-        playerStatus = PlayerStatus.instance;
+        playerStatus = PlayerStatus.LocalInstance;
         playerInput = playerStatus.player_input;
         moveAction = playerInput.currentActionMap["Move"];
         runChangeAction = playerInput.currentActionMap["RunChange"];

@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+
 public class LookAtPlayer : MonoBehaviour
 {
-    //プレイヤーを見る為だけのスクリプト。 
-    PlayerStatus player_status;
+    // プレイヤーを見る為だけのスクリプト。
     public enum PlayMode
     {
         Update,
@@ -16,37 +15,53 @@ public class LookAtPlayer : MonoBehaviour
         Player,
         CameraRoot
     }
+
+    [Header("追いかける対象")]
     public LookAt look_at;
+
+    [Header("一度だけ or 毎フレーム？")]
     public PlayMode play_mode;
-    private void Start()
+
+    // キャッシュ用
+    private PlayerStatus player_status;
+    private Transform headPosTransform;
+    private Transform cameraRootTransform;
+    private bool initialized = false;
+
+    private IEnumerator Start()
     {
-        player_status = PlayerStatus.instance;
-        if(play_mode == PlayMode.Start)
+        // PlayerStatus.LocalInstance がセットされるまで待つ
+        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
+
+        player_status       = PlayerStatus.LocalInstance;
+        headPosTransform    = player_status.HeadPos.transform;
+        cameraRootTransform = player_status.CameraRoot.transform;
+        initialized = true;
+
+        // Start モードなら一度だけ向かせる
+        if (play_mode == PlayMode.Start)
         {
-            if(look_at == LookAt.Player)
-            {
-                this.gameObject.transform.DODynamicLookAt(player_status.HeadPos.transform.position, 0f).SetLink(this.gameObject);
-            }else if(look_at == LookAt.CameraRoot)
-            {
-                this.gameObject.transform.DODynamicLookAt(player_status.CameraRoot.transform.position, 0f).SetLink(this.gameObject);
-            }
+            Vector3 target = (look_at == LookAt.Player)
+                ? headPosTransform.position
+                : cameraRootTransform.position;
 
+            transform
+                .DODynamicLookAt(target, 0f)
+                .SetLink(gameObject);
         }
-
     }
+
     private void LateUpdate()
     {
-        //DotWeenで少しフェードしてLookAtする
-        if(play_mode == PlayMode.Update)
-        {
-            if(look_at == LookAt.Player)
-            {
-                this.gameObject.transform.DODynamicLookAt(player_status.HeadPos.transform.position, 0.3f).SetLink(this.gameObject);
-            }
-            else if (look_at == LookAt.CameraRoot)
-            {
-                this.gameObject.transform.DODynamicLookAt(player_status.CameraRoot.transform.position, 0.3f).SetLink(this.gameObject);
-            }
-        }
+        // 準備完了＆Update モードのときだけ毎フレーム向く
+        if (!initialized || play_mode != PlayMode.Update) return;
+
+        Vector3 target = (look_at == LookAt.Player)
+            ? headPosTransform.position
+            : cameraRootTransform.position;
+
+        transform
+            .DODynamicLookAt(target, 0.3f)
+            .SetLink(gameObject);
     }
 }

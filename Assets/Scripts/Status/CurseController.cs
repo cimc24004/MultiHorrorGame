@@ -7,7 +7,7 @@ using DG.Tweening;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
-public class CurseController : Singleton<CurseController>
+public class CurseController : NetworkSingleton<CurseController>
 {
     public enum CurseEventType
     {
@@ -50,13 +50,13 @@ public class CurseController : Singleton<CurseController>
     private HorrorDirector horror_director;
 
     [SerializeField] public AudioClip AppearanceMikoBGM;
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = item_belongings_controller.item_menu_controller;
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
-        horror_director = HorrorDirector.instance;
+        horror_director = HorrorDirector.Instance;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         this.OnValueChangeCurseEvent.AddListener(() =>
         {

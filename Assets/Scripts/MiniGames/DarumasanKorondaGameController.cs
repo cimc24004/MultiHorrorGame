@@ -48,7 +48,7 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
         discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         player_input = player_status.player_input;
         player_character_controller = player_status.gameObject.GetComponent<CharacterController>();
     }

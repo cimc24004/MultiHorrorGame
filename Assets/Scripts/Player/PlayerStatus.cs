@@ -8,8 +8,25 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
-public class PlayerStatus : Singleton<PlayerStatus>
+using Unity.Netcode;
+public class PlayerStatus : NetworkBehaviour
 {
+    //ローカルの人を取得するためのinstance
+    public static PlayerStatus LocalInstance { get; private set; }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+            LocalInstance = this;    // 自分のクライアントのプレイヤーだけセット
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner && LocalInstance == this)
+            LocalInstance = null;    // 切断されたらクリア
+    }
+
+
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
     public Transform CameraRoot;
     public Transform HeadPos;
@@ -85,7 +102,7 @@ public class PlayerStatus : Singleton<PlayerStatus>
         player_hide_object_action = this.gameObject.GetComponent<PlayerHideObjectAction>();
         item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = ItemController.GetComponent<ItemMenuController>();
-        horror_director = HorrorDirector.instance;
+        horror_director = HorrorDirector.Instance;
         flash_light_controller = FlashLightController.instance;
         player_to_enemy_distance_controller = this.gameObject.GetComponent<PlayerToEnemyDistanceController>();
     }

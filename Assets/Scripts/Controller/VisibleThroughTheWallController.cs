@@ -19,7 +19,7 @@ public class VisibleThroughTheWallController : MonoBehaviour
     {
         material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         MainCamera = Camera.main.gameObject;
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         CameraRoot = player_status.CameraRoot.gameObject;
     }
 

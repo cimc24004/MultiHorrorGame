@@ -4,7 +4,7 @@ using UnityEngine;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
-public class PlayerContinueController : MonoBehaviour
+public class PlayerContinueController : NetworkSingleton<PlayerContinueController>
 {
     [Header("ÉvÉåÉCÉÑÅ[prefab")]
     private PlayerStatus player_status;
@@ -17,9 +17,9 @@ public class PlayerContinueController : MonoBehaviour
     private CharacterController player_character_controller;
     [SerializeField] Transform ContinueTransform;
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         Player = player_status.gameObject;
         PlayerContinuePos = Player.transform.position;
         player_move_permit = Player.GetComponent<CharacterMovePermit>();

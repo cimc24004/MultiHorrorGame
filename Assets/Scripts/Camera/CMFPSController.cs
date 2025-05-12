@@ -14,9 +14,10 @@ public class CMFPSController : Singleton<CMFPSController>
     public float DefaultVerticalMinValue;
     public float DefaultVerticalMaxValue;
 
-    private void Start()
+    private IEnumerator Start()
     {
-        player_status = PlayerStatus.instance;
+        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
+        player_status = PlayerStatus.LocalInstance;
         cinemachine_virtual_camera = player_status.virtual_camera;
         cinemachine_pov = cinemachine_virtual_camera.GetCinemachineComponent<CinemachinePOV>();
         DefaultHorizontalMinValue = cinemachine_pov.m_HorizontalAxis.m_MinValue;

@@ -15,7 +15,7 @@ public class PlayerToEnemyDistanceController : SerializedMonoBehaviour
     private ClosestEnemyController closest_enemy_controller;
     private void Start()
     {
-        horror_director = HorrorDirector.instance;
+        horror_director = HorrorDirector.Instance;
         closest_enemy_controller = ClosestEnemyController.instance;
     }
 

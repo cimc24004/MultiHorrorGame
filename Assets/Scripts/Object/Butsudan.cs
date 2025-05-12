@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Butsudan : MonoBehaviour
+public class Butsudan : NetworkBehaviour
 {
     private PrayToDeliverItemAppearPlace pray_to_deliver_item_appear_place;
     private EnemyAllController enemy_all_controller;
@@ -17,9 +18,15 @@ public class Butsudan : MonoBehaviour
     }
     private void Start()
     {
+        // pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
+        // enemy_all_controller = EnemyAllController.Instance;
+        // sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
+        // houses_controller = HousesController.instance;
+    }
+    public override void OnNetworkSpawn(){
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
-        enemy_all_controller = EnemyAllController.instance;
-        sub_noticed_ui_controller = PlayerStatus.instance.sub_noticed_ui_controller;
+        enemy_all_controller = EnemyAllController.Instance;
+        sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
         houses_controller = HousesController.instance;
     }
     public void ButsudanPrayCompleted()

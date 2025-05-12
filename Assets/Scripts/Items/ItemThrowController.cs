@@ -19,7 +19,7 @@ public class ItemThrowController : MonoBehaviour
     void Start()
     {
         camera = Camera.main.gameObject;
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         player_input = player_status.player_input;
         
     }

@@ -14,7 +14,7 @@ public enum HorrorState
     PlayerKilled //éEÇ≥ÇÍÇÈÅB
 }
 
-public class HorrorDirector : Singleton<HorrorDirector>
+public class HorrorDirector : NetworkSingleton<HorrorDirector>
 {
     public bool MainBGMAutoChange = true;
     [Title("ÉÅÉCÉìBGMä÷òA")]
@@ -68,12 +68,12 @@ public class HorrorDirector : Singleton<HorrorDirector>
     //======================================================
     // èâä˙âª
     //======================================================
-    void Start()
+    public override void OnNetworkSpawn()
     {
         cinemachine_impulse_source = GetComponent<CinemachineImpulseSource>();
         MainDefaultBGM = MainBGM.clip;
-        player_status = PlayerStatus.instance;
-        curse_controller = CurseController.instance;
+        player_status = PlayerStatus.LocalInstance;
+        curse_controller = CurseController.Instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         urp_fx_controller = game_controller_on_all_scene.GetComponent<URPFxController>();
         closest_enemy_controller = ClosestEnemyController.instance;
@@ -81,6 +81,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
 
     private void Update()
     {
+        if(player_status == null) return;
         if (closest_enemy_controller.ClosestEnemyWithDistance.Key != null && closest_enemy_controller.ClosestEnemyWithDistance.Value.player_near_sensor.IsNearToKillEffect)
         {
             // ãóó£Ç 0?1 ê≥ãKâª

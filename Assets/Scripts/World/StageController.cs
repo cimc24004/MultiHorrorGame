@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
-public class StageController : Singleton<StageController>
+public class StageController : NetworkSingleton<StageController>
 {
     public CursorLockMode DefaultCursorLockMode;
     public string NowSceneName;
@@ -18,7 +18,7 @@ public class StageController : Singleton<StageController>
     //なのでステージごとに配置するコントローラーを分けている。
 
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         game_state_controller = game_controller_on_all_scene.gameObject.GetComponent<GameStateController>();

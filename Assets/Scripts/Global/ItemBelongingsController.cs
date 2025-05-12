@@ -50,7 +50,7 @@ public class ItemBelongingsController : Singleton<ItemBelongingsController>
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
         item_throw_controller = this.gameObject.GetComponent<ItemThrowController>();
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;

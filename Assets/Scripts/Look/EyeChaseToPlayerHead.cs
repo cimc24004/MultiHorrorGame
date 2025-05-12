@@ -1,34 +1,40 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+using Unity.Netcode;
 
 public class EyeChaseToPlayerHead : MonoBehaviour
 {
     [SerializeField]
     private Vector3 AddAngles;
-    private PlayerStatus player_status;
-    private GameObject PlayerCameraRoot;
 
-    private Vector3 SubAngle;
-    // Start is called before the first frame update
-    public Transform cameraRoot;  // プレイヤーのカメラ位置を指す
-    public float rotateSpeed = 5f; // 好みでスムーズ回転させたい場合
-    private void Start()
+    public float rotateSpeed = 5f; // 好みでスムーズ回転
+
+    // ローカルプレイヤーの CameraRoot をキャッシュ
+    private Transform cameraRoot;
+
+    private IEnumerator Start()
     {
-        player_status = PlayerStatus.instance;
-        PlayerCameraRoot = player_status.CameraRoot.gameObject;
+        // PlayerStatus.LocalInstance がセットされるまで待機
+        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
+
+        // キャッシュしなおし
+        var status = PlayerStatus.LocalInstance;
+        cameraRoot = status.CameraRoot.transform;
     }
-    void LateUpdate()
-    {
-        Vector3 dir = (PlayerCameraRoot.transform.position - transform.position).normalized;
-        // 基本の「dir を正面に向ける」回転
-        Quaternion baseRot = Quaternion.LookRotation(dir);
 
-        // さらに X軸に 90度回転を加える
+    private void LateUpdate()
+    {
+        if (cameraRoot == null) return;
+
+        // 元のまま「視線方向ベクトル」→「LookRotation」→「オフセット回転」→「Slerp」
+        Vector3 dir       = (cameraRoot.position - transform.position).normalized;
+        Quaternion baseRot   = Quaternion.LookRotation(dir);
         Quaternion offsetRot = baseRot * Quaternion.Euler(AddAngles);
-
-        // スナップではなくスムーズに回転させたい場合は Slerp などを使う
-        transform.rotation = Quaternion.Slerp(transform.rotation, offsetRot, rotateSpeed * Time.deltaTime);
+        transform.rotation   = Quaternion.Slerp(
+            transform.rotation,
+            offsetRot,
+            rotateSpeed * Time.deltaTime
+        );
     }
-
 }

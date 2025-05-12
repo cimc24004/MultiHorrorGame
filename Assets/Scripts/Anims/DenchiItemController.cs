@@ -12,7 +12,7 @@ public class DenchiItemController : MonoBehaviour
     void Start()
     {
         //このprefabが生成された時に懐中電灯のバッテリーをマックスにする。
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         flash_light_controller = FlashLightController.instance;
         flash_light_controller.LightPowerToMax();

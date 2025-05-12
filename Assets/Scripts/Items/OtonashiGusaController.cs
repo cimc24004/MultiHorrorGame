@@ -14,7 +14,7 @@ public class OtonashiGusaController : MonoBehaviour
     private void Start()
     {
         instantiate_item_script = this.gameObject.GetComponent<InstantiateItemScript>();
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         foot_step_sound_controller = player_status.foot_step_sound_controller;
 
         OtonashiGusaUse();

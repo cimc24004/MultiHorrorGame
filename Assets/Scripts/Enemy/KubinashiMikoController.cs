@@ -20,13 +20,13 @@ public class KubinashiMikoController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
-        horror_director = HorrorDirector.instance;
+        horror_director = HorrorDirector.Instance;
         enemy_action_for_door_controller = this.gameObject.GetComponent<EnemyActionForDoorController>();
     }
 

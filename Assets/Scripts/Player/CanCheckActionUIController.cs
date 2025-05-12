@@ -17,28 +17,14 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
     [Required]
     public List<GameObject> CanCheckUICanvases;
 
-
-    private PlayerStatus player_status;
-    public bool CollideredToPlayer;
-    private GameObject Player;
     public GameObject TargetImage;
     private BoxCollider can_check_display_range_collider;
     private void Start()
     {
-        player_status = PlayerStatus.instance;
-        Player = player_status.gameObject;
         can_check_display_range_collider = this.gameObject.GetComponent<BoxCollider>();
         DoHide();
     }
-    private void LateUpdate()
-    {
-        if(CollideredToPlayer)
-        {
-            if(Player != null)
-            {
-            }
-        }
-    }
+
     [Button]
     public void DoDisplay()
     {
@@ -51,7 +37,6 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
         }
         else
         {
-            CollideredToPlayer = true;
             CanCheckUICanvas.SetActive(true);
         }
     }
@@ -67,7 +52,6 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
         }
         else
         {
-            CollideredToPlayer = false;
             CanCheckUICanvas.SetActive(false);
 
         }

@@ -77,7 +77,7 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;  
+        player_status = PlayerStatus.LocalInstance;  
         Player = player_status.gameObject;
         CameraRoot = player_status.CameraRoot.gameObject;
         rig_builder = this.gameObject.GetComponent<RigBuilder>();

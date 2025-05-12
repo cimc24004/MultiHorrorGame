@@ -57,7 +57,7 @@ public class DiscoveryPlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
         material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
@@ -72,7 +72,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         character_audio_controller = enemy_status.character_audio_controller;
         time_manager = TimeManager.instance;
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
-        horror_director = HorrorDirector.instance;
+        horror_director = HorrorDirector.Instance;
         discovery_player_status = original_discovery_player_status;
     }
 

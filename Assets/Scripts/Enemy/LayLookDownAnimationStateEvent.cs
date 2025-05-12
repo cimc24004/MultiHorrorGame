@@ -9,7 +9,7 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         animator.gameObject.transform.forward = (player_status.gameObject.transform.position - animator.gameObject.transform.position).normalized;
     }
 

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Sirenix.OdinInspector;
-public class ObjectBuffController : SerializedMonoBehaviour
+using Unity.Netcode;
+public class ObjectBuffController : NetworkBehaviour
 {
     //オブジェクトを破壊->バフをつけるコントローラー
     [SerializeField] private GameObject PartedObj;
@@ -29,12 +30,23 @@ public class ObjectBuffController : SerializedMonoBehaviour
     private FootStepSoundController foot_step_sound_controller;
     private SubNoticedUIController sub_noticed_ui_controller;
     // Start is called before the first frame update
-    void Start()
+    // void Start()
+    // {
+    //     // pray_controller = this.gameObject.GetComponent<PrayController>();
+    //     // pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroy);
+    //     // PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
+    //     // player_status = PlayerStatus.LocalInstance;
+    //     // player_move_script = player_status.gameObject.GetComponent<PlayerMoveScript>();
+    //     // foot_step_sound_controller = player_status.foot_step_sound_controller;
+    //     // sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+    //     // sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
+    // }
+    public override void OnNetworkSpawn()
     {
         pray_controller = this.gameObject.GetComponent<PrayController>();
         pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroy);
         PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         player_move_script = player_status.gameObject.GetComponent<PlayerMoveScript>();
         foot_step_sound_controller = player_status.foot_step_sound_controller;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;

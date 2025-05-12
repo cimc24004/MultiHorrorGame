@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-public class EnemyAllController : Singleton<EnemyAllController>
+public class EnemyAllController : NetworkSingleton<EnemyAllController>
 {
-    private SubNoticedUIController sub_noticed_ui_controller;
     [SerializeField]
     public List<EnemySoundSensor> enemy_sound_sensors;
     [SerializeField]
@@ -13,7 +12,6 @@ public class EnemyAllController : Singleton<EnemyAllController>
     private void Start()
     {
         AllSetStatusList();
-        sub_noticed_ui_controller = PlayerStatus.instance.sub_noticed_ui_controller;
     }
     [Button]
     public void AllSetStatusList()

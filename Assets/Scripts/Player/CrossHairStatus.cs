@@ -28,7 +28,7 @@ public class CrossHairStatus : SerializedMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
     }
 
     // Update is called once per frame

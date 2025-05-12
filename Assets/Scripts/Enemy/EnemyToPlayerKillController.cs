@@ -13,7 +13,7 @@ public class EnemyToPlayerKillController : MonoBehaviour
     void Start()
     {
         discovery    = GetComponent<DiscoveryPlayerController>();
-        playerStatus = PlayerStatus.instance;
+        playerStatus = PlayerStatus.LocalInstance;
     }
 
     void Update()

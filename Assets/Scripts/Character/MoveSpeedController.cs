@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MoveSpeedController : MonoBehaviour
+public class MoveSpeedController : NetworkBehaviour
 {
     public float WalkSpeed;
     public float RunSpeed;
@@ -11,16 +12,22 @@ public class MoveSpeedController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        enemy_all_controller = EnemyAllController.instance;
+        // enemy_all_controller = EnemyAllController.Instance;
+        // enemy_all_controller.enemy_move_speed_controllers.Add(this);
+        // m_Animator = this.gameObject.GetComponent<Animator>();
+    }
+    public override void OnNetworkSpawn()
+    {
+        enemy_all_controller = EnemyAllController.Instance;
         enemy_all_controller.enemy_move_speed_controllers.Add(this);
-        m_Animator = this.gameObject.GetComponent<Animator>();
+        m_Animator = this.gameObject.GetComponent<Animator>();    
     }
     public void MoveSpeedUpAndAnimSpeedUp(float _runSpeed, float _walkSpeed, float _animationSpeed){
         this.RunSpeed += _runSpeed;
         this.WalkSpeed += _walkSpeed;
         m_Animator.speed += _animationSpeed;
     }
-    void OnDestroy()
+    public override void OnNetworkDespawn()
     {
         enemy_all_controller.enemy_move_speed_controllers.Remove(this);
     }

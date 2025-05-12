@@ -18,7 +18,7 @@ public class ItemEffectController : Singleton<ItemEffectController>
     // Start is called before the first frame update
     void Start()
     {
-        enemy_all_controller = EnemyAllController.instance;
+        enemy_all_controller = EnemyAllController.Instance;
         Debug.Log("ItemEffectControllerStart: " + enemy_all_controller);
     }
 

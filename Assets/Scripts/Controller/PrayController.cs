@@ -4,7 +4,8 @@ using UnityEngine;
 using Cinemachine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-public class PrayController : MonoBehaviour
+using Unity.Netcode;
+public class PrayController : NetworkBehaviour
 {
     [Header("Notice用メッセージ")]
     [SerializeField]
@@ -27,21 +28,22 @@ public class PrayController : MonoBehaviour
     private CrossHairStatus cross_hair_status;
     private bool once;
     private bool PrayForStartOnce;
-    private bool PrayNowOnce;
-
+    private bool OnSpawnNetwork;
     // Start is called before the first frame update
-    void Start()
-    {
-        player_status = PlayerStatus.instance;
+    public override void OnNetworkSpawn(){
+        player_status = PlayerStatus.LocalInstance;
         cross_hair_status = player_status.cross_hair_event.cross_hair_status;
         GageCanvas = player_status.GageCanvas;
         GageImageUI = player_status.GageImage;
+        OnSpawnNetwork = true;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        if(!OnSpawnNetwork) return;
         if (!once)
         {
            GageCanvas.SetActive(false);

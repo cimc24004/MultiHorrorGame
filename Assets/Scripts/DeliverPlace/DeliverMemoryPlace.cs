@@ -17,7 +17,7 @@ public class DeliverMemoryPlace : Singleton<DeliverMemoryPlace>
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         item_databases = ItemDatabases.instance;
         game_progress_controller = GameProgressController.instance;
     }

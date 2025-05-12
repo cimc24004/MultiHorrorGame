@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 public class GameController : Singleton<GameController>
 {
     [SerializeField] private GameObject NetCanvas;
-    private PlayerInput player_input;
     [SerializeField]private bool NetMode;
     private GameControllerOnAllScene game_controller_on_all_scene;
     private GameStateController game_state_controller;
@@ -16,7 +15,6 @@ public class GameController : Singleton<GameController>
     // Start is called before the first frame update
     void Start()
     {
-        player_input = PlayerStatus.instance.player_input;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         game_state_controller = game_controller_on_all_scene.GetComponent<GameStateController>();
     }
@@ -32,10 +30,14 @@ public class GameController : Singleton<GameController>
     }
     public void NetCanvasSetActiveByMode(bool _netMode){
         if(!_netMode){
-            game_state_controller.ActionByModeSelect(GameStateController.GameState.MenuOnGamePlay, true);
+            // game_state_controller.ActionByModeSelect(GameStateController.GameState.MenuOnGamePlay, true);
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             NetCanvas.gameObject.SetActive(true);
         }else{
-            game_state_controller.ActionByModeSelect(GameStateController.GameState.Gameplay, false);
+            // game_state_controller.ActionByModeSelect(GameStateController.GameState.Gameplay, false);
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
             NetCanvas.gameObject.SetActive(false);
         }
         this.NetMode = !_netMode;

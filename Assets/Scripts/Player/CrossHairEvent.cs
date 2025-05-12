@@ -35,7 +35,7 @@ public class CrossHairEvent : MonoBehaviour
     void Start()
     {
         MainCamera = Camera.main;
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         player_input = player_status.player_input;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
         this.Player = player_status.gameObject;

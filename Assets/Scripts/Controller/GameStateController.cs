@@ -15,15 +15,12 @@ public class GameStateController : MonoBehaviour
     [Header("現在のゲームの状態 メニュー画面だったり、スタート画面ならUIが選択")]
     public GameState game_state;
     private PlayerInput player_input;
-    private PlayerStatus player_status;
-    // Start is called before the first frame update
-    void Start()
+
+    IEnumerator Start()
     {
-        player_status = PlayerStatus.instance;
-        player_input = player_status.GetComponent<PlayerInput>();
+        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
+        player_input = PlayerStatus.LocalInstance.player_input;
     }
-
-
     public void ActionByModeSelect(GameState game_state, bool cursor_display)
     {
         if(game_state == GameState.Gameplay)

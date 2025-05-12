@@ -26,7 +26,7 @@ public class CompasController : MonoBehaviour
     private ExitGateController exit_gate_controller;
     void Start()
     {
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
         Player = player_status.gameObject;
         MainCamera = player_status.virtual_camera.gameObject;
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;

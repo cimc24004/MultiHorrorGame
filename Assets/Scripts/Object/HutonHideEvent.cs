@@ -14,7 +14,7 @@ public class HutonHideEvent : MonoBehaviour
     void Start()
     {
         cm_fps_controller = CMFPSController.instance;
-        player_status = PlayerStatus.instance;
+        player_status = PlayerStatus.LocalInstance;
     }
     public void OnHide(){
         // cm_fps_controller.VirtualCameraPOVHorizontalValue(this.transform.rotation.y);

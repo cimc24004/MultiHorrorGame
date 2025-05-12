@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
-public class TargetHideObject : MonoBehaviour
+using Unity.Netcode;
+public class TargetHideObject : NetworkBehaviour
 {
     //どこに隠すか場所を指定！
     public Transform HideBeyondPos;
@@ -31,12 +31,24 @@ public class TargetHideObject : MonoBehaviour
     private CrossHairEvent cross_hair_event;
     private AudioSource HideActionAudioSource;
     private AudioDatas HideActionAudioDatas;
-    void Start()
+    // void Start()
+    // {
+    //     player_status = PlayerStatus.LocalInstance;
+    //     cross_hair_event = player_status.cross_hair_event;
+    //     HideActionAudioDatas = player_status.HideActionAudioDatas;
+    //     HideActionAudioSource = HideActionAudioDatas.audioSource;
+    // }
+
+    public override void OnNetworkSpawn()
     {
-        player_status = PlayerStatus.instance;
+        // 動的スポーン後に singleton を拾い直し
+        player_status = PlayerStatus.LocalInstance;
         cross_hair_event = player_status.cross_hair_event;
         HideActionAudioDatas = player_status.HideActionAudioDatas;
         HideActionAudioSource = HideActionAudioDatas.audioSource;
+    }
+    void Start()
+    {
     }
     public void HideTarget(GameObject Target)
     {

@@ -43,6 +43,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: b4d8a89caf3695d4a85d74eddc8a821b, type: 3}
+  m_Resource: {fileID: 8300000, guid: b4d8a89caf3695d4a85d74eddc8a821b, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.6
   m_Pitch: 1
@@ -138,6 +139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3121960717316172698}
   - component: {fileID: 7767993382255284180}
+  - component: {fileID: 4967404040218369709}
   - component: {fileID: 3569733836840379603}
   - component: {fileID: 9069433117121545313}
   - component: {fileID: 4531548251871278767}
@@ -189,6 +191,31 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.97717214, y: 1.1794913, z: 0.9652424}
   m_Center: {x: 0.28015667, y: -0.18788445, z: 0.15122008}
+--- !u!114 &4967404040218369709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7742523276481067708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 715263022
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &3569733836840379603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a684997e8d904683d9fc468ccc3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   NoticeMessage: "\u30C6\u30EC\u30D3\u306E\u96FB\u6E90\u3092\u3064\u3051\u308B"
   NeedToPrayTime: 5
   PrayNow: 0
@@ -342,6 +370,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9269614ff97246640a3c7632fc6b8a5d, type: 3}
+  m_Resource: {fileID: 8300000, guid: 9269614ff97246640a3c7632fc6b8a5d, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -682,12 +711,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3595101706662511290, guid: 5edf1fcba977998498a2942efe77d82c,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: ad9040b23236ab9438f7ec957eef8c44, type: 2}
     - target: {fileID: 3595101706662511290, guid: 5edf1fcba977998498a2942efe77d82c,
         type: 3}
-      propertyPath: m_Materials.Array.data[1]
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: ad9040b23236ab9438f7ec957eef8c44, type: 2}
     m_RemovedComponents:
