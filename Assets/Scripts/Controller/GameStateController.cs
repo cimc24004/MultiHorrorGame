@@ -16,10 +16,16 @@ public class GameStateController : MonoBehaviour
     public GameState game_state;
     private PlayerInput player_input;
 
-    IEnumerator Start()
+    void OnEnable()
     {
-        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
-        player_input = PlayerStatus.LocalInstance.player_input;
+        PlayerStatus.OnLocalPlayerSpawned += OnPlayerSpawnInit;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= OnPlayerSpawnInit;
+    }
+    private void OnPlayerSpawnInit(PlayerStatus _playerStatus){
+        this.player_input = _playerStatus.player_input;
     }
     public void ActionByModeSelect(GameState game_state, bool cursor_display)
     {

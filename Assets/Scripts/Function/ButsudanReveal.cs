@@ -21,7 +21,7 @@ public class ButsudansReveal : NetworkBehaviour
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
     }
     public override void OnNetworkSpawn(){
-        houses_controller = HousesController.instance;
+        houses_controller = HousesController.Instance;
     }
     public void RevealButsudansAction(){
         sub_noticed_ui_controller.Notice("仏壇の位置が明らかになった..!!");

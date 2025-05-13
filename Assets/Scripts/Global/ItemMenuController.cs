@@ -62,7 +62,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     }
     private void Update()
     {
-        if(!InitPlayer)
+        if(!InitPlayer) return;
         //ホイールの値を取得する。
         scroll_value_float = player_input.actions["ItemSelectWheel"].ReadValue<float>();
 

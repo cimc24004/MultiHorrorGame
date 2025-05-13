@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
 
-public class HousesController : Singleton<HousesController>
+public class HousesController : NetworkSingleton<HousesController>
 {
     [Header("必ず ON にする仏壇の総数")]
     [MinValue(1)]
@@ -12,9 +13,10 @@ public class HousesController : Singleton<HousesController>
     public List<HouseDirector> house_directors;
     public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers;
     // ------------------------------- Unity -------------------------------
-    private void Start()
+    public override void OnNetworkSpawn()
     {
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
+        
         // ① すべての仏壇 & 付随オブジェクトを OFF
         foreach (var hd in house_directors)
         {
@@ -23,8 +25,16 @@ public class HousesController : Singleton<HousesController>
                 if (g.Butsudan) g.Butsudan.SetActive(false);
 
                 foreach (var p in g.ExtraPackages)
-                    foreach (var o in p.Objs)
-                        if (o) o.SetActive(false);
+                    foreach (var o in p.Objs){
+                        if (o){
+                            // NetworkObject networkObject = o.GetComponent<NetworkObject>();
+                            // if(networkObject != null){
+                            //     networkObject.Despawn();
+                            // }
+                            o.SetActive(false);
+                        } 
+
+                    }                        
             }
         }
 
@@ -68,8 +78,16 @@ public class HousesController : Singleton<HousesController>
             if (grp.ExtraPackages.Count > 0)
             {
                 var pack = ChooseOnePackage(grp.ExtraPackages);
-                foreach (var obj in pack.Objs)
-                    if (obj) obj.SetActive(true);
+                foreach (var obj in pack.Objs){
+                    if (obj){
+                        NetworkObject networkObject = obj.GetComponent<NetworkObject>();
+                        // if(networkObject != null){
+                        //     networkObject.Spawn();
+                        // }
+                        obj.SetActive(true);
+                    } 
+
+                }
             }
 
         }

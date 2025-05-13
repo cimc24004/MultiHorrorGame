@@ -38,7 +38,7 @@ public class HouseDirector : SerializedMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        houses_controller = HousesController.instance;
+        houses_controller = HousesController.Instance;
         foreach(GameObject obj in RandomObjs)
         {
             obj.SetActive(false);

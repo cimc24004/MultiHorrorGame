@@ -21,13 +21,13 @@ public class Butsudan : NetworkBehaviour
         // pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         // enemy_all_controller = EnemyAllController.Instance;
         // sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
-        // houses_controller = HousesController.instance;
+        // houses_controller = HousesController.Instance;
     }
     public override void OnNetworkSpawn(){
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         enemy_all_controller = EnemyAllController.Instance;
         sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
-        houses_controller = HousesController.instance;
+        houses_controller = HousesController.Instance;
     }
     public void ButsudanPrayCompleted()
     {

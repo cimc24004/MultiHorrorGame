@@ -18,14 +18,26 @@ public class StageController : NetworkSingleton<StageController>
     //なのでステージごとに配置するコントローラーを分けている。
 
     // Start is called before the first frame update
-    public override void OnNetworkSpawn()
+
+    void OnEnable()
     {
+        PlayerStatus.OnLocalPlayerSpawned += OnPlayerSpawnInit;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= OnPlayerSpawnInit;
+    }
+    private void OnPlayerSpawnInit(PlayerStatus _playerStatus){
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         game_state_controller = game_controller_on_all_scene.gameObject.GetComponent<GameStateController>();
         game_state_controller.ActionByModeSelect(game_state, CursorVisible);
         StartEvent.Invoke();
 
         NowSceneName = SceneManager.GetActiveScene().name;
+    }
+    public override void OnNetworkSpawn()
+    {
+
     }
 
     // Update is called once per frame
