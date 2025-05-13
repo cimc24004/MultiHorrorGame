@@ -38,9 +38,8 @@ public class ExitGateController : Singleton<ExitGateController>
             this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             
         }
-        if(this.gameObject.name == "Gate"){
-            Debug.Log("Gateはpray_controller.PrayNow: " + pray_controller.PrayNow);
-        }
+        // if(this.gameObject.name == "Gate"){
+        // }
         if(pray_controller.PrayTimeNow == BeforePrayNow){
             ExitGateOpenPause();
         }else{

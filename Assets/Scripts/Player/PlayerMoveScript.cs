@@ -44,7 +44,7 @@ public class PlayerMoveScript : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         characterController = GetComponent<CharacterController>();
-        playerStatus = PlayerStatus.LocalInstance;
+        playerStatus = this.gameObject.GetComponent<PlayerStatus>();
         playerInput = playerStatus.player_input;
         Debug.Log("playerInput: " + playerInput);
         moveAction = playerInput.actions["Move"];
