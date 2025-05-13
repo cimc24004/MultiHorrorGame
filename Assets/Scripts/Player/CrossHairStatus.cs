@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 public class CrossHairStatus : SerializedMonoBehaviour
 {
-    //ƒNƒƒXƒwƒA‚ÌƒXƒe[ƒ^ƒX
+    //ï¿½Nï¿½ï¿½ï¿½Xï¿½wï¿½Aï¿½ÌƒXï¿½eï¿½[ï¿½^ï¿½X
 
     public enum EventColHitedStatus{
         None,
@@ -14,17 +14,18 @@ public class CrossHairStatus : SerializedMonoBehaviour
         OpenObj
     }
 
-    //ƒfƒtƒHƒ‹ƒg‚ÌƒNƒƒXƒwƒAƒAƒCƒRƒ“ƒIƒuƒWƒFƒNƒg
+    //ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½ÌƒNï¿½ï¿½ï¿½Xï¿½wï¿½Aï¿½Aï¿½Cï¿½Rï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
     public Image DefaultCrossHairIcon;
-    //ƒ`ƒFƒbƒN‚ÌƒNƒƒXƒwƒAƒAƒCƒRƒ“ƒIƒuƒWƒFƒNƒg
+    //ï¿½`ï¿½Fï¿½bï¿½Nï¿½ÌƒNï¿½ï¿½ï¿½Xï¿½wï¿½Aï¿½Aï¿½Cï¿½Rï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
     public Image CheckCrossHairIcon;
 
-    //CrossHairEvent‚Ì@ƒhƒA‚âƒAƒCƒeƒ€‚È‚Ç‚ÉƒŒƒCƒLƒƒƒXƒg‚ª“–‚½‚Á‚Ä‚¢‚é‚Ì‚©‚Ç‚¤‚©
+    //CrossHairEventï¿½Ì@ï¿½hï¿½Aï¿½ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½È‚Ç‚Éƒï¿½ï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½
     public bool RaycastHitedExistsByCrossHairEvent;
     public string HitedTag;
     public GameObject HitedObj;
     private PlayerStatus player_status;
     public EventColHitedStatus event_col_hited_status;
+    private bool InitPlayer;
     // Start is called before the first frame update
     private void OnEnable()
     {
@@ -36,11 +37,13 @@ public class CrossHairStatus : SerializedMonoBehaviour
     }
     private void InitWhenPlayerSpawned(PlayerStatus _playerStatus){
         player_status = _playerStatus;
+        InitPlayer = true;
     }
     // Update is called once per frame
     void Update()
     {
-        //ƒvƒŒƒCƒ„[‚ª‰B‚ê‚Ä‚¢‚½‚çA‚Ü‚½‚ÍƒhƒA‚âƒAƒCƒeƒ€‚È‚Ç‚ÉƒŒƒCƒLƒƒƒXƒg‚ª“–‚½‚Á‚Ä‚¢‚é‚È‚ç‚Î ƒ`ƒFƒbƒN‰æ‘œ‚ğ•\¦B
+        if(!InitPlayer) return;
+        //ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Bï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Ü‚ï¿½ï¿½Íƒhï¿½Aï¿½ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½È‚Ç‚Éƒï¿½ï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ ï¿½`ï¿½Fï¿½bï¿½Nï¿½æ‘œï¿½ï¿½\ï¿½ï¿½ï¿½B
         if (RaycastHitedExistsByCrossHairEvent || player_status.HidingNow)
         {
             SpriteChange(_CheckMode: true);
@@ -54,7 +57,7 @@ public class CrossHairStatus : SerializedMonoBehaviour
 
     public void SpriteChange( bool _CheckMode)
     {
-        //ƒ`ƒFƒbƒNƒ‚[ƒh‚É‚æ‚Á‚Ä•\¦‚·‚é‰æ‘œ‚ğ•ÏX‚·‚éB
+        //ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½[ï¿½hï¿½É‚ï¿½ï¿½ï¿½Ä•\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ‘œï¿½ï¿½ÏXï¿½ï¿½ï¿½ï¿½B
         if(_CheckMode == true)
         {
 
