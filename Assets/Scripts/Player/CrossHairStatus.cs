@@ -26,11 +26,17 @@ public class CrossHairStatus : SerializedMonoBehaviour
     private PlayerStatus player_status;
     public EventColHitedStatus event_col_hited_status;
     // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
     }
-
+    private void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
+    }
+    private void InitWhenPlayerSpawned(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+    }
     // Update is called once per frame
     void Update()
     {
