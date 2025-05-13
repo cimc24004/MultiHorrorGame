@@ -50,14 +50,26 @@ public class CurseController : NetworkSingleton<CurseController>
     private HorrorDirector horror_director;
 
     [SerializeField] public AudioClip AppearanceMikoBGM;
-    public override void OnNetworkSpawn()
+
+    void OnEnable()
     {
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = item_belongings_controller.item_menu_controller;
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
-        horror_director = HorrorDirector.Instance;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+
+    }
+    public override void OnNetworkSpawn()
+    {
+        horror_director = HorrorDirector.Instance;
         this.OnValueChangeCurseEvent.AddListener(() =>
         {
         });

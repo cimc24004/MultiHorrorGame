@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
 using UnityEngine;
 
-public class DiscoveryPlayerController : MonoBehaviour
+public class DiscoveryPlayerController : NetworkBehaviour
 {
     public bool DiscoveryPlayerNow;
     [Header("視界から見つけるかどうか")]
@@ -55,16 +56,27 @@ public class DiscoveryPlayerController : MonoBehaviour
     private bool NonDiscoveriedEventOnce;
     private SilhouetteChangeController silhouette_change_controller;
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        Player = player_status.gameObject;
+        PlayersHeadTransform = player_status.HeadPos;
+    }
+    public override void OnNetworkSpawn()
+    {
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
         material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
         silhouette_change_controller = this.gameObject.GetComponent<SilhouetteChangeController>();
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
-        Player = player_status.gameObject;
-        PlayersHeadTransform = player_status.HeadPos;
+
         DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
@@ -75,7 +87,7 @@ public class DiscoveryPlayerController : MonoBehaviour
         horror_director = HorrorDirector.Instance;
         discovery_player_status = original_discovery_player_status;
     }
-
+    
     // Update is called once per frame
     void Update()
     {

@@ -47,22 +47,33 @@ public class ItemBelongingsController : Singleton<ItemBelongingsController>
     private ItemDatabases item_databases;
 
     [SerializeField] private List<ItemStatus> InitialItemStatuses;
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.LocalInstance;
-        item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
         item_throw_controller = this.gameObject.GetComponent<ItemThrowController>();
-        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         item_databases = ItemDatabases.instance;
         enemy_all_controller = EnemyDatabases.instance.gameObject.GetComponent<EnemyAllController>();
+
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+        item_menu_controller = this.gameObject.GetComponent<ItemMenuController>();
         foreach(ItemStatus _itemStatus in InitialItemStatuses){
             ItemAddToBelonging(_itemStatus);
             this.item_menu_controller.OnItemGetChangeUI(false, _itemStatus);
 
         }
+        
     }
-
     //アイテムをこのコントローラーに追加する関数 外部から実行する。　主にCrossHairEvent.csから
     [Button]
     public void ItemAddToBelonging(ItemStatus _item_status)

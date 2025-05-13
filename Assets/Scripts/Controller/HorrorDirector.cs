@@ -47,7 +47,6 @@ public class HorrorDirector : NetworkSingleton<HorrorDirector>
     [SerializeField] private PostProcessVolumeController EnemyNearToKillVolumeController;
     private AudioClip MainDefaultBGM;
     
-    private CinemachineImpulseSource cinemachine_impulse_source;
     private GameControllerOnAllScene game_controller_on_all_scene;
     private URPFxController urp_fx_controller;
     private PlayerStatus player_status;
@@ -64,21 +63,29 @@ public class HorrorDirector : NetworkSingleton<HorrorDirector>
     [SerializeField]
     // 「プレイヤーを発見している敵」の数
     public int discoveredEnemyCount = 0;
-
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
     //======================================================
     // 初期化
     //======================================================
     public override void OnNetworkSpawn()
     {
-        cinemachine_impulse_source = GetComponent<CinemachineImpulseSource>();
-        MainDefaultBGM = MainBGM.clip;
-        player_status = PlayerStatus.LocalInstance;
+    }
+
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         curse_controller = CurseController.Instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         urp_fx_controller = game_controller_on_all_scene.GetComponent<URPFxController>();
         closest_enemy_controller = ClosestEnemyController.instance;
+        MainDefaultBGM = MainBGM.clip;
     }
-
     private void Update()
     {
         if(player_status == null) return;

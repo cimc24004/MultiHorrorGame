@@ -38,17 +38,20 @@ public class TargetHideObject : NetworkBehaviour
     //     HideActionAudioDatas = player_status.HideActionAudioDatas;
     //     HideActionAudioSource = HideActionAudioDatas.audioSource;
     // }
-
-    public override void OnNetworkSpawn()
+    void OnEnable()
     {
-        // 動的スポーン後に singleton を拾い直し
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         cross_hair_event = player_status.cross_hair_event;
         HideActionAudioDatas = player_status.HideActionAudioDatas;
         HideActionAudioSource = HideActionAudioDatas.audioSource;
-    }
-    void Start()
-    {
     }
     public void HideTarget(GameObject Target)
     {

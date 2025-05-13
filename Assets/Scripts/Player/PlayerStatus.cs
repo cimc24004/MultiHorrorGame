@@ -9,23 +9,18 @@ using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
+using System;
 public class PlayerStatus : NetworkBehaviour
 {
     //ローカルの人を取得するためのinstance
     public static PlayerStatus LocalInstance { get; private set; }
-
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner)
-            LocalInstance = this;    // 自分のクライアントのプレイヤーだけセット
-    }
 
     public override void OnNetworkDespawn()
     {
         if (IsOwner && LocalInstance == this)
             LocalInstance = null;    // 切断されたらクリア
     }
-
+    public static event Action<PlayerStatus> OnLocalPlayerSpawned;
 
     //ここは値の受け渡しやスタミナなどの管理。 プレイヤーの状態なども保存する
     public Transform CameraRoot;
@@ -77,11 +72,11 @@ public class PlayerStatus : NetworkBehaviour
     private CharacterMovePermit player_move_permit;
     private PlayerStaminaController player_stamina_controller;
     private Animator anim;
+    private bool InitPlayer;
     public bool Crouch;
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
-    private CinemachineTransposer cinemachine_transposer;
     private ItemMenuController item_menu_controller;
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
@@ -91,25 +86,33 @@ public class PlayerStatus : NetworkBehaviour
     private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
     private FlashLightController flash_light_controller;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
+
+        virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
+        Debug.Log("virtual_camera??: " + CMFPSController.instance);
         player_stamina_controller = this.gameObject.GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.gameObject.GetComponent<PlayerContinueController>();
         player_character_controller = this.gameObject.GetComponent<CharacterController>();
         player_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         anim = this.gameObject.GetComponent<Animator>();
-        cinemachine_transposer = virtual_camera.GetCinemachineComponent<CinemachineTransposer>();
         player_hide_object_action = this.gameObject.GetComponent<PlayerHideObjectAction>();
         item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = ItemController.GetComponent<ItemMenuController>();
         horror_director = HorrorDirector.Instance;
         flash_light_controller = FlashLightController.instance;
         player_to_enemy_distance_controller = this.gameObject.GetComponent<PlayerToEnemyDistanceController>();
+        InitPlayer = true;
+        if (IsOwner){
+            LocalInstance = this;    // 自分のクライアントのプレイヤーだけセット
+            OnLocalPlayerSpawned?.Invoke(this);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!InitPlayer) return;
         anim.SetFloat("MoveY", this.MoveY);
         anim.SetFloat("MoveX", this.MoveX);
         if(player_move_state == PlayerMoveState.Crouch)

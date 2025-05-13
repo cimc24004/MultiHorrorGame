@@ -27,7 +27,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     //現在の選択インデックス。
     public int NowItemSelectIndexX;
     private float scroll_value_float;
-    private ItemBelongingsController item_belongings_controller;
+    [SerializeField] private ItemBelongingsController item_belongings_controller;
     private int scroll_value;
     private ItemStatus NowSelect_item_status;
     public float WaitHideTimeNow;
@@ -43,19 +43,28 @@ public class ItemMenuController : SerializedMonoBehaviour
     private SubNoticedUIController sub_noticed_ui_controller;
 
     private PlayerStatus player_status;
+    private bool InitPlayer;
     [SerializeField] public ItemEquipController item_equip_controller;
-    private void Start()
+    void OnEnable()
     {
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status =_playerStatus;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         player_input = player_status.player_input;
-        item_belongings_controller = this.gameObject.GetComponent<ItemBelongingsController>();
-        player_input.currentActionMap["ItemSelectNumber"].performed += OnNumbericKeyPressed;
+        player_input.actions["ItemSelectNumber"].performed += OnNumbericKeyPressed;
+        InitPlayer = true;
     }
     private void Update()
     {
+        if(!InitPlayer)
         //ホイールの値を取得する。
-        scroll_value_float = player_input.currentActionMap["ItemSelectWheel"].ReadValue<float>();
+        scroll_value_float = player_input.actions["ItemSelectWheel"].ReadValue<float>();
 
         if (!item_belongings_controller.ExistsItems())
         {
@@ -100,13 +109,13 @@ public class ItemMenuController : SerializedMonoBehaviour
                 }
             }
 
-            if(player_input.currentActionMap["ItemDump"].triggered){
+            if(player_input.actions["ItemDump"].triggered){
                 if(NowSelect_item_status != null){
                     item_belongings_controller.ItemDump(NowSelect_item_status);
                 }
             }
  
-            if (player_input.currentActionMap["ItemUse"].triggered)
+            if (player_input.actions["ItemUse"].triggered)
             {
                 //アイテム使用ボタンを押したらアイテムを使用する関数を実行。
                 if (item_belongings_controller.ExistsItems())
@@ -226,6 +235,7 @@ public class ItemMenuController : SerializedMonoBehaviour
             //前に選択していたアイテムがあった場合
             before_selected_item_ui.FocusUI.SetActive(false);
         }
+        Debug.Log("item_belongings_controller: " + item_belongings_controller);
         Debug.Log(item_belongings_controller.belonging_item_uis.ContainsKey(NowSelect_item_status));
         before_selected_item_ui = item_belongings_controller.belonging_item_uis[NowSelect_item_status].ItemUI.GetComponent<ItemUI>();
         

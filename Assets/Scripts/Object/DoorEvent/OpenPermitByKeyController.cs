@@ -12,20 +12,25 @@ public class OpenPermitByKeyController : NetworkBehaviour
     private CrossHairEvent cross_hair_event;
     private AudioDatas key_audio_datas;
     private AudioSource KeyAudioSource;
-    private void Start()
+
+    void OnEnable()
     {
-        // player_status = PlayerStatus.LocalInstance;
-        // cross_hair_event = player_status.cross_hair_event;
-        // sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
-        // key_audio_datas = cross_hair_event.KeyAudioDatas;
-        // KeyAudioSource = key_audio_datas.audioSource;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     }
-    public override void OnNetworkSpawn(){
-        player_status = PlayerStatus.LocalInstance;
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         cross_hair_event = player_status.cross_hair_event;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         key_audio_datas = cross_hair_event.KeyAudioDatas;
         KeyAudioSource = key_audio_datas.audioSource;
+    }
+    public override void OnNetworkSpawn(){
+
+
     }
     public void KeyUse()
     {

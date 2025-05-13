@@ -10,16 +10,20 @@ public class CurseDecreaseController : NetworkBehaviour
     private CurseController curse_controller;
     [SerializeField] private float CurseDecreaseAmount = 10;
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
-        // player_status = PlayerStatus.LocalInstance;
-        // CrossHairCanvas = player_status.cross_hair_event.gameObject;
-        // curse_controller = CurseController.instance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        CrossHairCanvas = player_status.cross_hair_event.gameObject;
     }
     public override void OnNetworkSpawn()
     {
-        player_status = PlayerStatus.LocalInstance;
-        CrossHairCanvas = player_status.cross_hair_event.gameObject;
         curse_controller = CurseController.Instance;
     }
 

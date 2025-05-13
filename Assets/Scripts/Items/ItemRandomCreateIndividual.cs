@@ -13,8 +13,15 @@ public class ItemRandomCreateIndividual : SerializedMonoBehaviour
     private ItemDatabases item_databases;
     private NeedKeysController need_keys_controller;
     public int FrequencyItemApperance = 6;
-    private void Start()
+    void OnEnable()
     {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
         item_databases = ItemDatabases.instance;
         item_belonging_controller = ItemBelongingsController.instance;
         need_keys_controller = NeedKeysController.instance;

@@ -16,10 +16,17 @@ public class PlayerContinueController : NetworkSingleton<PlayerContinueControlle
     private CharacterMovePermit player_move_permit;
     private CharacterController player_character_controller;
     [SerializeField] Transform ContinueTransform;
-
-    public override void OnNetworkSpawn()
+    void OnEnable()
     {
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        this.player_status = _playerStatus;
         Player = player_status.gameObject;
         PlayerContinuePos = Player.transform.position;
         player_move_permit = Player.GetComponent<CharacterMovePermit>();

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMoveScript : MonoBehaviour
+public class PlayerMoveScript : NetworkBehaviour
 {
     // Inspectorで調整
     [Header("移動速度")]
@@ -14,7 +15,6 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField] private float rotationSmoothSpeed = 5f;  // 使わないけど残しておく
     [Header("カメラ参照")]
     private GameObject DirectionCamera;
-    private PlayerCameraController player_camera_controller;
     // 内部用
     private CharacterController characterController;
     private PlayerInput playerInput;
@@ -41,14 +41,15 @@ public class PlayerMoveScript : MonoBehaviour
     private float moveSpeedUpDuration;
     private float moveSpeedUpTimer = 0f;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
         characterController = GetComponent<CharacterController>();
         playerStatus = PlayerStatus.LocalInstance;
         playerInput = playerStatus.player_input;
-        moveAction = playerInput.currentActionMap["Move"];
-        runChangeAction = playerInput.currentActionMap["RunChange"];
-        crouchChangeAction = playerInput.currentActionMap["CrouchChange"];
+        Debug.Log("playerInput: " + playerInput);
+        moveAction = playerInput.actions["Move"];
+        runChangeAction = playerInput.actions["RunChange"];
+        crouchChangeAction = playerInput.actions["CrouchChange"];
         anim = this.gameObject.GetComponent<Animator>();
         defaultRunSpeed = RunSpeed;
         defaultWalkSpeed = WalkSpeed;
@@ -58,8 +59,7 @@ public class PlayerMoveScript : MonoBehaviour
         staminaController = GetComponent<PlayerStaminaController>();
         subNoticedUI = playerStatus.sub_noticed_ui_controller;
         timeManager = TimeManager.instance;
-        player_camera_controller = this.gameObject.GetComponent<PlayerCameraController>();
-        DirectionCamera = player_camera_controller.DirectionCamera;
+        DirectionCamera = playerStatus.virtual_camera.VirtualCameraGameObject;
     }
 
     void Update()

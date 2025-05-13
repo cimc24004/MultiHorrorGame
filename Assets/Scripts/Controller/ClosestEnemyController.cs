@@ -16,14 +16,18 @@ public class ClosestEnemyController : Singleton<ClosestEnemyController>
     
     public KeyValuePair<GameObject,ClosestEnemyWithDistanceValue> ClosestEnemyWithDistance = new KeyValuePair<GameObject, ClosestEnemyWithDistanceValue>();
     // Start is called before the first frame update
-    IEnumerator Start()
+    void OnEnable()
     {
-        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
-        player_status = PlayerStatus.LocalInstance;
-        player_to_enemy_distance_controller = player_status.gameObject.GetComponent<PlayerToEnemyDistanceController>();
-
+        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
     }
-
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
+    }
+    private void InitWhenPlayerSpawned(PlayerStatus _player_status){
+        player_status = _player_status;
+        player_to_enemy_distance_controller = player_status.gameObject.GetComponent<PlayerToEnemyDistanceController>();
+    }
     // Update is called once per frame
     void FixedUpdate()
     {

@@ -11,10 +11,18 @@ public class HutonHideEvent : MonoBehaviour
     [SerializeField] private float VerticalMaxValue;
     private PlayerStatus player_status;
     private AudioSource HideActionSource;
-    void Start()
+
+    void OnEnable()
     {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
         cm_fps_controller = CMFPSController.instance;
-        player_status = PlayerStatus.LocalInstance;
+        player_status = _playerStatus;
     }
     public void OnHide(){
         // cm_fps_controller.VirtualCameraPOVHorizontalValue(this.transform.rotation.y);

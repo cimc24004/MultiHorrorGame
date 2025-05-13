@@ -43,23 +43,33 @@ public class ReadEventUIController : MonoBehaviour
     private TextMeshProUGUI PageNowCountTextUI;
     [SerializeField]
     private TextMeshProUGUI MaxPageCountTextUI;
-
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
     void Start()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
-        player_status = PlayerStatus.LocalInstance;
-        player_input = player_status.player_input;
         game_state_controller = game_controller_on_all_scene.GetComponent<GameStateController>();
+
+    }
+
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        player_input = player_status.player_input;
         ESCAction = player_input.actions.FindActionMap("ReadEvent")["ESC"];
         NextPageAction = player_input.actions.FindActionMap("ReadEvent")["NextPage"];
         BeforePageAction = player_input.actions.FindActionMap("ReadEvent")["BeforePage"];
     }
-
     void Update()
     {
         if (!DisplayNow) return;
-        Debug.Log("DIsplayNowwwww: " + player_input.currentActionMap);
+        Debug.Log("DIsplayNowwwww: " + player_input.actions);
         if (ESCAction.triggered)
         {
             CloseBook();

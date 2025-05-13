@@ -8,15 +8,20 @@ public class ButsudansReveal : NetworkBehaviour
     private HousesController houses_controller;
     private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
-    // Start is called before the first frame update
-    // void Start()
-    // {
-
-    // }
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+    }
     public override void OnNetworkSpawn(){
         houses_controller = HousesController.instance;
-        player_status = PlayerStatus.LocalInstance;  
-        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
     }
     public void RevealButsudansAction(){
         sub_noticed_ui_controller.Notice("仏壇の位置が明らかになった..!!");

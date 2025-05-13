@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
 
-public class TheDoorController : SerializedMonoBehaviour
+public class TheDoorController : NetworkBehaviour
 {
 
     //子要素に存在するドアたちをListとして登録し、一気に開ける。　一気に閉めるとかを実装する為のやつ。
@@ -36,12 +37,21 @@ public class TheDoorController : SerializedMonoBehaviour
     public OpenPermitByKeyController open_permit_by_key_controller;
 
     public DoorAttackedController door_attacked_controller;
-    private void Start()
+
+    void OnEnable()
     {
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         time_manager = TimeManager.instance;
         need_keys_controller = NeedKeysController.instance;
     }
+
     private void Update()
     {
         if (OpenedClosedCompletedAnimation)

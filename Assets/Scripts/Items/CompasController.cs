@@ -24,11 +24,17 @@ public class CompasController : MonoBehaviour
     private DeliverMemoryPlace deliver_memory_place;
     private PrayToDeliverItemAppearPlace pray_to_deliver_item_appear_place;
     private ExitGateController exit_gate_controller;
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
     void Start()
     {
-        player_status = PlayerStatus.LocalInstance;
-        Player = player_status.gameObject;
-        MainCamera = player_status.virtual_camera.gameObject;
+
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         deliver_memory_place = DeliverMemoryPlace.instance;
         exit_gate_controller = ExitGateController.instance;
@@ -36,7 +42,11 @@ public class CompasController : MonoBehaviour
         RedTargetDirectionTransform = deliver_memory_place.gameObject.transform;
         GreenTargetDirectionTransform = exit_gate_controller.gameObject.transform;
     }
-
+    void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        Player = player_status.gameObject;
+        MainCamera = player_status.virtual_camera.gameObject;
+    }
     void Update()
     {
         // ワールド空間での (ターゲット -> カメラ) 方向ベクトル

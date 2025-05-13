@@ -13,6 +13,7 @@ public class CrossHairEvent : MonoBehaviour
     private PlayerInput player_input;
     public PlayerHideObjectAction player_hide_object_action;
     private PlayerStatus player_status;
+    private bool InitPlayer;
     private GameObject Player;
     //�N���X�w�A�����΂����C�L���X�g�̋����B
     public float RaycastDistance = 3;
@@ -34,16 +35,27 @@ public class CrossHairEvent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MainCamera = Camera.main;
-        player_status = PlayerStatus.LocalInstance;
+    }
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         player_input = player_status.player_input;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
         this.Player = player_status.gameObject;
+        MainCamera = Camera.main;
+        InitPlayer = true;
     }
-
     // Update is called once per frame
     void Update()
     {
+        if(!InitPlayer) return;
         //�J�����̒������烌�C�L���X�g���΂��B
         main_ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.yellow);
@@ -82,7 +94,7 @@ public class CrossHairEvent : MonoBehaviour
             }
 
             if(!CrossHairEventRaycastPermit) return;
-            if (player_input.currentActionMap["RaycastAction"].triggered)
+            if (player_input.actions["RaycastAction"].triggered)
             {
                 Debug.Log("RaycastAction---------------------Triggered!!!!!!!!!!!!!!!!!!!!!");
 
@@ -148,7 +160,7 @@ public class CrossHairEvent : MonoBehaviour
 
 
 
-            if (player_input.currentActionMap["RaycastAction"].IsPressed())
+            if (player_input.actions["RaycastAction"].IsPressed())
             {
                 //こっちは長押し用のイベント
                 if(raycast_hit.collider.gameObject.tag == "Pray")

@@ -6330,8 +6330,10 @@ GameObject:
   m_Component:
   - component: {fileID: 597350177767367547}
   - component: {fileID: 3709143509871936015}
-  - component: {fileID: 4640989651405648362}
+  - component: {fileID: 4523527945570228087}
+  - component: {fileID: 6754800367279928261}
   - component: {fileID: 6936642782527425598}
+  - component: {fileID: 4640989651405648362}
   - component: {fileID: 7228379173649806129}
   - component: {fileID: 364072651999732485}
   - component: {fileID: 2751979431404878738}
@@ -6342,8 +6344,6 @@ GameObject:
   - component: {fileID: 9023457538613697648}
   - component: {fileID: 5474756954540797281}
   - component: {fileID: 8402728259244179986}
-  - component: {fileID: 6754800367279928261}
-  - component: {fileID: 4523527945570228087}
   - component: {fileID: 1056663275959500298}
   - component: {fileID: 2481444592429799456}
   - component: {fileID: 8885107290759330572}
@@ -6409,7 +6409,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4640989651405648362
+--- !u!114 &4523527945570228087
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6418,16 +6418,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 7525078627656951602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: def0de1343d5bc449a0294d95ecd7b43, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RunSpeed: 3.5
-  WalkSpeed: 2
-  CrouchSpeed: 1
-  rotationSmoothSpeed: 1
-  NowSpeed: 0
-  MovePermit: 1
-  CrouchNow: 0
+  GlobalObjectIdHash: 1296791272
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &6754800367279928261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 3240c63fa2c3210419407122950635ad,
+    type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!114 &6936642782527425598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6440,15 +6477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f9060845084564fadc0211d4e8da22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   CameraRoot: {fileID: 3717271372266253696}
   HeadPos: {fileID: 5050057720297079474}
   CrouchHeadPos: {fileID: 5153810754235229518}
@@ -6478,6 +6507,26 @@ MonoBehaviour:
   virtual_camera: {fileID: 0}
   ItemController: {fileID: 8435485924296425593}
   foot_step_sound_controller: {fileID: 1050056454735755526}
+--- !u!114 &4640989651405648362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: def0de1343d5bc449a0294d95ecd7b43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  RunSpeed: 3.5
+  WalkSpeed: 2
+  CrouchSpeed: 1
+  rotationSmoothSpeed: 1
+  NowSpeed: 0
+  MovePermit: 1
+  CrouchNow: 0
 --- !u!114 &7228379173649806129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7782,62 +7831,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   DirectionCamera: {fileID: 0}
---- !u!114 &6754800367279928261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7525078627656951602}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 3240c63fa2c3210419407122950635ad,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &4523527945570228087
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7525078627656951602}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &1056663275959500298
 MonoBehaviour:
   m_ObjectHideFlags: 0

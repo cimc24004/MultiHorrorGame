@@ -74,10 +74,21 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
             return this.m_NearNow;
         }
     }
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += OnPlayerSpawnInit;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= OnPlayerSpawnInit;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        player_status = PlayerStatus.LocalInstance;  
+
+    }
+    void OnPlayerSpawnInit(PlayerStatus _player_status){
+        player_status = _player_status;
         Player = player_status.gameObject;
         CameraRoot = player_status.CameraRoot.gameObject;
         rig_builder = this.gameObject.GetComponent<RigBuilder>();
@@ -87,7 +98,6 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
 
         rig_builder.Build();
     }
-
     // Update is called once per frame
     void Update()
     {

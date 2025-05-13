@@ -27,18 +27,29 @@ public class FlashLightController : Singleton<FlashLightController>
     private SubNoticedUIController sub_noticed_ui_controller;
     private Vector3 DefaultPosition;
     private Quaternion DefaultRotation;
+    private bool InitPlayer;
     // Start is called before the first frame update
-    void Start()
+
+    void OnEnable()
     {
-        player_status = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         player_input = player_status.player_input;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         flash_light_battery_ui_controller = FlashLightBatteryUIController.instance;
+        InitPlayer = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!InitPlayer) return;
         if(LightSwitchMode){
             LightPowerDownTimeNow += Time.deltaTime;
             if(LightPowerDownTimeNow > PerTimeForLightPowerDown){
@@ -53,7 +64,7 @@ public class FlashLightController : Singleton<FlashLightController>
         }
         if (HaveLight && LightPermit)
         {
-            if (player_input.currentActionMap["LightSwitchAction"].triggered)
+            if (player_input.actions["LightSwitchAction"].triggered)
             {
                 if (!LightSwitchMode)
                 {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MathNet.Numerics.Optimization.TrustRegion;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,30 +9,36 @@ public class ItemThrowController : MonoBehaviour
     //なにか物を投げる為のスクリプト。 
 
     //↓仮に投げるアイテムをセットしてるだけ。
-    public GameObject camera;
+    public GameObject MainCamera;
     public PlayerInput player_input;
     public Transform StartFiringPos;
     public float ThrowFirstSpeed = 1;
     public ItemStatus item_status;
     private PlayerStatus player_status;
-   
-    // Start is called before the first frame update
-    void Start()
+    private bool InitPlayer;
+    void OnEnable()
     {
-        camera = Camera.main.gameObject;
-        player_status = PlayerStatus.LocalInstance;
-        player_input = player_status.player_input;
-        
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     }
-
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        player_input = player_status.player_input;
+        MainCamera = player_status.virtual_camera.VirtualCameraGameObject;
+        InitPlayer = true;
+    }
     // Update is called once per frame
     void Update()
     {
+        if(!InitPlayer) return;
         //プレイヤーのコライダーにぶつかって上手く投げることができないので
         //このItemThrowConrollerの子要素にあるオブジェクトから発射することで上手く放てる
         
         //Cameraの向いてる方向に向かって 自分も向くようにする。
-        this.transform.forward = new Vector3(camera.transform.forward.x, camera.transform.forward.y, camera.transform.forward.z);
+        this.transform.forward = new Vector3(MainCamera.transform.forward.x, MainCamera.transform.forward.y, MainCamera.transform.forward.z);
         
 
     }

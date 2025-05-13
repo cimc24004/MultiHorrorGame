@@ -43,14 +43,24 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
     private PlayerInput player_input;
     private DiscoveryPlayerController discovery_player_controller;
     // Start is called before the first frame update
-
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        player_input = player_status.player_input;
+        player_character_controller = player_status.gameObject.GetComponent<CharacterController>();
+    }
     void Start()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
         discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
-        player_status = PlayerStatus.LocalInstance;
-        player_input = player_status.player_input;
-        player_character_controller = player_status.gameObject.GetComponent<CharacterController>();
+
     }
 
     // Update is called once per frame

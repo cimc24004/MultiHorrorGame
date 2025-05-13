@@ -41,15 +41,26 @@ public class ObjectBuffController : NetworkBehaviour
     //     // sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
     //     // sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
     // }
+
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
+        player_move_script = player_status.gameObject.GetComponent<PlayerMoveScript>();
+        foot_step_sound_controller = player_status.foot_step_sound_controller;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+    }
     public override void OnNetworkSpawn()
     {
         pray_controller = this.gameObject.GetComponent<PrayController>();
         pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroy);
         PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
-        player_status = PlayerStatus.LocalInstance;
-        player_move_script = player_status.gameObject.GetComponent<PlayerMoveScript>();
-        foot_step_sound_controller = player_status.foot_step_sound_controller;
-        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
     }
 
