@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -31,10 +32,16 @@ public class PlayerCameraController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!InitPlayer && !IsOwner) return;
-        camYaw = DirectionCamera.transform.eulerAngles.y;
-        // Y軸のみ、カメラの向きに即時同期
-        transform.rotation = Quaternion.Euler(0f, camYaw, 0f);
+        if (!InitPlayer || !IsOwner) return;
+        float yaw = DirectionCamera.transform.eulerAngles.y;
+        SendYawToServerRpc(yaw);
     }
 
+    [ServerRpc]
+    void SendYawToServerRpc(float yaw)
+    {
+        // サーバー側のみ書き込み権限あるからOK
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+    }
 }
+
