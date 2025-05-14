@@ -40,7 +40,7 @@ public class PlayerMoveScript : NetworkBehaviour
     private bool moveSpeedUpNow = false;
     private float moveSpeedUpDuration;
     private float moveSpeedUpTimer = 0f;
-
+    private Vector2 moveInput;
     public override void OnNetworkSpawn()
     {
         characterController = GetComponent<CharacterController>();
@@ -64,66 +64,67 @@ public class PlayerMoveScript : NetworkBehaviour
 
     void Update()
     {
-        if(!MovePermit){
+        if(!MovePermit && IsServer){
             characterController.Move(Vector3.zero);
             // playerStatus.MoveY = 0;
             // playerStatus.MoveX = 0;
             return;
         }
-        // 入力取得＆移動方向設定
-        Vector2 input = moveAction.ReadValue<Vector2>();
-        playerStatus.MoveY = input.y;
-        playerStatus.MoveX = input.x;
-        anim.SetBool("Crouch", playerStatus.Crouch);
-
-        if (input.sqrMagnitude > 0.01f)
-        {
-            Quaternion camRot = Quaternion.Euler(0f, DirectionCamera.transform.eulerAngles.y, 0f);
-            Vector3 forward = camRot * Vector3.forward;
-            Vector3 right   = camRot * Vector3.right;
-            moveDirection = (forward * input.y + right * input.x).normalized;
-            playerStatus.MoveSpeed = NowSpeed;
+        if(IsOwner){
+            MoveInputSendServerRPC(moveAction.ReadValue<Vector2>());
         }
-        else
-        {
-            moveDirection = Vector3.zero;
-            playerStatus.MoveSpeed = 0f;
-        }
-
-        // 走る／歩く処理
-        HandleRunWalk();
-        // しゃがみ処理
-        HandleCrouch();
-        // スピードアップタイマー
-        if (moveSpeedUpNow)
-        {
-            moveSpeedUpTimer += Time.deltaTime;
-            if (moveSpeedUpTimer >= moveSpeedUpDuration)
+        if(IsServer){
+            // 入力取得＆移動方向設定
+            anim.SetBool("Crouch", playerStatus.Crouch);
+            if (moveInput.sqrMagnitude > 0.01f)
             {
-                RunSpeed    = defaultRunSpeed;
-                WalkSpeed   = defaultWalkSpeed;
-                CrouchSpeed = defaultCrouchSpeed;
-                ResetMoveSpeed();
-                moveSpeedUpNow   = false;
-                moveSpeedUpTimer = 0f;
+                Quaternion camRot = Quaternion.Euler(0f, DirectionCamera.transform.eulerAngles.y, 0f);
+                Vector3 forward = camRot * Vector3.forward;
+                Vector3 right   = camRot * Vector3.right;
+                moveDirection = (forward * moveInput.y + right * moveInput.x).normalized;
+                playerStatus.MoveSpeed = NowSpeed;
+            }
+            else
+            {
+                moveDirection = Vector3.zero;
+                playerStatus.MoveSpeed = 0f;
+            }
+
+            // 走る／歩く処理
+            HandleRunWalk();
+            // しゃがみ処理
+            HandleCrouch();
+            // スピードアップタイマー
+            if (moveSpeedUpNow)
+            {
+                moveSpeedUpTimer += Time.deltaTime;
+                if (moveSpeedUpTimer >= moveSpeedUpDuration)
+                {
+                    RunSpeed    = defaultRunSpeed;
+                    WalkSpeed   = defaultWalkSpeed;
+                    CrouchSpeed = defaultCrouchSpeed;
+                    ResetMoveSpeed();
+                    moveSpeedUpNow   = false;
+                    moveSpeedUpTimer = 0f;
+                }
             }
         }
+
     }
 
     void FixedUpdate()
     {
-        if(!MovePermit) return;
-        // 実際の移動
-        if (moveDirection != Vector3.zero)
-            characterController.Move(moveDirection * NowSpeed * Time.fixedDeltaTime);
-        else
-            characterController.Move(Vector3.up * characterController.velocity.y * Time.fixedDeltaTime);
-    }
-
-    void LateUpdate()
-    {
+        if(IsServer){
+            if(!MovePermit) return;
+            // 実際の移動
+            if (moveDirection != Vector3.zero)
+                characterController.Move(moveDirection * NowSpeed * Time.fixedDeltaTime);
+            else
+                characterController.Move(Vector3.up * characterController.velocity.y * Time.fixedDeltaTime);
+        }
 
     }
+
 
     private void HandleRunWalk()
     {
@@ -180,6 +181,7 @@ public class PlayerMoveScript : NetworkBehaviour
         }
     }
 
+
     public void MoveSpeedUp(float addSpeed, float effectTime)
     {
         RunSpeed    += addSpeed;
@@ -193,5 +195,11 @@ public class PlayerMoveScript : NetworkBehaviour
     private void ResetMoveSpeed()
     {
         subNoticedUI.Notice("脚力が元に戻った");
+    }
+    [ServerRpc]
+    private void MoveInputSendServerRPC(Vector2 _moveInput){
+        this.moveInput = _moveInput;
+        playerStatus.MoveY = _moveInput.y;
+        playerStatus.MoveX = _moveInput.x;
     }
 }
