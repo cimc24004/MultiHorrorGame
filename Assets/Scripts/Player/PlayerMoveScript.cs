@@ -42,6 +42,7 @@ public class PlayerMoveScript : NetworkBehaviour
     private float moveSpeedUpTimer = 0f;
     private Vector2 moveInput;
     private bool CrouchPressed;
+    private bool RunChangePressed;
     public override void OnNetworkSpawn()
     {
         characterController = GetComponent<CharacterController>();
@@ -73,7 +74,7 @@ public class PlayerMoveScript : NetworkBehaviour
         }
         if(IsOwner){
             MoveInputSendServerRPC(moveAction.ReadValue<Vector2>());
-            CrouchChangeServerRPC(crouchChangeAction.triggered);
+            ModeChangeServerRPC(crouchChangeAction.triggered, runChangeAction.triggered);
         }
         if(IsServer){
             // “ü—Íæ“¾•ˆÚ“®•ûŒüİ’è
@@ -206,7 +207,8 @@ public class PlayerMoveScript : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void CrouchChangeServerRPC(bool _crouchPressed){
+    private void ModeChangeServerRPC(bool _crouchPressed, bool _runChangePressed){
         this.CrouchPressed = _crouchPressed;
+        this.RunChangePressed = _runChangePressed;
     }
 }

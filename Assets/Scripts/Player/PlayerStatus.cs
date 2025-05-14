@@ -113,49 +113,54 @@ public class PlayerStatus : NetworkBehaviour
     void Update()
     {
         if(!InitPlayer) return;
-        anim.SetFloat("MoveY", this.MoveY);
-        anim.SetFloat("MoveX", this.MoveX);
-        if(player_move_state == PlayerMoveState.Crouch)
-        {
-            Crouch = true;
-        }
-        else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
-        {
-            Crouch = false;
-        }
-        if (player_move_state == PlayerMoveState.Walk)
-        {
-            MoveX /= 2;
-            MoveY /= 2;
-        }
-        if(MoveSpeed != 0)
-        {
-            if (player_move_state == PlayerMoveState.Run)
+        if(IsServer){
+            anim.SetFloat("MoveY", this.MoveY);
+            anim.SetFloat("MoveX", this.MoveX);
+            if(player_move_state == PlayerMoveState.Crouch)
             {
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                Crouch = true;
             }
-            else if (player_move_state == PlayerMoveState.Walk)
+            else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
             {
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                Crouch = false;
+            }
+            if (player_move_state == PlayerMoveState.Walk)
+            {
+                MoveX /= 2;
+                MoveY /= 2;
+            }
+            if(MoveSpeed != 0)
+            {
+                if (player_move_state == PlayerMoveState.Run)
+                {
+                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                }
+                else if (player_move_state == PlayerMoveState.Walk)
+                {
+                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                }
+                else
+                {
+                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
+                }
             }
             else
             {
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
             }
         }
-        else
-        {
-            foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
-        }
+
 
     }
     private void FixedUpdate()
     {
-        if(MoveSpeed != 0)
-        {
-            if(player_move_state == PlayerMoveState.Run)
+        if(IsServer){
+            if(MoveSpeed != 0)
             {
-                player_stamina_controller.ConsumeStamina();
+                if(player_move_state == PlayerMoveState.Run)
+                {
+                    player_stamina_controller.ConsumeStamina();
+                }
             }
         }
 
