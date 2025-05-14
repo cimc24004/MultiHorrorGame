@@ -29,7 +29,9 @@ public class PlayerCameraController : NetworkSingleton<PlayerCameraController>
     {
         if(!InitPlayer) return;
         // Y軸のみ、カメラの向きに即時同期
-        float camYaw = DirectionCamera.transform.eulerAngles.y;
-        transform.rotation = Quaternion.Euler(0f, camYaw, 0f);
+        if(IsServer){
+            float camYaw = DirectionCamera.transform.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(0f, camYaw, 0f);
+        }
     }
 }
