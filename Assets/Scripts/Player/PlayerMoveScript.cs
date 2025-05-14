@@ -73,6 +73,7 @@ public class PlayerMoveScript : NetworkBehaviour
             return;
         }
         if(IsOwner){
+            moveInput = moveAction.ReadValue<Vector2>();
             float yaw = DirectionCamera.transform.eulerAngles.y;
             Vector3 forward = Quaternion.Euler(0, yaw, 0) * Vector3.forward;
             Vector3 right   = Quaternion.Euler(0, yaw, 0) * Vector3.right;
