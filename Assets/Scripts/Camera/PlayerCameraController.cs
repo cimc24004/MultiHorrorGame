@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerCameraController : NetworkSingleton<PlayerCameraController>
+public class PlayerCameraController : NetworkBehaviour
 {
     //カメラの回転に沿って、プレイヤーの向きを変更するスクリプト
     public GameObject DirectionCamera;
