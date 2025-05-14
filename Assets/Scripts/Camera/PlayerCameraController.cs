@@ -8,6 +8,7 @@ public class PlayerCameraController : NetworkBehaviour
     //カメラの回転に沿って、プレイヤーの向きを変更するスクリプト
     public GameObject DirectionCamera;
     private bool InitPlayer;
+    private float camYaw;
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
@@ -29,10 +30,16 @@ public class PlayerCameraController : NetworkBehaviour
     void Update()
     {
         if(!InitPlayer) return;
+        if(IsOwner){
+            CameraSendServerRPC(DirectionCamera.transform.eulerAngles.y);
+        }
         // Y軸のみ、カメラの向きに即時同期
         if(IsServer){
-            float camYaw = DirectionCamera.transform.eulerAngles.y;
             transform.rotation = Quaternion.Euler(0f, camYaw, 0f);
         }
+    }
+    [ServerRpc]
+    private void CameraSendServerRPC(float _camYaw){
+        camYaw = _camYaw;
     }
 }
