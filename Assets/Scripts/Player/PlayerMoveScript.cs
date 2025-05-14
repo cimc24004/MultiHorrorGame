@@ -73,18 +73,18 @@ public class PlayerMoveScript : NetworkBehaviour
             return;
         }
         if(IsOwner){
-            MoveInputSendServerRPC(moveAction.ReadValue<Vector2>());
-            ModeChangeServerRPC(crouchChangeAction.triggered, runChangeAction.triggered);
+            float yaw = DirectionCamera.transform.eulerAngles.y;
+            Vector3 forward = Quaternion.Euler(0, yaw, 0) * Vector3.forward;
+            Vector3 right   = Quaternion.Euler(0, yaw, 0) * Vector3.right;
+            Vector3 worldDir = (forward * moveInput.y + right * moveInput.x).normalized;
+            SubmitMoveServerRpc(moveAction.ReadValue<Vector2>(), crouchChangeAction.triggered, runChangeAction.triggered, worldDir);
         }
         if(IsServer){
             // “ü—ÍŽæ“¾•ˆÚ“®•ûŒüÝ’è
             anim.SetBool("Crouch", playerStatus.Crouch);
             if (moveInput.sqrMagnitude > 0.01f)
             {
-                Quaternion camRot = Quaternion.Euler(0f, DirectionCamera.transform.eulerAngles.y, 0f);
-                Vector3 forward = camRot * Vector3.forward;
-                Vector3 right   = camRot * Vector3.right;
-                moveDirection = (forward * moveInput.y + right * moveInput.x).normalized;
+
                 playerStatus.MoveSpeed = NowSpeed;
             }
             else
@@ -200,15 +200,13 @@ public class PlayerMoveScript : NetworkBehaviour
         subNoticedUI.Notice("‹r—Í‚ªŒ³‚É–ß‚Á‚½");
     }
     [ServerRpc]
-    private void MoveInputSendServerRPC(Vector2 _moveInput){
+    private void SubmitMoveServerRpc(Vector2 _moveInput, bool _crouchPressed, bool _runChangePressed, Vector3 worldDir){
         this.moveInput = _moveInput;
         playerStatus.MoveY = _moveInput.y;
         playerStatus.MoveX = _moveInput.x;
-    }
-
-    [ServerRpc]
-    private void ModeChangeServerRPC(bool _crouchPressed, bool _runChangePressed){
         this.CrouchPressed = _crouchPressed;
         this.RunChangePressed = _runChangePressed;
+        moveDirection = worldDir;
     }
+
 }
