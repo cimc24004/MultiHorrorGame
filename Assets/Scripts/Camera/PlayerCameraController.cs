@@ -31,17 +31,10 @@ public class PlayerCameraController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!InitPlayer) return;
-        if(IsOwner){
-            CameraSendServerRPC(DirectionCamera.transform.eulerAngles.y);
-        }
+        if(!InitPlayer && !IsOwner) return;
+        camYaw = DirectionCamera.transform.eulerAngles.y;
         // Y軸のみ、カメラの向きに即時同期
-        if(IsServer){
-            transform.rotation = Quaternion.Euler(0f, camYaw, 0f);
-        }
+        transform.rotation = Quaternion.Euler(0f, camYaw, 0f);
     }
-    [ServerRpc]
-    private void CameraSendServerRPC(float _camYaw){
-        camYaw = _camYaw;
-    }
+
 }
