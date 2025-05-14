@@ -31,7 +31,7 @@ public class PlayerMoveScript : NetworkBehaviour
     private bool runWalkTriggerChange = false;
     public bool CrouchNow = false;
 
-    private PlayerStatus playerStatus;
+    [SerializeField]private PlayerStatus playerStatus;
     private PlayerStaminaController staminaController;
     private SubNoticedUIController subNoticedUI;
     private TimeManager timeManager;
