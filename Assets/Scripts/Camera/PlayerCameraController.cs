@@ -23,7 +23,9 @@ public class PlayerCameraController : NetworkBehaviour
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
-        DirectionCamera = _playerStatus.virtual_camera.VirtualCameraGameObject;
+        if(IsOwner){
+            DirectionCamera = _playerStatus.virtual_camera.VirtualCameraGameObject;
+        }
         InitPlayer = true;
     }
     // Update is called once per frame
