@@ -56,11 +56,13 @@ public class PlayerMoveScript : NetworkBehaviour
         defaultWalkSpeed   = WalkSpeed;
         defaultCrouchSpeed = CrouchSpeed;
         NowSpeed.Value           = WalkSpeed;
-        crouchChangeAction.performed += OnCrouchPerformed;
         staminaController = GetComponent<PlayerStaminaController>();
         subNoticedUI      = playerStatus.sub_noticed_ui_controller;
         timeManager       = TimeManager.instance;
         DirectionCamera   = playerStatus.virtual_camera.VirtualCameraGameObject;
+        if(IsOwner){
+            crouchChangeAction.performed += OnCrouchPerformed;
+        }
         
     }
 
@@ -195,19 +197,19 @@ public class PlayerMoveScript : NetworkBehaviour
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
                 NowSpeed.Value = CrouchSpeed;
-                // playerStatus.CrouchNetwork.Value = true;
+                playerStatus.CrouchNetwork.Value = true;
             }
             else
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed.Value = WalkSpeed;
-                // playerStatus.CrouchNetwork.Value = false;
+                playerStatus.CrouchNetwork.Value = false;
             }
 
             // CrouchPressed = false;  // ← トグル後は必ずリセット
         }
     }
-
+    
     public void MoveSpeedUp(float addSpeed, float effectTime)
     {
         RunSpeed    += addSpeed;
@@ -222,7 +224,7 @@ public class PlayerMoveScript : NetworkBehaviour
     {
         subNoticedUI.Notice("脚力が元に戻った");
     }
-    
+
     [ServerRpc]
     private void SubmitMoveServerRpc(Vector2 _moveInput,
                                      bool _crouchPressed,
