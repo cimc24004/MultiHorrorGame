@@ -73,7 +73,7 @@ public class PlayerStatus : NetworkBehaviour
     private PlayerStaminaController player_stamina_controller;
     private Animator anim;
     private bool InitPlayer;
-    public bool Crouch;
+    public NetworkVariable<bool> Crouch;
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
@@ -118,11 +118,11 @@ public class PlayerStatus : NetworkBehaviour
             anim.SetFloat("MoveX", this.MoveX);
             if(player_move_state == PlayerMoveState.Crouch)
             {
-                Crouch = true;
+                Crouch.Value = true;
             }
-            else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
+            else if(player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk)
             {
-                Crouch = false;
+                Crouch.Value = false;
             }
             if (player_move_state == PlayerMoveState.Walk)
             {
@@ -232,6 +232,7 @@ public class PlayerStatus : NetworkBehaviour
             player_continue_controller.Continue();
         });
     }
+
     public void CrouchStandCameraPosChange(bool Crouch)
     {
         Transform tgt = Crouch ? CrouchHeadPos : StandHeadPos;
