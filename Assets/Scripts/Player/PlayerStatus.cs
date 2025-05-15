@@ -80,7 +80,7 @@ public class PlayerStatus : NetworkBehaviour
     public NetworkVariable<bool> CrouchNetwork = new NetworkVariable<bool>(
         false,
         NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner
+        NetworkVariableWritePermission.Server
     );
 
     public override void OnNetworkDespawn()
