@@ -42,7 +42,7 @@ public class PlayerMoveScript : NetworkBehaviour
     private Vector2 moveInput;
     private bool CrouchPressed;
     private bool RunChangePressed;
-
+    private bool CrouchNow;
     public override void OnNetworkSpawn()
     {
         characterController = GetComponent<CharacterController>();
@@ -56,11 +56,12 @@ public class PlayerMoveScript : NetworkBehaviour
         defaultWalkSpeed   = WalkSpeed;
         defaultCrouchSpeed = CrouchSpeed;
         NowSpeed.Value           = WalkSpeed;
-
+        crouchChangeAction.performed += OnCrouchPerformed;
         staminaController = GetComponent<PlayerStaminaController>();
         subNoticedUI      = playerStatus.sub_noticed_ui_controller;
         timeManager       = TimeManager.instance;
         DirectionCamera   = playerStatus.virtual_camera.VirtualCameraGameObject;
+        
     }
 
     void Update()
@@ -88,7 +89,7 @@ public class PlayerMoveScript : NetworkBehaviour
             anim.SetFloat("MoveY", moveInput.y);
             anim.SetFloat("MoveX", moveInput.x);
 
-            anim.SetBool("Crouch", playerStatus.CrouchNetwork.Value);
+            // anim.SetBool("Crouch", playerStatus.CrouchNetwork.Value);
         }
 
         if (IsServer)
@@ -140,7 +141,17 @@ public class PlayerMoveScript : NetworkBehaviour
                 characterController.Move(Vector3.up * characterController.velocity.y * Time.fixedDeltaTime);
         }
     }
+    private void OnCrouchPerformed(InputAction.CallbackContext ctx)
+    {
+        // １）即時トグル（ローカル予測）
+        CrouchNow = !CrouchNow;
+        anim.SetBool("Crouch", CrouchNow);
+        playerStatus.CrouchStandCameraPosChange(CrouchNow);
 
+        // ２）オーナー権限で NetworkVariable を直接更新
+        if (IsOwner)
+            playerStatus.CrouchNetwork.Value = CrouchNow;
+    }
     private void HandleRunWalk()
     {
         if (playerStatus.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Run ||
