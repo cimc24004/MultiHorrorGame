@@ -40,7 +40,6 @@ public class PlayerMoveScript : NetworkBehaviour
     private float moveSpeedUpDuration;
     private float moveSpeedUpTimer = 0f;
     private Vector2 moveInput;
-    private bool CrouchPressed;
     private bool RunChangePressed;
     private bool CrouchNow;
     public override void OnNetworkSpawn()
@@ -84,7 +83,6 @@ public class PlayerMoveScript : NetworkBehaviour
             Vector3 worldDir = (forward * moveInput.y + right * moveInput.x).normalized;
 
             SubmitMoveServerRpc(moveInput,
-                                crouchChangeAction.triggered,
                                 runChangeAction.triggered,
                                 worldDir);
 
@@ -112,7 +110,6 @@ public class PlayerMoveScript : NetworkBehaviour
             }
 
             HandleRunWalk();
-            HandleCrouch();  // ここで一度だけトグルして…
             
             // 以下、省略（スピードアップ処理など）
             if (moveSpeedUpNow)
@@ -190,27 +187,6 @@ public class PlayerMoveScript : NetworkBehaviour
         }
     }
 
-    private void HandleCrouch()
-    {
-        if (CrouchPressed)
-        {
-            if (!playerStatus.CrouchNetwork.Value)
-            {
-                playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
-                NowSpeed.Value = CrouchSpeed;
-                playerStatus.CrouchNetwork.Value = true;
-            }
-            else
-            {
-                playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
-                NowSpeed.Value = WalkSpeed;
-                playerStatus.CrouchNetwork.Value = false;
-            }
-
-            // CrouchPressed = false;  // ← トグル後は必ずリセット
-        }
-    }
-    
     public void MoveSpeedUp(float addSpeed, float effectTime)
     {
         RunSpeed    += addSpeed;
@@ -228,14 +204,12 @@ public class PlayerMoveScript : NetworkBehaviour
 
     [ServerRpc]
     private void SubmitMoveServerRpc(Vector2 _moveInput,
-                                     bool _crouchPressed,
                                      bool _runChangePressed,
                                      Vector3 worldDir)
     {
         this.moveInput        = _moveInput;
         playerStatus.MoveY    = _moveInput.y;
         playerStatus.MoveX    = _moveInput.x;
-        this.CrouchPressed    = _crouchPressed;
         this.RunChangePressed = _runChangePressed;
         moveDirection         = worldDir;
     }
