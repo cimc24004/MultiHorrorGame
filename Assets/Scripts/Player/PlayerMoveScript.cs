@@ -62,7 +62,6 @@ public class PlayerMoveScript : NetworkBehaviour
         subNoticedUI      = playerStatus.sub_noticed_ui_controller;
         timeManager       = TimeManager.instance;
         DirectionCamera   = playerStatus.virtual_camera.VirtualCameraGameObject;
-        
     }
 
     void Update()
@@ -86,15 +85,17 @@ public class PlayerMoveScript : NetworkBehaviour
                                 crouchChangeAction.triggered,
                                 runChangeAction.triggered,
                                 worldDir);
+
             anim.SetFloat("MoveY", moveInput.y);
             anim.SetFloat("MoveX", moveInput.x);
-            anim.SetBool("Crouch", playerStatus.Crouch);
 
+            anim.SetBool("Crouch", playerStatus.Crouch);
         }
 
         if (IsServer)
         {
-            if(!IsOwner){
+            if (!IsOwner)
+            {
                 anim.SetBool("Crouch", playerStatus.Crouch);
             }
 
@@ -109,9 +110,9 @@ public class PlayerMoveScript : NetworkBehaviour
             }
 
             HandleRunWalk();
-            if(CrouchPressed)
-                HandleCrouch();
-
+            HandleCrouch();  // ここで一度だけトグルして…
+            
+            // 以下、省略（スピードアップ処理など）
             if (moveSpeedUpNow)
             {
                 moveSpeedUpTimer += Time.deltaTime;
@@ -178,19 +179,24 @@ public class PlayerMoveScript : NetworkBehaviour
 
     private void HandleCrouch()
     {
-        if (!CrouchNow)
+        if (CrouchPressed)
         {
-            playerStatus.player_move_state      = PlayerStatus.PlayerMoveState.Crouch;
-            playerStatus.CrouchStandCameraPosChange(true);
-            NowSpeed = CrouchSpeed;
-            CrouchNow = true;
-        }
-        else
-        {
-            playerStatus.player_move_state      = PlayerStatus.PlayerMoveState.Walk;
-            playerStatus.CrouchStandCameraPosChange(false);
-            NowSpeed = WalkSpeed;
-            CrouchNow = false;
+            if (!CrouchNow)
+            {
+                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Crouch;
+                playerStatus.CrouchStandCameraPosChange(true);
+                NowSpeed = CrouchSpeed;
+                CrouchNow = true;
+            }
+            else
+            {
+                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                playerStatus.CrouchStandCameraPosChange(false);
+                NowSpeed = WalkSpeed;
+                CrouchNow = false;
+            }
+
+            CrouchPressed = false;  // ← トグル後は必ずリセット
         }
     }
 
@@ -215,11 +221,11 @@ public class PlayerMoveScript : NetworkBehaviour
                                      bool _runChangePressed,
                                      Vector3 worldDir)
     {
-        this.moveInput               = _moveInput;
-        playerStatus.MoveY           = _moveInput.y;
-        playerStatus.MoveX           = _moveInput.x;
-        this.CrouchPressed           = _crouchPressed;
-        this.RunChangePressed        = _runChangePressed;
-        moveDirection                = worldDir;
+        this.moveInput        = _moveInput;
+        playerStatus.MoveY    = _moveInput.y;
+        playerStatus.MoveX    = _moveInput.x;
+        this.CrouchPressed    = _crouchPressed;
+        this.RunChangePressed = _runChangePressed;
+        moveDirection         = worldDir;
     }
 }
