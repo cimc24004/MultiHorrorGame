@@ -27,13 +27,16 @@ public class LookAtPlayer : MonoBehaviour
     private Transform headPosTransform;
     private Transform cameraRootTransform;
     private bool initialized = false;
-
-    private IEnumerator Start()
+    void OnEnable()
     {
-        // PlayerStatus.LocalInstance ‚ªƒZƒbƒg‚³‚ê‚é‚Ü‚Å‘Ò‚Â
-        yield return new WaitUntil(() => PlayerStatus.LocalInstance != null);
-
-        player_status       = PlayerStatus.LocalInstance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        player_status = _playerStatus;
         headPosTransform    = player_status.HeadPos.transform;
         cameraRootTransform = player_status.CameraRoot.transform;
         initialized = true;
