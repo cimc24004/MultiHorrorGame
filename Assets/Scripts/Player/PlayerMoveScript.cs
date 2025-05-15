@@ -151,9 +151,10 @@ public class PlayerMoveScript : NetworkBehaviour
         playerStatus.CrouchStandCameraPosChange(CrouchNow);
 
         // ２）オーナー権限で NetworkVariable を直接更新
-        if (IsOwner)
-            playerStatus.CrouchNetwork.Value = CrouchNow;
+            // playerStatus.CrouchNetwork.Value = CrouchNow;
+        UpdateCrouchNetworkChangeServerRpc(CrouchNow);
     }
+    
     private void HandleRunWalk()
     {
         if (playerStatus.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Run ||
@@ -197,13 +198,13 @@ public class PlayerMoveScript : NetworkBehaviour
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
                 NowSpeed.Value = CrouchSpeed;
-                playerStatus.CrouchNetwork.Value = true;
+                // playerStatus.CrouchNetwork(true);
             }
             else
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed.Value = WalkSpeed;
-                playerStatus.CrouchNetwork.Value = false;
+                // playerStatus.CrouchNetwork.Value = false;
             }
 
             // CrouchPressed = false;  // ← トグル後は必ずリセット
@@ -237,5 +238,10 @@ public class PlayerMoveScript : NetworkBehaviour
         this.CrouchPressed    = _crouchPressed;
         this.RunChangePressed = _runChangePressed;
         moveDirection         = worldDir;
+    }
+
+    [ServerRpc]
+    private void UpdateCrouchNetworkChangeServerRpc(bool newCrouch){
+        playerStatus.CrouchNetwork.Value = newCrouch;
     }
 }
