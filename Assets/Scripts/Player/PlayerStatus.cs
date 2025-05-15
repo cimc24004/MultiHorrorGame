@@ -118,6 +118,7 @@ public class PlayerStatus : NetworkBehaviour
                 anim.SetFloat("MoveY", this.MoveY);
                 anim.SetFloat("MoveX", this.MoveX);
             }
+
             if(player_move_state == PlayerMoveState.Crouch)
             {
                 Crouch = true;

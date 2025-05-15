@@ -23,7 +23,7 @@ public class ItemRandomCreateIndividual : SerializedMonoBehaviour
     }
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
         item_databases = ItemDatabases.instance;
-        item_belonging_controller = ItemBelongingsController.instance;
+        item_belonging_controller = _playerStatus.ItemController.GetComponent<ItemBelongingsController>();
         need_keys_controller = NeedKeysController.instance;
     }
     [Button]

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using System.Linq;
 using TMPro;
-public class ItemBelongingsController : Singleton<ItemBelongingsController>
+public class ItemBelongingsController : MonoBehaviour
 {
     //アイテムの持ち物を管理するコントローラー。
 
