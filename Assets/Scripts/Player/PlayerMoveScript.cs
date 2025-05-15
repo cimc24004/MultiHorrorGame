@@ -195,13 +195,13 @@ public class PlayerMoveScript : NetworkBehaviour
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
                 NowSpeed.Value = CrouchSpeed;
-                playerStatus.CrouchNetwork.Value = true;
+                // playerStatus.CrouchNetwork.Value = true;
             }
             else
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed.Value = WalkSpeed;
-                playerStatus.CrouchNetwork.Value = false;
+                // playerStatus.CrouchNetwork.Value = false;
             }
 
             // CrouchPressed = false;  // ← トグル後は必ずリセット
@@ -222,7 +222,7 @@ public class PlayerMoveScript : NetworkBehaviour
     {
         subNoticedUI.Notice("脚力が元に戻った");
     }
-
+    
     [ServerRpc]
     private void SubmitMoveServerRpc(Vector2 _moveInput,
                                      bool _crouchPressed,
