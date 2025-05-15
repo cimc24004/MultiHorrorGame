@@ -46,7 +46,7 @@ public class PlayerStatus : NetworkBehaviour
         Crouch
         
     }
-    public PlayerMoveState player_move_state;
+    public NetworkVariable<PlayerMoveState> player_move_state_network = new NetworkVariable<PlayerMoveState>();
     [Header("移動速度")]
     public float MoveSpeed;
 
@@ -73,7 +73,7 @@ public class PlayerStatus : NetworkBehaviour
     private PlayerStaminaController player_stamina_controller;
     private Animator anim;
     private bool InitPlayer;
-    public bool Crouch;
+    public NetworkVariable<bool> CrouchNetwork = new NetworkVariable<bool>();
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
@@ -103,6 +103,7 @@ public class PlayerStatus : NetworkBehaviour
         flash_light_controller = FlashLightController.instance;
         player_to_enemy_distance_controller = this.gameObject.GetComponent<PlayerToEnemyDistanceController>();
         InitPlayer = true;
+        this.CrouchNetwork.OnValueChanged += OnCrouchChanged;
         if (IsOwner){
             LocalInstance = this;    // 自分のクライアントのプレイヤーだけセット
             OnLocalPlayerSpawned?.Invoke(this);
@@ -119,26 +120,26 @@ public class PlayerStatus : NetworkBehaviour
                 anim.SetFloat("MoveX", this.MoveX);
             }
 
-            if(player_move_state == PlayerMoveState.Crouch)
+            if(player_move_state_network.Value == PlayerMoveState.Crouch)
             {
-                Crouch = true;
+                CrouchNetwork.Value = true;
             }
-            else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
+            else if(player_move_state_network.Value == PlayerMoveState.Run || player_move_state_network.Value == PlayerMoveState.Walk)
             {
-                Crouch = false;
+                CrouchNetwork.Value = false;
             }
-            if (player_move_state == PlayerMoveState.Walk)
+            if (player_move_state_network.Value == PlayerMoveState.Walk)
             {
                 MoveX /= 2;
                 MoveY /= 2;
             }
             if(MoveSpeed != 0)
             {
-                if (player_move_state == PlayerMoveState.Run)
+                if (player_move_state_network.Value == PlayerMoveState.Run)
                 {
                     foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
                 }
-                else if (player_move_state == PlayerMoveState.Walk)
+                else if (player_move_state_network.Value == PlayerMoveState.Walk)
                 {
                     foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
                 }
@@ -160,7 +161,7 @@ public class PlayerStatus : NetworkBehaviour
         if(IsServer){
             if(MoveSpeed != 0)
             {
-                if(player_move_state == PlayerMoveState.Run)
+                if(player_move_state_network.Value == PlayerMoveState.Run)
                 {
                     player_stamina_controller.ConsumeStamina();
                 }
@@ -171,7 +172,7 @@ public class PlayerStatus : NetworkBehaviour
     public void StopEvent()
     {
         //MoveSpeed=0でなかったら押し入れとかに隠れたときにずーと敵が待っているバグが生じる為。
-        this.player_move_state = PlayerMoveState.Walk;
+        this.player_move_state_network.Value = PlayerMoveState.Walk;
         this.MoveX = 0;
         this.MoveY = 0;
         this.MoveSpeed = 0;
@@ -235,9 +236,21 @@ public class PlayerStatus : NetworkBehaviour
             player_continue_controller.Continue();
         });
     }
-    public void CrouchStandCameraPosChange(bool Crouch)
+    
+    private void OnCrouchChanged(bool oldValue, bool newValue)
     {
-        Transform tgt = Crouch ? CrouchHeadPos : StandHeadPos;
+        // 状態更新
+        // Crouch = newValue;
+        // アニメーション更新
+        anim.SetBool("Crouch", newValue);
+        // 自分のカメラ位置も動かす
+        if (IsOwner)
+            CrouchStandCameraPosChange(newValue);
+    }
+
+    private void CrouchStandCameraPosChange(bool _Crouch)
+    {
+        Transform tgt = _Crouch ? CrouchHeadPos : StandHeadPos;
 
         crouchTween?.Kill();
 

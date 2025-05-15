@@ -99,14 +99,14 @@ public class PlayerHideObjectAction : MonoBehaviour
         this.gameObject.layer = LayerMask.NameToLayer("Player");
         charactor_move_permit.Move();
 
-        player_move_script.NowSpeed = player_move_script.WalkSpeed;
+        player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
 
         player_status.HidingNow = false;
 
     }
     private void PlayerDeformedByHideType()
     {
-        player_move_script.CrouchNow = false;
+        player_status.CrouchNetwork.Value = false;
         //HideType(うつぶせや座るや立つ)の値によってプレイヤーの状態を変える。
         if (hide_type_target_object == TargetHideObject.HideType.Stand)
         {
