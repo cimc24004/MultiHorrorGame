@@ -62,18 +62,7 @@ public class PlayerMoveScript : NetworkBehaviour
         subNoticedUI      = playerStatus.sub_noticed_ui_controller;
         timeManager       = TimeManager.instance;
         DirectionCamera   = playerStatus.virtual_camera.VirtualCameraGameObject;
-
-        if(IsOwner){
-            crouchChangeAction.performed += OnLocalCrouch;
-        }
-
-        // しゃがみ状態が変わったら全クライアントで反映
-        playerStatus.Crouch.OnValueChanged += (_, newVal) =>
-        {
-            // サーバー権限で決まった本当の状態を反映
-            ApplyCrouch(newVal);
-        };
-
+        
     }
 
     void Update()
@@ -97,11 +86,15 @@ public class PlayerMoveScript : NetworkBehaviour
                                 crouchChangeAction.triggered,
                                 runChangeAction.triggered,
                                 worldDir);
+            anim.SetFloat("MoveY", moveInput.y);
+            anim.SetFloat("MoveX", moveInput.x);
+            anim.SetBool("Crouch", CrouchNow);
+
         }
 
         if (IsServer)
         {
-            anim.SetBool("Crouch", playerStatus.Crouch.Value);
+            anim.SetBool("Crouch", playerStatus.Crouch);
 
             if (moveInput.sqrMagnitude > 0.01f)
             {
@@ -182,49 +175,22 @@ public class PlayerMoveScript : NetworkBehaviour
 
     private void HandleCrouch()
     {
-        if (CrouchPressed)
+        if (!CrouchNow)
         {
-            if (!CrouchNow)
-            {
-                playerStatus.player_move_state      = PlayerStatus.PlayerMoveState.Crouch;
-                playerStatus.CrouchStandCameraPosChange(true);
-                NowSpeed                             = CrouchSpeed;
-                CrouchNow                            = true;
-            }
-            else
-            {
-                playerStatus.player_move_state      = PlayerStatus.PlayerMoveState.Walk;
-                playerStatus.CrouchStandCameraPosChange(false);
-                NowSpeed                             = WalkSpeed;
-                CrouchNow                            = false;
-            }
+            playerStatus.player_move_state      = PlayerStatus.PlayerMoveState.Crouch;
+            playerStatus.CrouchStandCameraPosChange(true);
+            NowSpeed = CrouchSpeed;
+            CrouchNow = true;
+        }
+        else
+        {
+            playerStatus.player_move_state      = PlayerStatus.PlayerMoveState.Walk;
+            playerStatus.CrouchStandCameraPosChange(false);
+            NowSpeed = WalkSpeed;
+            CrouchNow = false;
         }
     }
-    private void ApplyCrouch(bool crouch)
-    {
-        playerStatus.CrouchStandCameraPosChange(crouch);
-        anim.SetBool("Crouch", crouch);
-        // 速度もここで切り替え
-        playerStatus.player_move_state = crouch
-            ? PlayerStatus.PlayerMoveState.Crouch
-            : PlayerStatus.PlayerMoveState.Walk;
-        // NowSpeed は Update/FixedUpdate 内で playerStatus.player_move_state に応じて参照するようにする
-    }
-    private void OnLocalCrouch(InputAction.CallbackContext ctx)
-    {
-        // 1) ローカル予測：見た目を即変更
-        bool predicted = !playerStatus.Crouch.Value;
-        ApplyCrouch(predicted);
 
-        // 2) サーバーに「こうなったよ」を送信
-        SyncCrouchServerRpc(predicted);
-    }
-    [ServerRpc]
-    private void SyncCrouchServerRpc(bool newState)
-    {
-        // サーバー側で正式に状態を切り替え
-        playerStatus.Crouch.Value = newState;
-    }
     public void MoveSpeedUp(float addSpeed, float effectTime)
     {
         RunSpeed    += addSpeed;

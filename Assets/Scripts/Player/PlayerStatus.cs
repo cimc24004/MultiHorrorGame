@@ -73,7 +73,7 @@ public class PlayerStatus : NetworkBehaviour
     private PlayerStaminaController player_stamina_controller;
     private Animator anim;
     private bool InitPlayer;
-    public NetworkVariable<bool> Crouch;
+    public bool Crouch;
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
@@ -114,15 +114,17 @@ public class PlayerStatus : NetworkBehaviour
     {
         if(!InitPlayer) return;
         if(IsServer){
-            anim.SetFloat("MoveY", this.MoveY);
-            anim.SetFloat("MoveX", this.MoveX);
+            if(!IsOwner){
+                anim.SetFloat("MoveY", this.MoveY);
+                anim.SetFloat("MoveX", this.MoveX);
+            }
             if(player_move_state == PlayerMoveState.Crouch)
             {
-                Crouch.Value = true;
+                Crouch = true;
             }
-            else if(player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk)
+            else if((player_move_state == PlayerMoveState.Run || player_move_state == PlayerMoveState.Walk))
             {
-                Crouch.Value = false;
+                Crouch = false;
             }
             if (player_move_state == PlayerMoveState.Walk)
             {
@@ -232,7 +234,6 @@ public class PlayerStatus : NetworkBehaviour
             player_continue_controller.Continue();
         });
     }
-
     public void CrouchStandCameraPosChange(bool Crouch)
     {
         Transform tgt = Crouch ? CrouchHeadPos : StandHeadPos;
