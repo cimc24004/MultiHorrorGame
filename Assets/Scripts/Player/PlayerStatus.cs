@@ -71,6 +71,7 @@ public class PlayerStatus : NetworkBehaviour
     private float offsetY;
     private CharacterMovePermit player_move_permit;
     private PlayerStaminaController player_stamina_controller;
+    private PlayerMoveScript player_move_script;
     private Animator anim;
     private bool InitPlayer;
     public NetworkVariable<bool> CrouchNetwork = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -103,6 +104,7 @@ public class PlayerStatus : NetworkBehaviour
         flash_light_controller = FlashLightController.instance;
         player_to_enemy_distance_controller = this.gameObject.GetComponent<PlayerToEnemyDistanceController>();
         InitPlayer = true;
+        player_move_script = this.gameObject.GetComponent<PlayerMoveScript>();
         this.CrouchNetwork.OnValueChanged += OnCrouchChanged;
         if (IsOwner){
             LocalInstance = this;    // 自分のクライアントのプレイヤーだけセット
@@ -242,6 +244,9 @@ public class PlayerStatus : NetworkBehaviour
         // 状態更新
         // Crouch = newValue;
         // アニメーション更新
+
+        this.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
+        player_move_script.NowSpeed.Value = player_move_script.CrouchSpeed;
         anim.SetBool("Crouch", newValue);
         // 自分のカメラ位置も動かす
         if (IsOwner)
