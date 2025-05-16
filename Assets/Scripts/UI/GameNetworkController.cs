@@ -20,7 +20,9 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
         //クライアント接続時
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-
+        NetworkManager.Singleton.OnClientDisconnectCallback += (clientId) => {
+            Debug.Log($"Client {clientId} disconnected. IsHost? {NetworkManager.Singleton.IsHost}");
+        };
         //すでに存在するクライアント用に関数呼び出す
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
