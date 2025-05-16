@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-public class CrossHairEvent : MonoBehaviour
+public class CrossHairEvent : NetworkBehaviour
 {
     //�^�񒆂̃N���X�w�A���烌�C�L���X�g���΂����ꂪ���̂ɓ��������Ƃ��ɔ���������C�x���g�B
     public LayerMask TargetLayerMaskViewToPoint;
@@ -32,6 +33,7 @@ public class CrossHairEvent : MonoBehaviour
     private Ray main_ray;
     private GameStateController game_state_controller;
     private MainNoticedUIController main_noticed_ui_controller;
+    private NetworkObject m_NetworkObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,12 +52,14 @@ public class CrossHairEvent : MonoBehaviour
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
         this.Player = player_status.gameObject;
         MainCamera = Camera.main;
+        m_NetworkObject = this.Player.GetComponent<NetworkObject>();
         InitPlayer = true;
     }
     // Update is called once per frame
     void Update()
     {
         if(!InitPlayer) return;
+        if(!IsOwner) return;
         //�J�����̒������烌�C�L���X�g���΂��B
         main_ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.yellow);
@@ -130,7 +134,7 @@ public class CrossHairEvent : MonoBehaviour
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     the_door_controller = door_open_close_controlelr.the_door_controller;
-                    the_door_controller.DoorOpenClosedChangeByStatus(Player);
+                    the_door_controller.DoorOpenClosedChangeByStatusServerRPC(m_NetworkObject.NetworkObjectId);
 
                     return;
 

@@ -4,10 +4,15 @@ using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
 
-public class DoorOpenCloseController : SerializedMonoBehaviour
+public class DoorOpenCloseController : NetworkBehaviour
 {
-
+    public enum DoorStatus
+    {
+        Closed,
+        Opened
+    }
     private Vector3 DefaultLocalPosition;
     private Vector3 OpenLocalPosition;
     [Header("開けたときにトリガーを切り替えるかどうか")]
@@ -37,8 +42,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [Header("扉を開けたときにアイテムが出現するかどうか(台所の戸など)")]
     public bool ItemAppearanceWhenOpened;
     private ItemRandomCreateIndividual item_random_create_individual;
-
-    public bool AlreadyOpened;
+    private bool AlreadyOpened;
 
     public enum MoveXYZ
     {
@@ -55,7 +59,7 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [Header("何の軸を移動するか")]
     public MoveXYZ move_x_y_z;
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
         DefaultLocalPosition = this.transform.localPosition;
         DefaultRotateVector = this.transform.localEulerAngles;
@@ -93,18 +97,20 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
     [Button]
     public void Open()
     {
-        if (ItemAppearanceWhenOpened)
+        if (IsServer)
         {
-            Debug.Log("Open---ItemAppearanceWhenOpened");
-            item_random_create_individual.ItemRandomCreateFromIndividual(AlreadyOpened);
+            if (ItemAppearanceWhenOpened)
+            {
+                Debug.Log("Open---ItemAppearanceWhenOpened");
+                item_random_create_individual.ItemRandomCreateFromIndividual(AlreadyOpened);
+            }
         }
+        OpenDoorClientRPC();
+    }
+    [ClientRpc]
+    private void OpenDoorClientRPC()
+    {
         AlreadyOpened = true;
-
-        if (OpenClip != null && audio_source != null)
-        {
-            audio_source.PlayOneShot(OpenClip);
-        }
-        OpenStartEvent.Invoke();
         if (open_type == OpenType.SideOpen)
         {
             // ローカル座標系で移動
@@ -136,12 +142,21 @@ public class DoorOpenCloseController : SerializedMonoBehaviour
                     OpenCompleted.Invoke();
                 });
         }
+        if (OpenClip != null && audio_source != null)
+        {
+            audio_source.PlayOneShot(OpenClip);
+        }
+        OpenStartEvent.Invoke();
     }
-
     [Button]
     public void Close()
     {
         Debug.Log("Close関数呼び出し");
+        DoorCloseClientRPC();
+    }
+    [ClientRpc]
+    private void DoorCloseClientRPC()
+    {
         if (CloseClip != null && audio_source != null)
         {
             audio_source.PlayOneShot(CloseClip);

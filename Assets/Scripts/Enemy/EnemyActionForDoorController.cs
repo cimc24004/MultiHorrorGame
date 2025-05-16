@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Sirenix.OdinInspector;
-public class EnemyActionForDoorController : SerializedMonoBehaviour
+using Unity.Netcode;
+public class EnemyActionForDoorController : NetworkBehaviour
 {
     //�G���h�A���J������A�󂵂��肷��R���g���[���[
     
@@ -29,6 +30,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     private NavMeshAgent nav_mesh_agent;
     private Animator anim;
     private DiscoveryPlayerController discovery_player_controller;
+    private NetworkObject m_NetworkObject;
     private EnemySoundSensor enemy_sound_sensor;
     private CharacterController character_controller;
 
@@ -36,6 +38,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        m_NetworkObject = this.gameObject.GetComponent<NetworkObject>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
@@ -81,7 +84,7 @@ public class EnemyActionForDoorController : SerializedMonoBehaviour
                         {
                             if (!discovery_player_controller.DiscoveryPlayerNow)
                             {
-                                the_door_controller.DoorOpenClosedChangeByStatus(this.gameObject);
+                                the_door_controller.DoorOpenClosedChangeByStatusServerRPC(m_NetworkObject.NetworkObjectId);
                             }
                         }
                     }

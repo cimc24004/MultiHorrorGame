@@ -26,10 +26,14 @@ public class LookAtPlayer : MonoBehaviour
     private PlayerStatus player_status;
     private Transform headPosTransform;
     private Transform cameraRootTransform;
-    private bool initialized = false;
+    [SerializeField] private bool initialized = false;
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitOnPlayerSpawn(PlayerStatus.LocalInstance);
+        }
     }
     void OnDisable()
     {

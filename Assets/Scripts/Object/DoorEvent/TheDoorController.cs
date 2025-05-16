@@ -18,7 +18,8 @@ public class TheDoorController : NetworkBehaviour
         Closed,
         Opened
     }
-    public DoorStatus door_status;
+
+    public NetworkVariable<DoorStatus> door_status_network;
     [Header("キーが必要なドアかどうか。")]
     public bool NeededKey;
 
@@ -64,20 +65,19 @@ public class TheDoorController : NetworkBehaviour
             }
         }
 
-
-
     }
     public void DoorLock(){
         //ドアを強制的にロックする関数
         NeededKey = true;
         open_permit_by_key_controller.OpenPermit = false;
     }
-    public void DoorOpenClosedChangeByStatus(GameObject EventActionMan)
+    [ServerRpc]
+    public void DoorOpenClosedChangeByStatusServerRPC(ulong _NetworkObjectId)
     {
         //EventActionMan: この関数を行った実行人物(プレイヤーや敵など)
         //ドアをステータスによって変化させる。
         //空いている状態なら閉める。　開いている状態なら開ける。
-
+        GameObject EventActionMan = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_NetworkObjectId].gameObject;
         //鍵が必要なドアならまず鍵をこのドアに使ったかどうかを判定。 使ってなかったらreturn; 開けないよ。
         if (NeededKey)
         {
@@ -106,13 +106,13 @@ public class TheDoorController : NetworkBehaviour
 
         }
 
-
+        Debug.Log("Door-----Open---------------------DoorOpenClosedChangeByStatusServerRPC");
         //開けてる閉めてるアニメーション再生中ならこのアクションを実行しない。
         if (!OpenedClosedCompleted) return;
-        if (door_status == DoorStatus.Opened)
+        if (door_status_network.Value == DoorStatus.Opened)
         {
             DoorsClose();
-        }else if(door_status == DoorStatus.Closed)
+        }else if(door_status_network.Value == DoorStatus.Closed)
         {
             DoorsOpen();
         }   
@@ -133,7 +133,7 @@ public class TheDoorController : NetworkBehaviour
             door_open_close_controller.Open();
         }
 
-        door_status = DoorStatus.Opened;
+        door_status_network.Value = DoorStatus.Opened;
     }
     private void DoorsClose()
     {
@@ -144,7 +144,7 @@ public class TheDoorController : NetworkBehaviour
             door_open_close_controller.Close();
         }
 
-        door_status = DoorStatus.Closed;
+        door_status_network.Value = DoorStatus.Closed;
     }
 
 }
