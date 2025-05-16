@@ -152,7 +152,7 @@ public class CrossHairEvent : NetworkBehaviour
                     if (IsServer)
                     {
                         TurningOnOffLightController turn_on_off_by_status = raycast_hit.collider.gameObject.GetComponent<TurningOnOffLightController>();
-                        turn_on_off_by_status.TurnOnOffByStatusClientRPC();
+                        turn_on_off_by_status.TurnOnOffByStatusServerRequestServerRPC();
                     }
                     return;
                 }
