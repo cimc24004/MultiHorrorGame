@@ -94,7 +94,6 @@ public class DoorOpenCloseController : NetworkBehaviour
         }
     }
 
-    [Button]
     public void Open()
     {
         if (IsServer)
@@ -104,8 +103,8 @@ public class DoorOpenCloseController : NetworkBehaviour
                 Debug.Log("Open---ItemAppearanceWhenOpened");
                 item_random_create_individual.ItemRandomCreateFromIndividual(AlreadyOpened);
             }
+            OpenDoorClientRPC();
         }
-        OpenDoorClientRPC();
     }
     [ClientRpc]
     private void OpenDoorClientRPC()
