@@ -6,7 +6,7 @@ using UnityEngine;
 public class OpenPermitByKeyController : NetworkBehaviour
 {
     //鍵によって開けるコントローラー 鍵つきのドアにしたい場合だけこのスクリプトをアタッチ。
-    public bool OpenPermit = false;
+    public NetworkVariable<bool> OpenPermit = new NetworkVariable<bool>(false);
     private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
     private CrossHairEvent cross_hair_event;
@@ -35,7 +35,7 @@ public class OpenPermitByKeyController : NetworkBehaviour
     public void KeyUse()
     {
         sub_noticed_ui_controller.Notice("鍵が開いた");
-        this.OpenPermit = true;
+        this.OpenPermit.Value = true;
         KeyAudioSource.PlayOneShot(key_audio_datas.audioClipDatasWithKey["OpenedKey"]);
     }
 

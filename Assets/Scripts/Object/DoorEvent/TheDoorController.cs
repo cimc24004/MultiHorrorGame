@@ -21,7 +21,7 @@ public class TheDoorController : NetworkBehaviour
 
     public NetworkVariable<DoorStatus> door_status_network;
     [Header("キーが必要なドアかどうか。")]
-    public bool NeededKey;
+    public NetworkVariable<bool> NeededKey = new NetworkVariable<bool>(false);
 
 
     //プレイヤーが扉をロックする
@@ -66,10 +66,12 @@ public class TheDoorController : NetworkBehaviour
         }
 
     }
-    public void DoorLock(){
+    
+    public void DoorLock()
+    {
         //ドアを強制的にロックする関数
-        NeededKey = true;
-        open_permit_by_key_controller.OpenPermit = false;
+        NeededKey.Value = true;
+        open_permit_by_key_controller.OpenPermit.Value = false;
     }
     [ServerRpc(RequireOwnership = false)]
     public void DoorOpenClosedChangeByStatusServerRPC(ulong _NetworkObjectId)
@@ -79,10 +81,10 @@ public class TheDoorController : NetworkBehaviour
         //空いている状態なら閉める。　開いている状態なら開ける。
         GameObject EventActionMan = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_NetworkObjectId].gameObject;
         //鍵が必要なドアならまず鍵をこのドアに使ったかどうかを判定。 使ってなかったらreturn; 開けないよ。
-        if (NeededKey)
+        if (NeededKey.Value == true)
         {
             //NeededKeyがtrueだけではロックされたことにはならない。
-            if (!open_permit_by_key_controller.OpenPermit)
+            if (!open_permit_by_key_controller.OpenPermit.Value == true)
             {
 
                 //鍵がかかっている
@@ -122,7 +124,7 @@ public class TheDoorController : NetworkBehaviour
 
     public bool DoorOpenPermitCheck()
     {
-        return open_permit_by_key_controller.OpenPermit;
+        return open_permit_by_key_controller.OpenPermit.Value;
     }
 
 
