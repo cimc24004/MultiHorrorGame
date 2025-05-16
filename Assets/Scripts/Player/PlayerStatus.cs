@@ -33,10 +33,16 @@ public class PlayerStatus : NetworkBehaviour
     public Image GageImage;
     public bool Dead;
 
-    // プレイヤーの移動状態 (走る 歩く しゃがむ)
-    public enum PlayerMoveState { Walk, Run, Crouch }
+    // プレイヤーの移動状態 (走る 歩く しゃがむ 停止)
+    public enum PlayerMoveState { Walk, Run, Crouch, Stop }
+
+    // サーバー書き込み・全員読取
     public NetworkVariable<PlayerMoveState> player_move_state_network
-        = new NetworkVariable<PlayerMoveState>(PlayerMoveState.Walk);
+        = new NetworkVariable<PlayerMoveState>(
+            PlayerMoveState.Walk,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
 
     [Header("移動速度")]
     public float MoveSpeed;
@@ -103,14 +109,21 @@ public class PlayerStatus : NetworkBehaviour
         horror_director                 = HorrorDirector.Instance;
         flash_light_controller          = FlashLightController.instance;
         player_to_enemy_distance_controller = GetComponent<PlayerToEnemyDistanceController>();
-
-        player_move_script = GetComponent<PlayerMoveScript>();
+        player_move_script              = GetComponent<PlayerMoveScript>();
 
         InitPlayer = true;
+
+        // サーバー書き込み・全クライアント読取の移動状態を監視
+        player_move_state_network.OnValueChanged += OnMoveStateChanged;
+        // クライアント起動時に現在値を反映
+        if (!IsServer)
+        {
+            OnMoveStateChanged(player_move_state_network.Value, player_move_state_network.Value);
+        }
+
         if (IsServer)
         {
             CrouchNetwork.OnValueChanged += OnCrouchChanged;
-            
         }
 
         if (IsOwner)
@@ -120,30 +133,43 @@ public class PlayerStatus : NetworkBehaviour
         }
     }
 
+    // サーバーで変わった移動状態をクライアント側の足音制御に反映
+    private void OnMoveStateChanged(
+        PlayerMoveState oldValue,
+        PlayerMoveState newValue
+    )
+    {
+        // クライアント側（ホスト含む）でのみ実行
+        if (IsServer && !IsOwner) return;
+
+        switch (newValue)
+        {
+            case PlayerMoveState.Run:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                break;
+            case PlayerMoveState.Crouch:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
+                break;
+            case PlayerMoveState.Stop:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
+                break;
+            default:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                break;
+        }
+    }
+
     void Update()
     {
         if (!InitPlayer) return;
+
         if (IsServer)
         {
+            // 自分以外のキャラのアニメだけ同期
             if (!IsOwner)
             {
                 anim.SetFloat("MoveY", MoveY);
                 anim.SetFloat("MoveX", MoveX);
-            }
-
-            // 足音ステータス更新
-            if (MoveSpeed != 0)
-            {
-                if (player_move_state_network.Value == PlayerMoveState.Run)
-                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
-                else if (player_move_state_network.Value == PlayerMoveState.Walk)
-                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
-                else
-                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
-            }
-            else
-            {
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
             }
         }
     }
