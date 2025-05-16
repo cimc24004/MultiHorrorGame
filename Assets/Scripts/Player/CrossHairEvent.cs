@@ -143,7 +143,7 @@ public class CrossHairEvent : NetworkBehaviour
                 if (raycast_hit.collider.gameObject.tag == "Drawer")
                 {
                     ItemBoxOpenCloseController drawer_open_close_controller = raycast_hit.collider.gameObject.GetComponent<ItemBoxOpenCloseController>();
-                    drawer_open_close_controller.OpenCloseChangeEventByStatus();
+                    drawer_open_close_controller.RequestToggle();
                     return;
                 }
 

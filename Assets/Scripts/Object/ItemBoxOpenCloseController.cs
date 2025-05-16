@@ -1,79 +1,89 @@
-using System.Collections;
-using System.Collections.Generic;
+// ItemBoxOpenCloseController.cs
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using DG.Tweening;
-public class ItemBoxOpenCloseController : SerializedMonoBehaviour
+
+public class ItemBoxOpenCloseController : MonoBehaviour
 {
-    //アイテムが入っているボックス用の開け閉めController
-    //引き出しや戸など
+    [Header("開けたときに呼び出す UnityEvent")]
     [SerializeField] private UnityEvent OpenAddEvent;
-    public bool AnimationCompleted = true;
-    public Transform OpenPos;
-    public float duration = 0.3f;
+
+    [Header("開閉アニメーション用フィールド")]
+    public bool AnimationCompleted { get; private set; } = true;
+    public bool AlreadyOpened { get; private set; }
+    [SerializeField] private Transform OpenPos;
+    [SerializeField] private float duration = 0.3f;
+
     private Vector3 DefaultPosition;
     private Tween AnimationTween;
     private AudioSource item_box_source;
-    public bool AlreadyOpened;
-    public enum OpenCloseStatus
-    {
-        Close,
-        Open
-    }
-    public OpenCloseStatus open_close_status;
+    [SerializeField] private AudioClip OpenClip;
+    [SerializeField] private AudioClip CloseCompletedClip;
 
-    public AudioClip CloseCompletedClip;
-    public AudioClip OpenClip;
     private ItemRandomCreateIndividual item_random_create_individual;
+    public DrawerManager drawerManager;
 
-    // Start is called before the first frame update
-    void Start()
+    [Header("この引き出しは drawers リストの何番目か")]
+    [SerializeField] private int drawerIndex;
+
+    private void Awake()
     {
-        DefaultPosition = this.transform.position;
-        item_box_source = this.gameObject.GetComponent<AudioSource>();
-        item_random_create_individual = this.gameObject.GetComponent<ItemRandomCreateIndividual>();
+        // 元コードの OnNetworkSpawn 相当
+        DefaultPosition = transform.position;
+        item_box_source = GetComponent<AudioSource>();
+        item_random_create_individual = GetComponent<ItemRandomCreateIndividual>();
+
+        drawerManager = GetComponentInParent<DrawerManager>();
+        if (drawerManager == null)
+            Debug.LogError($"[{name}] DrawerManager が見つかりません");
     }
-    public void OpenCloseChangeEventByStatus()
+
+    // ボタン押下やプレイヤー接触などから呼ぶ
+    [Button] // Odin のインスペクタテスト用
+    public void RequestToggle()
     {
-        //今あけてるか閉めてるかで開ける閉めるを実行する。
         if (!AnimationCompleted) return;
-        if(open_close_status == OpenCloseStatus.Open)
-        {
-            Close();
-        }else if(open_close_status == OpenCloseStatus.Close)
-        {
-            Open();
-        }
+        // 親の ServerRpc を呼び出して状態変更をリクエスト
+        drawerManager.RequestToggleBoxServerRpc(drawerIndex);
     }
-    [Button]
-    public void Open()
+
+    // DrawerManager から ClientRpc 経由で呼ばれる「開く」ローカル処理
+    public void LocalOpen()
     {
         item_random_create_individual.ItemRandomCreateFromIndividual(AlreadyOpened);
-
         AlreadyOpened = true;
+        AnimationCompleted = false;
         OpenAddEvent.Invoke();
 
+        if (AnimationTween != null)
+            AnimationTween.Kill();
+
+        AnimationTween = transform
+            .DOMove(OpenPos.position, duration)
+            .SetLink(gameObject)
+            .SetEase(Ease.Linear)
+            .OnComplete(() => AnimationCompleted = true);
+
+        item_box_source.PlayOneShot(OpenClip);
+    }
+
+    // DrawerManager から ClientRpc 経由で呼ばれる「閉じる」ローカル処理
+    public void LocalClose()
+    {
         AnimationCompleted = false;
 
         if (AnimationTween != null)
             AnimationTween.Kill();
-        AnimationTween = this.transform.DOMove(OpenPos.position, duration).SetLink(this.gameObject).SetEase(Ease.Linear).OnComplete(() => {
-            AnimationCompleted = true;
-        });
-        item_box_source.PlayOneShot(OpenClip);
-        open_close_status = OpenCloseStatus.Open;
-    }
-    [Button]
-    public void Close()
-    {
-        AnimationCompleted = false;
-        if(AnimationTween != null)
-        AnimationTween.Kill();
-        AnimationTween = this.transform.DOMove(DefaultPosition, duration).SetLink(this.gameObject).SetEase(Ease.Linear).OnComplete(() => {
-            AnimationCompleted = true;
-            item_box_source.PlayOneShot(CloseCompletedClip);
-        });
-        open_close_status = OpenCloseStatus.Close;
+
+        AnimationTween = transform
+            .DOMove(DefaultPosition, duration)
+            .SetLink(gameObject)
+            .SetEase(Ease.Linear)
+            .OnComplete(() =>
+            {
+                AnimationCompleted = true;
+                item_box_source.PlayOneShot(CloseCompletedClip);
+            });
     }
 }

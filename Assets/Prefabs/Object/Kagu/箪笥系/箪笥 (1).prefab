@@ -1242,6 +1242,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2803150740115054707}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cabff8205b80d3c459e905a1199382f9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8987374073000396815}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cabff8205b80d3c459e905a1199382f9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9168065505347565805}
     - targetCorrespondingSourceObject: {fileID: 9051944394091229980, guid: cabff8205b80d3c459e905a1199382f9,
         type: 3}
       insertIndex: -1
@@ -1395,15 +1403,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06b5223299d89545ad16196262f8220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   OpenAddEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1419,13 +1418,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  AnimationCompleted: 1
   OpenPos: {fileID: 4303458942625483821}
   duration: 0.3
-  AlreadyOpened: 0
-  open_close_status: 0
-  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
   OpenClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  drawerManager: {fileID: 0}
+  drawerIndex: 2
 --- !u!64 &782504488989548441
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1602,6 +1600,51 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.67, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &8987374073000396815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4556560404874566344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2217673824
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &9168065505347565805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4556560404874566344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 020601824cadb5643829a53e041e8ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  drawers:
+  - {fileID: 8660613438963350242}
+  - {fileID: 3797724245490551385}
+  - {fileID: 209385900548762761}
+  - {fileID: 7700818786743175778}
+  - {fileID: 8807814761001944177}
+  - {fileID: 6979444522378758643}
 --- !u!4 &5048865969322467085 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8497274913099593876, guid: cabff8205b80d3c459e905a1199382f9,
@@ -1626,15 +1669,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06b5223299d89545ad16196262f8220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   OpenAddEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1650,13 +1684,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  AnimationCompleted: 1
   OpenPos: {fileID: 433606930581415783}
   duration: 0.3
-  AlreadyOpened: 0
-  open_close_status: 0
-  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
   OpenClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  drawerManager: {fileID: 0}
+  drawerIndex: 5
 --- !u!64 &6645478098231416087
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1823,15 +1856,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06b5223299d89545ad16196262f8220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   OpenAddEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1847,13 +1871,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  AnimationCompleted: 1
   OpenPos: {fileID: 7156602814681270728}
   duration: 0.3
-  AlreadyOpened: 0
-  open_close_status: 0
-  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
   OpenClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  drawerManager: {fileID: 0}
+  drawerIndex: 0
 --- !u!64 &3655469343188904173
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2020,15 +2043,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06b5223299d89545ad16196262f8220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   OpenAddEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2044,13 +2058,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  AnimationCompleted: 1
   OpenPos: {fileID: 4942798489482269060}
   duration: 0.3
-  AlreadyOpened: 0
-  open_close_status: 0
-  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
   OpenClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  drawerManager: {fileID: 0}
+  drawerIndex: 3
 --- !u!64 &9079069991529141704
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2217,15 +2230,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06b5223299d89545ad16196262f8220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   OpenAddEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2241,13 +2245,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  AnimationCompleted: 1
   OpenPos: {fileID: 7633962839645109923}
   duration: 0.3
-  AlreadyOpened: 0
-  open_close_status: 0
-  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
   OpenClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  drawerManager: {fileID: 0}
+  drawerIndex: 1
 --- !u!64 &7313809478463443631
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2408,15 +2411,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06b5223299d89545ad16196262f8220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   OpenAddEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2432,13 +2426,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  AnimationCompleted: 1
   OpenPos: {fileID: 3357767334763742942}
   duration: 0.3
-  AlreadyOpened: 0
-  open_close_status: 0
-  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
   OpenClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  CloseCompletedClip: {fileID: 8300000, guid: 7ee25905c1183394f8dff5ec90f2fc5e, type: 3}
+  drawerManager: {fileID: 0}
+  drawerIndex: 4
 --- !u!64 &5678286876089435912
 MeshCollider:
   m_ObjectHideFlags: 0

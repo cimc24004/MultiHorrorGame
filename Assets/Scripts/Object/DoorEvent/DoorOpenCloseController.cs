@@ -42,7 +42,7 @@ public class DoorOpenCloseController : NetworkBehaviour
     [Header("扉を開けたときにアイテムが出現するかどうか(台所の戸など)")]
     public bool ItemAppearanceWhenOpened;
     private ItemRandomCreateIndividual item_random_create_individual;
-    private bool AlreadyOpened;
+    public bool AlreadyOpened;
 
     public enum MoveXYZ
     {
