@@ -56,7 +56,10 @@ public class PlayerMoveScript : NetworkBehaviour
         defaultRunSpeed     = RunSpeed;
         defaultWalkSpeed    = WalkSpeed;
         defaultCrouchSpeed  = CrouchSpeed;
-        NowSpeed.Value      = WalkSpeed;
+        if (IsServer)
+        {
+            NowSpeed.Value      = WalkSpeed;
+        }
 
         staminaController = GetComponent<PlayerStaminaController>();
         subNoticedUI      = playerStatus.sub_noticed_ui_controller;

@@ -107,7 +107,10 @@ public class PlayerStatus : NetworkBehaviour
         player_move_script = GetComponent<PlayerMoveScript>();
 
         InitPlayer = true;
-        CrouchNetwork.OnValueChanged += OnCrouchChanged;
+        if (IsServer)
+        {
+            CrouchNetwork.OnValueChanged += OnCrouchChanged;
+        }
 
         if (IsOwner)
         {

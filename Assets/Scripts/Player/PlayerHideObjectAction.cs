@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlayerHideObjectAction : MonoBehaviour
+public class PlayerHideObjectAction : NetworkBehaviour
 {
     public bool HideAction;
     public bool HidingPermit = true;
@@ -98,8 +99,10 @@ public class PlayerHideObjectAction : MonoBehaviour
         player_anim.SetBool("Crouch", false);
         this.gameObject.layer = LayerMask.NameToLayer("Player");
         charactor_move_permit.Move();
-
-        player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
+        if (IsServer)
+        {
+            player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
+        }
 
         player_status.HidingNow = false;
 

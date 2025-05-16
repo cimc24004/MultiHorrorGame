@@ -62,7 +62,7 @@ public class LookAtPlayer : MonoBehaviour
     {
         // 準備完了＆Update モードのときだけ毎フレーム向く
         if (!initialized || play_mode != PlayMode.Update) return;
-
+        
         Vector3 target = (look_at == LookAt.Player)
             ? headPosTransform.position
             : cameraRootTransform.position;
