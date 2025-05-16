@@ -30,7 +30,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
     private NavMeshAgent nav_mesh_agent;
     private Animator anim;
     private DiscoveryPlayerController discovery_player_controller;
-    private NetworkObject m_NetworkObject;
+    private NetworkObject networkObject;
     private EnemySoundSensor enemy_sound_sensor;
     private CharacterController character_controller;
 
@@ -38,7 +38,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_NetworkObject = this.gameObject.GetComponent<NetworkObject>();
+        networkObject = this.gameObject.GetComponent<NetworkObject>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
@@ -84,7 +84,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
                         {
                             if (!discovery_player_controller.DiscoveryPlayerNow)
                             {
-                                the_door_controller.DoorOpenClosedChangeByStatusServerRPC(m_NetworkObject.NetworkObjectId);
+                                the_door_controller.DoorOpenClosedChangeByStatusServerRPC(networkObject.NetworkObjectId);
                             }
                         }
                     }

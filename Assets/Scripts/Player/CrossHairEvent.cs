@@ -33,7 +33,7 @@ public class CrossHairEvent : NetworkBehaviour
     private Ray main_ray;
     private GameStateController game_state_controller;
     private MainNoticedUIController main_noticed_ui_controller;
-    private NetworkObject m_NetworkObject;
+    private NetworkObject networkObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -52,7 +52,7 @@ public class CrossHairEvent : NetworkBehaviour
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
         this.Player = player_status.gameObject;
         MainCamera = Camera.main;
-        m_NetworkObject = this.Player.GetComponent<NetworkObject>();
+        networkObject = this.Player.GetComponent<NetworkObject>();
         InitPlayer = true;
     }
     // Update is called once per frame
@@ -134,10 +134,8 @@ public class CrossHairEvent : NetworkBehaviour
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     the_door_controller = door_open_close_controlelr.the_door_controller;
-                    if (IsServer)
-                    {
-                        the_door_controller.DoorOpenClosedChangeByStatus(m_NetworkObject.NetworkObjectId);
-                    }
+                    
+                    the_door_controller.DoorOpenClosedChangeByStatusServerRPC(networkObject.NetworkObjectId);
 
                     return;
 
