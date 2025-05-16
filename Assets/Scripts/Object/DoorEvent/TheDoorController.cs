@@ -71,7 +71,7 @@ public class TheDoorController : NetworkBehaviour
         NeededKey = true;
         open_permit_by_key_controller.OpenPermit = false;
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void DoorOpenClosedChangeByStatusServerRPC(ulong _NetworkObjectId)
     {
         //EventActionMan: この関数を行った実行人物(プレイヤーや敵など)
@@ -82,10 +82,11 @@ public class TheDoorController : NetworkBehaviour
         if (NeededKey)
         {
             //NeededKeyがtrueだけではロックされたことにはならない。
-            if (!open_permit_by_key_controller.OpenPermit) {
+            if (!open_permit_by_key_controller.OpenPermit)
+            {
 
                 //鍵がかかっている
-                if(EventActionMan.tag == "Player")
+                if (EventActionMan.tag == "Player")
                 {
                     open_permit_by_key_controller.NeedKeyForPlayer();
                 }
@@ -94,7 +95,7 @@ public class TheDoorController : NetworkBehaviour
             }
         }
 
-        if(EventActionMan.tag == "Enemy")
+        if (EventActionMan.tag == "Enemy")
         {
             //敵がプレイヤーを発見していたら、閉められた扉は壊して開けるようにする。
             DiscoveryPlayerController discovery_player_controller = EventActionMan.GetComponent<DiscoveryPlayerController>();
@@ -112,10 +113,11 @@ public class TheDoorController : NetworkBehaviour
         if (door_status_network.Value == DoorStatus.Opened)
         {
             DoorsClose();
-        }else if(door_status_network.Value == DoorStatus.Closed)
+        }
+        else if (door_status_network.Value == DoorStatus.Closed)
         {
             DoorsOpen();
-        }   
+        }
     }
 
     public bool DoorOpenPermitCheck()

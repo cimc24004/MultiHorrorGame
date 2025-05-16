@@ -134,7 +134,10 @@ public class CrossHairEvent : NetworkBehaviour
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     the_door_controller = door_open_close_controlelr.the_door_controller;
-                    the_door_controller.DoorOpenClosedChangeByStatusServerRPC(m_NetworkObject.NetworkObjectId);
+                    if (IsServer)
+                    {
+                        the_door_controller.DoorOpenClosedChangeByStatus(m_NetworkObject.NetworkObjectId);
+                    }
 
                     return;
 
