@@ -21,7 +21,7 @@ public class TheDoorController : NetworkBehaviour
 
     public NetworkVariable<DoorStatus> door_status_network;
     [Header("キーが必要なドアかどうか。")]
-    public NetworkVariable<bool> NeededKey = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> NeededKey = new NetworkVariable<bool>();
 
 
     //プレイヤーが扉をロックする

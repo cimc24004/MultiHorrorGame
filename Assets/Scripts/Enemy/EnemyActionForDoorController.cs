@@ -80,7 +80,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
                         the_door_controller = door_open_close_controller.the_door_controller;
                     }
                     if(DoorOpenClosePermit){
-                        if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey) || !discovery_player_controller.DiscoveryPlayerNow)
+                        if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey.Value) || !discovery_player_controller.DiscoveryPlayerNow)
                         {
                             if (!discovery_player_controller.DiscoveryPlayerNow)
                             {
@@ -90,7 +90,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
                     }
 
 
-                    if (the_door_controller.NeededKey || discovery_player_controller.DiscoveryPlayerNow)
+                    if (the_door_controller.NeededKey.Value || discovery_player_controller.DiscoveryPlayerNow)
                     {
                         Debug.Log("�����󂵂����Ǝv���܂��B");
 

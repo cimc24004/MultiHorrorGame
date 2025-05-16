@@ -177,7 +177,7 @@ public class ItemBelongingsController : MonoBehaviour
                     //要はドアの鍵は必要。かつドアの鍵がすでに空いていた場合は鍵を消費。
                     DoorOpenCloseController door_open_close_controller = cross_hair_event.RaycasstedObj.GetComponent<DoorOpenCloseController>();
                     TheDoorController the_door_controller = door_open_close_controller.the_door_controller;
-                    if (the_door_controller.NeededKey && !the_door_controller.DoorOpenPermitCheck())
+                    if (the_door_controller.NeededKey.Value && !the_door_controller.DoorOpenPermitCheck())
                     {
                         //NeededKeyにチェックついてるってことは親かなにかにOpenPermitByKeyがあるので、OpenPermiByeyControllerのKeyUse関数を実行
                         OpenPermitByKeyController open_permit_by_key_controller = the_door_controller.open_permit_by_key_controller;
