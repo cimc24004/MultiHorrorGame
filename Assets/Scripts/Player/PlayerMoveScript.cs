@@ -59,6 +59,7 @@ public class PlayerMoveScript : NetworkBehaviour
         if (IsServer)
         {
             NowSpeed.Value      = WalkSpeed;
+            
         }
 
         staminaController = GetComponent<PlayerStaminaController>();

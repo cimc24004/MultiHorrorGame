@@ -110,6 +110,7 @@ public class PlayerStatus : NetworkBehaviour
         if (IsServer)
         {
             CrouchNetwork.OnValueChanged += OnCrouchChanged;
+            
         }
 
         if (IsOwner)
