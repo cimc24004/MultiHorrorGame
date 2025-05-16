@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using DG.Tweening;  // ← DOTween 用
+using DG.Tweening;
+using Unity.Netcode;  // ← DOTween 用
 
-public class TurningOnOffLightController : SerializedMonoBehaviour
+public class TurningOnOffLightController : NetworkBehaviour
 {
     public enum TurnStatus
     {
@@ -50,8 +51,8 @@ public class TurningOnOffLightController : SerializedMonoBehaviour
         pointLight.intensity = 0f;
     }
 
-    [Button]
-    public void TurnOnOffByStatus()
+    [ClientRpc]
+    public void TurnOnOffByStatusClientRPC()
     {
         if (turn_status == TurnStatus.TurnOff)
         {

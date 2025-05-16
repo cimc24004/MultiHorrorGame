@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 public class MindWorldController : MonoBehaviour
@@ -27,7 +28,10 @@ public class MindWorldController : MonoBehaviour
         {
             turning_on_off_light_controller = Light.GetComponent<TurningOnOffLightController>();
             Debug.Log(turning_on_off_light_controller);
-            turning_on_off_light_controller.TurnOnOffByStatus();
+            if (NetworkManager.Singleton.IsServer)
+            {
+                turning_on_off_light_controller.TurnOnOffByStatusClientRPC();
+            }
         }
     }
 }
