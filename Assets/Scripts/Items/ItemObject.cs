@@ -20,7 +20,7 @@ public class ItemObject : NetworkBehaviour
     }
 
     /// <summary>
-    /// クライアント側：アイテムを拾いたいときに呼ぶ
+    /// クライアント側：アイテムを拾いたいときに呼び出す
     /// </summary>
     public void TryPickup()
     {
@@ -46,7 +46,7 @@ public class ItemObject : NetworkBehaviour
         if (pickupRequested) return;
         pickupRequested = true;
 
-        // ここでサーバーへ RPC 投げる
+        // ここでサーバーへ RPC を投げる
         RequestPickupServerRpc();
     }
 
@@ -61,7 +61,7 @@ public class ItemObject : NetworkBehaviour
         var ps         = clientInfo.PlayerObject.GetComponent<PlayerStatus>();
         var inv        = ps.ItemController.GetComponent<ItemBelongingsController>();
 
-        // サーバー側チェック
+        // ── サーバー側チェック ──
         int diffCount = inv.belonging_items
             .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
             .Count();
@@ -79,22 +79,23 @@ public class ItemObject : NetworkBehaviour
             return;
         }
 
-        // サーバー在庫も更新
+        // ── サーバー在庫を更新 ──
         if (inv.belonging_items.ContainsKey(item_status))
             inv.belonging_items[item_status].item_count++;
         else
             inv.belonging_items[item_status] = new ItemBelongingsController.ItemCountWithPermit {
-                item_count = 1, CanUse = true
+                item_count = 1,
+                CanUse = true
             };
 
-        // 取得成功通知
+        // ── 成功通知 ──
         SuccessfulPickupClientRpc(new ClientRpcParams {
             Send = new ClientRpcSendParams {
                 TargetClientIds = new[]{ clientId }
             }
         });
 
-        // 全クライアントから消去
+        // ── 全クライアントからオブジェクトを消去 ──
         if (networkObject != null && networkObject.IsSpawned)
             networkObject.Despawn(destroy: true);
     }
@@ -123,6 +124,15 @@ public class ItemObject : NetworkBehaviour
         var inv = PlayerStatus.LocalInstance
                             .ItemController
                             .GetComponent<ItemBelongingsController>();
+
+        // ホストの場合は、ServerRpc ですでに +1 されている分をここで -1
+        if (NetworkManager.Singleton.IsHost)
+        {
+            if (inv.belonging_items.TryGetValue(item_status, out var cntPermit))
+            {
+                cntPermit.item_count = Mathf.Max(0, cntPermit.item_count - 1);
+            }
+        }
 
         // 1) ローカル在庫に追加
         inv.ItemAddToBelonging(item_status);
