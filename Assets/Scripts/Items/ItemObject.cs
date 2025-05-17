@@ -23,10 +23,6 @@ public class ItemObject : NetworkBehaviour
         {
             if (!netObj.IsSpawned) netObj.Spawn();
         }
-        else
-        {
-            Destroy(gameObject);          // クライアント側のダミーを即削除
-        }
     }
 
     public override void OnNetworkSpawn()
