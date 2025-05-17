@@ -71,8 +71,10 @@ public class PlayerHideObjectAction : NetworkBehaviour
         //player_character_controller.stepOffset = 0;
         //player_collider.isTrigger = true;
         PlayerDeformedByHideType();
-
-        HidingNowChangeServerRpc(true);
+        if (IsOwner)
+        {
+            HidingNowChangeServerRpc(true);
+        }
     }
     [ClientRpc]
     public void UnHideClientRpc()
@@ -91,8 +93,10 @@ public class PlayerHideObjectAction : NetworkBehaviour
         {
             player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
         }
-
-        HidingNowChangeServerRpc(false);
+        if (IsOwner)
+        {
+            HidingNowChangeServerRpc(false);
+        }
     }
     private void PlayerDeformedByHideType()
     {
@@ -124,7 +128,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     {
         player_status.CrouchNetwork.Value = false;
     }
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     private void HidingNowChangeServerRpc(bool _HidingNow)
     {
         if (_HidingNow)
