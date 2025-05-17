@@ -18,7 +18,10 @@ public class ItemObject : NetworkBehaviour
     {
         need_keys_controller = NeedKeysController.instance;
     }
-
+    public override void OnNetworkDespawn()
+    {
+        gameObject.SetActive(false);
+    }
     /*──────── クライアント入口 ───────*/
     public void RequestItemGet()
     {

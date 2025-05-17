@@ -1,21 +1,21 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
-using Sirenix.OdinInspector;
 
-public class ItemBelongingsController : NetworkBehaviour
+public class ItemBelongingsController : MonoBehaviour
 {
-    /*──────────────── 内部構造体 ────────────────*/
+    //──────────────── アイテム UI 情報 ────────────────
     public class ItemStatusUI
     {
         public Image           ItemIcon;
         public TextMeshProUGUI ItemCountTextUI;
         public GameObject      ItemUI;
+        public TextMeshProUGUI ItemNameTextUI;
     }
     public class ItemCountWithPermit
     {
@@ -23,173 +23,192 @@ public class ItemBelongingsController : NetworkBehaviour
         public bool CanUse = true;
     }
 
-    /*──────────────── Inspector ────────────────*/
+    //──────────────── Inspector ────────────────
     public int maxCarryableItems = 6;
+
+    public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new();
+    public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new();
+
     public GameObject ItemUIPrefab;
     public Transform  ItemGroup;
 
     public CrossHairEvent cross_hair_event;
     [HideInInspector] public ItemMenuController item_menu_controller;
 
-    [SerializeField] private List<ItemStatus> InitialItemStatuses;
-
-    /*──────────────── ランタイム ────────────────*/
-    public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new();
-    public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new();
-
     private ItemThrowController     item_throw_controller;
     private PlayerStatus            player_status;
     private SubNoticedUIController  sub_noticed_ui_controller;
+    private EnemyAllController      enemy_all_controller;
+    private ItemDatabases           item_databases;
 
-    /*―― DB 遅延対策 ――*/
-    private readonly Queue<(uint gid, int cnt)> _pendingInit = new();
-    private bool _dbReady;
+    [SerializeField] private List<ItemStatus> InitialItemStatuses;
 
-    /*──────────────── Unity Events ────────────────*/
+    //──────────────── Unity イベント ────────────────
     void OnEnable()  => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
 
     void Start()
     {
         item_throw_controller = GetComponent<ItemThrowController>();
+        item_databases        = ItemDatabases.instance;
+        enemy_all_controller  = EnemyDatabases.instance.GetComponent<EnemyAllController>();
     }
 
-    void Update()
-    {
-        if (!_dbReady && ItemDatabases.instance != null)
-        {
-            _dbReady = true;
-            while (_pendingInit.Count > 0)
-            {
-                var (gid, cnt) = _pendingInit.Dequeue();
-                var st = ItemDatabases.instance.GetStatusByGlobalId(gid);
-                if (st) ForceSyncFromServer(st, cnt);
-            }
-        }
-    }
-
-    /*──────────────── 初期化 ────────────────*/
     private void InitOnPlayerSpawn(PlayerStatus ps)
     {
         player_status             = ps;
-        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+        sub_noticed_ui_controller = ps.sub_noticed_ui_controller;
         item_menu_controller      = GetComponent<ItemMenuController>();
 
-        if (IsServer)
-        {
-            GiveInitialItems();
-            SendInitialItemsClientRpc(
-                InitialItemStatuses.Select(s => s.GlobalId).ToArray());
-        }
-    }
-
-    private void GiveInitialItems()
-    {
+        // ★FIX: 辞書に無い場合のみ初期アイテムを追加
         foreach (var st in InitialItemStatuses)
         {
-            ItemAddToBelonging(st);
-            item_menu_controller?.OnItemGetChangeUI(false, st);
+            if (!belonging_items.ContainsKey(st))              // ★FIX
+            {
+                ItemAddToBelonging(st, false);                 // notifyUI=false
+                item_menu_controller.OnItemGetChangeUI(false, st);
+            }
         }
     }
 
-    [ClientRpc]
-    private void SendInitialItemsClientRpc(uint[] gids, ClientRpcParams _ = default)
-    {
-        if (IsServer) return;
-
-        if (!_dbReady)
-        {
-            foreach (var gid in gids) _pendingInit.Enqueue((gid, 1));
-            return;
-        }
-
-        foreach (var gid in gids)
-        {
-            var st = ItemDatabases.instance.GetStatusByGlobalId(gid);
-            if (st) ForceSyncFromServer(st, 1);
-            else    Debug.LogWarning($"[Init] Unknown gid {gid}");
-        }
-    }
-
-    /*──────────────── アイテム追加 ────────────────*/
-    public void ItemAddToBelonging(ItemStatus st)
+    //──────────────── アイテム追加 ────────────────
+    [Button]
+    public void ItemAddToBelonging(ItemStatus st, bool notifyUI = true)
     {
         if (NetworkManager.Singleton && !NetworkManager.Singleton.IsServer) return;
 
-        if (!belonging_items.TryGetValue(st, out var entry))
+        if (!belonging_items.ContainsKey(st))
         {
-            entry = new ItemCountWithPermit { item_count = 1 };
+            var entry = new ItemCountWithPermit { item_count = 1 };
             belonging_items.Add(st, entry);
 
-            if (st.item_type != ItemStatus.ItemType.Event && item_menu_controller)
+            if (st.item_type != ItemStatus.ItemType.Event)
             {
-                GameObject uiObj = Instantiate(ItemUIPrefab, ItemGroup);
-                ItemUI iu = uiObj.GetComponent<ItemUI>();
+                var go = Instantiate(ItemUIPrefab, ItemGroup);
+                var iu = go.GetComponent<ItemUI>();
                 iu.item_belonging_controller = this;
                 iu.item_status               = st;
 
-                var ui = new ItemStatusUI {
+                var info = new ItemStatusUI {
                     ItemIcon        = iu.ItemIcon,
                     ItemCountTextUI = iu.ItemCountTextUI,
-                    ItemUI          = iu.gameObject
+                    ItemUI          = go
                 };
-                belonging_item_uis.Add(st, ui);
+                belonging_item_uis.Add(st, info);
 
-                ui.ItemIcon.sprite      = st.MenuSprite;
-                ui.ItemCountTextUI.text = "1";
-                item_menu_controller.ItemSelectByIndex(uiObj.transform.GetSiblingIndex());
+                info.ItemIcon.sprite      = st.MenuSprite;
+                info.ItemCountTextUI.text = "1";
+                item_menu_controller.ItemSelectByIndex(go.transform.GetSiblingIndex());
             }
-            return;
-        }
 
-        entry.item_count++;
-        if (item_menu_controller) SetItemStatusToItemMenu(st);
+            if (notifyUI) item_menu_controller.OnItemGetChangeUI(false, st);
+        }
+        else
+        {
+            belonging_items[st].item_count++;
+            SetItemStatusToItemMenu(st);
+            item_menu_controller.ItemSelectByIndex(
+                belonging_item_uis[st].ItemUI.transform.GetSiblingIndex());
+        }
     }
 
-    /*──────────────── 同期ヘルパ ────────────────*/
+    //──────────────── サーバー→クライアント同期 ────────────────
     public void ForceSyncFromServer(ItemStatus st, int newCount)
     {
-        if (st == null) return;
-
-        if (!belonging_items.TryGetValue(st, out var entry))
+        if (!belonging_items.ContainsKey(st))
         {
-            entry = new ItemCountWithPermit { item_count = newCount };
-            belonging_items.Add(st, entry);
-
-            if (st.item_type != ItemStatus.ItemType.Event && item_menu_controller)
-            {
-                GameObject uiObj = Instantiate(ItemUIPrefab, ItemGroup);
-                ItemUI iu = uiObj.GetComponent<ItemUI>();
-                iu.item_belonging_controller = this;
-                iu.item_status               = st;
-
-                var ui = new ItemStatusUI {
-                    ItemIcon        = iu.ItemIcon,
-                    ItemCountTextUI = iu.ItemCountTextUI,
-                    ItemUI          = iu.gameObject
-                };
-                belonging_item_uis.Add(st, ui);
-
-                ui.ItemIcon.sprite      = st.MenuSprite;
-                ui.ItemCountTextUI.text = newCount.ToString();
-                item_menu_controller.ItemSelectByIndex(uiObj.transform.GetSiblingIndex());
-            }
-            return;
+            ItemAddToBelonging(st, false);
+            belonging_items[st].item_count = newCount;
         }
-
-        entry.item_count = newCount;
-        if (item_menu_controller) SetItemStatusToItemMenu(st);
+        else
+        {
+            belonging_items[st].item_count = newCount;
+        }
+        SetItemStatusToItemMenu(st);
     }
 
-    /*──────────────── 判定ユーティリティ ────────────────*/
+    //──────────────── アイテム使用 ────────────────
+    public void ItemUseFromBelonging(ItemStatus st)
+    {
+        int cnt = belonging_items[st].item_count;
+
+        if (st.item_type == ItemStatus.ItemType.CanThrow)
+        {
+            item_throw_controller.ThrowStart(st.ItemThrowPrefab);
+            item_throw_controller.item_status = st;
+            Consume(st, cnt);
+        }
+        else if (st.item_type == ItemStatus.ItemType.Consumable)
+        {
+            Consume(st, cnt);
+        }
+        else if (st.item_type == ItemStatus.ItemType.Key)
+        {
+            if (cross_hair_event.RaycasstedObj &&
+                cross_hair_event.RaycasstedObj.CompareTag("Door"))
+            {
+                var dCtrl = cross_hair_event.RaycasstedObj.GetComponent<DoorOpenCloseController>();
+                var door  = dCtrl.the_door_controller;
+                if (door.NeededKey.Value && !door.DoorOpenPermitCheck())
+                {
+                    door.open_permit_by_key_controller.KeyUse();
+                    Consume(st, cnt);
+                }
+            }
+        }
+        else if (st.item_type == ItemStatus.ItemType.Event ||
+                 st.item_type == ItemStatus.ItemType.EmergencyAttack)
+        {
+            Consume(st, cnt);
+        }
+
+        var obj = Instantiate(st.InstantiateItemScriptPrefab);
+        obj.GetComponent<InstantiateItemScript>().item_status = st;
+    }
+
+    //──────────────── アイテム破棄 ────────────────
+    public void ItemDump(ItemStatus st)
+    {
+        if (!ExistsItems() || !st.CanItemDump || !belonging_items.ContainsKey(st))
+            return;
+
+        var entry = belonging_items[st];
+        entry.item_count--;
+        sub_noticed_ui_controller.Notice($"{st.ItemName} を捨てた。");
+
+        if (entry.item_count <= 0)
+        {
+            item_menu_controller.item_equip_controller.EquipChange(st, false);
+            if (belonging_items.Count > 1) item_menu_controller.ItemSelectAuto(st);
+
+            Destroy(belonging_item_uis[st].ItemUI);
+            belonging_item_uis.Remove(st);
+            belonging_items.Remove(st);
+        }
+        else
+        {
+            SetItemStatusToItemMenu(st);
+        }
+
+        Instantiate(st.ItemPutObjectPrefab, player_status.HeadPos.position, Quaternion.identity);
+    }
+
+    //──────────────── 判定ヘルパー ────────────────
     public bool ExistsItems() => belonging_items.Count > 0;
-    public bool ExistBelongingItemByFind(ItemStatus st) => belonging_items.ContainsKey(st);
-    public bool ExistItemUIItemStatusByFind(ItemStatus st) => belonging_item_uis.ContainsKey(st);
-    public bool WhichCanUseItem(ItemStatus st) => belonging_items[st].CanUse;
-    public void  CanUseItem(bool can, ItemStatus st)
+
+    public bool ExistBelongingItemByFind(ItemStatus st) =>     // ← ここ！
+        belonging_items.ContainsKey(st);
+
+    public bool ExistItemUIItemStatusByFind(ItemStatus st) =>
+        belonging_item_uis.ContainsKey(st);
+
+    public bool WhichCanUseItem(ItemStatus st) =>
+        belonging_items[st].CanUse;
+
+    public void CanUseItem(bool can, ItemStatus st)
     {
         belonging_items[st].CanUse = can;
-        item_menu_controller?.OnCanItemUseChangeUI(can, st);
+        item_menu_controller.OnCanItemUseChangeUI(can, st);
     }
 
     public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType t)
@@ -200,108 +219,27 @@ public class ItemBelongingsController : NetworkBehaviour
                .ToList();
     }
 
-    /*──────────────── アイテム使用 ────────────────*/
-    public void ItemUseFromBelonging(ItemStatus st)
-    {
-        if (!belonging_items.TryGetValue(st, out var entry)) return;
-        int cnt = entry.item_count;
-
-        switch (st.item_type)
-        {
-            case ItemStatus.ItemType.CanThrow:
-                item_throw_controller.ThrowStart(st.ItemThrowPrefab);
-                item_throw_controller.item_status = st;
-                ItemUse(cnt, st);
-                break;
-
-            case ItemStatus.ItemType.Consumable:
-                ItemUse(cnt, st);
-                break;
-
-            case ItemStatus.ItemType.Key:
-                if (cross_hair_event.RaycasstedObj &&
-                    cross_hair_event.RaycasstedObj.CompareTag("Door"))
-                {
-                    var doorCtrl = cross_hair_event.RaycasstedObj.GetComponent<DoorOpenCloseController>();
-                    var door     = doorCtrl.the_door_controller;
-
-                    if (door.NeededKey.Value && !door.DoorOpenPermitCheck())
-                    {
-                        door.open_permit_by_key_controller.KeyUse();
-                        ItemUse(cnt, st);
-                    }
-                }
-                break;
-
-            case ItemStatus.ItemType.Event:
-            case ItemStatus.ItemType.EmergencyAttack:
-                ItemUse(cnt, st);
-                break;
-        }
-
-        GameObject p = Instantiate(st.InstantiateItemScriptPrefab);
-        p.GetComponent<InstantiateItemScript>().item_status = st;
-    }
-
-    /*──────────────── アイテム破棄 ────────────────*/
-    public void ItemDump(ItemStatus st)
-    {
-        if (!ExistsItems() || !st.CanItemDump || !belonging_items.ContainsKey(st))
-            return;
-
-        int cnt = --belonging_items[st].item_count;
-        sub_noticed_ui_controller.Notice($"{st.ItemName} を捨てた。");
-
-        if (cnt <= 0)
-        {
-            item_menu_controller.item_equip_controller.EquipChange(st, false);
-
-            if (belonging_items.Count > 1) item_menu_controller.ItemSelectAuto(st);
-
-            Destroy(belonging_item_uis[st].ItemUI);
-            belonging_item_uis.Remove(st);
-            belonging_items.Remove(st);
-        }
-        else
-        {
-            if (item_menu_controller) SetItemStatusToItemMenu(st);
-        }
-
-        Instantiate(st.ItemPutObjectPrefab, player_status.HeadPos.position, Quaternion.identity);
-    }
-
-    /*──────────────── 内部ヘルパ ────────────────*/
-    private void ItemUse(int cntNow, ItemStatus st)
+    //──────────────── 内部ヘルパー ────────────────
+    void Consume(ItemStatus st, int cntNow)
     {
         cntNow--;
         belonging_items[st].item_count = cntNow;
 
         if (cntNow > 0)
         {
-            if (item_menu_controller) SetItemStatusToItemMenu(st);
+            SetItemStatusToItemMenu(st);
         }
         else
         {
-            if (item_menu_controller) SetItemStatusToItemMenu(st);
+            Destroy(belonging_item_uis[st].ItemUI);
+            belonging_item_uis.Remove(st);
             belonging_items.Remove(st);
         }
     }
 
-    private void SetItemStatusToItemMenu(ItemStatus st)
+    void SetItemStatusToItemMenu(ItemStatus st)
     {
-        if (!belonging_item_uis.TryGetValue(st, out var ui) ||
-            !belonging_items.TryGetValue(st, out var entry))
-            return;
-
-        int cnt = entry.item_count;
-        if (cnt > 0)
-        {
-            ui.ItemCountTextUI.text = cnt.ToString();
-        }
-        else
-        {
-            Destroy(ui.ItemUI);
-            belonging_item_uis.Remove(st);
-        }
+        belonging_item_uis[st].ItemCountTextUI.text =
+            belonging_items[st].item_count.ToString();
     }
 }
