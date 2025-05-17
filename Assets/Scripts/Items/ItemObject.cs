@@ -1,62 +1,76 @@
-using System.Collections;
-using System.Collections.Generic;
+// ItemObject.cs
 using System.Linq;
-using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode;
 using UnityEngine.Events;
 
-public class ItemObject : MonoBehaviour
+public class ItemObject : NetworkBehaviour
 {
-    private NeedKeysController need_keys_controller;
-    //ワールド上に置かれているアイテムにつけておくクラス。
+    [Tooltip("このオブジェクトが持つアイテム情報")]
     public ItemStatus item_status;
+
+    [Tooltip("取得時に発火するイベント (UI更新など)")]
     public UnityEvent ItemGetAddEvent;
+
     private NetworkObject ItemNetworkObject;
+
     private void Start()
     {
-        need_keys_controller = NeedKeysController.instance;
-        ItemNetworkObject = this.gameObject.GetComponent<NetworkObject>();
+        ItemNetworkObject = GetComponent<NetworkObject>();
     }
-    //この関数が呼び出されれば自分のアイテムメニューにitem_statusのアイテムを追加する。
-    public bool ItemGet(ItemBelongingsController item_belonging_controller)
+
+    /// <summary>
+    /// クライアント側で呼び出す：
+    /// 1) 上限チェック＋ローカルUI通知
+    /// 2) 問題なければサーバーへ消去要求
+    /// 3) ローカルでインベントリ追加＆通知
+    /// </summary>
+    public bool TryPickup(ItemBelongingsController item_belonging_controller)
     {
-        var differentItems = item_belonging_controller.belonging_items
-        .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
-        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        
-        bool NotHaveMore = (item_belonging_controller.maxCarryableItems <= differentItems.Count) 
-                            || IsItemAtMaxCapacity(item_belonging_controller);
+        // ── 1) 所持上限チェック ──
+        var diff = item_belonging_controller.belonging_items
+            .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-        item_belonging_controller.item_menu_controller.OnItemGetChangeUI(NotHaveMore, item_status);
-        ItemNetworkObject.Despawn(true);
-        if (!NotHaveMore || item_status.item_type == ItemStatus.ItemType.Event)
-        {
-            if(item_status.item_type == ItemStatus.ItemType.Key){
-                need_keys_controller.GottenKeyCount += 1;
-            }
-            item_belonging_controller.ItemAddToBelonging(item_status);
-            ItemGetAddEvent.Invoke();
-            Destroy(this.gameObject, 0.1f);
-            return true;
-        }
-        else
-        {
-            //このアイテムはこれ以上持てません
+        bool notHaveMore = (item_belonging_controller.maxCarryableItems <= diff.Count)
+                          || (item_belonging_controller.belonging_items.ContainsKey(item_status)
+                              && item_belonging_controller.belonging_items[item_status].item_count + 1 > item_status.MaxCanHave);
+
+        // UI通知（「これ以上持てない」 or 「取得」）
+        item_belonging_controller.item_menu_controller.OnItemGetChangeUI(notHaveMore, item_status);
+
+        // イベントアイテム以外で上限なら何もしない
+        if (notHaveMore && item_status.item_type != ItemStatus.ItemType.Event)
             return false;
-        }
-    }
-    private bool IsItemAtMaxCapacity(ItemBelongingsController item_belonging_controller){
 
+        // ── 2) サーバーへワールド上オブジェクト消去要求 ──
+        RequestDespawnServerRpc();
 
-        bool hasItemAlready  = item_belonging_controller.belonging_items.ContainsKey(item_status);
-        bool isOverCapacity = false;
-        if (hasItemAlready )
+        // ── 3) ローカルでインベントリに追加 & 通知 ──
+        if (item_status.item_type == ItemStatus.ItemType.Key)
         {
-            isOverCapacity = (
-                item_belonging_controller.belonging_items[item_status].item_count + 1 
-                > item_status.MaxCanHave
-            );
+            // キーアイテムならキー数も増やす
+            NeedKeysController.instance.GottenKeyCount += 1;
         }
-        return isOverCapacity;
+
+        item_belonging_controller.ItemAddToBelonging(item_status);
+        ItemGetAddEvent.Invoke();
+
+        // ほんとは NetworkObject.Despawn() で消えるけど、
+        // クライアントのシーン上からも Remove したければ Destroy
+        Destroy(gameObject, 0.1f);
+        return true;
+    }
+
+    /// <summary>
+    /// サーバー側で実行：全クライアントに Despawn を反映
+    /// </summary>
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestDespawnServerRpc(ServerRpcParams rpcParams = default)
+    {
+        if (ItemNetworkObject != null && ItemNetworkObject.IsSpawned)
+        {
+            ItemNetworkObject.Despawn();
+        }
     }
 }

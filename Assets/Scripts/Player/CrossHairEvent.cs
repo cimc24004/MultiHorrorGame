@@ -106,7 +106,7 @@ public class CrossHairEvent : NetworkBehaviour
                 {
 
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
-                    bool item_geted = item_object.ItemGet(item_belonging_controller);
+                    bool item_geted = item_object.TryPickup(item_belonging_controller);
 
                     if (item_geted)
                     {
