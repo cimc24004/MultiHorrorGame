@@ -163,7 +163,7 @@ public class PlayerMoveScript : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (IsServer && MovePermit)
+        if (IsServer && MovePermit && characterController != null)
         {
             if (moveDirection != Vector3.zero)
                 characterController.Move(moveDirection * NowSpeed.Value * Time.fixedDeltaTime);
