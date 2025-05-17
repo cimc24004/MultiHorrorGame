@@ -18,10 +18,16 @@ public class ItemObject : NetworkBehaviour
     // ────────────────────────────────────────
     // ネットワーク初期化
     // ────────────────────────────────────────
+    void Awake()
+    {
+        // ★ シーン配置でも Spawn する
+        if (IsServer) GetComponent<NetworkObject>().Spawn();
+    }
+
     public override void OnNetworkSpawn()
     {
         need_keys_controller = NeedKeysController.instance;
-        thisNetObj           = GetComponent<NetworkObject>();
+        thisNetObj = GetComponent<NetworkObject>();
     }
 
     // ────────────────────────────────────────
@@ -56,7 +62,15 @@ public class ItemObject : NetworkBehaviour
 
         bool success = !reachedMax ||
                        item_status.item_type == ItemStatus.ItemType.Event;
-
+        // ④ 結果を拾い主クライアントだけに通知
+        var cp = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { clientId }
+            }
+        };
+        ItemGetResponseClientRpc(success, cp);
         // ③ サーバー側の処理
         if (success)
         {
@@ -71,15 +85,7 @@ public class ItemObject : NetworkBehaviour
             thisNetObj.Despawn(true);
         }
 
-        // ④ 結果を拾い主クライアントだけに通知
-        var cp = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { clientId }
-            }
-        };
-        ItemGetResponseClientRpc(success, cp);
+
     }
 
     // ────────────────────────────────────────
@@ -87,28 +93,18 @@ public class ItemObject : NetworkBehaviour
     // 成功／失敗を受け取り UI と効果音を処理
     // ────────────────────────────────────────
     [ClientRpc]
-    private void ItemGetResponseClientRpc(bool success, ClientRpcParams _ = default)
+    void ItemGetResponseClientRpc(bool success, ClientRpcParams _)
     {
-        // ここに来るのは「拾い主」のクライアントだけ
+        var invUI = PlayerStatus.LocalInstance
+                     .ItemController
+                     .GetComponent<ItemBelongingsController>();
 
-        // ① ローカルのインベントリ UI 取得
-        var invCtrl = PlayerStatus.LocalInstance
-                          .ItemController
-                          .GetComponent<ItemBelongingsController>();
-
-        // ② 成功時のローカル処理
         if (success)
-        {
-            // クライアント側インベントリリスト（ローカルコピー）更新
-            invCtrl.ItemAddToBelonging(item_status);
+            ItemGetAddEvent.Invoke();          // 効果音
 
-            // 効果音・演出は UnityEvent で一括
-            ItemGetAddEvent.Invoke();
-        }
-
-        // ③ UI (インベントリ枠が足りない等) の通知
-        invCtrl.item_menu_controller
-               .OnItemGetChangeUI(!success, item_status);
+        // クライアントは**UI だけ**更新
+        invUI.item_menu_controller
+             .OnItemGetChangeUI(!success, item_status);
     }
 
     // ────────────────────────────────────────
