@@ -28,9 +28,9 @@ public class ItemObject : NetworkBehaviour
 
     /// <summary>
     /// サーバー側で実行：
-    /// 1) 本当に拾えるかチェック
+    /// 1) 真に拾えるかチェック
     /// 2) NGなら CannotPickupClientRpc
-    /// 3) OKなら先に SuccessfulPickupClientRpc → 後で Despawn(true)
+    /// 3) OKなら→サーバー在庫を更新→SuccessfulPickupClientRpc→Despawn(true)
     /// </summary>
     [ServerRpc(RequireOwnership = false)]
     private void RequestPickupServerRpc(ServerRpcParams rpcParams = default)
@@ -42,15 +42,16 @@ public class ItemObject : NetworkBehaviour
 
         // サーバー側チェック
         int diffCount = inv.belonging_items
-            .Where(kvp => kvp.Key != item_status 
+            .Where(kvp => kvp.Key != item_status
                        && kvp.Key.item_type != ItemStatus.ItemType.Event)
             .Count();
         bool overMax  = diffCount >= inv.maxCarryableItems;
-        bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt) &&
-                        cnt.item_count + 1 > item_status.MaxCanHave;
+        bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt)
+                       && cnt.item_count + 1 > item_status.MaxCanHave;
 
         if (overMax || overSame)
         {
+            // 取得失敗通知
             CannotPickupClientRpc(new ClientRpcParams {
                 Send = new ClientRpcSendParams {
                     TargetClientIds = new[]{ clientId }
@@ -59,21 +60,26 @@ public class ItemObject : NetworkBehaviour
             return;
         }
 
-        // 1) 取得成功通知を先に飛ばす
+        // サーバー在庫を更新（これがないとチェックがずっと 0 のままになる）
+        if (!inv.belonging_items.ContainsKey(item_status))
+            inv.belonging_items[item_status] = new ItemBelongingsController.ItemCountWithPermit {
+                item_count = 1, CanUse = true
+            };
+        else
+            inv.belonging_items[item_status].item_count++;
+
+        // 取得成功通知を先に送信
         SuccessfulPickupClientRpc(new ClientRpcParams {
             Send = new ClientRpcSendParams {
                 TargetClientIds = new[]{ clientId }
             }
         });
 
-        // 2) ワールド上オブジェクトを消去（全クライアント同期）
+        // 全クライアントのワールド上から消去
         if (networkObject != null && networkObject.IsSpawned)
             networkObject.Despawn(destroy: true);
     }
 
-    /// <summary>
-    /// 取得失敗時：クライアント側で「これ以上持てない」UIを表示
-    /// </summary>
     [ClientRpc]
     private void CannotPickupClientRpc(ClientRpcParams rpcParams = default)
     {
@@ -83,13 +89,6 @@ public class ItemObject : NetworkBehaviour
         inv.item_menu_controller.OnItemGetChangeUI(true, item_status);
     }
 
-    /// <summary>
-    /// 取得成功時：クライアント側で
-    /// 1) インベントリに追加
-    /// 2) UI更新／エフェクト
-    /// 3) サウンド再生
-    /// 4) 自身の GameObject を Destroy
-    /// </summary>
     [ClientRpc]
     private void SuccessfulPickupClientRpc(ClientRpcParams rpcParams = default)
     {
@@ -97,19 +96,15 @@ public class ItemObject : NetworkBehaviour
                             .ItemController
                             .GetComponent<ItemBelongingsController>();
 
-        // 1) ローカルインベントリに追加
+        // ローカルに追加
         inv.ItemAddToBelonging(item_status);
-
-        // 2) UI更新／エフェクト
         ItemGetAddEvent.Invoke();
-
-        // 3) 取得音を再生
         PlayerStatus.LocalInstance
                     .cross_hair_event
                     .ItemGetSource
                     .Play();
 
-        // 4) クライアント自身の GameObject を削除
+        // 自身の GameObject も消しておく
         Destroy(gameObject);
     }
 }
