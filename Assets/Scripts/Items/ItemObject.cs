@@ -24,6 +24,7 @@ public class ItemObject : NetworkBehaviour
     }
     public override void OnNetworkDespawn()
     {
+        Debug.Log("アイテムDespawn");
         this.gameObject.SetActive(false);
 
     }
@@ -72,7 +73,11 @@ public class ItemObject : NetworkBehaviour
         };
         ItemGetResponseClientRpc(success, newCount, cp);
 
-        if (success) netObj.Despawn(true);          // 全員から削除
+        if (success)
+        {
+            Debug.Log("アイテム取得成功---------------------------");
+          netObj.Despawn(true);          // 全員から削除  
+        } 
     }
 
     /*──────── Server → Client（拾い主）────────*/
