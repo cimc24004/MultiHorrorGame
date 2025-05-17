@@ -22,6 +22,11 @@ public class ItemObject : NetworkBehaviour
     {
         need_keys_controller = NeedKeysController.instance;
     }
+    public override void OnNetworkDespawn()
+    {
+        this.gameObject.SetActive(false);
+
+    }
     // ‚±‚ê‚ª–³‚¢‚Æ CrossHairEvent ‚©‚çŒÄ‚×‚È‚¢
     public void RequestItemGet()
     {
