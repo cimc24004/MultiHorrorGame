@@ -90,45 +90,53 @@ public class ItemBelongingsController : NetworkBehaviour
     [Button]
     public void ItemAddToBelonging(ItemStatus _item_status)
     {
-        if (!belonging_items.ContainsKey(_item_status))
+        // ── 1) 在庫辞書を先に更新 ──
+        if (belonging_items.TryGetValue(_item_status, out var countPermit))
         {
-            // 新規登録
-            var icwp = new ItemCountWithPermit { item_count = 1, CanUse = true };
-            belonging_items.Add(_item_status, icwp);
-
-            // UI設置 (イベントアイテム以外)
-            if (_item_status.item_type != ItemStatus.ItemType.Event)
-            {
-                GameObject uiObj = Instantiate(ItemUIPrefab, ItemGroup);
-                ItemUI ui = uiObj.GetComponent<ItemUI>();
-                ui.item_belonging_controller = this;
-                ui.item_status = _item_status;
-
-                var statusUI = new ItemStatusUI
-                {
-                    ItemIcon        = ui.ItemIcon,
-                    ItemCountTextUI = ui.ItemCountTextUI,
-                    ItemUI          = ui.gameObject
-                };
-                belonging_item_uis.Add(_item_status, statusUI);
-
-                statusUI.ItemIcon.sprite                 = _item_status.MenuSprite;
-                statusUI.ItemCountTextUI.text            = "1";
-                item_menu_controller.ItemSelectByIndex(uiObj.transform.GetSiblingIndex());
-            }
+            // 既存アイテムならカウントを増やす
+            countPermit.item_count++;
         }
         else
         {
-            // 個数増加
-            int cnt = belonging_items[_item_status].item_count + 1;
-            belonging_items[_item_status].item_count = cnt;
-            SetItemStatusToItemMenu(_item_status);
-            item_menu_controller.ItemSelectByIndex(
-                belonging_item_uis[_item_status].ItemUI.transform.GetSiblingIndex()
-            );
+            // 初めてのアイテムなら新規登録
+            belonging_items[_item_status] = new ItemCountWithPermit {
+                item_count = 1,
+                CanUse     = true
+            };
+        }
+
+        // ── 2) UI 用辞書を更新 or 生成 ──
+        // イベントアイテムは UI を持たないので処理を抜ける
+        if (_item_status.item_type == ItemStatus.ItemType.Event)
+            return;
+
+        if (belonging_item_uis.TryGetValue(_item_status, out var uiEntry))
+        {
+            // 既存の UI があればテキストだけ更新
+            uiEntry.ItemCountTextUI.text = belonging_items[_item_status].item_count.ToString();
+        }
+        else
+        {
+            // UI がなければ新規作成
+            GameObject uiObj = Instantiate(ItemUIPrefab, ItemGroup);
+            ItemUI ui = uiObj.GetComponent<ItemUI>();
+            ui.item_belonging_controller = this;
+            ui.item_status              = _item_status;
+
+            var newEntry = new ItemStatusUI {
+                ItemIcon         = ui.ItemIcon,
+                ItemCountTextUI  = ui.ItemCountTextUI,
+                ItemUI           = ui.gameObject
+            };
+            belonging_item_uis[_item_status] = newEntry;
+
+            newEntry.ItemIcon.sprite        = _item_status.MenuSprite;
+            newEntry.ItemCountTextUI.text   = belonging_items[_item_status].item_count.ToString();
+
+            // 取得したらすぐに選択状態にする
+            item_menu_controller.ItemSelectByIndex(uiObj.transform.GetSiblingIndex());
         }
     }
-
     // アイテム使用
     [Button]
     public void ItemUseFromBelonging(ItemStatus item_status)
