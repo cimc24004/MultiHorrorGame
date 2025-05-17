@@ -58,9 +58,12 @@ public class PlayerHideObjectAction : NetworkBehaviour
 
     //隠すときは隠れられるオブジェクトのTargetHideObjectスクリプトのHideTarget関数を実行すればよい。
     [ClientRpc]
-    public void HideClientRpc()
+    public void HideClientRpc(ulong _TargetNetworkObjectId)
     {
         player_character_controller.enabled = false;
+        GameObject TargetObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_TargetNetworkObjectId].gameObject;
+
+        TargetHideObjectSet(TargetObject);
         target_hide_object.HideTarget(this.gameObject);
         this.gameObject.layer = LayerMask.NameToLayer("HidePlayer");
         //player_rigid.isKinematic = true;
@@ -163,10 +166,8 @@ public class PlayerHideObjectAction : NetworkBehaviour
         //隠れるキーを押したら
         if (!player_status.HidingNow.Value)
         {
-            GameObject TargetObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_TargetNetworkObjectId].gameObject;
-            TargetHideObjectSet(TargetObject);
             //ColHideObjectは隠れられるオブジェクトに触れてるかのチェックをしてから隠れる。
-            HideClientRpc();
+            HideClientRpc(_TargetNetworkObjectId);
             //隠れている最中はプレイヤーの物理演算を無視してかつisTriggerも実質無効にする。
         }
         else if (player_status.HidingNow.Value)
