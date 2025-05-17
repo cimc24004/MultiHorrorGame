@@ -658,11 +658,11 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb61b3c84212fa04fbbfbd8d61d1316f,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 836952132462286335}
+      addedObject: {fileID: 6012193301973122691}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb61b3c84212fa04fbbfbd8d61d1316f,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6012193301973122691}
+      addedObject: {fileID: 836952132462286335}
   m_SourcePrefab: {fileID: 100100000, guid: fb61b3c84212fa04fbbfbd8d61d1316f, type: 3}
 --- !u!1 &4001669095924166629 stripped
 GameObject:
@@ -691,37 +691,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.456156, y: 5.5514913, z: 8.87902}
   m_Center: {x: -0.30516595, y: 12.959559, z: -0.15896843}
---- !u!114 &836952132462286335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4001669095924166629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5e5d6d6ace3c04499433bc97fdc13d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  turn_status: 0
-  LightObj: {fileID: 3612239057341034542}
-  IsHimoAudioPlay: 1
-  IsLightOnAudio: 1
-  IsLightAudio: 1
-  IsBlinkingLightOnAnimation: 1
-  HimoAudioSource: {fileID: 4116153994235229464}
-  LightOnAudioSource: {fileID: 6359078240453567978}
-  LightAudioSource: {fileID: 3561305897740489103}
-  originalIntensity: 0
 --- !u!114 &6012193301973122691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -734,7 +703,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3261650397
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -747,6 +716,29 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &836952132462286335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4001669095924166629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e5d6d6ace3c04499433bc97fdc13d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  turn_status: 0
+  LightObj: {fileID: 3612239057341034542}
+  IsHimoAudioPlay: 1
+  IsLightOnAudio: 1
+  IsLightAudio: 1
+  IsBlinkingLightOnAnimation: 1
+  HimoAudioSource: {fileID: 4116153994235229464}
+  LightOnAudioSource: {fileID: 6359078240453567978}
+  LightAudioSource: {fileID: 3561305897740489103}
+  originalIntensity: 0
 --- !u!4 &4378370182809630047 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fb61b3c84212fa04fbbfbd8d61d1316f,
