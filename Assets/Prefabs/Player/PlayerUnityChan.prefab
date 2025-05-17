@@ -6486,15 +6486,18 @@ MonoBehaviour:
   cross_hair_event: {fileID: 3063867986630336566}
   player_hide_object_action: {fileID: 7228379173649806129}
   player_input: {fileID: 6754800367279928261}
+  flash_light_controller: {fileID: 0}
   sub_noticed_ui_controller: {fileID: 8769203124032230796}
   main_noticed_ui_controller: {fileID: 1765592740080041507}
   GageCanvas: {fileID: 9075224308170336773}
   GageImage: {fileID: 6828693115562160432}
-  Dead: 0
+  Dead:
+    m_InternalValue: 0
   player_move_state_network:
     m_InternalValue: 0
   MoveSpeed: 0
-  HidingNow: 0
+  HidingNow:
+    m_InternalValue: 0
   MoveX: 0
   MoveY: 0
   StaminaCost: 0.2
@@ -6545,9 +6548,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  HideAction: 0
-  HidingPermit: 1
   hide_type_target_object: 0
+  HidingPermit:
+    m_InternalValue: 1
 --- !u!114 &364072651999732485
 MonoBehaviour:
   m_ObjectHideFlags: 0

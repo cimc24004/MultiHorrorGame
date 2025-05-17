@@ -44,6 +44,10 @@ public class FlashLightController : NetworkBehaviour
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         flash_light_battery_ui_controller = FlashLightBatteryUIController.instance;
         InitPlayer = true;
+        if (!IsOwner)
+        {
+            this.gameObject.SetActive(false);
+        }
         player_input.actions["LightSwitchAction"].performed += LightInputPerformed;
     }
 

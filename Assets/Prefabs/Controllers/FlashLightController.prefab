@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6267284099315217550}
   - component: {fileID: 1138217957705009918}
+  - component: {fileID: 7496441076874987696}
   m_Layer: 0
   m_Name: FlashLightController
   m_TagString: Untagged
@@ -46,15 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fa6cb86e7717cc4ea8c7b87bdef9729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   HaveLight: 1
   LightPermit: 1
   LightObject: {fileID: 2166455100295356253}
@@ -64,6 +57,31 @@ MonoBehaviour:
   LightAudioSource: {fileID: 6225977896153975989}
   LightOnClip: {fileID: 8300000, guid: 1724365bc9af0ad46a8956f0921da778, type: 3}
   LightOffClip: {fileID: 8300000, guid: 4f803c1381d93dd4da0dc9a952b3d916, type: 3}
+--- !u!114 &7496441076874987696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370864533411191491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &2166455100295356253
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,9 +125,8 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2166455100295356253}
   m_Enabled: 1
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 0
-  m_Shape: 0
   m_Color: {r: 0.6525667, g: 0.7666453, b: 0.8415094, a: 1}
   m_Intensity: 50
   m_Range: 1000
@@ -159,8 +176,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!114 &230847515440409266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +216,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 1724365bc9af0ad46a8956f0921da778, type: 3}
+  m_Resource: {fileID: 8300000, guid: 1724365bc9af0ad46a8956f0921da778, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -340,6 +362,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
