@@ -9,34 +9,11 @@ public class ItemObject : NetworkBehaviour
     public ItemStatus         item_status;
     public UnityEvent         ItemGetAddEvent;  // Inspector で音再生を登録
     private NetworkObject     ItemNetworkObject;
-    private PlayerStatus player_status;
-    private CrossHairEvent cross_hair_event;
+
     public override void OnNetworkSpawn()
     {
         need_keys_controller = NeedKeysController.instance;
-        ItemNetworkObject = GetComponent<NetworkObject>();
-    }
-    private void OnEnable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
-        if (PlayerStatus.LocalInstance != null)
-        {
-            InitWhenPlayerSpawned(PlayerStatus.LocalInstance);
-        }
-    }
-    private void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
-    }
-    private void InitWhenPlayerSpawned(PlayerStatus _player_status)
-    {
-        player_status = _player_status;
-        cross_hair_event = player_status.cross_hair_event;
-        this.ItemGetAddEvent.AddListener(() =>
-        {
-            Debug.Log("ItemGetAddEvent-----------ItemGetSource-------------");
-            cross_hair_event.ItemGetSource.Play();
-        });
+        ItemNetworkObject   = GetComponent<NetworkObject>();
     }
 
     /// <summary>
@@ -81,7 +58,6 @@ public class ItemObject : NetworkBehaviour
         if (success)
         {
             inv.ItemAddToBelonging(item_status);
-            ItemGetAddEvent.Invoke();
             ItemNetworkObject.Despawn(true);
         }
 
@@ -119,7 +95,6 @@ public class ItemObject : NetworkBehaviour
         if (success)
         {
             inv.ItemAddToBelonging(item_status);
-            Debug.Log("アイテム取得した！");
             ItemGetAddEvent.Invoke();
         }
 
