@@ -299,29 +299,16 @@ public class ItemMenuController : SerializedMonoBehaviour
 
         }
     }
-    private void OnNumbericKeyPressed(InputAction.CallbackContext context)
+    private void OnNumbericKeyPressed(InputAction.CallbackContext ctx)
     {
-        Debug.Log("KeyName:::::" + context.control.displayName);
-        int numberKey = Int32.Parse(context.control.displayName);
-        int ChildCount = ItemGroup.transform.childCount;
-        if(ChildCount > 0)
-        {
-            if (numberKey != 0)
-            {
-                if (numberKey < ChildCount)
-                {
-                    ItemSelectByIndex(numberKey - 1);
-                }
-                else
-                {
-                    ItemSelectByIndex(ChildCount - 1);
-                }
-            }
-            else if (numberKey == 0)
-            {
-                ItemSelectByIndex(ChildCount - 1);
-            }
-        }
+        if (!int.TryParse(ctx.control.displayName, out var numberKey))
+            return;
 
+        int childCount = ItemGroup.transform.childCount;
+        if (childCount == 0) return;
+
+        if (numberKey == 0) numberKey = childCount;      // 0 ¨ ÅŒã
+
+        ItemSelectByIndex(Mathf.Clamp(numberKey - 1, 0, childCount - 1));
     }
 }

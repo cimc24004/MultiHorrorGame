@@ -12,11 +12,9 @@ public class ItemObject : NetworkBehaviour
     private NeedKeysController need_keys_controller;
     private NetworkObject      netObj;
 
-    /*──────── Awake : 余計なクライアントオブジェクト破棄＋サーバー Spawn ───────*/
     void Awake()
     {
         netObj = GetComponent<NetworkObject>();
-
         if (NetworkManager.Singleton == null) return;
     }
 
@@ -24,13 +22,13 @@ public class ItemObject : NetworkBehaviour
     {
         need_keys_controller = NeedKeysController.instance;
     }
-
-    /*──────── クライアント入口 ───────*/
+    // これが無いと CrossHairEvent から呼べない
     public void RequestItemGet()
     {
+        // ローカル→サーバーへ拾いリクエスト飛ばすだけ
+        if (!IsSpawned) return;                     // NetObj がまだ Spawn してなかったら無視
         RequestItemGetServerRpc(NetworkManager.Singleton.LocalClientId);
     }
-
     /*──────── Client → Server ───────*/
     [ServerRpc(RequireOwnership = false)]
     void RequestItemGetServerRpc(ulong clientId, ServerRpcParams _ = default)
@@ -42,14 +40,14 @@ public class ItemObject : NetworkBehaviour
                            .ItemController
                            .GetComponent<ItemBelongingsController>();
 
-        /* ---------- 上限チェック修正版 ---------- */
-        int  uniqueCount  = inv.belonging_items
+        /* ---------- 上限チェック ---------- */
+        int  uniqueCount = inv.belonging_items
                                .Where(kvp => kvp.Key.item_type != ItemStatus.ItemType.Event)
                                .Count();
-        bool alreadyHave  = inv.belonging_items.ContainsKey(item_status);
-        bool slotLimit    = !alreadyHave && uniqueCount >= inv.maxCarryableItems;
-        bool reachedMax   = slotLimit || IsItemAtMaxCapacity(inv);
-        /* ---------------------------------------- */
+        bool alreadyHave = inv.belonging_items.ContainsKey(item_status);
+        bool slotLimit   = !alreadyHave && uniqueCount >= inv.maxCarryableItems;
+        bool reachedMax  = slotLimit || IsItemAtMaxCapacity(inv);
+        /* ---------------------------------- */
 
         bool success = !reachedMax ||
                        item_status.item_type == ItemStatus.ItemType.Event;
@@ -64,14 +62,12 @@ public class ItemObject : NetworkBehaviour
             newCount = inv.belonging_items[item_status].item_count;
         }
 
-        // 取得結果を呼び出し主のクライアントへ
         var cp = new ClientRpcParams {
             Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } }
         };
         ItemGetResponseClientRpc(success, newCount, cp);
 
-        // 成功したら Despawn
-        if (success) netObj.Despawn(true);
+        if (success) netObj.Despawn(true);          // 全員から削除
     }
 
     /*──────── Server → Client（拾い主）────────*/
@@ -84,14 +80,13 @@ public class ItemObject : NetworkBehaviour
 
         if (success)
         {
-            invUI.ForceSyncFromServer(item_status, newCount);
-            ItemGetAddEvent.Invoke();      // 効果音
+            invUI.ForceSyncFromServer(item_status, newCount);  // ★ホストでも呼ぶ
+            ItemGetAddEvent.Invoke();                          // 効果音など
         }
 
         invUI.item_menu_controller.OnItemGetChangeUI(!success, item_status);
     }
 
-    /*──────── 同アイテム上限チェック────────*/
     bool IsItemAtMaxCapacity(ItemBelongingsController inv)
     {
         if (!inv.belonging_items.TryGetValue(item_status, out var entry))
