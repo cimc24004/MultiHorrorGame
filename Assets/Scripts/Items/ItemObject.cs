@@ -28,87 +28,71 @@ public class ItemObject : NetworkBehaviour
 
     /// <summary>
     /// サーバー側で実行：
-    /// 1) 真に拾えるかチェック
+    /// 1) 本当に拾えるかチェック
     /// 2) NGなら CannotPickupClientRpc
-    /// 3) OKなら Despawn(true) ＆ SuccessfulPickupClientRpc
+    /// 3) OKなら先に SuccessfulPickupClientRpc → 後で Despawn(true)
     /// </summary>
     [ServerRpc(RequireOwnership = false)]
     private void RequestPickupServerRpc(ServerRpcParams rpcParams = default)
     {
-        // リクエスト元クライアントID
         ulong clientId = rpcParams.Receive.SenderClientId;
-
-        // ① そのクライアントの PlayerStatus を取得
         var clientInfo = NetworkManager.Singleton.ConnectedClients[clientId];
-        var playerObj = clientInfo.PlayerObject;
-        var ps = playerObj.GetComponent<PlayerStatus>();
+        var ps         = clientInfo.PlayerObject.GetComponent<PlayerStatus>();
+        var inv        = ps.ItemController.GetComponent<ItemBelongingsController>();
 
-        // ② ItemBelongingsController を PlayerStatus.ItemController 経由で取得
-        var inv = ps.ItemController
-                    .GetComponent<ItemBelongingsController>();
-
-        // ③ サーバー側チェック：種類の異なるアイテム数
+        // サーバー側チェック
         int diffCount = inv.belonging_items
-            .Where(kvp => kvp.Key != item_status
+            .Where(kvp => kvp.Key != item_status 
                        && kvp.Key.item_type != ItemStatus.ItemType.Event)
             .Count();
-        bool overMax = diffCount >= inv.maxCarryableItems;
-
-        // 同種アイテム数チェック
+        bool overMax  = diffCount >= inv.maxCarryableItems;
         bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt) &&
                         cnt.item_count + 1 > item_status.MaxCanHave;
 
         if (overMax || overSame)
         {
-            // 取得失敗：該当クライアントだけに通知
-            CannotPickupClientRpc(new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new[] { clientId }
+            CannotPickupClientRpc(new ClientRpcParams {
+                Send = new ClientRpcSendParams {
+                    TargetClientIds = new[]{ clientId }
                 }
             });
             return;
         }
 
-
-        // ⑤ 成功クライアントだけにローカル処理を通知
-        SuccessfulPickupClientRpc(new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { clientId }
+        // 1) 取得成功通知を先に飛ばす
+        SuccessfulPickupClientRpc(new ClientRpcParams {
+            Send = new ClientRpcSendParams {
+                TargetClientIds = new[]{ clientId }
             }
         });
-        
-        // ④ 取得成功：ワールド上から確実に削除
+
+        // 2) ワールド上オブジェクトを消去（全クライアント同期）
         if (networkObject != null && networkObject.IsSpawned)
             networkObject.Despawn(destroy: true);
     }
 
     /// <summary>
-    /// 取得失敗時：クライアント側で「これ以上持てない」通知
+    /// 取得失敗時：クライアント側で「これ以上持てない」UIを表示
     /// </summary>
     [ClientRpc]
     private void CannotPickupClientRpc(ClientRpcParams rpcParams = default)
     {
-        // 失敗した自分だけ処理
         var inv = PlayerStatus.LocalInstance
                             .ItemController
                             .GetComponent<ItemBelongingsController>();
-        inv.item_menu_controller.OnItemGetChangeUI(
-             true,
-             item_status
-        );
+        inv.item_menu_controller.OnItemGetChangeUI(true, item_status);
     }
 
     /// <summary>
-    /// 取得成功時：クライアント側でインベントリ追加＋通知＋サウンド
+    /// 取得成功時：クライアント側で
+    /// 1) インベントリに追加
+    /// 2) UI更新／エフェクト
+    /// 3) サウンド再生
+    /// 4) 自身の GameObject を Destroy
     /// </summary>
     [ClientRpc]
     private void SuccessfulPickupClientRpc(ClientRpcParams rpcParams = default)
     {
-        // 成功した自分だけ処理
         var inv = PlayerStatus.LocalInstance
                             .ItemController
                             .GetComponent<ItemBelongingsController>();
@@ -125,6 +109,7 @@ public class ItemObject : NetworkBehaviour
                     .ItemGetSource
                     .Play();
 
-        // 4) ワールド上オブジェクトはサーバーで Despawn(true) 済み
+        // 4) クライアント自身の GameObject を削除
+        Destroy(gameObject);
     }
 }
