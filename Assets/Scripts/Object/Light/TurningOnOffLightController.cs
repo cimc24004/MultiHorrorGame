@@ -50,7 +50,7 @@ public class TurningOnOffLightController : NetworkBehaviour
         originalIntensity = pointLight.intensity;
         pointLight.intensity = 0f;
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void TurnOnOffByStatusServerRequestServerRPC()
     {
         TurnOnOffByStatusClientRPC();
