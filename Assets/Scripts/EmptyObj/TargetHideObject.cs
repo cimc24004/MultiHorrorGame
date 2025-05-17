@@ -60,19 +60,23 @@ public class TargetHideObject : NetworkBehaviour
     public void HideTarget(GameObject Target)
     {
         Target.transform.position = HideBeyondPos.transform.position;
-
-        SomeoneHided.Value = true;
+        SomeoneHitedStatusChangeRequestServerRpc(true);
         HideAddEvent.Invoke();
         cross_hair_event.CrossHairEventRaycastPermit = false;
         HideActionAudioSource.PlayOneShot(HideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
     }
+    [ServerRpc(RequireOwnership = false)]
+    private void SomeoneHitedStatusChangeRequestServerRpc(bool _someOneHited)
+    {
+        SomeoneHided.Value = _someOneHited;
+    }
     public void UnHideTarget(GameObject Target)
     {
         UnHideAddEvent.Invoke();
+        SomeoneHitedStatusChangeRequestServerRpc(false);
         HideActionAudioSource.PlayOneShot(HideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
         cross_hair_event.CrossHairEventRaycastPermit = true;
         Target.transform.position = UnHideBeyondPos.transform.position;
-        SomeoneHided.Value = false;
     }
 
 }
