@@ -124,7 +124,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     {
         player_status.CrouchNetwork.Value = false;
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void HidingNowChangeServerRpc(bool _HidingNow)
     {
         if (_HidingNow)
