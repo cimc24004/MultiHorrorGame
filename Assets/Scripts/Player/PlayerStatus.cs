@@ -93,30 +93,24 @@ public class PlayerStatus : NetworkBehaviour
     {
         if (IsOwner && LocalInstance == this)
             LocalInstance = null;
-        if (!IsOwner)
-        {
-            sub_noticed_ui_controller.gameObject.SetActive(false);
-            item_belonging_controller.gameObject.SetActive(false);
-            main_noticed_ui_controller.gameObject.SetActive(false);
-            cross_hair_event.gameObject.SetActive(false);
-        }
+
     }
 
     public override void OnNetworkSpawn()
     {
-        virtual_camera                  = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
-        player_stamina_controller       = GetComponent<PlayerStaminaController>();
-        player_continue_controller      = GameController.instance.GetComponent<PlayerContinueController>();
-        player_character_controller     = GetComponent<CharacterController>();
-        player_move_permit              = GetComponent<CharacterMovePermit>();
-        anim                            = GetComponent<Animator>();
-        player_hide_object_action       = GetComponent<PlayerHideObjectAction>();
-        item_belonging_controller       = ItemController.GetComponent<ItemBelongingsController>();
-        item_menu_controller            = ItemController.GetComponent<ItemMenuController>();
-        horror_director                 = HorrorDirector.Instance;
-        flash_light_controller          = FlashLightController.instance;
+        virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
+        player_stamina_controller = GetComponent<PlayerStaminaController>();
+        player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();
+        player_character_controller = GetComponent<CharacterController>();
+        player_move_permit = GetComponent<CharacterMovePermit>();
+        anim = GetComponent<Animator>();
+        player_hide_object_action = GetComponent<PlayerHideObjectAction>();
+        item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
+        item_menu_controller = ItemController.GetComponent<ItemMenuController>();
+        horror_director = HorrorDirector.Instance;
+        flash_light_controller = FlashLightController.instance;
         player_to_enemy_distance_controller = GetComponent<PlayerToEnemyDistanceController>();
-        player_move_script              = GetComponent<PlayerMoveScript>();
+        player_move_script = GetComponent<PlayerMoveScript>();
 
         InitPlayer = true;
 
@@ -137,6 +131,13 @@ public class PlayerStatus : NetworkBehaviour
         {
             LocalInstance = this;
             OnLocalPlayerSpawned?.Invoke(this);
+        }
+        if (!IsOwner)
+        {
+            sub_noticed_ui_controller.gameObject.SetActive(false);
+            item_belonging_controller.gameObject.SetActive(false);
+            main_noticed_ui_controller.gameObject.SetActive(false);
+            cross_hair_event.gameObject.SetActive(false);
         }
     }
 
