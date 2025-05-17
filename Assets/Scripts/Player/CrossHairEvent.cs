@@ -106,13 +106,8 @@ public class CrossHairEvent : NetworkBehaviour
                 {
 
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
-                    bool item_geted = item_object.RequestItemGet();
-
-                    if (item_geted)
-                    {
-                        ItemGetSource.Play();
-                    }
-
+                    // ここではただ拾うリクエストを飛ばすだけ
+                    item_object.RequestItemGet();
                     return;
                 }
                 if(raycast_hit.collider.gameObject.tag == "DeliverPlace")
