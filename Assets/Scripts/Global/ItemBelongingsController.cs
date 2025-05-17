@@ -20,14 +20,14 @@ public class ItemBelongingsController : NetworkBehaviour
      *───────────────────────────────────────────*/
     public class ItemStatusUI
     {
-        public Image           ItemIcon;
+        public Image ItemIcon;
         public TextMeshProUGUI ItemCountTextUI;
-        public GameObject      ItemUI;
+        public GameObject ItemUI;
     }
 
     public class ItemCountWithPermit
     {
-        public int  item_count;
+        public int item_count;
         public bool CanUse = true;
     }
 
@@ -39,7 +39,7 @@ public class ItemBelongingsController : NetworkBehaviour
 
     [Header("UI 用プレハブ & 親")]
     public GameObject ItemUIPrefab;
-    public Transform  ItemGroup;
+    public Transform ItemGroup;
 
     [Header("開始時に強制で持つアイテム")]
     [SerializeField] private List<ItemStatus> InitialItemStatuses = new();
@@ -47,27 +47,27 @@ public class ItemBelongingsController : NetworkBehaviour
     /*────────────────────────────────────────────
      * 依存コンポーネント & 変数
      *───────────────────────────────────────────*/
-    public CrossHairEvent         cross_hair_event;
-    [HideInInspector] public ItemMenuController   item_menu_controller;
+    public CrossHairEvent cross_hair_event;
+    [HideInInspector] public ItemMenuController item_menu_controller;
 
-    private ItemThrowController   item_throw_controller;
-    private PlayerStatus          player_status;
+    private ItemThrowController item_throw_controller;
+    private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
-    private ItemDatabases         item_databases;
+    private ItemDatabases item_databases;
 
-    public  Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new();
-    public  Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new();
+    public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items = new();
+    public Dictionary<ItemStatus, ItemStatusUI> belonging_item_uis = new();
 
     /*────────────────────────────────────────────
      * イベント購読
      *───────────────────────────────────────────*/
-    void OnEnable()  => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    void OnEnable() => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
 
     void Start()
     {
         item_throw_controller = GetComponent<ItemThrowController>();
-        item_databases        = ItemDatabases.instance;
+        item_databases = ItemDatabases.instance;
     }
 
     /*────────────────────────────────────────────
@@ -75,9 +75,9 @@ public class ItemBelongingsController : NetworkBehaviour
      *───────────────────────────────────────────*/
     private void InitOnPlayerSpawn(PlayerStatus ps)
     {
-        player_status             = ps;
+        player_status = ps;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
-        item_menu_controller      = GetComponent<ItemMenuController>();
+        item_menu_controller = GetComponent<ItemMenuController>();
 
         if (IsServer)
         {
@@ -210,17 +210,18 @@ public class ItemBelongingsController : NetworkBehaviour
             GameObject uiObj = Instantiate(ItemUIPrefab, ItemGroup);
             ItemUI iu = uiObj.GetComponent<ItemUI>();
             iu.item_belonging_controller = this;
-            iu.item_status               = st;
+            iu.item_status = st;
 
-            var ui = new ItemStatusUI {
-                ItemIcon        = iu.ItemIcon,
+            var ui = new ItemStatusUI
+            {
+                ItemIcon = iu.ItemIcon,
                 ItemCountTextUI = iu.ItemCountTextUI,
-                ItemUI          = iu.gameObject
+                ItemUI = iu.gameObject
             };
             belonging_item_uis.Add(st, ui);
         }
 
-        belonging_item_uis[st].ItemIcon.sprite      = st.MenuSprite;
+        belonging_item_uis[st].ItemIcon.sprite = st.MenuSprite;
         belonging_item_uis[st].ItemCountTextUI.text = count.ToString();
         item_menu_controller.ItemSelectByIndex(
             belonging_item_uis[st].ItemUI.transform.GetSiblingIndex());
@@ -235,9 +236,9 @@ public class ItemBelongingsController : NetworkBehaviour
     /*────────────────────────────────────────────
      * 補助系
      *───────────────────────────────────────────*/
-    public bool ExistsItems()                               => belonging_items.Count > 0;
-    public bool WhichCanUseItem(ItemStatus st)              => belonging_items[st].CanUse;
-    public void  CanUseItem(bool can, ItemStatus st)
+    public bool ExistsItems() => belonging_items.Count > 0;
+    public bool WhichCanUseItem(ItemStatus st) => belonging_items[st].CanUse;
+    public void CanUseItem(bool can, ItemStatus st)
     {
         belonging_items[st].CanUse = can;
         if (item_menu_controller) item_menu_controller.OnCanItemUseChangeUI(can, st);
@@ -245,4 +246,12 @@ public class ItemBelongingsController : NetworkBehaviour
 
     public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType t)
         => belonging_items.Where(x => x.Key.item_type == t).Select(x => x.Key).ToList();
+        
+    /// <summary>所持アイテム辞書にキーがあるか</summary>
+    public bool ExistBelongingItemByFind(ItemStatus st)
+        => belonging_items.ContainsKey(st);
+
+    /// <summary>UI 辞書にキーがあるか</summary>
+    public bool ExistItemUIItemStatusByFind(ItemStatus st)
+        => belonging_item_uis.ContainsKey(st);
 }
