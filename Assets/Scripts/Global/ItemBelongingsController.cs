@@ -64,21 +64,14 @@ public class ItemBelongingsController : NetworkBehaviour
     void OnEnable() => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
 
-    void Start()
-    {
-        item_throw_controller = GetComponent<ItemThrowController>();
-        item_databases = ItemDatabases.instance;
-    }
-
     /*────────────────────────────────────────────
      * プレイヤー生成後に初期化
      *───────────────────────────────────────────*/
-    private void InitOnPlayerSpawn(PlayerStatus ps)
+    public override void OnNetworkSpawn()
     {
-        player_status = ps;
-        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
+        item_throw_controller = GetComponent<ItemThrowController>();
+        item_databases = ItemDatabases.instance;
         item_menu_controller = GetComponent<ItemMenuController>();
-
         if (IsServer)
         {
             // サーバーが真実の所持リストを作り、
@@ -90,6 +83,11 @@ public class ItemBelongingsController : NetworkBehaviour
             SendInitialItemsClientRpc(
                 InitialItemStatuses.Select(s => s.GlobalId).ToArray());
         }
+    }
+    private void InitOnPlayerSpawn(PlayerStatus ps)
+    {
+        player_status = ps;
+        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
     }
 
     [ClientRpc]
