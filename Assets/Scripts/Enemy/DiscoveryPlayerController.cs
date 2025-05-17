@@ -131,7 +131,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 NonDiscoveriedEventOnce = true;
             }
         }
-        anim.SetBool("PlayerHidingNow", player_status.HidingNow);
+        anim.SetBool("PlayerHidingNow", player_status.HidingNow.Value);
         if (DiscoveryPlayerNow && !SightningPlayer)
         {
             //敵に見つかっているかつプレイヤーが見えてなかったら
@@ -165,7 +165,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
         if (SightningPlayer)
         {
-            if (player_status.HidingNow)
+            if (player_status.HidingNow.Value)
             {
                 //視認しているかつ隠れてる場合は隠れてること知ってるよー　変数をTrueに。
                 SightningPlayerWhenHidePlayer = true;
@@ -192,7 +192,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 if (raycast_hit.collider.gameObject.tag == "Player")
                 {
                     Debug.Log("Playerが敵に見つかりました！");
-                    if (!player_status.HidingNow)
+                    if (!player_status.HidingNow.Value)
                     {
                         //プレイヤーを視認しているナウ。
                         SightningPlayer = true;
@@ -222,7 +222,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         {
             if(!SightningPlayer)
             {
-                if (player_status.HidingNow)
+                if (player_status.HidingNow.Value)
                 {
                     //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
                     follow_object_nav.StoppingDistance = 4;

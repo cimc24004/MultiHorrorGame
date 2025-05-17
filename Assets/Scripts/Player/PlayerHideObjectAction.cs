@@ -1,79 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerHideObjectAction : NetworkBehaviour
 {
-    public bool HideAction;
-    public bool HidingPermit = true;
     //プレイヤーが隠れるアクション
     private TargetHideObject target_hide_object;
     private PlayerStatus player_status;
     private CharacterMovePermit charactor_move_permit;
     public TargetHideObject.HideType hide_type_target_object;
-    private Rigidbody player_rigid;
     private Animator player_anim;
-    private Collider player_collider;
     private CharacterController player_character_controller;
     private PlayerInput player_input;
     private PlayerMoveScript player_move_script;
     private CrossHairStatus cross_hair_status;
+    public NetworkVariable<bool> HidingPermit = new NetworkVariable<bool>(true);
     // Start is called before the first frame update
     void Start()
     {
         player_status = this.gameObject.GetComponent<PlayerStatus>();
         cross_hair_status = player_status.cross_hair_event.cross_hair_status;
-        player_rigid = this.gameObject.GetComponent<Rigidbody>();
-        player_collider = this.gameObject.GetComponent<Collider>();
         player_anim = this.gameObject.GetComponent<Animator>();
         player_character_controller = this.gameObject.GetComponent<CharacterController>();
         charactor_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         player_input = player_status.player_input;
         player_move_script = this.gameObject.GetComponent<PlayerMoveScript>();
+        player_input.actions["RaycastAction"].performed += PerfomedHideRaycastAction;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!HidingPermit)
+        if (!HidingPermit.Value)
         {
-            HideAction = false;
             return;
         }
-        if (cross_hair_status.HitedTag == "Hide"){
+        // if (cross_hair_status.HitedTag == "Hide")
+        // {
 
-            if (cross_hair_status.RaycastHitedExistsByCrossHairEvent && cross_hair_status.HitedObj == this.gameObject){
+        //     if (cross_hair_status.RaycastHitedExistsByCrossHairEvent && cross_hair_status.HitedObj == this.gameObject)
+        //     {
 
-            }
-        }
-        if (player_status.HidingNow)
-        {
-            //隠れている状態でRaycastActionキーをおした場合　隠れるオブジェクトから抜けるようにする。
-            if (player_input.actions["RaycastAction"].triggered)
-            {
-                //target_hide_object = null;
-                HideAction = true;
-            }
-        }
-        //隠れるキーを押したら
-        if (HideAction)
-        {
-            if (!player_status.HidingNow )
-            {
-                //ColHideObjectは隠れられるオブジェクトに触れてるかのチェックをしてから隠れる。
-                Hide();
-                //隠れている最中はプレイヤーの物理演算を無視してかつisTriggerも実質無効にする。
-            }
-            else if(player_status.HidingNow)
-            {
-                UnHide();
-            }
-            HideAction = false;
-        }
+        //     }
+        // }
+        // if (player_status.HidingNow.Value == true)
+        // {
+        //     //隠れている状態でRaycastActionキーをおした場合　隠れるオブジェクトから抜けるようにする。
+        //     if (player_input.actions["RaycastAction"].triggered)
+        //     {
+        //         HideUnHideRayCastActionPerformedRequestServerRpc();
+        //     }
+        // }
+
     }
+
     //隠すときは隠れられるオブジェクトのTargetHideObjectスクリプトのHideTarget関数を実行すればよい。
-    public void Hide()
+    [ClientRpc]
+    public void HideClientRpc()
     {
         player_character_controller.enabled = false;
         target_hide_object.HideTarget(this.gameObject);
@@ -85,9 +70,10 @@ public class PlayerHideObjectAction : NetworkBehaviour
         PlayerDeformedByHideType();
         charactor_move_permit.Stop();
 
-        player_status.HidingNow = true;
+        player_status.HidingNow.Value = true;
     }
-    public void UnHide()
+    [ClientRpc]
+    public void UnHideClientRpc()
     {
         target_hide_object.UnHideTarget(this.gameObject);
         //player_rigid.isKinematic = false;
@@ -104,7 +90,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
             player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
         }
 
-        player_status.HidingNow = false;
+        player_status.HidingNow.Value = false;
 
     }
     private void PlayerDeformedByHideType()
@@ -117,14 +103,14 @@ public class PlayerHideObjectAction : NetworkBehaviour
             player_status.HeadPos.position = player_status.StandHeadPos.position;
             player_status.CameraRoot.position = player_status.StandHeadPos.position;
         }
-        else if(hide_type_target_object == TargetHideObject.HideType.Crouch)
+        else if (hide_type_target_object == TargetHideObject.HideType.Crouch)
         {
             //座るタイプなら
             player_status.HeadPos.position = player_status.CrouchHeadPos.position;
             player_status.CameraRoot.position = player_status.CrouchHeadPos.position;
             player_anim.SetBool("Crouch", true);
         }
-        else if(hide_type_target_object == TargetHideObject.HideType.FaceDown)
+        else if (hide_type_target_object == TargetHideObject.HideType.FaceDown)
         {
             //うつ伏せタイプならうつ伏せアニメーションを流す。
             player_status.HeadPos.position = player_status.FaceDownHeadPos.position;
@@ -132,13 +118,18 @@ public class PlayerHideObjectAction : NetworkBehaviour
             player_anim.SetBool("FaceDown", true);
         }
     }
-    public void TargetHideObjectSet(GameObject TargetObject)
+    private void PerfomedHideRaycastAction(InputAction.CallbackContext ctx)
     {
-        //CrossHairEvent.csから実行する。 隠れる対称のオブジェクト(おしいれとか机とか)を取得し、そのHideTypeを取得。
-        target_hide_object = TargetObject.GetComponent<TargetHideObject>();
-        hide_type_target_object = target_hide_object.hide_type;
+        //HidingNowがtrueの場合だけ行う。 隠れてる最中に
+        if (player_status.HidingNow.Value)
+        {
+            if (this.HidingPermit.Value == true)
+            {
+                HideUnHideRayCastActionPerformedRequestServerRpc();
+            }
+        }
     }
-    
+
     public void GetCoughtWhenHidingByEnemy(GameObject _SightningEnemy)
     {
         //隠れている時 もし敵に隠れてることが知られていたら。
@@ -155,11 +146,40 @@ public class PlayerHideObjectAction : NetworkBehaviour
         else
         {
             //押し入れに隠れるタイプとかロッカーに隠れるタイプだったらいきなり敵がドアを開けてくるアニメーション的なことをすればいい。
-            if (player_status.HidingNow)
+            if (player_status.HidingNow.Value)
             {
-                UnHide();
+                if (IsServer)
+                {
+                    UnHideClientRpc();
+                }
             }
             player_status.DeadEvent(_SightningEnemy);
         }
     }
+    [ServerRpc]
+    public void HideUnHideRayCastActionPerformedRequestServerRpc(ulong _TargetNetworkObjectId = 0)
+    {
+        if (!HidingPermit.Value) return;
+        //隠れるキーを押したら
+        if (!player_status.HidingNow.Value)
+        {
+            GameObject TargetObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_TargetNetworkObjectId].gameObject;
+            TargetHideObjectSet(TargetObject);
+            //ColHideObjectは隠れられるオブジェクトに触れてるかのチェックをしてから隠れる。
+            HideClientRpc();
+            //隠れている最中はプレイヤーの物理演算を無視してかつisTriggerも実質無効にする。
+        }
+        else if (player_status.HidingNow.Value)
+        {
+            UnHideClientRpc();
+        }
+    }
+    
+    private void TargetHideObjectSet(GameObject _TargetObject)
+    {
+        //初期化みたいなとこです 隠れる対称のオブジェクト(おしいれとか机とか)を取得し、そのHideTypeを取得。
+        target_hide_object = _TargetObject.GetComponent<TargetHideObject>();
+        hide_type_target_object = target_hide_object.hide_type;
+    }
+
 }

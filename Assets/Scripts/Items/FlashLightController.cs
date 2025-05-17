@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.InputSystem;
-public class FlashLightController : Singleton<FlashLightController>
+using Unity.Netcode;
+public class FlashLightController : NetworkBehaviour
 {
     private FlashLightBatteryUIController flash_light_battery_ui_controller;
     public bool HaveLight = true;
@@ -25,8 +26,6 @@ public class FlashLightController : Singleton<FlashLightController>
     private bool LightSwitchMode = false;
     private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
-    private Vector3 DefaultPosition;
-    private Quaternion DefaultRotation;
     private bool InitPlayer;
     // Start is called before the first frame update
 
@@ -38,70 +37,90 @@ public class FlashLightController : Singleton<FlashLightController>
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         player_input = player_status.player_input;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         flash_light_battery_ui_controller = FlashLightBatteryUIController.instance;
         InitPlayer = true;
+        player_input.actions["LightSwitchAction"].performed += LightInputPerformed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!InitPlayer) return;
-        if(LightSwitchMode){
+        if (!InitPlayer) return;
+        if (LightSwitchMode)
+        {
             LightPowerDownTimeNow += Time.deltaTime;
-            if(LightPowerDownTimeNow > PerTimeForLightPowerDown){
+            if (LightPowerDownTimeNow > PerTimeForLightPowerDown)
+            {
                 LightPowerDecrease();
                 LightPowerDownTimeNow = 0;
             }
         }
-        if(LightPower > 0){
-            LightPermit = true;
-        }else{
-            LightPermit = false;
-        }
-        if (HaveLight && LightPermit)
+        if (IsServer)
         {
-            if (player_input.actions["LightSwitchAction"].triggered)
+            if (LightPower > 0)
             {
-                if (!LightSwitchMode)
-                {
-                    LightOn();
-                }
-                else
-                {
-                    LightOff();
-                }
+                LightPermit = true;
+            }
+            else
+            {
+                LightPermit = false;
             }
         }
+
     }
 
-    private void LightPowerDecrease(){
+    private void LightPowerDecrease() {
         LightPower -= LightPowerDown;
-        if(LightPower <= 0){
+        if (LightPower <= 0) {
             LightOff();
             sub_noticed_ui_controller.Notice("懐中電灯のバッテリーが切れた");
         }
-        if(LightPower % 25 == 0){
+        if (LightPower % 25 == 0) {
             flash_light_battery_ui_controller.UIChangeOnBatteryDecrease();
         }
     }
-    public void LightPowerToMax(){
+    public void LightPowerToMax() {
         LightPower = 100;
         flash_light_battery_ui_controller.UIChangeOnBatteryToMax();
     }
-    private void LightOn(){
+    private void LightOn() {
         //ライトをつける。
         LightObject.SetActive(true);
         LightAudioSource.PlayOneShot(LightOnClip);
         LightSwitchMode = true;
     }
-    private void LightOff(){
+    private void LightOff() {
         //ライトをけす。
         LightAudioSource.PlayOneShot(LightOffClip);
         LightObject.SetActive(false);
         LightSwitchMode = false;
+    }
+    private void LightInputPerformed(InputAction.CallbackContext ctx)
+    {
+        LightOnOffChangeRequestServerRpc();
+    }
+    [ServerRpc]
+    private void LightOnOffChangeRequestServerRpc()
+    {
+        if (!LightPermit) return;
+        LightOnOffChangeByStatusClientRpc();
+    }
+    
+    [ClientRpc]
+    private void LightOnOffChangeByStatusClientRpc()
+    {
+        if (!LightSwitchMode)
+        {
+            LightOn();
+        }
+        else
+        {
+            LightOff();
+        }
     }
 }

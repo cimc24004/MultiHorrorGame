@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
+using Mono.Cecil.Cil;
 public class TargetHideObject : NetworkBehaviour
 {
     //どこに隠すか場所を指定！
@@ -11,10 +12,11 @@ public class TargetHideObject : NetworkBehaviour
     public Transform UnHideBeyondPos;
 
     //誰かが隠れているかどうか。
-    public bool SomeoneHided;
+    public NetworkVariable<bool> SomeoneHided = new NetworkVariable<bool>();
 
     //隠れるタイプは何なのか。
-    public enum HideType{
+    public enum HideType
+    {
         Stand,
         Crouch,
         FaceDown
@@ -31,6 +33,7 @@ public class TargetHideObject : NetworkBehaviour
     private CrossHairEvent cross_hair_event;
     private AudioSource HideActionAudioSource;
     private AudioDatas HideActionAudioDatas;
+
     // void Start()
     // {
     //     player_status = PlayerStatus.LocalInstance;
@@ -47,7 +50,8 @@ public class TargetHideObject : NetworkBehaviour
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
 
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         cross_hair_event = player_status.cross_hair_event;
         HideActionAudioDatas = player_status.HideActionAudioDatas;
@@ -56,9 +60,8 @@ public class TargetHideObject : NetworkBehaviour
     public void HideTarget(GameObject Target)
     {
         Target.transform.position = HideBeyondPos.transform.position;
-        // Target.transform.rotation = 
-        // player_camera_controller.enabled = false;
-        SomeoneHided = true;
+
+        SomeoneHided.Value = true;
         HideAddEvent.Invoke();
         cross_hair_event.CrossHairEventRaycastPermit = false;
         HideActionAudioSource.PlayOneShot(HideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
@@ -69,7 +72,7 @@ public class TargetHideObject : NetworkBehaviour
         HideActionAudioSource.PlayOneShot(HideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
         cross_hair_event.CrossHairEventRaycastPermit = true;
         Target.transform.position = UnHideBeyondPos.transform.position;
-        SomeoneHided = false;
-        // player_camera_controller.enabled = true;
+        SomeoneHided.Value = false;
     }
+
 }

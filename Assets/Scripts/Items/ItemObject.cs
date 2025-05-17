@@ -45,7 +45,7 @@ public class ItemObject : NetworkBehaviour
         // 二重リクエスト防止
         if (pickupRequested) return;
         pickupRequested = true;
-
+        Debug.Log("PickUp----------------RequestPickUpServerRpc");
         // ここでサーバーへ RPC 投げる
         RequestPickupServerRpc();
     }
@@ -82,14 +82,14 @@ public class ItemObject : NetworkBehaviour
         }
 
         // サーバー在庫も更新
-        if (inv.belonging_items.ContainsKey(item_status))
-            inv.belonging_items[item_status].item_count++;
-        else
-            inv.belonging_items[item_status] = new ItemBelongingsController.ItemCountWithPermit
-            {
-                item_count = 1,
-                CanUse = true
-            };
+        // if (inv.belonging_items.ContainsKey(item_status))
+        //     inv.belonging_items[item_status].item_count++;
+        // else
+        //     inv.belonging_items[item_status] = new ItemBelongingsController.ItemCountWithPermit
+        //     {
+        //         item_count = 1,
+        //         CanUse = true
+        //     };
 
         // 取得成功通知
         SuccessfulPickupClientRpc(new ClientRpcParams

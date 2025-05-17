@@ -44,7 +44,7 @@ public class CrossHairStatus : SerializedMonoBehaviour
     {
         if(!InitPlayer) return;
         //�v���C���[���B��Ă�����A�܂��̓h�A��A�C�e���ȂǂɃ��C�L���X�g���������Ă���Ȃ�� �`�F�b�N�摜��\���B
-        if (RaycastHitedExistsByCrossHairEvent || player_status.HidingNow)
+        if (RaycastHitedExistsByCrossHairEvent || player_status.HidingNow.Value)
         {
             SpriteChange(_CheckMode: true);
         }

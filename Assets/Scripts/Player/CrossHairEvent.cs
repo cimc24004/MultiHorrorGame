@@ -118,9 +118,8 @@ public class CrossHairEvent : NetworkBehaviour
                 }
                 if (raycast_hit.collider.gameObject.tag == "HideActionObject")
                 {
-
-                    player_hide_object_action.HideAction = true;
-                    player_hide_object_action.TargetHideObjectSet(raycast_hit.collider.gameObject);
+                    NetworkObject networkObject = raycast_hit.collider.gameObject.GetComponent<NetworkObject>();
+                    player_hide_object_action.HideUnHideRayCastActionPerformedRequestServerRpc(networkObject.NetworkObjectId);
                     return;
 
                 }

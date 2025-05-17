@@ -27,11 +27,12 @@ public class PlayerStatus : NetworkBehaviour
     public CrossHairEvent cross_hair_event;
     public PlayerHideObjectAction player_hide_object_action;
     public PlayerInput player_input;
+    public FlashLightController flash_light_controller;
     public SubNoticedUIController sub_noticed_ui_controller;
     public MainNoticedUIController main_noticed_ui_controller;
     public GameObject GageCanvas;
     public Image GageImage;
-    public bool Dead;
+    public NetworkVariable<bool> Dead = new NetworkVariable<bool>();
 
     // プレイヤーの移動状態 (走る 歩く しゃがむ 停止)
     public enum PlayerMoveState { Walk, Run, Crouch, Stop }
@@ -47,7 +48,7 @@ public class PlayerStatus : NetworkBehaviour
     [Header("移動速度")]
     public float MoveSpeed;
 
-    public bool HidingNow;
+    public NetworkVariable<bool> HidingNow = new NetworkVariable<bool>();
     public float MoveX;
     public float MoveY;
     [Header("スタミナコスト")]
@@ -80,7 +81,6 @@ public class PlayerStatus : NetworkBehaviour
     private HorrorDirector horror_director;
     private Tween crouchTween;
     private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
-    private FlashLightController flash_light_controller;
 
     // しゃがみ状態同期用 NetworkVariable（オーナー書き込み）
     public NetworkVariable<bool> CrouchNetwork = new NetworkVariable<bool>(
@@ -108,7 +108,6 @@ public class PlayerStatus : NetworkBehaviour
         item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = ItemController.GetComponent<ItemMenuController>();
         horror_director = HorrorDirector.Instance;
-        flash_light_controller = FlashLightController.instance;
         player_to_enemy_distance_controller = GetComponent<PlayerToEnemyDistanceController>();
         player_move_script = GetComponent<PlayerMoveScript>();
 
@@ -216,11 +215,11 @@ public class PlayerStatus : NetworkBehaviour
                 flinch.FlinchStart(item.StopEnemyTime);
                 return;
             }
-            player_hide_object_action.HidingPermit = false;
+            player_hide_object_action.HidingPermit.Value = false;
         }
         anim.SetBool("AppearentDeath", true);
         MoveX = MoveY = 0;
-        player_hide_object_action.HidingPermit = true;
+        player_hide_object_action.HidingPermit.Value = true;
         player_to_enemy_distance_controller.enabled = false;
         horror_director.nearEnemyCount = horror_director.discoveredEnemyCount = 0;
         horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
