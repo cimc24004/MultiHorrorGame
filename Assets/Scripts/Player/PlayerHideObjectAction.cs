@@ -100,7 +100,10 @@ public class PlayerHideObjectAction : NetworkBehaviour
     }
     private void PlayerDeformedByHideType()
     {
-        PlayerDeformedByHideTypeRequestServerRpc();
+        if (IsOwner)
+        {
+            PlayerDeformedByHideTypeRequestServerRpc();
+        }
         //HideType(うつぶせや座るや立つ)の値によってプレイヤーの状態を変える。
         if (hide_type_target_object == TargetHideObject.HideType.Stand)
         {
