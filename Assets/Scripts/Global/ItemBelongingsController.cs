@@ -104,7 +104,7 @@ public class ItemBelongingsController : NetworkBehaviour   // ★ NetworkBehaviou
             ItemCountWithPermit cp = new() { item_count = 1, CanUse = true };
             belonging_items.Add(_item_status, cp);
 
-            if (_item_status.item_type != ItemStatus.ItemType.Event)
+            if ( _item_status.item_type != ItemStatus.ItemType.Event && item_menu_controller)
             {
                 GameObject uiObj = Instantiate(ItemUIPrefab, ItemGroup);
                 ItemUI      iu   = uiObj.GetComponent<ItemUI>();
@@ -130,9 +130,13 @@ public class ItemBelongingsController : NetworkBehaviour   // ★ NetworkBehaviou
             //―― すでに所持 → 個数だけ増加 ――――――――――――――――――――
             int count = belonging_items[_item_status].item_count + 1;
             belonging_items[_item_status].item_count = count;
-            SetItemStatusToItemMenu(_item_status);
-            item_menu_controller.ItemSelectByIndex(
+            if (item_menu_controller)
+            {
+                SetItemStatusToItemMenu(_item_status);
+                item_menu_controller.ItemSelectByIndex(
                 belonging_item_uis[_item_status].ItemUI.transform.GetSiblingIndex());
+            }
+
         }
     }
 
