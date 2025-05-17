@@ -100,13 +100,11 @@ public class FlashLightController : NetworkBehaviour
         //ライトをつける。
         LightObject.SetActive(true);
         LightAudioSource.PlayOneShot(LightOnClip);
-        LightSwitchMode.Value = true;
     }
     private void LightOff() {
         //ライトをけす。
         LightAudioSource.PlayOneShot(LightOffClip);
         LightObject.SetActive(false);
-        LightSwitchMode.Value = false;
     }
     private void LightInputPerformed(InputAction.CallbackContext ctx)
     {
@@ -125,10 +123,12 @@ public class FlashLightController : NetworkBehaviour
         if (!LightSwitchMode.Value)
         {
             LightOn();
+            LightSwitchMode.Value = true;
         }
         else
         {
             LightOff();
+            LightSwitchMode.Value = false;
         }
     }
 }
