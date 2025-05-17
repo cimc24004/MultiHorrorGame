@@ -1,3 +1,4 @@
+// ItemBelongingsController.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,28 +26,22 @@ public class ItemBelongingsController : MonoBehaviour
 
     //──────────────── Inspector ────────────────
     public int maxCarryableItems = 6;
-
-    public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new();
-    public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new();
-
+    [ShowInInspector] public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new();
+    [ShowInInspector] public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new();
     public GameObject ItemUIPrefab;
     public Transform  ItemGroup;
-
     public CrossHairEvent cross_hair_event;
     [HideInInspector] public ItemMenuController item_menu_controller;
-
+    private PlayerStatus player_status;
     private ItemThrowController     item_throw_controller;
-    private PlayerStatus            player_status;
     private SubNoticedUIController  sub_noticed_ui_controller;
     private EnemyAllController      enemy_all_controller;
     private ItemDatabases           item_databases;
-
     [SerializeField] private List<ItemStatus> InitialItemStatuses;
 
     //──────────────── Unity イベント ────────────────
     void OnEnable()  => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
-
     void Start()
     {
         item_throw_controller = GetComponent<ItemThrowController>();
@@ -60,71 +55,79 @@ public class ItemBelongingsController : MonoBehaviour
         sub_noticed_ui_controller = ps.sub_noticed_ui_controller;
         item_menu_controller      = GetComponent<ItemMenuController>();
 
-        // ★FIX: 辞書に無い場合のみ初期アイテムを追加
-        foreach (var st in InitialItemStatuses)
+        // ホストだけ最初のアイテムを辞書登録＆クライアント同期
+        if (NetworkManager.Singleton.IsServer)
         {
-            if (!belonging_items.ContainsKey(st))              // ★FIX
+            foreach (var st in InitialItemStatuses)
             {
-                ItemAddToBelonging(st, false);                 // notifyUI=false
+                belonging_items[st] = new ItemCountWithPermit { item_count = 1 };
+                var rpcParams = new ClientRpcParams {
+                    Send = new ClientRpcSendParams { TargetClientIds = new[] { ps.OwnerClientId } }
+                };
+                SendItemToClientClientRpc(st, 1, rpcParams);
                 item_menu_controller.OnItemGetChangeUI(false, st);
             }
         }
     }
 
+    //──────────────── サーバー→クライアント同期 ────────────────
+    [ClientRpc]
+    void SendItemToClientClientRpc(ItemStatus st, int newCount, ClientRpcParams rpcParams = default)
+    {
+        ForceSyncFromServer(st, newCount);
+    }
+
     //──────────────── アイテム追加 ────────────────
-    [Button]
     public void ItemAddToBelonging(ItemStatus st, bool notifyUI = true)
     {
-        if (NetworkManager.Singleton && !NetworkManager.Singleton.IsServer) return;
-
-        if (!belonging_items.ContainsKey(st))
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
         {
-            var entry = new ItemCountWithPermit { item_count = 1 };
-            belonging_items.Add(st, entry);
+            if (!belonging_items.ContainsKey(st))
+                belonging_items[st] = new ItemCountWithPermit { item_count = 1 };
+            else
+                belonging_items[st].item_count++;
 
-            if (st.item_type != ItemStatus.ItemType.Event)
-            {
-                var go = Instantiate(ItemUIPrefab, ItemGroup);
-                var iu = go.GetComponent<ItemUI>();
-                iu.item_belonging_controller = this;
-                iu.item_status               = st;
+            int newCount = belonging_items[st].item_count;
+            var rpcParams = new ClientRpcParams {
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { NetworkManager.Singleton.LocalClientId } }
+            };
+            SendItemToClientClientRpc(st, newCount, rpcParams);
 
-                var info = new ItemStatusUI {
-                    ItemIcon        = iu.ItemIcon,
-                    ItemCountTextUI = iu.ItemCountTextUI,
-                    ItemUI          = go
-                };
-                belonging_item_uis.Add(st, info);
-
-                info.ItemIcon.sprite      = st.MenuSprite;
-                info.ItemCountTextUI.text = "1";
-                item_menu_controller.ItemSelectByIndex(go.transform.GetSiblingIndex());
-            }
-
-            if (notifyUI) item_menu_controller.OnItemGetChangeUI(false, st);
-        }
-        else
-        {
-            belonging_items[st].item_count++;
-            SetItemStatusToItemMenu(st);
-            item_menu_controller.ItemSelectByIndex(
-                belonging_item_uis[st].ItemUI.transform.GetSiblingIndex());
+            if (notifyUI)
+                item_menu_controller.OnItemGetChangeUI(false, st);
         }
     }
 
-    //──────────────── サーバー→クライアント同期 ────────────────
+    //──────────────── サーバー→クライアント強制同期 ────────────────
     public void ForceSyncFromServer(ItemStatus st, int newCount)
     {
         if (!belonging_items.ContainsKey(st))
-        {
-            ItemAddToBelonging(st, false);
-            belonging_items[st].item_count = newCount;
-        }
+            belonging_items[st] = new ItemCountWithPermit { item_count = newCount };
         else
-        {
             belonging_items[st].item_count = newCount;
+
+        if (!belonging_item_uis.ContainsKey(st))
+        {
+            var go = Instantiate(ItemUIPrefab, ItemGroup);
+            var iu = go.GetComponent<ItemUI>();
+            iu.item_belonging_controller = this;
+            iu.item_status               = st;
+
+            var info = new ItemStatusUI {
+                ItemIcon        = iu.ItemIcon,
+                ItemCountTextUI = iu.ItemCountTextUI,
+                ItemUI          = go,
+            };
+            belonging_item_uis[st] = info;
+            info.ItemIcon.sprite = st.MenuSprite;
         }
-        SetItemStatusToItemMenu(st);
+
+        belonging_item_uis[st].ItemCountTextUI.text =
+            belonging_items[st].item_count.ToString();
+
+        item_menu_controller.ItemSelectByIndex(
+            belonging_item_uis[st].ItemUI.transform.GetSiblingIndex()
+        );
     }
 
     //──────────────── アイテム使用 ────────────────
@@ -195,29 +198,16 @@ public class ItemBelongingsController : MonoBehaviour
 
     //──────────────── 判定ヘルパー ────────────────
     public bool ExistsItems() => belonging_items.Count > 0;
-
-    public bool ExistBelongingItemByFind(ItemStatus st) =>     // ← ここ！
-        belonging_items.ContainsKey(st);
-
-    public bool ExistItemUIItemStatusByFind(ItemStatus st) =>
-        belonging_item_uis.ContainsKey(st);
-
-    public bool WhichCanUseItem(ItemStatus st) =>
-        belonging_items[st].CanUse;
-
+    public bool ExistBelongingItemByFind(ItemStatus st) => belonging_items.ContainsKey(st);
+    public bool ExistItemUIItemStatusByFind(ItemStatus st) => belonging_item_uis.ContainsKey(st);
+    public bool WhichCanUseItem(ItemStatus st) => belonging_items[st].CanUse;
     public void CanUseItem(bool can, ItemStatus st)
     {
         belonging_items[st].CanUse = can;
         item_menu_controller.OnCanItemUseChangeUI(can, st);
     }
-
-    public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType t)
-    {
-        return belonging_items
-               .Where(kvp => kvp.Key.item_type == t)
-               .Select(kvp => kvp.Key)
-               .ToList();
-    }
+    public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType t) =>
+        belonging_items.Where(kvp => kvp.Key.item_type == t).Select(kvp => kvp.Key).ToList();
 
     //──────────────── 内部ヘルパー ────────────────
     void Consume(ItemStatus st, int cntNow)
@@ -226,9 +216,7 @@ public class ItemBelongingsController : MonoBehaviour
         belonging_items[st].item_count = cntNow;
 
         if (cntNow > 0)
-        {
             SetItemStatusToItemMenu(st);
-        }
         else
         {
             Destroy(belonging_item_uis[st].ItemUI);
