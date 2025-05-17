@@ -12,7 +12,7 @@ public class FlashLightController : NetworkBehaviour
     [ShowIf("HaveLight", true)]
     [Header("懐中電灯(?)オブジェクトをセット")]
     public GameObject LightObject;
-    public float LightPower = 100;
+    public NetworkVariable<float> LightPower = new NetworkVariable<float>(100);
 
     [Header("~秒ごとに")]
     [SerializeField] private float PerTimeForLightPowerDown = 1;
@@ -23,7 +23,7 @@ public class FlashLightController : NetworkBehaviour
     [SerializeField] private AudioClip LightOnClip;
     [SerializeField] private AudioClip LightOffClip;
     private PlayerInput player_input;
-    private bool LightSwitchMode = false;
+    private NetworkVariable<bool> LightSwitchMode = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
     private bool InitPlayer;
@@ -48,25 +48,29 @@ public class FlashLightController : NetworkBehaviour
         {
             this.gameObject.SetActive(false);
         }
-        player_input.actions["LightSwitchAction"].performed += LightInputPerformed;
+        if (IsOwner)
+        {
+            player_input.actions["LightSwitchAction"].performed += LightInputPerformed;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!InitPlayer) return;
-        if (LightSwitchMode)
-        {
-            LightPowerDownTimeNow += Time.deltaTime;
-            if (LightPowerDownTimeNow > PerTimeForLightPowerDown)
-            {
-                LightPowerDecrease();
-                LightPowerDownTimeNow = 0;
-            }
-        }
+
         if (IsServer)
         {
-            if (LightPower > 0)
+            if (LightSwitchMode.Value)
+            {
+                LightPowerDownTimeNow += Time.deltaTime;
+                if (LightPowerDownTimeNow > PerTimeForLightPowerDown)
+                {
+                    LightPowerDecrease();
+                    LightPowerDownTimeNow = 0;
+                }
+            }
+            if (LightPower.Value > 0)
             {
                 LightPermit = true;
             }
@@ -79,30 +83,30 @@ public class FlashLightController : NetworkBehaviour
     }
 
     private void LightPowerDecrease() {
-        LightPower -= LightPowerDown;
-        if (LightPower <= 0) {
+        LightPower.Value -= LightPowerDown;
+        if (LightPower.Value <= 0) {
             LightOff();
             sub_noticed_ui_controller.Notice("懐中電灯のバッテリーが切れた");
         }
-        if (LightPower % 25 == 0) {
+        if (LightPower.Value % 25 == 0) {
             flash_light_battery_ui_controller.UIChangeOnBatteryDecrease();
         }
     }
     public void LightPowerToMax() {
-        LightPower = 100;
+        LightPower.Value = 100;
         flash_light_battery_ui_controller.UIChangeOnBatteryToMax();
     }
     private void LightOn() {
         //ライトをつける。
         LightObject.SetActive(true);
         LightAudioSource.PlayOneShot(LightOnClip);
-        LightSwitchMode = true;
+        LightSwitchMode.Value = true;
     }
     private void LightOff() {
         //ライトをけす。
         LightAudioSource.PlayOneShot(LightOffClip);
         LightObject.SetActive(false);
-        LightSwitchMode = false;
+        LightSwitchMode.Value = false;
     }
     private void LightInputPerformed(InputAction.CallbackContext ctx)
     {
@@ -118,7 +122,7 @@ public class FlashLightController : NetworkBehaviour
     [ClientRpc]
     private void LightOnOffChangeByStatusClientRpc()
     {
-        if (!LightSwitchMode)
+        if (!LightSwitchMode.Value)
         {
             LightOn();
         }
