@@ -30,7 +30,7 @@ public class MindWorldController : MonoBehaviour
             Debug.Log(turning_on_off_light_controller);
             if (NetworkManager.Singleton.IsServer)
             {
-                turning_on_off_light_controller.TurnOnOffByStatusClientRPC();
+                turning_on_off_light_controller.ToggleLight();
             }
         }
     }
