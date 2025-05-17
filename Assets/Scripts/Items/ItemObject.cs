@@ -14,16 +14,27 @@ public class ItemObject : NetworkBehaviour
     public UnityEvent ItemGetAddEvent;
 
     private NeedKeysController need_keys_controller;
-    private NetworkObject      thisNetObj;
+    private NetworkObject      netObj;
 
     /* ─────────────────────────────────────── */
 
-    void Awake()
+    private void Awake()
     {
-        thisNetObj = GetComponent<NetworkObject>();
-        // シーンに置いたままでも Server が Spawn してくれる
-        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer && !thisNetObj.IsSpawned)
-            thisNetObj.Spawn();
+        netObj = GetComponent<NetworkObject>();
+
+        if (NetworkManager.Singleton == null) return;
+
+        if (NetworkManager.Singleton.IsServer)
+        {
+            // ★ サーバーだけが Spawn する
+            if (!netObj.IsSpawned) netObj.Spawn();
+        }
+        else
+        {
+            // ★ クライアントがシーンから読み込んだ
+            //    余分なオブジェクトは即破棄
+            Destroy(gameObject);
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -81,7 +92,7 @@ public class ItemObject : NetworkBehaviour
 
         /* ⑤ 成功時に Despawn → 全クライアントからアイテム消滅 */
         if (success)
-            thisNetObj.Despawn(true);
+            netObj.Despawn(true);
     }
 
     /* ─────────────────────────────────────── */
