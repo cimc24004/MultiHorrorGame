@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using System.Linq;
 using TMPro;
+using Unity.Netcode;
 public class ItemBelongingsController : MonoBehaviour
 {
     //アイテムの持ち物を管理するコントローラー。
@@ -78,6 +79,14 @@ public class ItemBelongingsController : MonoBehaviour
     [Button]
     public void ItemAddToBelonging(ItemStatus _item_status)
     {
+        
+        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer == false)
+        {
+            // クライアント側は ForceSyncFromServer で統一
+            // （ローカルで直接追加しない）
+            return;
+        }
+
         if (!belonging_items.ContainsKey(_item_status))
         {
             ItemCountWithPermit item_count_with_permit = new ItemCountWithPermit();
@@ -85,7 +94,8 @@ public class ItemBelongingsController : MonoBehaviour
             item_count_with_permit.CanUse = true;
 
             belonging_items.Add(_item_status, item_count_with_permit);
-            if(_item_status.item_type != ItemStatus.ItemType.Event){
+            if (_item_status.item_type != ItemStatus.ItemType.Event)
+            {
                 //イベント用アイテムでなければアイテムを追加
                 //所持品に取得したアイテムがなければアイテムメニューに追加する。
                 GameObject item_ui_obj = Instantiate(ItemUIPrefab, ItemGroup.transform);
@@ -95,10 +105,10 @@ public class ItemBelongingsController : MonoBehaviour
                 //ItemUIとはアイテムメニューにあるアイテムのUI。
 
                 ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
-                
+
                 item_ui.item_belonging_controller = this;
                 item_ui.item_status = _item_status;
-                
+
                 //item_uiにUI情報を入れておく。
                 ItemStatusUI item_status_ui = new ItemStatusUI();
                 item_status_ui.ItemIcon = item_ui.ItemIcon;
@@ -108,7 +118,7 @@ public class ItemBelongingsController : MonoBehaviour
                 //UI情報たちを集めたDictionaryにUI情報のためだけに追加しておく。
                 belonging_item_uis.Add(_item_status, item_status_ui);
                 //UI専用Dictionaryに入れたらその入れたやつにまた新しく情報を追加。
-                
+
                 //所持品には持っていなかったアイテムなのでカウント数は 1 
 
                 //さらに持ってなかった時に取得した場合のみアイテム画像を指定。 1度だけのコールで済む。
@@ -121,10 +131,10 @@ public class ItemBelongingsController : MonoBehaviour
         else
         {
             //アイテムメニューにアイテムが存在するならば。
-            
+
             //指定したアイテムの持っている数を取得。
             int BelongingCountNow = belonging_items[_item_status].item_count;
-            
+
             //アイテムを"手に入れる"なのでアイテム数を１増やす。
             BelongingCountNow += 1;
 
@@ -366,6 +376,26 @@ public class ItemBelongingsController : MonoBehaviour
             Destroy(belonging_item_uis[item_status].ItemUI);
             belonging_item_uis.Remove(item_status);
 
+        }
+    }
+    //────────────────────────────────────────
+    // サーバー -> クライアント同期用のヘルパー
+    // (重複追加バグを避け、正しいカウントで上書き)
+    //────────────────────────────────────────
+    public void ForceSyncFromServer(ItemStatus st, int newCount)
+    {
+        if (!belonging_items.ContainsKey(st))
+        {
+            // まだ持っていなければ初めて追加
+            ItemAddToBelonging(st);
+            belonging_items[st].item_count = newCount;
+            SetItemStatusToItemMenu(st);
+        }
+        else
+        {
+            // 既に持っている場合はカウントだけ上書き
+            belonging_items[st].item_count = newCount;
+            SetItemStatusToItemMenu(st);
         }
     }
 

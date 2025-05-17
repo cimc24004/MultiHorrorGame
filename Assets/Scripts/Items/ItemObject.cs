@@ -3,117 +3,120 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>ワールドに置かれた拾得アイテム。</summary>
+[RequireComponent(typeof(NetworkObject))]
 public class ItemObject : NetworkBehaviour
 {
-    // ───────── Inspector 設定項目 ─────────
-    [Header("このワールドアイテムのステータス")]
-    public ItemStatus item_status;                 // ScriptableObject などで保持した情報
-    [Header("取得成功時に呼ばれる UnityEvent (効果音などを紐づける)")]
-    public UnityEvent ItemGetAddEvent;             // AudioSource → Play() を登録しておく
+    [Header("アイテム本体のステータス")]
+    public ItemStatus item_status;
 
-    // ───────── 参照キャッシュ ─────────
+    [Header("取得成功時に呼ばれる UnityEvent (効果音・演出)")]
+    public UnityEvent ItemGetAddEvent;
+
     private NeedKeysController need_keys_controller;
-    private NetworkObject      thisNetObj;         // 自分の NetworkObject
+    private NetworkObject      thisNetObj;
 
-    // ────────────────────────────────────────
-    // ネットワーク初期化
-    // ────────────────────────────────────────
+    /* ─────────────────────────────────────── */
+
     void Awake()
     {
-        // ★ シーン配置でも Spawn する
-        if (IsServer) GetComponent<NetworkObject>().Spawn();
+        thisNetObj = GetComponent<NetworkObject>();
+        // シーンに置いたままでも Server が Spawn してくれる
+        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer && !thisNetObj.IsSpawned)
+            thisNetObj.Spawn();
     }
 
     public override void OnNetworkSpawn()
     {
         need_keys_controller = NeedKeysController.instance;
-        thisNetObj = GetComponent<NetworkObject>();
     }
 
-    // ────────────────────────────────────────
-    // クライアント側エントリポイント
-    // ワールド上のアイテムをクリックしたスクリプトから呼ばれる
-    // ────────────────────────────────────────
+    /* ─────────────────────────────────────── */
+    /* クライアント入口：Raycast などから呼ぶ */
+    /* ─────────────────────────────────────── */
     public void RequestItemGet()
     {
         RequestItemGetServerRpc(NetworkManager.Singleton.LocalClientId);
     }
 
-    // ────────────────────────────────────────
-    // (1) Client → Server
-    // プレイヤーが拾いたいと要求
-    // ────────────────────────────────────────
+    /* ─────────────────────────────────────── */
+    /* (1) Client → Server  RPC                */
+    /* ─────────────────────────────────────── */
     [ServerRpc(RequireOwnership = false)]
-    private void RequestItemGetServerRpc(ulong clientId, ServerRpcParams _ = default)
+    void RequestItemGetServerRpc(ulong clientId, ServerRpcParams _ = default)
     {
-        // ① 拾い主のインベントリ取得
+        /* ① 拾い主のインベントリを取得 */
         var playerObj = NetworkManager.Singleton.SpawnManager
-                              .GetPlayerNetworkObject(clientId)
-                              .gameObject;
+                              .GetPlayerNetworkObject(clientId).gameObject;
+
         var inv = playerObj.GetComponent<PlayerStatus>()
                            .ItemController
                            .GetComponent<ItemBelongingsController>();
 
-        // ② 所持上限チェック
+        /* ② 所持上限チェック */
         bool reachedMax = inv.belonging_items
                              .Where(kvp => kvp.Key.item_type != ItemStatus.ItemType.Event)
                              .Count() >= inv.maxCarryableItems
-                          || IsItemAtMaxCapacity(inv);
+                      ||  IsItemAtMaxCapacity(inv);
 
         bool success = !reachedMax ||
                        item_status.item_type == ItemStatus.ItemType.Event;
-        // ④ 結果を拾い主クライアントだけに通知
-        var cp = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { clientId }
-            }
-        };
-        ItemGetResponseClientRpc(success, cp);
-        // ③ サーバー側の処理
+
+        /* ③ 成功時のみサーバー側のインベントリを更新 */
+        int newCount = 0;
         if (success)
         {
-            // 鍵ならカウント
             if (item_status.item_type == ItemStatus.ItemType.Key)
                 need_keys_controller.GottenKeyCount++;
 
-            // サーバー側インベントリ追加
-            inv.ItemAddToBelonging(item_status);
-
-            // 全クライアントからアイテムを消す
-            thisNetObj.Despawn(true);
+            inv.ItemAddToBelonging(item_status);           // authoritative
+            newCount = inv.belonging_items[item_status].item_count;
         }
 
+        /* ④ 呼び出し主だけに結果と新カウントを返す */
+        var cp = new ClientRpcParams {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } }
+        };
+        ItemGetResponseClientRpc(success, newCount, cp);
 
+        /* ⑤ 成功時に Despawn → 全クライアントからアイテム消滅 */
+        if (success)
+            thisNetObj.Despawn(true);
     }
 
-    // ────────────────────────────────────────
-    // (2) Server → Client（拾い主のみ）
-    // 成功／失敗を受け取り UI と効果音を処理
-    // ────────────────────────────────────────
+    /* ─────────────────────────────────────── */
+    /* (2) Server → Client RPC（拾い主のみ）   */
+    /* ─────────────────────────────────────── */
     [ClientRpc]
-    void ItemGetResponseClientRpc(bool success, ClientRpcParams _)
+    void ItemGetResponseClientRpc(
+        bool success,
+        int  newCount,
+        ClientRpcParams _ = default)
     {
-        var invUI = PlayerStatus.LocalInstance
-                     .ItemController
-                     .GetComponent<ItemBelongingsController>();
+        // ここは拾ったクライアントだけに届く
+
+        var inv = PlayerStatus.LocalInstance
+                    .ItemController
+                    .GetComponent<ItemBelongingsController>();
 
         if (success)
-            ItemGetAddEvent.Invoke();          // 効果音
+        {
+            /* クライアント側でも辞書と UI を合わせる               */
+            inv.ForceSyncFromServer(item_status, newCount);
 
-        // クライアントは**UI だけ**更新
-        invUI.item_menu_controller
-             .OnItemGetChangeUI(!success, item_status);
+            /* 効果音・エフェクトを UnityEvent で実行 */
+            ItemGetAddEvent.Invoke();
+        }
+
+        /* 持てなかった場合の UI 通知 */
+        inv.item_menu_controller.OnItemGetChangeUI(!success, item_status);
     }
 
-    // ────────────────────────────────────────
-    // ヘルパー：所持数上限チェック
-    // ────────────────────────────────────────
-    private bool IsItemAtMaxCapacity(ItemBelongingsController inv)
+    /* ヘルパー：同アイテム所持数上限チェック */
+    bool IsItemAtMaxCapacity(ItemBelongingsController inv)
     {
         if (!inv.belonging_items.TryGetValue(item_status, out var entry))
-            return false; // まだ持っていなければ容量オーバーではない
+            return false;
 
         return entry.item_count + 1 > item_status.MaxCanHave;
     }
