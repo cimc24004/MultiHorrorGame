@@ -73,7 +73,7 @@ public class PlayerStatus : NetworkBehaviour
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
-    private ItemMenuController item_menu_controller;
+    public ItemMenuController item_menu_controller;
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
     private CharacterController player_character_controller;

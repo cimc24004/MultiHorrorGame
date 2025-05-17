@@ -27,7 +27,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     //現在の選択インデックス。
     public int NowItemSelectIndexX;
     private float scroll_value_float;
-    [SerializeField] private ItemBelongingsController item_belongings_controller;
+    [SerializeField] public ItemBelongingsController item_belongings_controller;
     private int scroll_value;
     private ItemStatus NowSelect_item_status;
     public float WaitHideTimeNow;

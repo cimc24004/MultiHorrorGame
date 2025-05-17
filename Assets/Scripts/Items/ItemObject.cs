@@ -1,4 +1,3 @@
-// ItemObject.cs
 using System.Linq;
 using UnityEngine;
 using Unity.Netcode;
@@ -9,68 +8,123 @@ public class ItemObject : NetworkBehaviour
     [Tooltip("このオブジェクトが持つアイテム情報")]
     public ItemStatus item_status;
 
-    [Tooltip("取得時に発火するイベント (UI更新など)")]
+    [Tooltip("取得成功時にローカルで発火するイベント（UI更新など）")]
     public UnityEvent ItemGetAddEvent;
 
-    private NetworkObject ItemNetworkObject;
+    private NetworkObject networkObject;
 
     private void Start()
     {
-        ItemNetworkObject = GetComponent<NetworkObject>();
+        networkObject = GetComponent<NetworkObject>();
     }
 
     /// <summary>
-    /// クライアント側で呼び出す：
-    /// 1) 上限チェック＋ローカルUI通知
-    /// 2) 問題なければサーバーへ消去要求
-    /// 3) ローカルでインベントリ追加＆通知
+    /// クライアント側：アイテムを拾いたいときに呼び出す
     /// </summary>
-    public bool TryPickup(ItemBelongingsController item_belonging_controller)
+    public void TryPickup()
     {
-        // ── 1) 所持上限チェック ──
-        var diff = item_belonging_controller.belonging_items
-            .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        bool notHaveMore = (item_belonging_controller.maxCarryableItems <= diff.Count)
-                          || (item_belonging_controller.belonging_items.ContainsKey(item_status)
-                              && item_belonging_controller.belonging_items[item_status].item_count + 1 > item_status.MaxCanHave);
-
-        // UI通知（「これ以上持てない」 or 「取得」）
-        item_belonging_controller.item_menu_controller.OnItemGetChangeUI(notHaveMore, item_status);
-
-        // イベントアイテム以外で上限なら何もしない
-        if (notHaveMore && item_status.item_type != ItemStatus.ItemType.Event)
-            return false;
-
-        // ── 2) サーバーへワールド上オブジェクト消去要求 ──
-        RequestDespawnServerRpc();
-
-        // ── 3) ローカルでインベントリに追加 & 通知 ──
-        if (item_status.item_type == ItemStatus.ItemType.Key)
-        {
-            // キーアイテムならキー数も増やす
-            NeedKeysController.instance.GottenKeyCount += 1;
-        }
-
-        item_belonging_controller.ItemAddToBelonging(item_status);
-        ItemGetAddEvent.Invoke();
-
-        // ほんとは NetworkObject.Despawn() で消えるけど、
-        // クライアントのシーン上からも Remove したければ Destroy
-        Destroy(gameObject, 0.1f);
-        return true;
+        RequestPickupServerRpc();
     }
 
     /// <summary>
-    /// サーバー側で実行：全クライアントに Despawn を反映
+    /// サーバー側で実行：
+    /// 1) 真に拾えるかチェック
+    /// 2) NGなら CannotPickupClientRpc
+    /// 3) OKなら Despawn(true) ＆ SuccessfulPickupClientRpc
     /// </summary>
     [ServerRpc(RequireOwnership = false)]
-    private void RequestDespawnServerRpc(ServerRpcParams rpcParams = default)
+    private void RequestPickupServerRpc(ServerRpcParams rpcParams = default)
     {
-        if (ItemNetworkObject != null && ItemNetworkObject.IsSpawned)
+        // リクエスト元クライアントID
+        ulong clientId = rpcParams.Receive.SenderClientId;
+
+        // ① そのクライアントの PlayerStatus を取得
+        var clientInfo = NetworkManager.Singleton.ConnectedClients[clientId];
+        var playerObj = clientInfo.PlayerObject;
+        var ps = playerObj.GetComponent<PlayerStatus>();
+
+        // ② ItemBelongingsController を PlayerStatus.ItemController 経由で取得
+        var inv = ps.ItemController
+                    .GetComponent<ItemBelongingsController>();
+
+        // ③ サーバー側チェック：種類の異なるアイテム数
+        int diffCount = inv.belonging_items
+            .Where(kvp => kvp.Key != item_status
+                       && kvp.Key.item_type != ItemStatus.ItemType.Event)
+            .Count();
+        bool overMax = diffCount >= inv.maxCarryableItems;
+
+        // 同種アイテム数チェック
+        bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt) &&
+                        cnt.item_count + 1 > item_status.MaxCanHave;
+
+        if (overMax || overSame)
         {
-            ItemNetworkObject.Despawn();
+            // 取得失敗：該当クライアントだけに通知
+            CannotPickupClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new[] { clientId }
+                }
+            });
+            return;
         }
+
+
+        // ⑤ 成功クライアントだけにローカル処理を通知
+        SuccessfulPickupClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { clientId }
+            }
+        });
+        
+        // ④ 取得成功：ワールド上から確実に削除
+        if (networkObject != null && networkObject.IsSpawned)
+            networkObject.Despawn(destroy: true);
+    }
+
+    /// <summary>
+    /// 取得失敗時：クライアント側で「これ以上持てない」通知
+    /// </summary>
+    [ClientRpc]
+    private void CannotPickupClientRpc(ClientRpcParams rpcParams = default)
+    {
+        // 失敗した自分だけ処理
+        var inv = PlayerStatus.LocalInstance
+                            .ItemController
+                            .GetComponent<ItemBelongingsController>();
+        inv.item_menu_controller.OnItemGetChangeUI(
+             true,
+             item_status
+        );
+    }
+
+    /// <summary>
+    /// 取得成功時：クライアント側でインベントリ追加＋通知＋サウンド
+    /// </summary>
+    [ClientRpc]
+    private void SuccessfulPickupClientRpc(ClientRpcParams rpcParams = default)
+    {
+        // 成功した自分だけ処理
+        var inv = PlayerStatus.LocalInstance
+                            .ItemController
+                            .GetComponent<ItemBelongingsController>();
+
+        // 1) ローカルインベントリに追加
+        inv.ItemAddToBelonging(item_status);
+
+        // 2) UI更新／エフェクト
+        ItemGetAddEvent.Invoke();
+
+        // 3) 取得音を再生
+        PlayerStatus.LocalInstance
+                    .cross_hair_event
+                    .ItemGetSource
+                    .Play();
+
+        // 4) ワールド上オブジェクトはサーバーで Despawn(true) 済み
     }
 }
