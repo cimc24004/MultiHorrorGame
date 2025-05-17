@@ -93,6 +93,13 @@ public class PlayerStatus : NetworkBehaviour
     {
         if (IsOwner && LocalInstance == this)
             LocalInstance = null;
+        if (!IsOwner)
+        {
+            sub_noticed_ui_controller.gameObject.SetActive(false);
+            item_belonging_controller.gameObject.SetActive(false);
+            main_noticed_ui_controller.gameObject.SetActive(false);
+            cross_hair_event.gameObject.SetActive(false);
+        }
     }
 
     public override void OnNetworkSpawn()
