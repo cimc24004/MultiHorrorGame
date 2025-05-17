@@ -6,9 +6,9 @@ using UnityEngine.Events;
 public class ItemObject : NetworkBehaviour
 {
     private NeedKeysController need_keys_controller;
-    public ItemStatus         item_status;
-    public UnityEvent         ItemGetAddEvent;  // Inspector で音再生を登録
-    private NetworkObject     ItemNetworkObject;
+    public ItemStatus    item_status;
+    public UnityEvent    ItemGetAddEvent;       // Inspector で「AudioSource→Play()」を登録
+    private NetworkObject ItemNetworkObject;
 
     public override void OnNetworkSpawn()
     {
@@ -17,26 +17,26 @@ public class ItemObject : NetworkBehaviour
     }
 
     /// <summary>
-    /// クライアント側から「このアイテムを拾いたい！」を呼ぶ
+    /// クライアント側から「このアイテム拾いたい！」を呼ぶ
     /// </summary>
     public void RequestItemGet()
     {
         RequestItemGetServerRpc(NetworkManager.Singleton.LocalClientId);
     }
 
-    //──────────────────────────────────────────────
+    //────────────────────────────────────────────────────
     // (1) ServerRpc：クライアント→サーバー
-    //──────────────────────────────────────────────
+    //────────────────────────────────────────────────────
     [ServerRpc(RequireOwnership = false)]
     private void RequestItemGetServerRpc(
         ulong clientId,
         ServerRpcParams rpcParams = default
     )
     {
-        // サーバー側で、拾ったプレイヤーのインベントリと上限チェック
+        // (A) 拾ったプレイヤーのインベントリ & 上限チェック
         var playerObj = NetworkManager.Singleton.SpawnManager
-                          .GetPlayerNetworkObject(clientId)
-                          .gameObject;
+                              .GetPlayerNetworkObject(clientId)
+                              .gameObject;
         var inv = playerObj
                     .GetComponent<PlayerStatus>()
                     .ItemController
@@ -50,18 +50,16 @@ public class ItemObject : NetworkBehaviour
         bool success = !reachedMax
                     || item_status.item_type == ItemStatus.ItemType.Event;
 
-        // 鍵アイテムならキー数カウント
-        if (success && item_status.item_type == ItemStatus.ItemType.Key)
-            need_keys_controller.GottenKeyCount++;
-
-        // サーバー権限でインベントリ更新 & Despawn
+        // (B) サーバー側インベントリ更新
         if (success)
         {
+            if (item_status.item_type == ItemStatus.ItemType.Key)
+                need_keys_controller.GottenKeyCount++;
+
             inv.ItemAddToBelonging(item_status);
-            ItemNetworkObject.Despawn(true);
         }
 
-        // (2) ClientRpc で呼び出し元クライアントだけ結果通知
+        // (C) ClientRpc で呼び出し元だけ結果通知
         var rpcParamsClient = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -70,35 +68,41 @@ public class ItemObject : NetworkBehaviour
             }
         };
         ItemGetResponseClientRpc(success, rpcParamsClient);
+
+        // (D) 成功時のみ Despawn（全クライアントから消す）
+        if (success)
+        {
+            ItemNetworkObject.Despawn(true);
+        }
     }
 
-    //──────────────────────────────────────────────
-    // (3) ClientRpc：サーバー→呼び出し元クライアント
-    //      ここで UnityEvent を発火 → 音やUIをまとめて実行
-    //──────────────────────────────────────────────
+    //────────────────────────────────────────────────────
+    // (2) ClientRpc：サーバー→呼び出し元クライアント
+    //            ここで UnityEvent を発火 ⇒ 音再生＆UI
+    //────────────────────────────────────────────────────
     [ClientRpc]
     private void ItemGetResponseClientRpc(
         bool success,
         ClientRpcParams clientRpcParams = default
     )
     {
-        // 自分以外は無視
+        // 呼ばれたクライアント以外は無視
         if (NetworkManager.Singleton.LocalClientId
             != clientRpcParams.Send.TargetClientIds[0]) return;
 
-        // UI更新：持てなかった場合は !success、持てたら success
+        // (E) ローカルのインベントリ & UI 更新
         var inv = PlayerStatus.LocalInstance
                     .ItemController
                     .GetComponent<ItemBelongingsController>();
 
-        // 成功したらインベントリ追加＆UnityEvent発火（ここで音を鳴らします）
         if (success)
         {
             inv.ItemAddToBelonging(item_status);
+            // UnityEvent に登録した音再生やエフェクトを一括実行
             ItemGetAddEvent.Invoke();
         }
 
-        // UIへの「持てなかった」通知
+        // 「持てなかった」通知は !success
         inv.item_menu_controller
            .OnItemGetChangeUI(!success, item_status);
     }
