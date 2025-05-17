@@ -4,6 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+
 public class FlashLightController : NetworkBehaviour
 {
     private FlashLightBatteryUIController flash_light_battery_ui_controller;
@@ -12,31 +13,50 @@ public class FlashLightController : NetworkBehaviour
     [ShowIf("HaveLight", true)]
     [Header("懐中電灯(?)オブジェクトをセット")]
     public GameObject LightObject;
-    public NetworkVariable<float> LightPower = new NetworkVariable<float>(100);
+    public NetworkVariable<float> LightPower = new NetworkVariable<float>(100f);
 
     [Header("~秒ごとに")]
-    [SerializeField] private float PerTimeForLightPowerDown = 1;
+    [SerializeField] private float PerTimeForLightPowerDown = 1f;
     [Header("~秒ごとに減る電池量")]
-    [SerializeField] private float LightPowerDown = 1;
+    [SerializeField] private float LightPowerDown = 1f;
     private float LightPowerDownTimeNow;
+
     [SerializeField] private AudioSource LightAudioSource;
     [SerializeField] private AudioClip LightOnClip;
     [SerializeField] private AudioClip LightOffClip;
+
     private PlayerInput player_input;
-    private NetworkVariable<bool> LightSwitchMode = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
-    private bool InitPlayer;
-    // Start is called before the first frame update
+
+    private bool InitPlayer = false;
+
+    private NetworkVariable<bool> LightSwitchMode = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
 
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     }
+
     void OnDisable()
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+        LightSwitchMode.OnValueChanged -= OnLightSwitchChanged;
+        if (IsOwner && player_input != null)
+            player_input.actions["LightSwitchAction"].performed -= LightInputPerformed;
     }
+
+    public override void OnNetworkSpawn()
+    {
+        LightSwitchMode.OnValueChanged += OnLightSwitchChanged;
+        if (IsOwner && player_input != null)
+            player_input.actions["LightSwitchAction"].performed += LightInputPerformed;
+    }
+
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         player_status = _playerStatus;
@@ -44,17 +64,10 @@ public class FlashLightController : NetworkBehaviour
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         flash_light_battery_ui_controller = FlashLightBatteryUIController.instance;
         InitPlayer = true;
-        if (!IsOwner)
-        {
-            this.gameObject.SetActive(false);
-        }
-        if (IsOwner)
-        {
-            player_input.actions["LightSwitchAction"].performed += LightInputPerformed;
-        }
+
+        // 入力設定は OnNetworkSpawn でも行う
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!InitPlayer) return;
@@ -64,71 +77,65 @@ public class FlashLightController : NetworkBehaviour
             if (LightSwitchMode.Value)
             {
                 LightPowerDownTimeNow += Time.deltaTime;
-                if (LightPowerDownTimeNow > PerTimeForLightPowerDown)
+                if (LightPowerDownTimeNow >= PerTimeForLightPowerDown)
                 {
                     LightPowerDecrease();
-                    LightPowerDownTimeNow = 0;
+                    LightPowerDownTimeNow = 0f;
                 }
             }
-            if (LightPower.Value > 0)
-            {
-                LightPermit = true;
-            }
-            else
-            {
-                LightPermit = false;
-            }
-        }
 
+            LightPermit = LightPower.Value > 0f;
+        }
     }
 
-    private void LightPowerDecrease() {
+    private void LightPowerDecrease()
+    {
         LightPower.Value -= LightPowerDown;
-        if (LightPower.Value <= 0) {
-            LightOff();
+        if (LightPower.Value <= 0f)
+        {
+            LightPower.Value = 0f;
+            // バッテリー切れたら自動でオフに
+            LightSwitchMode.Value = false;
             sub_noticed_ui_controller.Notice("懐中電灯のバッテリーが切れた");
         }
-        if (LightPower.Value % 25 == 0) {
+
+        // 25% 単位で UI 更新
+        if (Mathf.Approximately(LightPower.Value % 25f, 0f))
+        {
             flash_light_battery_ui_controller.UIChangeOnBatteryDecrease();
         }
     }
-    public void LightPowerToMax() {
-        LightPower.Value = 100;
+
+    public void LightPowerToMax()
+    {
+        if (!IsServer) return;
+        LightPower.Value = 100f;
         flash_light_battery_ui_controller.UIChangeOnBatteryToMax();
     }
-    private void LightOn() {
-        //ライトをつける。
-        LightObject.SetActive(true);
-        LightAudioSource.PlayOneShot(LightOnClip);
-    }
-    private void LightOff() {
-        //ライトをけす。
-        LightAudioSource.PlayOneShot(LightOffClip);
-        LightObject.SetActive(false);
-    }
+
     private void LightInputPerformed(InputAction.CallbackContext ctx)
     {
         LightOnOffChangeRequestServerRpc();
     }
+
     [ServerRpc]
-    private void LightOnOffChangeRequestServerRpc()
+    private void LightOnOffChangeRequestServerRpc(ServerRpcParams rpcParams = default)
     {
         if (!LightPermit) return;
-        LightOnOffChangeByStatusClientRpc();
+        LightSwitchMode.Value = !LightSwitchMode.Value;
     }
-    
-    [ClientRpc]
-    private void LightOnOffChangeByStatusClientRpc()
+
+    private void OnLightSwitchChanged(bool previousValue, bool newValue)
     {
-        if (!LightSwitchMode.Value)
+        if (newValue)
         {
-            LightOn();
-            LightSwitchMode.Value = true;
+            LightObject.SetActive(true);
+            LightAudioSource.PlayOneShot(LightOnClip);
         }
         else
         {
-            LightOff();
-            LightSwitchMode.Value = false;
+            LightAudioSource.PlayOneShot(LightOffClip);
+            LightObject.SetActive(false);
         }
     }
 }
