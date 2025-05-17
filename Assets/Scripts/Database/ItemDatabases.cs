@@ -30,8 +30,13 @@ public class ItemDatabases : Singleton<ItemDatabases>
                 //AssetDatabase.LoadAssetAtPath(file);
             }
         }
-    #endif
-    public ItemStatus ItemFindByType(ItemStatus.ItemType item_type){
+#endif
+    public ItemStatus GetStatusByGlobalId(uint _gid)
+    {   
+        return ForPutItems.Find((x) => x.GlobalId == _gid);
+    }
+    public ItemStatus ItemFindByType(ItemStatus.ItemType item_type)
+    {
         return ForPutItems.Find((x) => x.item_type == item_type);
     }
     public GameObject ItemCreate(ItemStatus item_status, Transform Parent, Vector3 Position){

@@ -106,6 +106,7 @@ public class CrossHairEvent : NetworkBehaviour
                 {
 
                     ItemObject item_object = raycast_hit.collider.gameObject.GetComponent<ItemObject>();
+<<<<<<< HEAD
                     bool item_geted = item_object.TryPickup(item_belonging_controller);
 
                     if (item_geted)
@@ -113,6 +114,10 @@ public class CrossHairEvent : NetworkBehaviour
                         ItemGetSource.Play();
                     }
 
+=======
+                    // ここではただ拾うリクエストを飛ばすだけ
+                    item_object.RequestItemGet();
+>>>>>>> c99834a4e5f81487c896c8539c73d8fde6ea283e
                     return;
                 }
                 if(raycast_hit.collider.gameObject.tag == "DeliverPlace")

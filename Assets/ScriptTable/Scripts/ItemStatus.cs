@@ -16,6 +16,8 @@ public class StatusOfMakingStopEnemy
 [CreateAssetMenu(fileName = "ItemStatus", menuName = "ScriptableObjects/CreateItemStatusAsset")]
 public class ItemStatus : SerializedScriptableObject
 {
+
+
     public class StealthStatus
     {
         [Header("足音を一定時間聞こえなくする")]
@@ -47,7 +49,8 @@ public class ItemStatus : SerializedScriptableObject
     }
 
     public ItemType item_type;
-
+    [Header("データベース用ユニークID (被らない数値)")]
+    [SerializeField] public uint GlobalId;
     [Required] public Sprite MenuSprite;
     [Required] public string ItemName;
 
