@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,9 +11,11 @@ public class ItemObject : MonoBehaviour
     //ワールド上に置かれているアイテムにつけておくクラス。
     public ItemStatus item_status;
     public UnityEvent ItemGetAddEvent;
+    private NetworkObject ItemNetworkObject;
     private void Start()
     {
         need_keys_controller = NeedKeysController.instance;
+        ItemNetworkObject = this.gameObject.GetComponent<NetworkObject>();
     }
     //この関数が呼び出されれば自分のアイテムメニューにitem_statusのアイテムを追加する。
     public bool ItemGet(ItemBelongingsController item_belonging_controller)
@@ -25,7 +28,7 @@ public class ItemObject : MonoBehaviour
                             || IsItemAtMaxCapacity(item_belonging_controller);
 
         item_belonging_controller.item_menu_controller.OnItemGetChangeUI(NotHaveMore, item_status);
-        
+        ItemNetworkObject.Despawn(true);
         if (!NotHaveMore || item_status.item_type == ItemStatus.ItemType.Event)
         {
             if(item_status.item_type == ItemStatus.ItemType.Key){
