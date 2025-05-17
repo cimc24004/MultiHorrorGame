@@ -20,20 +20,19 @@ public class ItemObject : NetworkBehaviour
     }
 
     /// <summary>
-    /// クライアント側：拾いたい！とサーバーにリクエスト
+    /// クライアント側：アイテムを拾いたいときに呼ぶ
     /// </summary>
     public void TryPickup()
     {
-        // ── クライアント先行チェック ──
+        // ── 1) クライアント先行チェック ──
         var inv = PlayerStatus.LocalInstance
                             .ItemController
                             .GetComponent<ItemBelongingsController>();
 
         int diffCount = inv.belonging_items
-            .Where(kvp => kvp.Key != item_status
-                       && kvp.Key.item_type != ItemStatus.ItemType.Event)
+            .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
             .Count();
-        bool overMax  = diffCount >= inv.maxCarryableItems;
+        bool overMax = diffCount >= inv.maxCarryableItems;
         bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt)
                        && cnt.item_count + 1 > item_status.MaxCanHave;
 
@@ -43,50 +42,65 @@ public class ItemObject : NetworkBehaviour
             return;
         }
 
+        // 二重リクエスト防止
         if (pickupRequested) return;
         pickupRequested = true;
 
+        // ここでサーバーへ RPC 投げる
         RequestPickupServerRpc();
     }
 
     /// <summary>
-    /// サーバー側：本当に拾えるかチェック＆同期
+    /// サーバー側：本当に拾えるかチェックして同期
     /// </summary>
     [ServerRpc(RequireOwnership = false)]
     private void RequestPickupServerRpc(ServerRpcParams rpcParams = default)
     {
         ulong clientId = rpcParams.Receive.SenderClientId;
         var clientInfo = NetworkManager.Singleton.ConnectedClients[clientId];
-        var ps         = clientInfo.PlayerObject.GetComponent<PlayerStatus>();
-        var inv        = ps.ItemController.GetComponent<ItemBelongingsController>();
+        var ps = clientInfo.PlayerObject.GetComponent<PlayerStatus>();
+        var inv = ps.ItemController.GetComponent<ItemBelongingsController>();
 
         // サーバー側チェック
         int diffCount = inv.belonging_items
-            .Where(kvp => kvp.Key != item_status
-                       && kvp.Key.item_type != ItemStatus.ItemType.Event)
+            .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
             .Count();
-        bool overMax  = diffCount >= inv.maxCarryableItems;
+        bool overMax = diffCount >= inv.maxCarryableItems;
         bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt)
                        && cnt.item_count + 1 > item_status.MaxCanHave;
 
         if (overMax || overSame)
         {
-            CannotPickupClientRpc();
+            CannotPickupClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new[] { clientId }
+                }
+            });
             return;
         }
 
-        // サーバー在庫更新
+        // サーバー在庫も更新
         if (inv.belonging_items.ContainsKey(item_status))
             inv.belonging_items[item_status].item_count++;
         else
-            inv.belonging_items[item_status] = new ItemBelongingsController.ItemCountWithPermit {
-                item_count = 1, CanUse = true
+            inv.belonging_items[item_status] = new ItemBelongingsController.ItemCountWithPermit
+            {
+                item_count = 1,
+                CanUse = true
             };
 
-        // 成功通知（全クライアント）
-        SuccessfulPickupClientRpc();
+        // 取得成功通知
+        SuccessfulPickupClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { clientId }
+            }
+        });
 
-        // ネットワークから Despawn → OnNetworkDespawn が全クライアントで呼ばれる
+        // 全クライアントから消去
         if (networkObject != null && networkObject.IsSpawned)
             networkObject.Despawn(destroy: true);
     }
@@ -97,15 +111,17 @@ public class ItemObject : NetworkBehaviour
     [ClientRpc]
     private void CannotPickupClientRpc(ClientRpcParams rpcParams = default)
     {
-        pickupRequested = false;
         var inv = PlayerStatus.LocalInstance
                             .ItemController
                             .GetComponent<ItemBelongingsController>();
+
+        // 再度拾えるようにフラグ戻し
+        pickupRequested = false;
         inv.item_menu_controller.OnItemGetChangeUI(true, item_status);
     }
 
     /// <summary>
-    /// 取得成功時：クライアント側でインベントリ追加＋UI＋音
+    /// 取得成功時：ローカル追加＋UI＋音＋自身破棄
     /// </summary>
     [ClientRpc]
     private void SuccessfulPickupClientRpc(ClientRpcParams rpcParams = default)
@@ -114,24 +130,28 @@ public class ItemObject : NetworkBehaviour
                             .ItemController
                             .GetComponent<ItemBelongingsController>();
 
-        // ホストでもクライアントでも +1 はここだけ
+        // 1) ローカル在庫に追加
         inv.ItemAddToBelonging(item_status);
 
+        // 2) UI更新／エフェクト
         ItemGetAddEvent.Invoke();
+
+        // 3) 取得音再生
         PlayerStatus.LocalInstance
                     .cross_hair_event
                     .ItemGetSource
                     .Play();
-    }
 
-    /// <summary>
-    /// ネットワーク Despawn 時に、必ず GameObject を破棄する
-    /// （ホスト／クライアント問わず実行される）
-    /// </summary>
+        // 4) 自身 GameObject 破棄
+        // Destroy(gameObject);
+    }
+    
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
-        // Despawn されたら必ず消す
+
+        // ここで必ず Destroy することで、
+        // クライアントにオブジェクトが残らないようにします。
         Destroy(gameObject);
     }
 }
