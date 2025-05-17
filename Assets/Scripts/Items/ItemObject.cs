@@ -18,11 +18,6 @@ public class ItemObject : NetworkBehaviour
         netObj = GetComponent<NetworkObject>();
 
         if (NetworkManager.Singleton == null) return;
-
-        if (NetworkManager.Singleton.IsServer)
-        {
-            if (!netObj.IsSpawned) netObj.Spawn();
-        }
     }
 
     public override void OnNetworkSpawn()
