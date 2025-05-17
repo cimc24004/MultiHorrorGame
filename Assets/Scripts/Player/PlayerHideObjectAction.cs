@@ -71,9 +71,8 @@ public class PlayerHideObjectAction : NetworkBehaviour
         //player_character_controller.stepOffset = 0;
         //player_collider.isTrigger = true;
         PlayerDeformedByHideType();
-        charactor_move_permit.Stop();
 
-        player_status.HidingNow.Value = true;
+        HidingNowChangeServerRpc(true);
     }
     [ClientRpc]
     public void UnHideClientRpc()
@@ -93,12 +92,11 @@ public class PlayerHideObjectAction : NetworkBehaviour
             player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
         }
 
-        player_status.HidingNow.Value = false;
-
+        HidingNowChangeServerRpc(false);
     }
     private void PlayerDeformedByHideType()
     {
-        player_status.CrouchNetwork.Value = false;
+        PlayerDeformedByHideTypeRequestServerRpc();
         //HideType(うつぶせや座るや立つ)の値によってプレイヤーの状態を変える。
         if (hide_type_target_object == TargetHideObject.HideType.Stand)
         {
@@ -120,6 +118,25 @@ public class PlayerHideObjectAction : NetworkBehaviour
             player_status.CameraRoot.position = player_status.FaceDownHeadPos.position;
             player_anim.SetBool("FaceDown", true);
         }
+    }
+    [ServerRpc]
+    private void PlayerDeformedByHideTypeRequestServerRpc()
+    {
+        player_status.CrouchNetwork.Value = false;
+    }
+    [ServerRpc]
+    private void HidingNowChangeServerRpc(bool _HidingNow)
+    {
+        if (_HidingNow)
+        {
+            charactor_move_permit.Stop();
+
+        }
+        else
+        {
+            charactor_move_permit.Move();
+        }
+        player_status.HidingNow.Value = _HidingNow;
     }
     private void PerfomedHideRaycastAction(InputAction.CallbackContext ctx)
     {
