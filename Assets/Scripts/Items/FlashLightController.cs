@@ -12,7 +12,7 @@ public class FlashLightController : NetworkBehaviour
     public bool LightPermit = true;
     [ShowIf("HaveLight", true)]
     [Header("懐中電灯(?)オブジェクトをセット")]
-    public GameObject LightObject;
+    public Light Light;
     public NetworkVariable<float> LightPower = new NetworkVariable<float>(100f);
 
     [Header("~秒ごとに")]
@@ -129,13 +129,13 @@ public class FlashLightController : NetworkBehaviour
     {
         if (newValue)
         {
-            LightObject.SetActive(true);
+            Light.enabled = true;
             LightAudioSource.PlayOneShot(LightOnClip);
         }
         else
         {
             LightAudioSource.PlayOneShot(LightOffClip);
-            LightObject.SetActive(false);
+            Light.enabled = false;
         }
     }
 }

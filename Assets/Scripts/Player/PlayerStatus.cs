@@ -229,7 +229,7 @@ public class PlayerStatus : NetworkBehaviour
         PlayerDeaded = true;
         player_character_controller.enabled = false;
         player_move_permit.Stop();
-        flash_light_controller.LightObject.SetActive(false);
+        flash_light_controller.Light.enabled = false;
         item_menu_controller.enabled = false;
 
         DOVirtual.DelayedCall(4, () =>
