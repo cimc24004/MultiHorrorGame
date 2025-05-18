@@ -74,7 +74,7 @@ public class CrossHairEvent : NetworkBehaviour
                     player_status.GageImage.fillAmount = 0;
 
                 }
-                pray_controller.OnTouchOn();
+                // pray_controller.OnTouchOn();
             }
             if(raycast_hit.collider.gameObject.tag == "HideActionObject"){
                 main_noticed_ui_controller.Notice("隠れる", 1);

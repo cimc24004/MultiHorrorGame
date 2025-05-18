@@ -1,36 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-using Cinemachine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Unity.Netcode;
+using Cinemachine;
+
 public class PrayController : NetworkBehaviour
 {
     [Header("Notice用メッセージ")]
-    private bool Inited;
-    [SerializeField]
-    private string NoticeMessage;
+    [SerializeField] private string NoticeMessage;
     [Header("必要な祈り時間")]
     public float NeedToPrayTime;
-    public bool PrayNow;
-    public bool PrayPermit = true;
 
-    public float PrayTimeNow;
+    // ─── ネット同期したい変数 ───
+    public NetworkVariable<float> PrayTimeNow = new NetworkVariable<float>(
+        0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+    public NetworkVariable<bool> PrayPermit = new NetworkVariable<bool>(
+        true,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+    public NetworkVariable<bool> AlreadyPrayCompleted = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
 
     public UnityEvent2 PrayCompletedEvent;
     [SerializeField] private UnityEvent2 PrayStartEvent;
-    private bool touch;
+
+    // ローカル用
+    private bool Inited;
+    private bool PrayNow;               // サーバー処理用フラグ
+    private bool PrayForStartOnce;
     private PlayerStatus player_status;
+    private CrossHairStatus cross_hair_status;
     private GameObject GageCanvas;
     private Image GageImageUI;
     private MainNoticedUIController main_noticed_ui_controller;
-    private bool AlreadyPrayCompleted;
-    private CrossHairStatus cross_hair_status;
     private bool once;
-    private bool PrayForStartOnce;
-    private bool OnSpawnNetwork;
-    // Start is called before the first frame update
 
     void OnEnable()
     {
@@ -40,74 +52,119 @@ public class PrayController : NetworkBehaviour
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-
-    public void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         cross_hair_status = player_status.cross_hair_event.cross_hair_status;
         GageCanvas = player_status.GageCanvas;
         GageImageUI = player_status.GageImage;
-        OnSpawnNetwork = true;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
         Inited = true;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        // ネットワーク変数の変化を監視
+        PrayTimeNow.OnValueChanged += OnPrayTimeNowChanged;
+        PrayPermit.OnValueChanged += OnPrayPermitChanged;
+        AlreadyPrayCompleted.OnValueChanged += OnAlreadyPrayCompletedChanged;
+    }
 
-    // Update is called once per frame
     void Update()
     {
-        if(!Inited) return;
+        if (!Inited) return;
+
+        // 最初だけゲージ非表示
         if (!once)
         {
-           GageCanvas.SetActive(false);
+            GageCanvas.SetActive(false);
             once = true;
         }
 
-        if (cross_hair_status.HitedTag == "Pray")
+        // クロスヘアが祈る対象を向いていたら Notice 表示
+        if (cross_hair_status.HitedTag == "Pray"
+            && cross_hair_status.RaycastHitedExistsByCrossHairEvent
+            && cross_hair_status.HitedObj == this.gameObject)
         {
-            if (cross_hair_status.RaycastHitedExistsByCrossHairEvent && cross_hair_status.HitedObj == this.gameObject)
-            {
-                //触れていたら
-                GageCanvas.SetActive(true);
-                main_noticed_ui_controller.Notice(this.NoticeMessage, 1);
-                once = false;
-            }
-        }
-        if (PrayNow && PrayPermit && !AlreadyPrayCompleted){
-            Debug.Log("PrayNowwwwwwwwwww");
             GageCanvas.SetActive(true);
-            if(!PrayForStartOnce){
+            main_noticed_ui_controller.Notice(NoticeMessage, 1);
+            once = false;
+        }
+
+        // ?? サーバー側の祈り進行処理 ?? 
+        if (IsServer && PrayNow && PrayPermit.Value && !AlreadyPrayCompleted.Value)
+        {
+            GageCanvas.SetActive(true);
+            if (!PrayForStartOnce)
+            {
                 PrayStartEvent.Invoke();
                 PrayForStartOnce = true;
             }
-            player_status.GageImage.fillAmount = PrayTimeNow / NeedToPrayTime;
-            PrayTimeNow += Time.deltaTime;
-            if (PrayTimeNow > NeedToPrayTime)
+
+            // 祈り時間を増やす
+            PrayTimeNow.Value += Time.deltaTime;
+
+            // 完了判定
+            if (PrayTimeNow.Value >= NeedToPrayTime)
             {
-                Debug.Log("CompletedPray!!!");
-                PrayCompleted();
+                // 完了フラグ立て & リセット
+                AlreadyPrayCompleted.Value = true;
+                PrayPermit.Value = false;
+                PrayTimeNow.Value = 0f;
+
+                // 全クライアントに完了イベント通知
+                PrayCompletedClientRpc();
+                PrayForStartOnce = false;
             }
-            PrayNow = false;
+
+            PrayNow = false; // 一度だけ処理
         }
     }
-    public void OnTouchOn()
-    {
-        //このオブジェクトに触れていたら
-        touch = true;
-    }
+
+    // クライアント側のボタンなどから呼ぶ
     public void Pray()
     {
-        Debug.Log("Prayyyyyyyyyyyyyyyyyyyyyy");
+        if (!IsOwner) return;
+        PrayRequestServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PrayRequestServerRpc(ServerRpcParams rpcParams = default)
+    {
         PrayNow = true;
     }
 
-    private void PrayCompleted()
+    [ClientRpc]
+    private void PrayCompletedClientRpc(ClientRpcParams rpcParams = default)
     {
-        player_status.GageImage.fillAmount = 0;
+        // 完了時のUI更新とイベント発火
+        GageImageUI.fillAmount = 0f;
         PrayCompletedEvent.Invoke();
-        this.gameObject.tag = "Untagged";
-        AlreadyPrayCompleted = true;
-        PrayNow = false;
-        PrayPermit = false;
-        PrayTimeNow = 0;
+        gameObject.tag = "Untagged";
+    }
+
+    // ─── ネット変数変更時のハンドラ ───
+    private void OnPrayTimeNowChanged(float oldVal, float newVal)
+    {
+        if (IsOwner)
+            GageImageUI.fillAmount = newVal / NeedToPrayTime;
+    }
+    private void OnPrayPermitChanged(bool oldVal, bool newVal)
+    {
+        // たとえば許可フラグが off になったら UI を非表示にするとか
+        if (IsOwner && !newVal)
+            GageCanvas.SetActive(false);
+    }
+    private void OnAlreadyPrayCompletedChanged(bool oldVal, bool newVal)
+    {
+        // 既に祈り終わってたら二度と祈れない etc.
+    }
+
+    void OnDestroy()
+    {
+        // 忘れずに解除
+        PrayTimeNow.OnValueChanged -= OnPrayTimeNowChanged;
+        PrayPermit.OnValueChanged -= OnPrayPermitChanged;
+        AlreadyPrayCompleted.OnValueChanged -= OnAlreadyPrayCompletedChanged;
     }
 }

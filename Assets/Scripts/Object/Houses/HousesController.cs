@@ -11,7 +11,7 @@ public class HousesController : NetworkSingleton<HousesController>
     [MinValue(1)]
     public int TotalButsudanToSpawn = 5;
     public List<HouseDirector> house_directors;
-    public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers;
+    public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers = new List<SilhouetteChangeController>();
     // ------------------------------- Unity -------------------------------
     public override void OnNetworkSpawn()
     {

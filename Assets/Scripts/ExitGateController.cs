@@ -40,12 +40,12 @@ public class ExitGateController : Singleton<ExitGateController>
         }
         // if(this.gameObject.name == "Gate"){
         // }
-        if(pray_controller.PrayTimeNow == BeforePrayNow){
+        if(pray_controller.PrayTimeNow.Value == BeforePrayNow){
             ExitGateOpenPause();
         }else{
             ExitGateOpen();
         }
-        BeforePrayNow = pray_controller.PrayTimeNow;
+        BeforePrayNow = pray_controller.PrayTimeNow.Value;
     }
 
     public void ExitGateOpen(){
