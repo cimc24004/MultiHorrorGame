@@ -15,9 +15,9 @@ public class SmoothFollowCamera : NetworkBehaviour
     {
         if (IsOwner)
         {
-            cameraTransform = Camera.main.transform;
+            cameraTransform = PlayerStatus.LocalInstance.virtual_camera.VirtualCameraGameObject.transform;
         }
-        
+
     }
     void LateUpdate()
     {
