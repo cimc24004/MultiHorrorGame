@@ -16,19 +16,21 @@ public class Butsudan : NetworkBehaviour
         OshiireNoMouja,
         None
     }
-    private void Start()
+    void OnEnable()
     {
-        // pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
-        // enemy_all_controller = EnemyAllController.Instance;
-        // sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
-        // houses_controller = HousesController.Instance;
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     }
-    public override void OnNetworkSpawn(){
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         enemy_all_controller = EnemyAllController.Instance;
         sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
         houses_controller = HousesController.Instance;
     }
+
     public void ButsudanPrayCompleted()
     {
         Debug.Log("deliver_item_apperance: " + pray_to_deliver_item_appear_place) ;

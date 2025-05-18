@@ -60,6 +60,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -147,6 +148,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -240,6 +242,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -346,6 +349,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -434,6 +438,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -540,6 +545,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -636,6 +642,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -779,6 +786,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -885,6 +893,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -971,6 +980,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1057,6 +1067,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1149,6 +1160,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1235,6 +1247,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1793,7 +1806,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1657c175730b89428524f1993c7bfba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenPermit: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  OpenPermit:
+    m_InternalValue: 0
 --- !u!114 &257267142490382353 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1166705094196010667, guid: 93ef0057af0298542b21e0d231de2d90,
@@ -2547,6 +2562,10 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 5725504476481680470}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b192379bf749c4745beebc6011d2644a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7282348256341157951}
     - targetCorrespondingSourceObject: {fileID: -7440335866441867645, guid: b192379bf749c4745beebc6011d2644a,
         type: 3}
       insertIndex: -1
@@ -2626,6 +2645,37 @@ LODGroup:
     renderers:
     - renderer: {fileID: 7215329856589748301}
   m_Enabled: 1
+--- !u!1 &1490621743537170407 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b192379bf749c4745beebc6011d2644a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1760530605718411958}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7282348256341157951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490621743537170407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!4 &1648808771814633756 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8174288867780482134, guid: b192379bf749c4745beebc6011d2644a,
@@ -2841,6 +2891,54 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2297979574324165981}
     m_Modifications:
+    - target: {fileID: 491768176636424161, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 491768176636424161, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 580096943312857345, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 580096943312857345, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 739279443710435733, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 739279443710435733, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 953164351624288925, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 953164351624288925, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 2788490608541427775, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 2788490608541427775, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 3229551123490791652, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 3229551123490791652, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 3753496957168276196, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 3753496957168276196, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 4301710966472317557, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 4301710966472317557, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
     - target: {fileID: 6046486327107786969, guid: d9e97540ae357d24bb0b221f29485b65,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2896,6 +2994,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u4E21\u8896\u673AForUnity"
       objectReference: {fileID: 0}
+    - target: {fileID: 7105206118846737571, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 7105206118846737571, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+    - target: {fileID: 7525338892521154952, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 7525338892521154952, guid: d9e97540ae357d24bb0b221f29485b65,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12576,7 +12686,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1657c175730b89428524f1993c7bfba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenPermit: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  OpenPermit:
+    m_InternalValue: 0
 --- !u!4 &6445993311601478109 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3029004658547212551, guid: da50dcf7556231d41baec793989abe1b,

@@ -49,8 +49,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   HaveLight: 1
   LightPermit: 1
-  LightObject: {fileID: 2166455100295356253}
-  LightPower: 100
+  Light: {fileID: 0}
+  LightPower:
+    m_InternalValue: 100
   PerTimeForLightPowerDown: 10
   LightPowerDown: 1
   LightAudioSource: {fileID: 6225977896153975989}
@@ -288,6 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f2412031ec15a2499aa356abb535e92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   cameraTransform: {fileID: 0}
   positionSmoothTime: 0.1
   rotationSmoothTime: 0.1
@@ -347,7 +349,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 0
-  MaxDistance: 10
+  MaxDistance: 5
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
