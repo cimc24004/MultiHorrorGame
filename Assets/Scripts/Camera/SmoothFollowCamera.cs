@@ -44,8 +44,6 @@ public class SmoothFollowCamera : NetworkBehaviour
     void TargetCameraMoveClientRpc(Vector3 targetPos, Quaternion targetRot, ClientRpcParams rpcParams = default)
     {
         // 念のためオーナーだけ動かす
-        if (!IsOwner) return;
-
         transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime / positionSmoothTime);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime / rotationSmoothTime);
     }
