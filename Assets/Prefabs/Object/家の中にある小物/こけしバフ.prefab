@@ -95,6 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1805897240382729467}
+  - component: {fileID: -1880033515352141869}
   - component: {fileID: 8897641817596120364}
   - component: {fileID: 2233011697925142868}
   - component: {fileID: 8401892083771370792}
@@ -126,6 +127,31 @@ Transform:
   - {fileID: 8589053895189564882}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 188.216, z: 0}
+--- !u!114 &-1880033515352141869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7762296868230521807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3584654060
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &8897641817596120364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,15 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef73ea46f9d39e04f91e6b1e115adb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   PartedObj: {fileID: 5285584866980737948}
   JoinedObj: {fileID: 7552577209784783921}
   BrokenBlendDuration: 0.3
@@ -186,11 +204,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a684997e8d904683d9fc468ccc3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   NoticeMessage: "\u58CA\u3059 (\u97F3\u304C\u306A\u308A\u307E\u3059)"
   NeedToPrayTime: 4
-  PrayNow: 0
-  PrayPermit: 1
-  PrayTimeNow: 0
+  PrayTimeNow:
+    m_InternalValue: 0
+  PrayPermit:
+    m_InternalValue: 1
+  AlreadyPrayCompleted:
+    m_InternalValue: 0
   PrayCompletedEvent:
     m_PersistentCalls:
       m_Calls: []

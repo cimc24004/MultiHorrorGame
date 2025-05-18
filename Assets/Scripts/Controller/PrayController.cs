@@ -72,11 +72,11 @@ public class PrayController : NetworkBehaviour
             GageCanvas.SetActive(false);
             once = true;
         }
-
         if (cross_hair_status.HitedTag == "Pray" &&
             cross_hair_status.RaycastHitedExistsByCrossHairEvent &&
             cross_hair_status.HitedObj == this.gameObject)
         {
+            GageImageUI.fillAmount = PrayTimeNow.Value / NeedToPrayTime;
             GageCanvas.SetActive(true);
             main_noticed_ui_controller.Notice(NoticeMessage, 1);
             once = false;
@@ -126,7 +126,6 @@ public class PrayController : NetworkBehaviour
 
     private void OnPrayTimeNowChanged(float _, float newVal)
     {
-        if (IsOwner) GageImageUI.fillAmount = newVal / NeedToPrayTime;
     }
     private void OnPrayPermitChanged(bool _, bool newVal)
     {
