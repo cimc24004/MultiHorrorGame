@@ -101,14 +101,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6821884584387200653}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5641c34bd817b714296f704f83524479,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5510542190229914381}
     - targetCorrespondingSourceObject: {fileID: 6707198852207823670, guid: 5641c34bd817b714296f704f83524479,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4513228819487773191}
-    - targetCorrespondingSourceObject: {fileID: 6707198852207823670, guid: 5641c34bd817b714296f704f83524479,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7822535728981049114}
     - targetCorrespondingSourceObject: {fileID: 6707198852207823670, guid: 5641c34bd817b714296f704f83524479,
         type: 3}
       insertIndex: -1
@@ -137,10 +137,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6020918285005143599}
-    - targetCorrespondingSourceObject: {fileID: -276822574381449506, guid: 5641c34bd817b714296f704f83524479,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6330090589445764922}
   m_SourcePrefab: {fileID: 100100000, guid: 5641c34bd817b714296f704f83524479, type: 3}
 --- !u!1 &1815512871488943530 stripped
 GameObject:
@@ -169,31 +165,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.9200001, y: 1.8899997, z: 0.039622888}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7822535728981049114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1815512871488943530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &7290746492957631747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -535,31 +506,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6330090589445764922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4039088754123669570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!4 &4347147098920901204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8678741899893466312, guid: 5641c34bd817b714296f704f83524479,
@@ -589,3 +535,28 @@ MonoBehaviour:
   Doors:
   - {fileID: 1815512871488943530}
   - {fileID: 4039088754123669570}
+--- !u!114 &5510542190229914381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5252419093741634509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0

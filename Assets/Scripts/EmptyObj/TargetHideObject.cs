@@ -30,18 +30,16 @@ public class TargetHideObject : NetworkBehaviour
     [SerializeField] private string AudioClipKey;
     [SerializeField] private UnityEvent2 HideAddEvent;
     [SerializeField] private UnityEvent2 UnHideAddEvent;
-    private PlayerStatus player_status;
+    [SerializeField] private UnityEvent2 LocalHideAddEvent;
+    [SerializeField] private UnityEvent2 LocalUnHideAddEvent;
     private CrossHairEvent cross_hair_event;
     private AudioSource HideActionAudioSource;
     private AudioDatas HideActionAudioDatas;
 
-    // void Start()
-    // {
-    //     player_status = PlayerStatus.LocalInstance;
-    //     cross_hair_event = player_status.cross_hair_event;
-    //     HideActionAudioDatas = player_status.HideActionAudioDatas;
-    //     HideActionAudioSource = HideActionAudioDatas.audioSource;
-    // }
+    void Start()
+    {
+
+    }
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
@@ -53,17 +51,17 @@ public class TargetHideObject : NetworkBehaviour
 
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
-
-        HideActionAudioDatas  = _playerStatus.HideActionAudioDatas;
+        LocalUnHideAddEvent.AddListener(() =>
+        {
+            Debug.Log("LocalUnHideAddEvent");
+        });
+        LocalHideAddEvent.AddListener(() =>
+        {
+            Debug.Log("LocalHideAddEvent");
+        });
+        HideActionAudioDatas = _playerStatus.HideActionAudioDatas;
         HideActionAudioSource = HideActionAudioDatas.audioSource;
-    }
-
-    // プレイヤー側から必ず呼んで初期化する
-    public void PlayerSetInit(PlayerStatus _player_status)
-    {
-        player_status         = _player_status;
-        cross_hair_event      = player_status.cross_hair_event;
-
+        cross_hair_event      = _playerStatus.cross_hair_event;
     }
 
     // ──────────────────────────────────
@@ -73,29 +71,30 @@ public class TargetHideObject : NetworkBehaviour
     public void HideRequestServerRpc(ulong playerNetId)
     {
         // サーバー側でプレイヤーを隠す
-        GameObject playerObj = NetworkManager.Singleton.SpawnManager
-                               .SpawnedObjects[playerNetId].gameObject;
-        HideTarget(playerObj);
+        NetworkObject playerNetworkObj = NetworkManager.Singleton.SpawnManager
+                               .SpawnedObjects[playerNetId];
+        HideTarget(playerNetworkObj.gameObject);
         Debug.Log("HideRequestServerRpc");
         // 隠れた本人にだけクライアント処理を飛ばす
-        HideForClientsClientRpc(playerNetId);
+        HideForClientsClientRpc(playerNetworkObj.OwnerClientId);
     }
 
     // ──────────────────────────────────
     // サーバー→クライアント：隠れた本人向け
     // ──────────────────────────────────
     [ClientRpc]
-    private void HideForClientsClientRpc(ulong playerNetId)
+    private void HideForClientsClientRpc(ulong _PlayerOwnerClientId)
     {
         Debug.Log("HideForClientsClientRpc");
         // 呼び出されたクライアントが隠れた本人かチェック
         HideActionAudioSource.PlayOneShot(
             HideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
         HideAddEvent.Invoke();
-        if (NetworkManager.Singleton.LocalClientId != playerNetId) return;
+        if (NetworkManager.Singleton.LocalClientId != _PlayerOwnerClientId) return;
         // クライアント用処理
+        Debug.Log("NetworkManager.Singleton.LocalClientId == playerNetId");
+        LocalHideAddEvent.Invoke();
         HideTargetForClientsForSender();
-
     }
 
     // ──────────────────────────────────
@@ -105,24 +104,25 @@ public class TargetHideObject : NetworkBehaviour
     public void UnHideRequestServerRpc(ulong playerNetId)
     {
         // サーバー側でプレイヤーを出す
-        GameObject playerObj = NetworkManager.Singleton.SpawnManager
-                               .SpawnedObjects[playerNetId].gameObject;
-        UnHideTarget(playerObj);
+        NetworkObject playerNetworkObj = NetworkManager.Singleton.SpawnManager
+                               .SpawnedObjects[playerNetId];
+        UnHideTarget(playerNetworkObj.gameObject);
         // 出た本人にだけクライアント処理を飛ばす
-        UnHideForClientsClientRpc(playerNetId);
+        UnHideForClientsClientRpc(playerNetworkObj.OwnerClientId);
     }
 
     // ──────────────────────────────────
     // サーバー→クライアント：出た本人向け
     // ──────────────────────────────────
     [ClientRpc]
-    private void UnHideForClientsClientRpc(ulong playerNetId)
+    private void UnHideForClientsClientRpc(ulong _PlayerOwnerClientId)
     {
         HideActionAudioSource.PlayOneShot(
             HideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
-
+        
         UnHideAddEvent.Invoke();
-        if (NetworkManager.Singleton.LocalClientId != playerNetId) return;
+        if (NetworkManager.Singleton.LocalClientId != _PlayerOwnerClientId) return;
+        LocalUnHideAddEvent.Invoke();
         UnHideTargetForClientsForSender();
     }
 

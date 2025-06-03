@@ -32,7 +32,8 @@ public class OpenPermitByKeyController : NetworkBehaviour
 
 
     }
-    public void KeyUse()
+    [ServerRpc(RequireOwnership = false)]
+    public void KeyUseRequestServerRpc()
     {
         sub_noticed_ui_controller.Notice("Œ®‚ªŠJ‚¢‚½");
         this.OpenPermit.Value = true;

@@ -175,7 +175,8 @@ public class ItemBelongingsController : NetworkBehaviour
                 if (doorCtrl.NeededKey.Value &&
                     !doorCtrl.DoorOpenPermitCheck())
                 {
-                    doorCtrl.open_permit_by_key_controller.KeyUse();
+                    Debug.Log("NetworkObject???: " + doorCtrl.GetComponent<NetworkObject>());
+                    doorCtrl.open_permit_by_key_controller.KeyUseRequestServerRpc();
                     ItemUse(cntNow, item_status);
                 }
             }

@@ -233,6 +233,5 @@ public class PlayerHideObjectAction : NetworkBehaviour
         //‚»‚ÌHideType‚ğæ“¾B
         target_hide_object      = _TargetObject.GetComponent<TargetHideObject>();
         hide_type_target_object.Value = target_hide_object.hide_type;
-        target_hide_object.PlayerSetInit(_player_status);
     }
 }

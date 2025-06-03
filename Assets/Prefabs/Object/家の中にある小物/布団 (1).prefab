@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 954025908
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -375,11 +375,6 @@ MonoBehaviour:
         m_Target: {fileID: 1511325552357780367}
         m_MethodName: set_localPosition
         m_Modes: 12000000
-      - m_Arguments: []
-        m_CallState: 2
-        m_Target: {fileID: 5510086151382521625}
-        m_MethodName: OnHide
-        m_Modes: 01000000
   UnHideAddEvent:
     m_PersistentCalls:
       m_Calls:
@@ -433,6 +428,17 @@ MonoBehaviour:
         m_Target: {fileID: 1511325552357780367}
         m_MethodName: set_localPosition
         m_Modes: 12000000
+  LocalHideAddEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 5510086151382521625}
+        m_MethodName: OnHide
+        m_Modes: 01000000
+  LocalUnHideAddEvent:
+    m_PersistentCalls:
+      m_Calls:
       - m_Arguments: []
         m_CallState: 2
         m_Target: {fileID: 5510086151382521625}
