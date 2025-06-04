@@ -221,9 +221,8 @@ public class ItemBelongingsController : NetworkBehaviour
             SetItemStatusToItemMenu(_item_status);
         }
 
-        Instantiate(_item_status.ItemPutObjectPrefab,
-                    player_status.HeadPos.position,
-                    Quaternion.identity);
+        // アイテムの出現はサーバー側の ItemDumpSpawnServerRpc で行う
+        // ローカル生成するとネットワーク同期されないため削除
     }
     [ServerRpc]
     private void ItemDumpSpawnServerRpc(uint itemGlobalId, Vector3 position)
