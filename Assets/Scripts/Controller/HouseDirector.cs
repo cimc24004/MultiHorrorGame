@@ -6,53 +6,62 @@ using Sirenix.Serialization;
 [System.Serializable]
 public class ButsudanGroup
 {
-    [Tooltip("•§’d–{‘Ì‚Ì GameObject")]
+    [Tooltip("d{Ì‚ GameObject")]
     public GameObject Butsudan;
 
-    [Tooltip("‚±‚Ì•§’d‚ª ON ‚É‚È‚Á‚½‚¾‚¯”»’è‚·‚éƒpƒbƒP[ƒWŒQ")]
+    [Tooltip("Ì•d ON É‚È‚è‚·pbP[WQ")]
     public List<RandomSpawnPackage> ExtraPackages = new();
 }
 [System.Serializable]
 public class RandomSpawnPackage
 {
-    [LabelText("Œó•âƒIƒuƒWƒFƒNƒgŒQ")]
+    [LabelText("IuWFNgQ")]
     public List<GameObject> Objs = new();
 
-    [LabelText("oŒ»Šm—¦ (0?1)")]
+    [LabelText("om (0?1)")]
     [Range(0f, 1f)]
-    public float SpawnChance = 1f;   // 1 = Šm’è, 0.25 = 25%
+    public float SpawnChance = 1f;   // 1 = m, 0.25 = 25%
 }
 public class HouseDirector : SerializedMonoBehaviour
 {
-    private HousesController houses_controller;  
+    private HousesController houses_controller;
     public bool ButsudanExists;
-    [LabelText("•§’d + •tƒIƒuƒWƒFƒNƒgƒZƒbƒg")]
-    public List<ButsudanGroup> Groups = new();   // Butsudan ‚Í•K‚¸‚±‚¿‚ç‚É‚àŠÜ‚Ü‚ê‚é
+    [LabelText("d + tIuWFNgZbg")]
+    public List<ButsudanGroup> Groups = new();   // Butsudan Í•KÉ‚Ü‚Ü‚
 
-    [Header("ƒ‰ƒ“ƒ_ƒ€‚Åì¬‚µ‚½‚¢ƒIƒuƒWƒFƒNƒg‚ğw’è ")]
+    [Header("_Åì¬IuWFNgw ")]
     public List<GameObject> RandomObjs;
-    [Header("ƒ‰ƒ“ƒ_ƒ€‚ÌŠm—¦")]
+    [Header("_ÌŠm")]
     public int RandomObjProbablity;
-    // [Header("ƒeƒŒƒr‚ª‚ ‚é‚È‚çw’è")]
+    // [Header("erÈ‚w")]
     // public GameObject TV;
     // Start is called before the first frame update
     void Start()
     {
         houses_controller = HousesController.Instance;
-        foreach(GameObject obj in RandomObjs)
+
+        foreach (GameObject obj in RandomObjs)
         {
             obj.SetActive(false);
         }
 
-        foreach(GameObject obj in RandomObjs)
+        if (Unity.Netcode.NetworkManager.Singleton.IsServer)
         {
-            int r = Random.Range(0, RandomObjProbablity);
-            Debug.Log("r: " + r);
-            if(r == 0)
+            foreach (GameObject obj in RandomObjs)
             {
-                obj.SetActive(true);
+                int r = Random.Range(0, RandomObjProbablity);
+                Debug.Log("r: " + r);
+                if (r == 0)
+                {
+                    var networkObject = obj.GetComponent<Unity.Netcode.NetworkObject>();
+                    if (networkObject != null && !networkObject.IsSpawned)
+                    {
+                        networkObject.Spawn();
+                    }
+                    obj.SetActive(true);
+                }
             }
         }
     }
-    
+
 }
