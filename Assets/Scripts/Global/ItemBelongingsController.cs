@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine.UI;
 public class ItemBelongingsController : NetworkBehaviour
 {
-    // ƒAƒCƒeƒ€UIî•ñ—pƒNƒ‰ƒX
+    // ã‚¢ã‚¤ãƒ†ãƒ UIæƒ…å ±ç”¨ã‚¯ãƒ©ã‚¹
     public class ItemStatusUI
     {
         public Image           ItemIcon;
@@ -17,29 +17,29 @@ public class ItemBelongingsController : NetworkBehaviour
         public TextMeshProUGUI ItemNameTextUI;
     }
 
-    // ŒÂ”{g—p‹–‰Âƒtƒ‰ƒO
+    // å€‹æ•°ï¼‹ä½¿ç”¨è¨±å¯ãƒ•ãƒ©ã‚°
     public class ItemCountWithPermit
     {
         public int  item_count;
         public bool CanUse = true;
     }
 
-    //„Ÿ„Ÿ Inspectorİ’è „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    [Header("Å‘åŠ”")]
+    //â”€â”€ Inspectorè¨­å®š â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    [Header("æœ€å¤§æ‰€æŒæ•°")]
     public int maxCarryableItems = 6;
 
-    [Header("‰ŠúŠƒAƒCƒeƒ€ (Owner‚Ì‚İ”z•z)")]
+    [Header("åˆæœŸæ‰€æŒã‚¢ã‚¤ãƒ†ãƒ  (Ownerã®ã¿é…å¸ƒ)")]
     [SerializeField] private List<ItemStatus> InitialItemStatuses;
 
-    [Header("UIƒvƒŒƒnƒuEe")]
+    [Header("UIãƒ—ãƒ¬ãƒãƒ–ãƒ»è¦ª")]
     public GameObject ItemUIPrefab;
     public Transform  ItemGroup;
 
-    [Header("ŠÖ˜AƒRƒ“ƒ|[ƒlƒ“ƒg")]
+    [Header("é–¢é€£ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ")]
     public CrossHairEvent cross_hair_event;
     [HideInInspector] public ItemMenuController item_menu_controller;
 
-    //„Ÿ„Ÿ ƒ‰ƒ“ƒ^ƒCƒ€—p „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    //â”€â”€ ãƒ©ãƒ³ã‚¿ã‚¤ãƒ ç”¨ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new Dictionary<ItemStatus, ItemCountWithPermit>();
     public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new Dictionary<ItemStatus, ItemStatusUI>();
 
@@ -65,10 +65,10 @@ public class ItemBelongingsController : NetworkBehaviour
         base.OnNetworkSpawn();
     }
 
-    // ƒ[ƒJƒ‹ƒvƒŒƒCƒ„[¶¬‚ÉŒÄ‚Î‚ê‚é
+    // ãƒ­ãƒ¼ã‚«ãƒ«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç”Ÿæˆæ™‚ã«å‘¼ã°ã‚Œã‚‹
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
-        // Owner ‚Ì‚İ‰Šú‰»
+        // Owner ã®ã¿åˆæœŸåŒ–
         if (!IsOwner) return;
 
         player_status          = _playerStatus;
@@ -78,7 +78,7 @@ public class ItemBelongingsController : NetworkBehaviour
         item_databases         = ItemDatabases.instance;
         enemy_all_controller   = EnemyDatabases.instance.gameObject.GetComponent<EnemyAllController>();
 
-        // // ‰ŠúƒAƒCƒeƒ€”z•z
+        // // åˆæœŸã‚¢ã‚¤ãƒ†ãƒ é…å¸ƒ
         // foreach (ItemStatus stat in InitialItemStatuses)
         // {
         //     ItemAddToBelonging(stat);
@@ -86,38 +86,38 @@ public class ItemBelongingsController : NetworkBehaviour
         // }
     }
 
-    // ƒAƒCƒeƒ€’Ç‰Ái‰‰ñ or 2ŒÂ–ÚˆÈ~j
+    // ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ ï¼ˆåˆå› or 2å€‹ç›®ä»¥é™ï¼‰
     [Button]
     public void ItemAddToBelonging(ItemStatus _item_status)
     {
-        // „Ÿ„Ÿ 1) İŒÉ«‘‚ğæ‚ÉXV „Ÿ„Ÿ
+        // â”€â”€ 1) åœ¨åº«è¾æ›¸ã‚’å…ˆã«æ›´æ–° â”€â”€
         if (belonging_items.TryGetValue(_item_status, out var countPermit))
         {
-            // Šù‘¶ƒAƒCƒeƒ€‚È‚çƒJƒEƒ“ƒg‚ğ‘‚â‚·
+            // æ—¢å­˜ã‚¢ã‚¤ãƒ†ãƒ ãªã‚‰ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—ã‚„ã™
             countPermit.item_count++;
         }
         else
         {
-            // ‰‚ß‚Ä‚ÌƒAƒCƒeƒ€‚È‚çV‹K“o˜^
+            // åˆã‚ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ãªã‚‰æ–°è¦ç™»éŒ²
             belonging_items[_item_status] = new ItemCountWithPermit {
                 item_count = 1,
                 CanUse     = true
             };
         }
 
-        // „Ÿ„Ÿ 2) UI —p«‘‚ğXV or ¶¬ „Ÿ„Ÿ
-        // ƒCƒxƒ“ƒgƒAƒCƒeƒ€‚Í UI ‚ğ‚½‚È‚¢‚Ì‚Åˆ—‚ğ”²‚¯‚é
+        // â”€â”€ 2) UI ç”¨è¾æ›¸ã‚’æ›´æ–° or ç”Ÿæˆ â”€â”€
+        // ã‚¤ãƒ™ãƒ³ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã¯ UI ã‚’æŒãŸãªã„ã®ã§å‡¦ç†ã‚’æŠœã‘ã‚‹
         if (_item_status.item_type == ItemStatus.ItemType.Event)
             return;
 
         if (belonging_item_uis.TryGetValue(_item_status, out var uiEntry))
         {
-            // Šù‘¶‚Ì UI ‚ª‚ ‚ê‚ÎƒeƒLƒXƒg‚¾‚¯XV
+            // æ—¢å­˜ã® UI ãŒã‚ã‚Œã°ãƒ†ã‚­ã‚¹ãƒˆã ã‘æ›´æ–°
             uiEntry.ItemCountTextUI.text = belonging_items[_item_status].item_count.ToString();
         }
         else
         {
-            // UI ‚ª‚È‚¯‚ê‚ÎV‹Kì¬
+            // UI ãŒãªã‘ã‚Œã°æ–°è¦ä½œæˆ
             GameObject uiObj = Instantiate(ItemUIPrefab, ItemGroup);
             ItemUI ui = uiObj.GetComponent<ItemUI>();
             ui.item_belonging_controller = this;
@@ -133,11 +133,11 @@ public class ItemBelongingsController : NetworkBehaviour
             newEntry.ItemIcon.sprite        = _item_status.MenuSprite;
             newEntry.ItemCountTextUI.text   = belonging_items[_item_status].item_count.ToString();
 
-            // æ“¾‚µ‚½‚ç‚·‚®‚É‘I‘ğó‘Ô‚É‚·‚é
+            // å–å¾—ã—ãŸã‚‰ã™ãã«é¸æŠçŠ¶æ…‹ã«ã™ã‚‹
             item_menu_controller.ItemSelectByIndex(uiObj.transform.GetSiblingIndex());
         }
     }
-    // ƒAƒCƒeƒ€g—p
+    // ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨
     [Button]
     public void ItemUseFromBelonging(ItemStatus item_status)
     {
@@ -145,24 +145,24 @@ public class ItemBelongingsController : NetworkBehaviour
 
         int cntNow = belonging_items[item_status].item_count;
 
-        // “Š±ƒAƒCƒeƒ€
+        // æŠ•æ“²ã‚¢ã‚¤ãƒ†ãƒ 
         if (item_status.item_type == ItemStatus.ItemType.CanThrow)
         {
             item_throw_controller.ThrowStart(item_status.ItemThrowPrefab);
             item_throw_controller.item_status = item_status;
             ItemUse(cntNow, item_status);
         }
-        // Á”ïƒAƒCƒeƒ€
+        // æ¶ˆè²»ã‚¢ã‚¤ãƒ†ãƒ 
         else if (item_status.item_type == ItemStatus.ItemType.Consumable)
         {
             ItemUse(cntNow, item_status);
         }
-        // ‘•”õƒAƒCƒeƒ€
+        // è£…å‚™ã‚¢ã‚¤ãƒ†ãƒ 
         else if (item_status.item_type == ItemStatus.ItemType.Equip)
         {
-            // i‘•”õŒnˆ—‚ª‚ ‚ê‚Î‚±‚±‚Éj
+            // ï¼ˆè£…å‚™ç³»å‡¦ç†ãŒã‚ã‚Œã°ã“ã“ã«ï¼‰
         }
-        // Œ®ƒAƒCƒeƒ€
+        // éµã‚¢ã‚¤ãƒ†ãƒ 
         else if (item_status.item_type == ItemStatus.ItemType.Key)
         {
             Debug.Log("RaycasstedObj: " + cross_hair_event.RaycasstedObj);
@@ -181,23 +181,23 @@ public class ItemBelongingsController : NetworkBehaviour
                 }
             }
         }
-        // ƒCƒxƒ“ƒgƒAƒCƒeƒ€
+        // ã‚¤ãƒ™ãƒ³ãƒˆã‚¢ã‚¤ãƒ†ãƒ 
         else if (item_status.item_type == ItemStatus.ItemType.Event)
         {
             ItemUse(cntNow, item_status);
         }
-        // ‹Ù‹}UŒ‚ƒAƒCƒeƒ€
+        // ç·Šæ€¥æ”»æ’ƒã‚¢ã‚¤ãƒ†ãƒ 
         else if (item_status.item_type == ItemStatus.ItemType.EmergencyAttack)
         {
             ItemUse(cntNow, item_status);
         }
 
-        // ƒXƒNƒŠƒvƒg¶¬ƒvƒŒƒnƒu
+        // ã‚¹ã‚¯ãƒªãƒ—ãƒˆç”Ÿæˆãƒ—ãƒ¬ãƒãƒ–
         GameObject inst = Instantiate(item_status.InstantiateItemScriptPrefab);
         inst.GetComponent<InstantiateItemScript>().item_status = item_status;
     }
 
-    // ƒAƒCƒeƒ€”jŠü
+    // ã‚¢ã‚¤ãƒ†ãƒ ç ´æ£„
     public void ItemDump(ItemStatus _item_status)
     {
         if (!ExistsItems()) return;
@@ -205,9 +205,20 @@ public class ItemBelongingsController : NetworkBehaviour
         if (_item_status == null || !belonging_items.ContainsKey(_item_status)) return;
 
         int c = belonging_items[_item_status].item_count - 1;
-        sub_noticed_ui_controller.Notice($"{_item_status.ItemName} ‚ğÌ‚Ä‚½B");
+        ItemDumpSpawnServerRpc(_item_status.GlobalId, player_status.HeadPos.position);
+    [ServerRpc]
+    private void ItemDumpSpawnServerRpc(uint itemGlobalId, Vector3 position)
+    {
+        ItemStatus status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
+        if (status == null) return;
+        GameObject obj = Instantiate(status.ItemPutObjectPrefab, position, Quaternion.identity);
+        var netObj = obj.GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.Spawn(true);
+        }
+    }
 
-        if (c <= 0)
         {
             item_menu_controller.item_equip_controller.EquipChange(_item_status, false);
             if (belonging_items.Count > 1)
@@ -228,7 +239,7 @@ public class ItemBelongingsController : NetworkBehaviour
                     Quaternion.identity);
     }
 
-    // ‘¶İƒ`ƒFƒbƒN
+    // å­˜åœ¨ãƒã‚§ãƒƒã‚¯
     public bool ExistsItems() => belonging_items.Count > 0;
 
     public bool ExistBelongingItemByFind(ItemStatus s)
@@ -254,7 +265,7 @@ public class ItemBelongingsController : NetworkBehaviour
         return dict.Keys.ToList();
     }
 
-    // ŒÂ”Œ¸­•UIXV
+    // å€‹æ•°æ¸›å°‘ï¼†UIæ›´æ–°
     private void ItemUse(int beforeCount, ItemStatus status)
     {
         int after = beforeCount - 1;
@@ -271,7 +282,7 @@ public class ItemBelongingsController : NetworkBehaviour
         }
     }
 
-    // UIƒeƒLƒXƒgXV or ƒAƒCƒRƒ“”jŠü
+    // UIãƒ†ã‚­ã‚¹ãƒˆæ›´æ–° or ã‚¢ã‚¤ã‚³ãƒ³ç ´æ£„
     private void SetItemStatusToItemMenu(ItemStatus status)
     {
         int cnt = belonging_items[status].item_count;
