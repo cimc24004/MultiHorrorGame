@@ -16,7 +16,7 @@ public class HousesController : NetworkSingleton<HousesController>
     public override void OnNetworkSpawn()
     {
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
-        
+
         // ① すべての仏壇 & 付随オブジェクトを OFF
         foreach (var hd in house_directors)
         {
@@ -25,22 +25,22 @@ public class HousesController : NetworkSingleton<HousesController>
                 if (g.Butsudan) g.Butsudan.SetActive(false);
 
                 foreach (var p in g.ExtraPackages)
-                    foreach (var o in p.Objs){
-                        if (o){
-                            // NetworkObject networkObject = o.GetComponent<NetworkObject>();
-                            // if(networkObject != null){
-                            //     networkObject.Despawn();
-                            // }
-                            o.SetActive(false);
-                        } 
+                foreach (var o in p.Objs)
+                {
+                    if (o)
+                    {
+                        o.SetActive(false);
+                    }
 
-                    }                        
+                }
             }
         }
 
-        // ② コルーチン開始
-        if (house_directors.Count > 0)
+        // ② コルーチン開始（サーバーのみ実行）
+        if (IsServer && house_directors.Count > 0)
+        {
             SpawnButsudans();
+        }
     }
     public void RevealButusdans(float RevealTime){
         foreach(SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers){
@@ -69,7 +69,12 @@ public class HousesController : NetworkSingleton<HousesController>
             if (grp.Butsudan == null)                            // 仏壇が設定されていない
                 continue;
 
-            // 1) 仏壇 ON
+            // 1) 仏壇 ON (ネットワーク同期)
+            var butsudanNet = grp.Butsudan.GetComponent<NetworkObject>();
+            if (IsServer && butsudanNet != null && !butsudanNet.IsSpawned)
+            {
+                butsudanNet.Spawn();
+            }
             grp.Butsudan.SetActive(true);
             ButudansSilhouetteChangeControllers.Add(grp.Butsudan.GetComponent<SilhouetteChangeController>());
             hd.ButsudanExists = true;
@@ -78,14 +83,17 @@ public class HousesController : NetworkSingleton<HousesController>
             if (grp.ExtraPackages.Count > 0)
             {
                 var pack = ChooseOnePackage(grp.ExtraPackages);
-                foreach (var obj in pack.Objs){
-                    if (obj){
-                        NetworkObject networkObject = obj.GetComponent<NetworkObject>();
-                        // if(networkObject != null){
-                        //     networkObject.Spawn();
-                        // }
+                foreach (var obj in pack.Objs)
+                {
+                    if (obj)
+                    {
+                        var networkObject = obj.GetComponent<NetworkObject>();
+                        if (IsServer && networkObject != null && !networkObject.IsSpawned)
+                        {
+                            networkObject.Spawn();
+                        }
                         obj.SetActive(true);
-                    } 
+                    }
 
                 }
             }
