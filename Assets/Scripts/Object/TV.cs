@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.Netcode;
 public class TV : MonoBehaviour
 {
     private ButsudansReveal butsudans_reveal;
@@ -32,8 +33,12 @@ public class TV : MonoBehaviour
             TurnOff();
         });
     }
-    public void TurnOff(){
-        butsudans_reveal.RevealButsudansAction();
+    public void TurnOff()
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            butsudans_reveal.RevealButsudansAction();
+        }
 
         var mats = TVMonitorMeshRenderer.sharedMaterials;
         if (mats.Length > 1) mats[1] = TurnOffTVMaterialMonitor;
