@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 715263022
+  GlobalObjectIdHash: 708512530
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -231,9 +231,12 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NoticeMessage: "\u30C6\u30EC\u30D3\u306E\u96FB\u6E90\u3092\u3064\u3051\u308B"
   NeedToPrayTime: 5
-  PrayNow: 0
-  PrayPermit: 1
-  PrayTimeNow: 0
+  PrayTimeNow:
+    m_InternalValue: 0
+  PrayPermit:
+    m_InternalValue: 1
+  AlreadyPrayCompleted:
+    m_InternalValue: 0
   PrayCompletedEvent:
     m_PersistentCalls:
       m_Calls:
@@ -326,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca880858974729c4487e4c59ae0eacae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   ButsudansRevealTime: 60
 --- !u!1 &7967622782653925107
 GameObject:
@@ -721,6 +725,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: ad9040b23236ab9438f7ec957eef8c44, type: 2}
     m_RemovedComponents:
     - {fileID: 2850851098766734342, guid: 5edf1fcba977998498a2942efe77d82c, type: 3}
+    - {fileID: -7945241920199646168, guid: 5edf1fcba977998498a2942efe77d82c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
