@@ -206,20 +206,7 @@ public class ItemBelongingsController : NetworkBehaviour
 
         int c = belonging_items[_item_status].item_count - 1;
         ItemDumpSpawnServerRpc(_item_status.GlobalId, player_status.HeadPos.position);
-    [ServerRpc]
-    private void ItemDumpSpawnServerRpc(uint itemGlobalId, Vector3 position)
-    {
-        ItemStatus status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
-        if (status == null) return;
-        GameObject obj = Instantiate(status.ItemPutObjectPrefab, position, Quaternion.identity);
-        var netObj = obj.GetComponent<NetworkObject>();
-        if (netObj != null)
-        {
-            netObj.Spawn(true);
-        }
-    }
-
-        {
+        if(c <= 0){
             item_menu_controller.item_equip_controller.EquipChange(_item_status, false);
             if (belonging_items.Count > 1)
                 item_menu_controller.ItemSelectAuto(_item_status);
@@ -238,7 +225,18 @@ public class ItemBelongingsController : NetworkBehaviour
                     player_status.HeadPos.position,
                     Quaternion.identity);
     }
-
+    [ServerRpc]
+    private void ItemDumpSpawnServerRpc(uint itemGlobalId, Vector3 position)
+    {
+        ItemStatus status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
+        if (status == null) return;
+        GameObject obj = Instantiate(status.ItemPutObjectPrefab, position, Quaternion.identity);
+        var netObj = obj.GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.Spawn(true);
+        }
+    }
     // 存在チェック
     public bool ExistsItems() => belonging_items.Count > 0;
 
