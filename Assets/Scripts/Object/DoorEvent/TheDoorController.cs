@@ -74,8 +74,9 @@ public class TheDoorController : NetworkBehaviour
         open_permit_by_key_controller.OpenPermit.Value = false;
     }
     [ServerRpc(RequireOwnership = false)]
-    public void DoorOpenClosedChangeByStatusServerRPC(ulong _NetworkObjectId)
+    public void DoorOpenClosedChangeByStatusServerRPC(ulong _NetworkObjectId, ServerRpcParams serverRpcParams = default)
     {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
         //EventActionMan: この関数を行った実行人物(プレイヤーや敵など)
         //ドアをステータスによって変化させる。
         //空いている状態なら閉める。　開いている状態なら開ける。
@@ -90,7 +91,15 @@ public class TheDoorController : NetworkBehaviour
                 //鍵がかかっている
                 if (EventActionMan.tag == "Player")
                 {
-                    open_permit_by_key_controller.NeedKeyForPlayer();
+                    //鍵がかかっていることを知らせる。
+                    open_permit_by_key_controller.NeedKeyForPlayerClientRpc(new ClientRpcParams
+                    {
+                        Send = new ClientRpcSendParams
+                        {
+                            TargetClientIds = new ulong[] { clientId }
+                        }
+                    });
+                    // open_permit_by_key_controller.NeedKeyForPlayerRequestServerRpc();
                 }
 
                 return;

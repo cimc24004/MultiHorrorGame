@@ -34,8 +34,8 @@ public class TargetHideObject : NetworkBehaviour
     [Header("Playerの子オブジェクトにあるAudioDatasに設定されてるaudioClipのKeyを指定。")]
     [SerializeField] private string AudioClipKey;
 
-    [SerializeField] private UnityEvent HideAddEvent; // UnityEvent2 から UnityEvent に変更（標準機能）
-    [SerializeField] private UnityEvent UnHideAddEvent;
+    [SerializeField] private UnityEvent2 HideAddEvent; // UnityEvent2 から UnityEvent に変更（標準機能）
+    [SerializeField] private UnityEvent2 UnHideAddEvent;
     [SerializeField] private UnityEvent LocalHideAddEvent;
     [SerializeField] private UnityEvent LocalUnHideAddEvent;
 

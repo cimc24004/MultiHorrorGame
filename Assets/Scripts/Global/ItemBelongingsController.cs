@@ -78,12 +78,12 @@ public class ItemBelongingsController : NetworkBehaviour
         item_databases         = ItemDatabases.instance;
         enemy_all_controller   = EnemyDatabases.instance.gameObject.GetComponent<EnemyAllController>();
 
-        // 初期アイテム配布
-        foreach (ItemStatus stat in InitialItemStatuses)
-        {
-            ItemAddToBelonging(stat);
-            item_menu_controller.OnItemGetChangeUI(false, stat);
-        }
+        // // 初期アイテム配布
+        // foreach (ItemStatus stat in InitialItemStatuses)
+        // {
+        //     ItemAddToBelonging(stat);
+        //     item_menu_controller.OnItemGetChangeUI(false, stat);
+        // }
     }
 
     // アイテム追加（初回 or 2個目以降）

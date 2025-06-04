@@ -320,7 +320,6 @@ MonoBehaviour:
   SomeoneHided:
     m_InternalValue: 0
   hide_type: 2
-  TargetObjectOfAngle: {x: 0, y: 0, z: 0}
   AudioClipKey: Huton
   HideAddEvent:
     m_PersistentCalls:
@@ -342,7 +341,7 @@ MonoBehaviour:
           m_BoolArgument: 0
           m_Vector2Argument: {x: 0, y: 0}
           m_Vector2IntArgument: {x: 0, y: 0}
-          m_Vector3Argument: {x: -0.000539, y: 0.4, z: -0.1}
+          m_Vector3Argument: {x: 0, y: 0.4, z: -0.48}
           m_Vector3IntArgument: {x: 0, y: 0, z: 0}
           m_Vector4Argument: {x: 0, y: 0, z: 0, w: 0}
           m_LayerMaskArgument:
@@ -395,14 +394,14 @@ MonoBehaviour:
           m_BoolArgument: 0
           m_Vector2Argument: {x: 0, y: 0}
           m_Vector2IntArgument: {x: 0, y: 0}
-          m_Vector3Argument: {x: -0.000539, y: 0.246, z: -0.469}
+          m_Vector3Argument: {x: 0, y: 0.246, z: -0.469}
           m_Vector3IntArgument: {x: 0, y: 0, z: 0}
           m_Vector4Argument: {x: 0, y: 0, z: 0, w: 0}
           m_LayerMaskArgument:
             serializedVersion: 2
             m_Bits: 0
           m_ColorArgument: {r: 0, g: 0, b: 0, a: 0}
-          m_QuaternionArgument: {x: 0, y: 0, z: 0, w: 1}
+          m_QuaternionArgument: {x: 0, y: 0, z: 0, w: 0}
           m_ObjectArrayArgument: []
           m_CharArrayArgument: 
           m_ByteArrayArgument: 
@@ -431,19 +430,33 @@ MonoBehaviour:
   LocalHideAddEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Arguments: []
-        m_CallState: 2
-        m_Target: {fileID: 5510086151382521625}
+      - m_Target: {fileID: 5510086151382521625}
+        m_TargetAssemblyTypeName: 
         m_MethodName: OnHide
-        m_Modes: 01000000
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   LocalUnHideAddEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Arguments: []
-        m_CallState: 2
-        m_Target: {fileID: 5510086151382521625}
+      - m_Target: {fileID: 5510086151382521625}
+        m_TargetAssemblyTypeName: 
         m_MethodName: OnUnHide
-        m_Modes: 01000000
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5510086151382521625
 MonoBehaviour:
   m_ObjectHideFlags: 0

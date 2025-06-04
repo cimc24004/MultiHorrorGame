@@ -55,8 +55,11 @@ public class SubNoticedUIController : SerializedMonoBehaviour
             //     RemoveOldestNotice();
             // }
             // テスト用: 3秒後に自動的に古いNoticeを削除するサンプル
+            Debug.Log("DelayCallを実行します 5秒");
+
             DOVirtual.DelayedCall(5, () =>
             {
+                Debug.Log("削除します。RemoveOldestNotice関数を実行");
                 RemoveOldestNotice();
             });
 

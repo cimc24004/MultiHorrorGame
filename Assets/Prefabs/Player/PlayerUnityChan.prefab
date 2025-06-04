@@ -6347,6 +6347,7 @@ GameObject:
   - component: {fileID: 1056663275959500298}
   - component: {fileID: 2481444592429799456}
   - component: {fileID: 8885107290759330572}
+  - component: {fileID: 5136650747360679803}
   m_Layer: 6
   m_Name: PlayerUnityChan
   m_TagString: Player
@@ -6548,7 +6549,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hide_type_target_object: 0
+  hide_type_target_object:
+    m_InternalValue: 0
   HidingPermit:
     m_InternalValue: 1
 --- !u!114 &364072651999732485
@@ -7910,6 +7912,22 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   TransitionStateInfoList: []
   m_Animator: {fileID: 3709143509871936015}
+--- !u!114 &5136650747360679803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58789c4d49e42364f97f229875609503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  target_inactive_objects:
+  - {fileID: 9198931759596475545}
+  - {fileID: 3014746822508253678}
 --- !u!1 &7660362891355367674
 GameObject:
   m_ObjectHideFlags: 0
