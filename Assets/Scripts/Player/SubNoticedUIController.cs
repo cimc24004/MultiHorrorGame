@@ -33,6 +33,7 @@ public class SubNoticedUIController : SerializedMonoBehaviour
     /// <param name="message">表示したい文字列</param>
     public void Notice(string message, float WaitStart = 0)
     {
+        Debug.Log("SubNoticedUiController.Notice関数");
         DOVirtual.DelayedCall(WaitStart, () => {
             // プレハブを生成して、親をnoticeRootに設定
             GameObject noticeObj = Instantiate(noticePrefab, noticeRoot);

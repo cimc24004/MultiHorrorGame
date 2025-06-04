@@ -132,7 +132,7 @@ public class ItemObject : NetworkBehaviour
 
         // 1) ローカル在庫に追加
         inv.ItemAddToBelonging(item_status);
-
+        inv.item_menu_controller.OnItemGetChangeUI(false, item_status);
         // 2) UI更新／エフェクト
         ItemGetAddEvent.Invoke();
 

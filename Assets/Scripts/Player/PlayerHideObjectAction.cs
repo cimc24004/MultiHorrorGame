@@ -8,75 +8,80 @@ using UnityEngine.InputSystem;
 public class PlayerHideObjectAction : NetworkBehaviour
 {
     //プレイヤーが隠れるアクション
-    private TargetHideObject    target_hide_object;
-    private PlayerStatus        player_status;
+    private TargetHideObject target_hide_object; // 隠れる対象オブジェクトの参照
+    private PlayerStatus player_status;
     private CharacterMovePermit charactor_move_permit;
-    public  NetworkVariable<TargetHideObject.HideType> hide_type_target_object = new NetworkVariable<TargetHideObject.HideType>();
-    private Animator            player_anim;
+    public NetworkVariable<TargetHideObject.HideType> hide_type_target_object = new NetworkVariable<TargetHideObject.HideType>();
+    private Animator player_anim;
     private CharacterController player_character_controller;
-    private PlayerInput         player_input;
-    private PlayerMoveScript    player_move_script;
-    private CrossHairStatus     cross_hair_status;
-    public  NetworkVariable<bool> HidingPermit = new NetworkVariable<bool>(true);
+    private PlayerInput player_input;
+    private PlayerMoveScript player_move_script;
+    private CrossHairEvent cross_hair_event; // CrossHairEvent を使う場合
 
-    // Start is called before the first frame update
-    void Start()
+    public NetworkVariable<bool> HidingPermit = new NetworkVariable<bool>(true);
+
+    public override void OnNetworkSpawn()
     {
-        player_status               = this.gameObject.GetComponent<PlayerStatus>();
-        cross_hair_status           = player_status.cross_hair_event.cross_hair_status;
-        player_anim                 = this.gameObject.GetComponent<Animator>();
+        player_status = this.gameObject.GetComponent<PlayerStatus>();
+        player_anim = this.gameObject.GetComponent<Animator>();
         player_character_controller = this.gameObject.GetComponent<CharacterController>();
-        charactor_move_permit       = this.gameObject.GetComponent<CharacterMovePermit>();
-        player_input                = player_status.player_input;
-        player_move_script          = this.gameObject.GetComponent<PlayerMoveScript>();
+        charactor_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
+        player_input = player_status.player_input;
+        player_move_script = this.gameObject.GetComponent<PlayerMoveScript>();
+        cross_hair_event = player_status.cross_hair_event; // PlayerStatusから取得
+
+        hide_type_target_object.OnValueChanged += OnHideTypeChanged; // 値変更時のコールバック登録
 
         if (IsOwner)
         {
-            player_input.actions["RaycastAction"]
-                        .performed += PerfomedHideRaycastAction;
+            player_input.actions["RaycastAction"].performed += PerfomedHideRaycastAction;
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnNetworkDespawn()
     {
-        if (!HidingPermit.Value)
+        if (hide_type_target_object != null)
         {
-            return;
+            hide_type_target_object.OnValueChanged -= OnHideTypeChanged;
         }
-        // if (cross_hair_status.HitedTag == "Hide")
-        // {
-        //     if (cross_hair_status.RaycastHitedExistsByCrossHairEvent 
-        //         && cross_hair_status.HitedObj == this.gameObject)
-        //     {
-        //     }
-        // }
-        // if (player_status.HidingNow.Value == true)
-        // {
-        //     //隠れている状態でRaycastActionキーをおした場合
-        //     if (player_input.actions["RaycastAction"].triggered)
-        //     {
-        //         HideUnHideRayCastActionPerformedRequestServerRpc();
-        //     }
-        // }
+        // player_input の解除も必要ならここで行う
+        if (IsOwner && player_input != null)
+        {
+             player_input.actions["RaycastAction"].performed -= PerfomedHideRaycastAction;
+        }
     }
+
+    private void OnHideTypeChanged(TargetHideObject.HideType previousValue, TargetHideObject.HideType newValue)
+    {
+        // NetworkVariableの値がクライアント側で変更されたときに呼び出される
+        // 必要であれば、ここでUI更新や見た目の調整など、
+        // RPC引数で渡された値に基づく即時処理以外の、遅延が許容される処理を行う
+        if (IsOwner)
+        {
+            Debug.Log($"[Client] hide_type_target_object changed from {previousValue} to {newValue}");
+        }
+    }
+
 
     // ──────────────────────────────────
     // クライアント RPC：隠れる際の自分側処理
     // ──────────────────────────────────
     [ClientRpc]
-    public void HideClientRpc()
+    public void HideClientRpc(TargetHideObject.HideType actualHideType)
     {
-        PlayerDeformedByHideType();
+        PlayerDeformedByHideType(actualHideType); // 引数で渡されたHideTypeを使用
         player_character_controller.enabled = false;
         this.gameObject.layer = LayerMask.NameToLayer("HidePlayer");
-        //player_rigid.isKinematic = true;
-        //player_collider.isTrigger = true;
-        //player_character_controller.stepOffset = 0;
-        //player_collider.isTrigger = true;
         if (IsOwner)
         {
             HidingNowChangeServerRpc(true);
+            // target_hide_object が null でないことを確認してから実行
+            if (target_hide_object != null)
+            {
+                // HideForClientsClientRpc は TargetHideObject 側で呼び出されるので、
+                // PlayerHideObjectAction から直接呼ぶ必要はないかもしれません。
+                // target_hide_object.HideTargetForClientsForSender(); // TargetHideObject側のメソッド呼び出し
+            }
         }
     }
 
@@ -86,152 +91,242 @@ public class PlayerHideObjectAction : NetworkBehaviour
     [ClientRpc]
     public void UnHideClientRpc()
     {
-        //player_rigid.isKinematic = false;
         player_character_controller.enabled = true;
-        //player_collider.isTrigger = false;
-        player_status.HeadPos.position    = player_status.StandHeadPos.position;
+        // カメラ位置やアニメーションのリセット
+        player_status.HeadPos.position = player_status.StandHeadPos.position;
         player_status.CameraRoot.position = player_status.StandHeadPos.position;
         player_anim.SetBool("FaceDown", false);
-        player_anim.SetBool("Crouch",   false);
+        player_anim.SetBool("Crouch", false);
         this.gameObject.layer = LayerMask.NameToLayer("Player");
-        charactor_move_permit.Move();
+        charactor_move_permit.Move(); // 移動許可
+
         if (IsOwner)
         {
             HidingNowChangeServerRpc(false);
+            // target_hide_object が null でないことを確認してから実行
+            if (target_hide_object != null)
+            {
+                 // target_hide_object.UnHideTargetForClientsForSender(); // TargetHideObject側のメソッド呼び出し
+            }
         }
     }
 
-    private void PlayerDeformedByHideType()
+    private void PlayerDeformedByHideType(TargetHideObject.HideType typeToDeform)
     {
-        Debug.Log("PlayerDeformedByHideType---Start------");
-        Debug.Log("OwnerId: " + OwnerClientId);
-        Debug.Log("PlayerOwnerId: " + player_status.NetworkObject.OwnerClientId);
-        Debug.Log("IsOwner: "+ IsOwner);
-        Debug.Log("hide_type_target_object: "+ hide_type_target_object.Value);
-        Debug.Log("--------------End---------");
-        if (IsOwner)
+        if (IsOwner) // カメラやローカルな見た目の変更はオーナーのみ
         {
-            PlayerDeformedByHideTypeRequestServerRpc();
-            //HideType(うつぶせや座るや立つ)の値によってプレイヤーの状態を変える。
-            if (hide_type_target_object.Value == TargetHideObject.HideType.Stand)
+            Debug.Log($"[Client Owner] PlayerDeformedByHideType called with type: {typeToDeform}");
+            if (typeToDeform == TargetHideObject.HideType.Stand)
             {
-                //立つタイプなら
                 player_status.HeadPos.position = player_status.StandHeadPos.position;
                 player_status.CameraRoot.position = player_status.StandHeadPos.position;
             }
-            else if (hide_type_target_object.Value == TargetHideObject.HideType.Crouch)
+            else if (typeToDeform == TargetHideObject.HideType.Crouch)
             {
-                //座るタイプなら
                 player_status.HeadPos.position = player_status.CrouchHeadPos.position;
                 player_status.CameraRoot.position = player_status.CrouchHeadPos.position;
             }
-            else if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
+            else if (typeToDeform == TargetHideObject.HideType.FaceDown)
             {
-                //うつ伏せタイプならうつ伏せアニメーションを流す。
                 player_status.HeadPos.position = player_status.FaceDownHeadPos.position;
                 player_status.CameraRoot.position = player_status.FaceDownHeadPos.position;
-                Debug.Log("FaceDownPlayerDeformedByHideType------Start----");
-                Debug.Log("PlayerのPos----------------: " + player_status.NetworkObjectId);
-                Debug.Log("FaceDownPlayerDeformedByHideType---End-------");
             }
         }
-
+        // アニメーション同期のためのサーバーRPC呼び出し (オーナーからのみリクエスト)
+        // このRPCはサーバー側の hide_type_target_object.Value を参照してアニメーションを決定する
+        if (IsOwner)
+        {
+           PlayerDeformedByHideTypeRequestServerRpc();
+        }
     }
 
     [ServerRpc]
     private void PlayerDeformedByHideTypeRequestServerRpc()
     {
-        player_status.CrouchNetwork.Value = false;
+        // サーバー側でhide_type_target_object.Value（TargetHideObjectSetで設定済み）に基づいてアニメーションを更新
+        // この値は全クライアントに同期される
+        player_status.CrouchNetwork.Value = false; // しゃがみ状態を一旦リセット
         if (hide_type_target_object.Value == TargetHideObject.HideType.Crouch)
         {
             player_anim.SetBool("Crouch", true);
+            player_anim.SetBool("FaceDown", false);
         }
         else if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
         {
             player_anim.SetBool("FaceDown", true);
+            player_anim.SetBool("Crouch", false);
+        }
+        else // Stand or other
+        {
+            player_anim.SetBool("Crouch", false);
+            player_anim.SetBool("FaceDown", false);
         }
     }
 
     [ServerRpc]
     private void HidingNowChangeServerRpc(bool _HidingNow)
     {
+        player_status.HidingNow.Value = _HidingNow; // NetworkVariableの更新
         if (_HidingNow)
         {
             charactor_move_permit.Stop();
         }
         else
         {
-            player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
+            player_move_script.NowSpeed.Value = player_move_script.WalkSpeed; // 通常速度に戻す
             charactor_move_permit.Move();
         }
-        player_status.HidingNow.Value = _HidingNow;
     }
 
     private void PerfomedHideRaycastAction(InputAction.CallbackContext ctx)
     {
-        //HidingNowがtrueの場合だけ行う。 隠れてる最中に
-        if (player_status.HidingNow.Value && HidingPermit.Value)
+        if (!IsOwner || !HidingPermit.Value) return;
+
+        if (player_status.HidingNow.Value) // すでに隠れている場合 -> 出る
         {
-            HideUnHideRayCastActionPerformedRequestServerRpc();
+            // 出る時はターゲットオブジェクトIDは不要（サーバー側で関連付けられたオブジェクトから出る想定）
+            HideUnHideRayCastActionPerformedRequestServerRpc(0); // 0 はターゲットなしを示す
+        }
+        else // 隠れていない場合 -> 隠れる
+        {
+            if (cross_hair_event != null && cross_hair_event.cross_hair_status.RaycastHitedExistsByCrossHairEvent && cross_hair_event.cross_hair_status.HitedTag == "Hide")
+            {
+                GameObject hitedObject = cross_hair_event.cross_hair_status.HitedObj;
+                if (hitedObject != null)
+                {
+                    NetworkObject targetNetworkObject = hitedObject.GetComponent<NetworkObject>();
+                    if (targetNetworkObject != null)
+                    {
+                        HideUnHideRayCastActionPerformedRequestServerRpc(targetNetworkObject.NetworkObjectId);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Raycast hit 'Hide' tag, but no NetworkObject found on the hited object.");
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Cannot hide: No valid 'Hide' object targeted by crosshair.");
+                // player_status.sub_noticed_ui_controller.Notice("隠れられる場所がありません"); // 必要なら通知
+            }
         }
     }
 
     public void GetCoughtWhenHidingByEnemy(GameObject _SightningEnemy)
     {
-        //隠れている時 もし敵に隠れてることが知られていたら。
+        // このメソッドはサーバー側で呼び出されることを想定
+        if (!IsServer) return;
+
         Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
-        if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
+        if (player_status.HidingNow.Value) // 隠れている時のみ
         {
-            //机の下に隠れるタイプだった場合は下をのぞくアニメーションをつけてからHidingPermitをFalseにする。
-            Debug.Log("FacedownnnnnnnNByEnemyyyy");
-            enemy_anim.SetTrigger("LayLookDown");
-            //↑アニメ終了後にDeadEventなど呼ぶ
-        }
-        else
-        {
-            if (player_status.HidingNow.Value && IsServer)
+            if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
             {
-                UnHideClientRpc();
+                Debug.Log("Enemy found player hiding (FaceDown). Triggering enemy animation.");
+                enemy_anim.SetTrigger("LayLookDown"); // 敵のアニメーション
+                // ここでアニメーション終了後にプレイヤーを死亡させるイベントを呼ぶなどの処理が必要
+                // 例: StartCoroutine(PlayerDeathAfterAnimation(_SightningEnemy, enemy_anim));
+                // HidingPermit.Value = false; // など
             }
-            player_status.DeadEvent(_SightningEnemy);
+            else
+            {
+                Debug.Log("Enemy found player hiding (Not FaceDown). Player unhides and dies.");
+                UnHideClientRpc(); // まず隠れるのをやめさせる
+                player_status.DeadEvent(_SightningEnemy); // 死亡イベント
+            }
         }
     }
 
-    // ──────────────────────────────────
-    // サーバー RPC：隠れる／出る をまとめてリクエスト
-    // ──────────────────────────────────
     [ServerRpc]
-    public void HideUnHideRayCastActionPerformedRequestServerRpc(
-        ulong _TargetNetworkObjectId = 0)
+    public void HideUnHideRayCastActionPerformedRequestServerRpc(ulong _TargetNetworkObjectId, ServerRpcParams rpcParams = default)
     {
         if (!HidingPermit.Value) return;
 
-        ulong myId = this.NetworkObject.NetworkObjectId;
-
-        if (!player_status.HidingNow.Value)
+        ulong requestingClientId = rpcParams.Receive.SenderClientId;
+        // 念のため、このRPCを呼び出したクライアントがこのPlayerオブジェクトのオーナーか確認
+        if (this.OwnerClientId != requestingClientId)
         {
-            // 隠れる処理
-            GameObject hideObjGO = NetworkManager.Singleton.SpawnManager
-                                   .SpawnedObjects[_TargetNetworkObjectId].gameObject;
-            TargetHideObjectSet(hideObjGO, player_status);
-            target_hide_object.HideRequestServerRpc(myId);
-            HideClientRpc();
-            player_status.HidingNow.Value = true;
+            Debug.LogError($"Security: Client {requestingClientId} tried to call Hide/UnHide for player {this.OwnerClientId}. Denied.");
+            return;
         }
-        else
+
+
+        if (!player_status.HidingNow.Value) // まだ隠れていない -> 隠れる処理
         {
-            // 出る処理
-            target_hide_object.UnHideRequestServerRpc(myId);
+            if (_TargetNetworkObjectId == 0) {
+                Debug.LogError("Hide action initiated without a target object ID on server.");
+                return;
+            }
+
+            if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(_TargetNetworkObjectId, out NetworkObject hideNetworkObj))
+            {
+                 Debug.LogError($"Could not find NetworkObject with ID: {_TargetNetworkObjectId} on server.");
+                return;
+            }
+            GameObject hideObjGO = hideNetworkObj.gameObject;
+
+
+            TargetHideObject.HideType typeOfHideObject = TargetHideObjectSet(hideObjGO); // サーバー側で target_hide_object と hide_type_target_object.Value を設定
+
+            if (target_hide_object.SomeoneHided.Value == false)
+            {
+                // 誰も隠れていなければ隠れられる
+                target_hide_object.HideRequestServerRpc(this.NetworkObject.NetworkObjectId); // 対象オブジェクトに「このプレイヤーが隠れた」と通知
+                HideClientRpc(typeOfHideObject); // クライアントに隠れる動作を指示 (正しいHideTypeを渡す)
+                // player_status.HidingNow.Value = true; // これはHideClientRpc -> HidingNowChangeServerRpcで行われる
+            }
+            else
+            {
+                // 誰か隠れていたら通知
+                Debug.Log($"[Server] Player {OwnerClientId} tried to hide in occupied object {_TargetNetworkObjectId}.");
+                ClientRpcParams clientRpcParams = new ClientRpcParams {
+                    Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { OwnerClientId } }
+                };
+                NotifyClientActionFailedClientRpc("誰かが隠れている...", clientRpcParams);
+            }
+        }
+        else // すでに隠れている -> 出る処理
+        {
+            if (target_hide_object != null) // 隠れたオブジェクトの参照がサーバーにあれば
+            {
+                target_hide_object.UnHideRequestServerRpc(this.NetworkObject.NetworkObjectId);
+                 // 出る処理が終わった後、サーバー側の target_hide_object の参照をクリアしても良いかもしれない
+                 // target_hide_object = null;
+            } else {
+                Debug.LogWarning($"[Server] Player {OwnerClientId} is trying to unhide, but target_hide_object is not set on server.");
+                // 強制的に出る処理だけ行う場合
+            }
             UnHideClientRpc();
-            player_status.HidingNow.Value = false;
+            // player_status.HidingNow.Value = false; // これはUnHideClientRpc -> HidingNowChangeServerRpcで行われる
         }
     }
 
-    private void TargetHideObjectSet(GameObject _TargetObject, PlayerStatus _player_status)
+    // サーバーでのみ実行される。隠れる対象オブジェクトの情報を設定。
+    private TargetHideObject.HideType TargetHideObjectSet(GameObject _TargetObject)
     {
-        //初期化みたいなとこです 隠れる対象オブジェクト(押入れとか机とか)を取得し、
-        //そのHideTypeを取得。
-        target_hide_object      = _TargetObject.GetComponent<TargetHideObject>();
-        hide_type_target_object.Value = target_hide_object.hide_type;
+        target_hide_object = _TargetObject.GetComponent<TargetHideObject>();
+        if (target_hide_object != null)
+        {
+            hide_type_target_object.Value = target_hide_object.hide_type; // サーバーでNetworkVariableを更新
+            return target_hide_object.hide_type;
+        }
+        Debug.LogError("TargetHideObject component not found on the target object.");
+        return TargetHideObject.HideType.Stand; // デフォルト値を返すかエラー処理
+    }
+
+    [ClientRpc]
+    private void NotifyClientActionFailedClientRpc(string message, ClientRpcParams clientRpcParams = default)
+    {
+        // このRPCは指定されたクライアント(TargetClientIds)でのみ実行される
+        // そのクライアントのplayer_status (つまり自分自身) のUIコントローラーを呼び出す
+        if (player_status != null && player_status.sub_noticed_ui_controller != null)
+        {
+            player_status.sub_noticed_ui_controller.Notice(message);
+        }
+        else
+        {
+            Debug.LogWarning($"[Client] Could not show notice '{message}' because player_status or sub_noticed_ui_controller is null.");
+        }
     }
 }
