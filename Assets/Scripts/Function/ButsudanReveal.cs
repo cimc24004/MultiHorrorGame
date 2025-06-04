@@ -46,12 +46,6 @@ public class ButsudansReveal : NetworkBehaviour
     [ClientRpc]
     private void RevealButsudansClientRpc(ClientRpcParams rpcParams = default)
     {
-        // Ensure local references are initialized on each client
-        if (sub_noticed_ui_controller == null && PlayerStatus.LocalInstance != null)
-        {
-            sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
-        }
-
         sub_noticed_ui_controller?.Notice("仏壇の位置が明らかになった..!!");
         houses_controller?.RevealButusdans(ButsudansRevealTime);
         sub_noticed_ui_controller?.Notice(
