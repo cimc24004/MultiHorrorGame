@@ -20,12 +20,43 @@ public class ButsudansReveal : NetworkBehaviour
         player_status = _playerStatus;
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
     }
-    public override void OnNetworkSpawn(){
+    public override void OnNetworkSpawn()
+    {
         houses_controller = HousesController.Instance;
     }
-    public void RevealButsudansAction(){
-        sub_noticed_ui_controller.Notice("仏壇の位置が明らかになった..!!");
-        houses_controller.RevealButusdans(ButsudansRevealTime);
-        sub_noticed_ui_controller.Notice("仏壇の位置がわからなくなった....", ButsudansRevealTime);
+
+    public void RevealButsudansAction()
+    {
+        if (IsServer)
+        {
+            RevealButsudansClientRpc();
+        }
+        else
+        {
+            RevealButsudansServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RevealButsudansServerRpc(ServerRpcParams rpcParams = default)
+    {
+        RevealButsudansClientRpc();
+    }
+
+    [ClientRpc]
+    private void RevealButsudansClientRpc(ClientRpcParams rpcParams = default)
+    {
+        // Ensure local references are initialized on each client
+        if (sub_noticed_ui_controller == null && PlayerStatus.LocalInstance != null)
+        {
+            sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
+        }
+
+        sub_noticed_ui_controller?.Notice("仏壇の位置が明らかになった..!!");
+        houses_controller?.RevealButusdans(ButsudansRevealTime);
+        sub_noticed_ui_controller?.Notice(
+            "仏壇の位置がわからなくなった....",
+            ButsudansRevealTime
+        );
     }
 }
