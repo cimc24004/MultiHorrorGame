@@ -51,6 +51,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
+        response.Approved = true;
         response.Pending = true;
         if (NetworkManager.Singleton.ConnectedClients.Count >= 4)
         {
