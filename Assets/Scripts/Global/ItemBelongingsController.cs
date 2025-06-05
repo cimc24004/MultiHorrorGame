@@ -148,8 +148,7 @@ public class ItemBelongingsController : NetworkBehaviour
         // 投擲アイテム
         if (item_status.item_type == ItemStatus.ItemType.CanThrow)
         {
-            item_throw_controller.ThrowStart(item_status.ItemThrowPrefab);
-            item_throw_controller.item_status = item_status;
+            item_throw_controller.ThrowStart(item_status);
             ItemUse(cntNow, item_status);
         }
         // 消費アイテム
