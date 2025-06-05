@@ -12,7 +12,8 @@ public class GameNetworkController : Singleton<GameNetworkController>
         Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null
     ? "Transport OK"
     : "Transport NULL!!");
-        NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
+        // NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
+        NetworkManager.Singleton.NetworkConfig.ConnectionApproval = false;
 
     }
     public void StartHost(){
