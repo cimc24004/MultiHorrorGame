@@ -6,10 +6,10 @@ using Sirenix.Serialization;
 [System.Serializable]
 public class ButsudanGroup
 {
-    [Tooltip("d{̂ GameObject")]
+    [Tooltip("d{? GameObject")]
     public GameObject Butsudan;
 
-    [Tooltip("̕d ON ɂȂ肷pbP[WQ")]
+    [Tooltip("?d ON ???pbP[WQ")]
     public List<RandomSpawnPackage> ExtraPackages = new();
 }
 [System.Serializable]
@@ -27,13 +27,13 @@ public class HouseDirector : SerializedMonoBehaviour
     private HousesController houses_controller;
     public bool ButsudanExists;
     [LabelText("d + tIuWFNgZbg")]
-    public List<ButsudanGroup> Groups = new();   // Butsudan ͕Kɂ܂܂
+    public List<ButsudanGroup> Groups = new();   // Butsudan ?K???
 
-    [Header("_ō쐬IuWFNgw ")]
+    [Header("_??IuWFNgw ")]
     public List<GameObject> RandomObjs;
-    [Header("_̊m")]
+    [Header("_?m")]
     public int RandomObjProbablity;
-    // [Header("erȂw")]
+    // [Header("er?w")]
     // public GameObject TV;
     // Start is called before the first frame update
     void Start()
