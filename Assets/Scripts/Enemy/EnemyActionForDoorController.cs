@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 using Unity.Netcode;
 public class EnemyActionForDoorController : NetworkBehaviour
 {
-    //�G���h�A���J������A�󂵂��肷��R���g���[���[
+    // 扉を攻撃したり開閉したりする処理
     
     [SerializeField] private float RaycastDistance = 1f;
     [SerializeField] private int BrokeDoorPlusCount = 1;
@@ -35,7 +35,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
     private CharacterController character_controller;
 
     [SerializeField] private GameObject AttackedDoorEffectPrefab;
-    // Start is called before the first frame update
+    // Start は最初のフレーム前に呼ばれる
     void Start()
     {
         networkObject = this.gameObject.GetComponent<NetworkObject>();
@@ -48,7 +48,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
         character_controller = this.gameObject.GetComponent<CharacterController>();
     }
 
-    // Update is called once per frame
+    // 毎フレーム呼び出される
     void Update()
     {
         if (!AutoDoorAttack) return;
@@ -59,7 +59,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
 
         foreach (Transform start in rayStarts)
         {
-            if (start == null) continue;                     // �O�̂��ߋ�`�F�b�N
+            if (start == null) continue;                     // null のトランスフォームは無視
             Debug.DrawRay(start.position, start.forward * RaycastDistance, Color.red);
             
             if (Physics.Raycast(start.position, start.forward, out raycast_hit, RaycastDistance, layer_mask))
@@ -68,8 +68,8 @@ public class EnemyActionForDoorController : NetworkBehaviour
                 if (raycast_hit.collider.gameObject.tag == "Door")
                 {
                     DoorTouchNow = true;
-                    // ���� ���������͌��̈�A�̏������̂܂� ������������������
-                    Debug.Log("DoorHit���܂����B�^�[�Q�b�g��: " + raycast_hit.collider.gameObject);
+                    // 扉にヒットしたので処理を行う
+                    Debug.Log("Door hit target: " + raycast_hit.collider.gameObject);
 
                     if (raycast_hit_obj != raycast_hit.collider.gameObject || door_open_close_controller == null)
                     {
@@ -92,7 +92,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
 
                     if (the_door_controller.NeededKey.Value || discovery_player_controller.DiscoveryPlayerNow)
                     {
-                        Debug.Log("�����󂵂����Ǝv���܂��B");
+                        Debug.Log("鍵が掛かっているかプレイヤーを発見したので攻撃します");
 
                         DoorAttackNow = true;
 
@@ -102,7 +102,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
                         DoorAttackNow = false;
                     }
 
-                    // �ǂꂩ 1 �{���������� break �Ń��[�v�I��
+                    // 1つ処理したらループを抜ける
                     break;
                 }
             }

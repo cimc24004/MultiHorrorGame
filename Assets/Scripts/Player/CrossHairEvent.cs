@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 public class CrossHairEvent : NetworkBehaviour
 {
-    //�^�񒆂̃N���X�w�A���烌�C�L���X�g���΂����ꂪ���̂ɓ��������Ƃ��ɔ���������C�x���g�B
+    // 画面中央からのレイキャストで調べる対象レイヤーマスク
     public LayerMask TargetLayerMaskViewToPoint;
     public ItemBelongingsController item_belonging_controller;
     public AudioDatas KeyAudioDatas;
@@ -16,7 +16,7 @@ public class CrossHairEvent : NetworkBehaviour
     private PlayerStatus player_status;
     private bool InitPlayer;
     private GameObject Player;
-    //�N���X�w�A�����΂����C�L���X�g�̋����B
+    // クロスヘアのレイキャスト到達距離
     public float RaycastDistance = 3;
     //クリックイベント
     public bool CrossHairEventRaycastPermit = true;
@@ -34,7 +34,7 @@ public class CrossHairEvent : NetworkBehaviour
     private GameStateController game_state_controller;
     private MainNoticedUIController main_noticed_ui_controller;
     private NetworkObject networkObject;
-    // Start is called before the first frame update
+    // Start は最初のフレーム前に呼ばれる
     void Start()
     {
     }
@@ -55,12 +55,12 @@ public class CrossHairEvent : NetworkBehaviour
         networkObject = this.Player.GetComponent<NetworkObject>();
         InitPlayer = true;
     }
-    // Update is called once per frame
+    // 毎フレーム呼び出される
     void Update()
     {
         if(!InitPlayer) return;
         if(!IsOwner) return;
-        //�J�����̒������烌�C�L���X�g���΂��B
+        // 画面中心からレイを飛ばす
         main_ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.yellow);
         if (Physics.Raycast(main_ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))

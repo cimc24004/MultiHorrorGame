@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 public class CrossHairStatus : SerializedMonoBehaviour
 {
-    //�N���X�w�A�̃X�e�[�^�X
+    // クロスヘアの状態
 
     public enum EventColHitedStatus{
         None,
@@ -14,19 +14,19 @@ public class CrossHairStatus : SerializedMonoBehaviour
         OpenObj
     }
 
-    //�f�t�H���g�̃N���X�w�A�A�C�R���I�u�W�F�N�g
+    // 通常時のクロスヘアアイコン
     public Image DefaultCrossHairIcon;
-    //�`�F�b�N�̃N���X�w�A�A�C�R���I�u�W�F�N�g
+    // 何かにヒットしている時のアイコン
     public Image CheckCrossHairIcon;
 
-    //CrossHairEvent�́@�h�A��A�C�e���ȂǂɃ��C�L���X�g���������Ă���̂��ǂ���
+    // CrossHairEventのレイキャストが何かに当たっているか
     public bool RaycastHitedExistsByCrossHairEvent;
     public string HitedTag;
     public GameObject HitedObj;
     private PlayerStatus player_status;
     public EventColHitedStatus event_col_hited_status;
     private bool InitPlayer;
-    // Start is called before the first frame update
+    // OnEnable は最初のフレーム前に呼ばれる
     private void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
@@ -39,11 +39,11 @@ public class CrossHairStatus : SerializedMonoBehaviour
         player_status = _playerStatus;
         InitPlayer = true;
     }
-    // Update is called once per frame
+    // 毎フレーム呼び出される
     void Update()
     {
         if(!InitPlayer) return;
-        //�v���C���[���B��Ă�����A�܂��̓h�A��A�C�e���ȂǂɃ��C�L���X�g���������Ă���Ȃ�� �`�F�b�N�摜��\���B
+        // 何かに当たっている、または隠れている間はチェックアイコンを表示
         if (RaycastHitedExistsByCrossHairEvent || player_status.HidingNow.Value)
         {
             SpriteChange(_CheckMode: true);
@@ -57,7 +57,7 @@ public class CrossHairStatus : SerializedMonoBehaviour
 
     public void SpriteChange( bool _CheckMode)
     {
-        //�`�F�b�N���[�h�ɂ���ĕ\������摜��ύX����B
+        // チェックモードに応じてスプライトを切り替える
         if(_CheckMode == true)
         {
 
