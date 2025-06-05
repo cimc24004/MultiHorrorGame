@@ -18,6 +18,7 @@ public class EnemyToPlayerKillController : MonoBehaviour
 
     void Update()
     {
+        return;
         if (playerStatus.Dead.Value == true || playerStatus.HidingNow.Value == true || !discovery.DiscoveryPlayerNow)
             return;
 
