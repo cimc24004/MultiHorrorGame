@@ -4,11 +4,12 @@ using MathNet.Numerics.Optimization.TrustRegion;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ItemThrowController : MonoBehaviour
+using Unity.Netcode;
+public class ItemThrowController : NetworkBehaviour
 {
-    //‚È‚É‚©•¨‚ğ“Š‚°‚éˆ×‚ÌƒXƒNƒŠƒvƒgB 
+    //È‚É‚ğ“Š‚×‚ÌƒXNvgB 
 
-    //«‰¼‚É“Š‚°‚éƒAƒCƒeƒ€‚ğƒZƒbƒg‚µ‚Ä‚é‚¾‚¯B
+    //É“ACeZbgÄ‚é‚¾B
     public GameObject MainCamera;
     public PlayerInput player_input;
     public Transform StartFiringPos;
@@ -34,25 +35,42 @@ public class ItemThrowController : MonoBehaviour
     void Update()
     {
         if(!InitPlayer) return;
-        //ƒvƒŒƒCƒ„[‚ÌƒRƒ‰ƒCƒ_[‚É‚Ô‚Â‚©‚Á‚Äãè‚­“Š‚°‚é‚±‚Æ‚ª‚Å‚«‚È‚¢‚Ì‚Å
-        //‚±‚ÌItemThrowConroller‚Ìq—v‘f‚É‚ ‚éƒIƒuƒWƒFƒNƒg‚©‚ç”­Ë‚·‚é‚±‚Æ‚Åãè‚­•ú‚Ä‚é
+        //vC[ÌƒRC_[É‚Ô‚Â‚Äè‚­é‚±Æ‚Å‚È‚Ì‚
+        //ItemThrowConrollerÌqvfÉ‚IuWFNgç”­Ë‚é‚±Æ‚Åè‚­Ä‚
         
-        //Camera‚ÌŒü‚¢‚Ä‚é•ûŒü‚ÉŒü‚©‚Á‚Ä ©•ª‚àŒü‚­‚æ‚¤‚É‚·‚éB
+        //CameraÌŒÄ‚ÉŒ æ‚¤É‚B
         this.transform.forward = new Vector3(MainCamera.transform.forward.x, MainCamera.transform.forward.y, MainCamera.transform.forward.z);
         
 
     }
-    public void ThrowStart(GameObject throw_obj)
+    public void ThrowStart(ItemStatus status)
     {
-        //ItmeMenuController.cs‚©‚çÀs‚·‚éB
-        //ThrowForward => “Š‚°‚é•ûŒü‚Ì‚±‚ÆB@¡‰ñ‚Í©•ª‚Ì•ûŒü‚ğİ’è‚µ‚Ä‚¢‚éB(Camera‚ÌŒü‚«‚ğQÆ‚µ‚Ä‚¢‚éB)
+        if (!IsServer)
+        {
+            ThrowStartServerRpc(status.GlobalId, StartFiringPos.position, transform.forward);
+        }
+        else
+        {
+            SpawnAndThrow(status, StartFiringPos.position, transform.forward);
+        }
+    }
 
-        //“Š‚°‚é‚½‚ß‚ÌƒIƒuƒWƒFƒNƒg(Prefab)‚ğ¶¬B
-        GameObject obj = Instantiate(throw_obj, StartFiringPos.position, Quaternion.identity);
-        //…•½“ŠË‚ğs‚¤ˆ×ƒXƒNƒŠƒvƒg‚ğQÆ‚µ‚Ì‰‘¬“x‚ğİ’è‚µ‚Ä”­ËB
+    [ServerRpc]
+    private void ThrowStartServerRpc(uint globalId, Vector3 position, Vector3 forward)
+    {
+        ItemStatus stat = ItemDatabases.instance.GetStatusByGlobalId(globalId);
+        if (stat == null) return;
+        SpawnAndThrow(stat, position, forward);
+    }
+
+    private void SpawnAndThrow(ItemStatus status, Vector3 position, Vector3 forward)
+    {
+        GameObject obj = Instantiate(status.ItemThrowPrefab, position, Quaternion.identity);
+        NetworkObject netObj = obj.GetComponent<NetworkObject>();
+        if (netObj != null)
+            netObj.Spawn(true);
         HorizontalProjectile horizontal_projectile = obj.GetComponent<HorizontalProjectile>();
-        horizontal_projectile.Throw(ThrowFirstSpeed, this.transform.forward);
-
+        horizontal_projectile.Throw(ThrowFirstSpeed, forward);
     }
 
 }
