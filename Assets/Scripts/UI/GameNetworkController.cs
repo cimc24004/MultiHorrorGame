@@ -1,5 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+
 public class GameNetworkController : Singleton<GameNetworkController>
 {
     [SerializeField] private Transform PlayerCreatePos;
@@ -14,7 +16,13 @@ public class GameNetworkController : Singleton<GameNetworkController>
     : "Transport NULL!!");
         // NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
         NetworkManager.Singleton.NetworkConfig.ConnectionApproval = false;
-
+        NetworkManager.Singleton.OnClientDisconnectCallback += (clientId) =>
+        {
+            Debug.LogError("[ClientLauncher] サーバー接続が切断されました (ClientId=" + clientId + ")");
+            // 追加：最後のソケットエラーやタイムアウト理由を取得できるか調べる
+            var lastError = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+            Debug.LogError("[ClientLauncher] Transport last error code: " + lastError.GetTransmissionData().ToString());
+        };
     }
     public void StartHost(){
         // NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
