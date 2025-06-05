@@ -1,7 +1,5 @@
 using UnityEngine;
 using Unity.Netcode;
-using Unity.Netcode.Transports.UTP;
-
 public class GameNetworkController : Singleton<GameNetworkController>
 {
     [SerializeField] private Transform PlayerCreatePos;
@@ -11,22 +9,13 @@ public class GameNetworkController : Singleton<GameNetworkController>
     //とりあえずテストようのStartHost StartClient
     void Start()
     {
-        Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null
-    ? "Transport OK"
+        Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null 
+    ? "Transport OK" 
     : "Transport NULL!!");
-        // NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
-        NetworkManager.Singleton.NetworkConfig.ConnectionApproval = false;
-        NetworkManager.Singleton.OnClientDisconnectCallback += (clientId) =>
-        {
-            Debug.LogError("[ClientLauncher] サーバー接続が切断されました (ClientId=" + clientId + ")");
-            // 追加：最後のソケットエラーやタイムアウト理由を取得できるか調べる
-            var lastError = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
-            Debug.LogError("[ClientLauncher] Transport last error code: " + lastError.GetTransmissionData().ToString());
-        };
     }
     public void StartHost(){
         // NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
-        NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
+
         NetworkManager.Singleton.StartHost();   // ホスト起動
 
         //クライアント接続時
@@ -59,43 +48,34 @@ public class GameNetworkController : Singleton<GameNetworkController>
         };
         // playerObject.transform.position = generatePos;
     }
+
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
-        // ここで認証情報をチェックしてもいいが、今回は「全員を承認」する
-        response.Approved = true;
-        response.CreatePlayerObject = true;
+        response.Pending = true;
+        if (NetworkManager.Singleton.ConnectedClients.Count >= 4)
+        {
+            response.Approved = false;//接続を許可しない
+            response.Pending = false;
+            return;
+        }
+        //ここからは接続成功クライアントに向けた処理
+        response.Approved = true;//接続を許可
+
+        //PlayerObjectを生成するかどうか
+        response.CreatePlayerObject = false;
+
+        //生成するPrefabハッシュ値。nullの場合NetworkManagerに登録したプレハブが使用される
         response.PlayerPrefabHash = null;
-        response.Position = Vector3.zero;
-        response.Rotation = null;
+
+        //PlayerObjectをスポーンする位置(nullの場合Vector3.zero)
+        // var position = PlayerCreatePos.position;
+        // position.x = -0.1f + 0.1f * (NetworkManager.Singleton.ConnectedClients.Count % 3);
+        // response.Position = PlayerCreatePos.position;
+
+        // //PlayerObjectをスポーン時の回転 (nullの場合Quaternion.identity)
+        response.Rotation = Quaternion.identity;
+
+        response.Pending = false;
+
     }
-    // private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
-    // {
-    //     response.Approved = true;
-    //     response.Pending = true;
-    //     if (NetworkManager.Singleton.ConnectedClients.Count >= 4)
-    //     {
-    //         response.Approved = false;//接続を許可しない
-    //         response.Pending = false;
-    //         return;
-    //     }
-    //     //ここからは接続成功クライアントに向けた処理
-    //     response.Approved = true;//接続を許可
-
-    //     //PlayerObjectを生成するかどうか
-    //     response.CreatePlayerObject = false;
-
-    //     //生成するPrefabハッシュ値。nullの場合NetworkManagerに登録したプレハブが使用される
-    //     response.PlayerPrefabHash = null;
-
-    //     //PlayerObjectをスポーンする位置(nullの場合Vector3.zero)
-    //     // var position = PlayerCreatePos.position;
-    //     // position.x = -0.1f + 0.1f * (NetworkManager.Singleton.ConnectedClients.Count % 3);
-    //     // response.Position = PlayerCreatePos.position;
-
-    //     // //PlayerObjectをスポーン時の回転 (nullの場合Quaternion.identity)
-    //     response.Rotation = Quaternion.identity;
-
-    //     response.Pending = false;
-
-    // }
 }
