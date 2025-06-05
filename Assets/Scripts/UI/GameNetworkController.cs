@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 public class GameNetworkController : Singleton<GameNetworkController>
 {
     [SerializeField] private Transform PlayerCreatePos;
@@ -14,7 +15,9 @@ public class GameNetworkController : Singleton<GameNetworkController>
     : "Transport NULL!!");
     }
     public void StartHost(){
-        // NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
+        NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
+        var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+        utp.SetConnectionData("0.0.0.0", 7777);
 
         NetworkManager.Singleton.StartHost();   // ホスト起動
 
@@ -28,6 +31,9 @@ public class GameNetworkController : Singleton<GameNetworkController>
         }
     }
     public void StartClient(){
+        var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+        utp.SetConnectionData("192.168.0.10", 7777);
+
         NetworkManager.Singleton.StartClient();   // ホスト起動
     }
     // public override void OnNetworkSpawn()
