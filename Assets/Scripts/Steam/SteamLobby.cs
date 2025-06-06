@@ -6,19 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class SteamLobby : MonoBehaviour
 {
-    //ロビー作成コールバック
+    // ロビー作成＆入室のコールバック保持用
     private CallResult<LobbyCreated_t> m_crLobbyCreated;
-    //ロビー入出コールバック
     private Callback<LobbyEnter_t> m_lobbyEnter;
 
-    //ロビーデータ設定用キー
+    // ロビーデータに載せるキー
     private const string s_HostAddressKey = "HostAddress";
 
     public ulong LobbyID { get; private set; }
 
-    public void Start()
+    private void Start()
     {
-        //SteamManagerの初期化が完了していたら
+        // SteamAPI.RunCallbacks() は SteamManager で回っている想定
         if (SteamManager.Initialized)
         {
             m_crLobbyCreated = CallResult<LobbyCreated_t>.Create(OnCreateLobby);
@@ -27,105 +26,97 @@ public class SteamLobby : MonoBehaviour
     }
 
     /// <summary>
-    /// ロビー作成（ゲームをホスト）
+    /// ロビー作成（ホストを立てる）
     /// </summary>
-    /// <param name="lobbyType"></param>
-    /// <param name="cMaxMembers"></param>
     public void CreateLobby()
     {
+        // ロビー作成リクエストを投げる
         SteamAPICall_t hCreateLobby = SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 4);
         m_crLobbyCreated.Set(hCreateLobby);
     }
 
-    //ロビー作成完了コールバック
+    // ロビー作成完了コールバック
     private void OnCreateLobby(LobbyCreated_t pCallback, bool bIOFailure)
     {
-        //ロビー作成成功していなかった場合
-        if (pCallback.m_eResult != EResult.k_EResultOK || bIOFailure)
+        if (bIOFailure || pCallback.m_eResult != EResult.k_EResultOK)
         {
+            Debug.LogError($"ロビー作成失敗: {pCallback.m_eResult}");
             return;
         }
 
-        //ホストのアドレス（SteamID）を登録
+        // ロビーIDを保存
+        LobbyID = pCallback.m_ulSteamIDLobby;
+
+        // ホストの SteamID (文字列) をロビーデータに載せる
         SteamMatchmaking.SetLobbyData(
-            new CSteamID(pCallback.m_ulSteamIDLobby),
+            new CSteamID(LobbyID),
             s_HostAddressKey,
             SteamUser.GetSteamID().ToString());
 
-        //ロビーID保存
-        LobbyID = pCallback.m_ulSteamIDLobby;
+        Debug.Log($"ロビー作成成功: {LobbyID}"); // ログ確認用
 
-        //サーバー開始コールバック
+        // このタイミングで NetworkManager のホストを立てる
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
-        //ホスト開始
-        NetworkManager.Singleton.StartHost();
+        bool hostResult = NetworkManager.Singleton.StartHost();
+        Debug.Log($"[Netcode] StartHost → 成功: {hostResult}");
 
-        //シーンを切り替え
+        // （必要ならゲームシーンに遷移する処理を書く。コメントアウトしてある）
         // NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
     }
 
     /// <summary>
-    /// ロビー入出
+    /// 指定したロビーIDに入室する（クライアント）
     /// </summary>
-    public void JoinLobby(CSteamID lobbyID)
+    public void JoinLobby(ulong targetLobbyId)
     {
-        SteamMatchmaking.JoinLobby(lobbyID);
+        SteamMatchmaking.JoinLobby(new CSteamID(targetLobbyId));
     }
 
-    /// <summary>
-    /// ゲームの招待を受けた時のコールバック
-    /// </summary>
-    /// <param name="callback"></param>
-    private void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
-    {
-        SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
-    }
-
-    /// <summary>
-    /// ロビー入室コールバック
-    /// </summary>
-    /// <param name="callback"></param>
+    // ロビー入室完了コールバック
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        //入室失敗時
+        // 入室失敗チェック
         if ((EChatRoomEnterResponse)callback.m_EChatRoomEnterResponse != EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess)
         {
+            Debug.LogError("ロビー入室失敗");
             return;
         }
 
-        //ホストのSteamIDを取得
+        // 入室したロビーの LobbyID を保存
+        LobbyID = callback.m_ulSteamIDLobby;
+        Debug.Log($"ロビー入室成功: {LobbyID}");
+
+        // ロビー内に登録されたホストの SteamID（文字列）を取得
         string hostAddress = SteamMatchmaking.GetLobbyData(
-            new CSteamID(callback.m_ulSteamIDLobby),
+            new CSteamID(LobbyID),
             s_HostAddressKey);
 
-        //ホスト（CreateLobbyした本人）もここを通るのでクライアント接続しないようにリターン
-        if (hostAddress == SteamUser.GetSteamID().ToString()) { return; }
+        // 自分自身がホストのときは何もしない
+        if (hostAddress == SteamUser.GetSteamID().ToString())
+        {
+            Debug.Log("自分自身がホストなのでクライアント接続はスキップ");
+            return;
+        }
 
-        //ロビーID保存
-        LobbyID = callback.m_ulSteamIDLobby;
-
-        //Netcodeでクライアント接続
+        // 取得したホストの SteamID (ulong) を Transport にセット
         var stp = (SteamNetworkingSocketsTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
         stp.ConnectToSteamID = ulong.Parse(hostAddress);
+        Debug.Log($"ConnectToSteamID に {hostAddress} をセット");
 
-        //ホストに接続
-        bool result = NetworkManager.Singleton.StartClient();
-        //切断時
+        // このタイミングでクライアントをスタート
+        bool clientResult = NetworkManager.Singleton.StartClient();
+        Debug.Log($"[Netcode] StartClient → 成功: {clientResult}");
+
+        // 切断時のコールバック登録
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
-
-        Debug.Log($"SteamID{hostAddress}の部屋に接続");
     }
 
-    /// <summary>
-    /// 接続承認
-    /// </summary>
+    // 接続承認時の処理（ホスト側で呼ばれる）
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
-        // 追加の承認手順が必要な場合は、追加の手順が完了するまでこれを true に設定します
-        // true から false に遷移すると、接続承認応答が処理されます。
         response.Pending = true;
 
-        //最大
+        // 最大人数チェック（ホスト自身も ConnectedClients にカウントされる）
         if (NetworkManager.Singleton.ConnectedClients.Count >= 2)
         {
             response.Approved = false;
@@ -133,36 +124,25 @@ public class SteamLobby : MonoBehaviour
             return;
         }
 
-        //ここからは接続成功クライアントに向けた処理
-        response.Approved = true;//接続を許可
-
-        //PlayerObjectを生成するかどうか
+        response.Approved = true;
         response.CreatePlayerObject = false;
-        //生成するPlayerObjectのPrefabハッシュ値。nullの場合NetworkManagerに登録したプレハブが使用される
         response.PlayerPrefabHash = null;
-
-        //PlayerObjectをスポーンする位置(nullの場合Vector3.zero)
         response.Position = Vector3.zero;
-        //PlayerObjectをスポーン時の回転 (nullの場合Quaternion.identity)
         response.Rotation = Quaternion.identity;
-
         response.Pending = false;
     }
 
-    /// <summary>
-    /// クライアントが切断したとき
-    /// </summary>
+    // クライアントが切断したときの処理（ホスト側で呼ばれる）
     private void OnClientDisconnect(ulong clientId)
     {
-        //クライアント切断コールバック
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
-        //ネットワークマネージャーを破棄（これで新しくNetworkManagerを作る（使う）ことができる）
+        // 切断されたらネットワーク落としてメインシーンに戻す
         NetworkManager.Singleton.Shutdown();
-        //メインシーンに戻る
-        // SceneManager.LoadScene("Title");
+        // SceneManager.LoadScene("Title"); // 必要なら有効化
+        Debug.Log($"クライアント {clientId} が切断 → NetworkManager.Shutdown()");
     }
 
-    //簡易的なシングルトン
+    // シングルトン実装
     private static SteamLobby instance;
     public static SteamLobby Instance
     {
@@ -170,9 +150,8 @@ public class SteamLobby : MonoBehaviour
         {
             if (instance == null)
             {
-                instance = (SteamLobby)FindObjectOfType(typeof(SteamLobby));
+                instance = FindObjectOfType<SteamLobby>();
             }
-
             return instance;
         }
     }
