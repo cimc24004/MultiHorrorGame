@@ -5,70 +5,53 @@ using TMPro;
 
 public class GameNetworkController : Singleton<GameNetworkController>
 {
-    [SerializeField] private Transform PlayerCreatePos;     // プレイヤースポーン位置
-    [SerializeField] private NetworkObject m_playerPrefab; // プレイヤープレハブ
-
-    [SerializeField] private TMP_InputField m_joinLobbyID; // LobbyID 入力用
-    private string SteamLobbyId;
+    [SerializeField] private Transform      PlayerCreatePos;  // プレイヤー湧き位置
+    [SerializeField] private NetworkObject  m_playerPrefab;   // プレハブ
+    [SerializeField] private TMP_InputField m_joinLobbyID;    // LobbyID入力
 
     void Start()
     {
-        Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null 
-            ? "Transport OK" 
+        Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null
+            ? "Transport OK"
             : "Transport NULL!!");
     }
 
-    // ボタンから呼ぶ：ロビー作成（ホスト立て）
+    // ──────────────────────────────────────
+    // ボタン：ロビー作成（ホスト）
+    // ──────────────────────────────────────
     public void StartHost()
     {
         SteamLobby.Instance.CreateLobby();
         Debug.Log("GameNetworkController: StartHost() → CreateLobby() 呼んだ");
     }
 
-    // ボタンから呼ぶ：LobbyID 入力して参加
+    // ──────────────────────────────────────
+    // ボタン：LobbyID を入力して参加（クライアント）
+    // ──────────────────────────────────────
     public void StartClient()
     {
-        SteamLobbyId = m_joinLobbyID.text.Trim();
-        if (string.IsNullOrEmpty(SteamLobbyId))
+        string id = m_joinLobbyID.text.Trim();
+        if (!ulong.TryParse(id, out ulong lobbyId))
         {
-            Debug.LogError("GameNetworkController: JoinLobbyID が空");
+            Debug.LogError($"GameNetworkController: JoinLobbyID パース失敗 → {id}");
             return;
         }
 
-        if (!ulong.TryParse(SteamLobbyId, out ulong targetLobbyId))
-        {
-            Debug.LogError($"GameNetworkController: JoinLobbyID のパース失敗 → {SteamLobbyId}");
-            return;
-        }
-
-        SteamLobby.Instance.JoinLobby(targetLobbyId);
-        Debug.Log($"GameNetworkController: StartClient() → JoinLobby({targetLobbyId}) 呼んだ");
+        SteamLobby.Instance.JoinLobby(lobbyId);
+        Debug.Log($"GameNetworkController: StartClient() → JoinLobby({lobbyId}) 呼んだ");
     }
 
-    // ホスト側でクライアントが接続されたら呼ばれる
+    // ──────────────────────────────────────
+    // ホスト側：クライアント承認後に呼ばれる
+    // ──────────────────────────────────────
     public void OnClientConnected(ulong clientId)
     {
-        Vector3 spawnPos = PlayerCreatePos != null ? PlayerCreatePos.position : Vector3.zero;
-        NetworkObject playerObj = Instantiate(m_playerPrefab, spawnPos, Quaternion.identity);
-        playerObj.SpawnAsPlayerObject(clientId);
-        Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤーを生成した");
+        Debug.Log($"OnClientConnected: {clientId}");
 
-        // 切断時のログだけ拾いたいならこのままでもOK
-        NetworkManager.Singleton.OnClientDisconnectCallback += (uid) =>
-        {
-            Debug.Log($"GameNetworkController: クライアント {uid} が切断");
-        };
-    }
+        Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
+        NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
+        pObj.SpawnAsPlayerObject(clientId);
 
-    // シングルトン実装
-    private static GameNetworkController instance;
-    public static GameNetworkController Instance
-    {
-        get
-        {
-            if (instance == null)
-                instance = FindObjectOfType<GameNetworkController>();
-            return instance;
-        }
+        Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤー生成 ObjectID={pObj.NetworkObjectId}");
     }
 }
