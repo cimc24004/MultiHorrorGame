@@ -1,12 +1,19 @@
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using Steamworks;
+using TMPro;
 public class GameNetworkController : Singleton<GameNetworkController>
 {
     [SerializeField] private Transform PlayerCreatePos;
     [SerializeField] private NetworkObject m_playerPrefab;
     [SerializeField] private NetworkObject CamerasPrefab;
     [SerializeField] private NetworkObject CMFpsControllerPrefab;
+    private LobbyID lobby_id;
+    [SerializeField] private int SteamLobbyId;
+    [SerializeField]
+    TMP_InputField m_joinLobbyID;
+
     //とりあえずテストようのStartHost StartClient
     void Start()
     {
@@ -14,12 +21,14 @@ public class GameNetworkController : Singleton<GameNetworkController>
     ? "Transport OK" 
     : "Transport NULL!!");
     }
-    public void StartHost(){
+    public void StartHost()
+    {
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
-        var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
-        utp.SetConnectionData("0.0.0.0", 7777);
-
+        // var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+        // utp.SetConnectionData("0.0.0.0", 7777);
+        lobby_id = this.gameObject.GetComponent<LobbyID>();
         NetworkManager.Singleton.StartHost();   // ホスト起動
+        SteamLobby.Instance.CreateLobby();
 
         //クライアント接続時
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -30,11 +39,12 @@ public class GameNetworkController : Singleton<GameNetworkController>
             OnClientConnected(client.ClientId);
         }
     }
-    public void StartClient(){
-        var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
-        utp.SetConnectionData("192.168.0.10", 7777);
-
+    public void StartClient()
+    {
+        // var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+        // utp.SetConnectionData("192.168.0.10", 7777);
         NetworkManager.Singleton.StartClient();   // ホスト起動
+        SteamLobby.Instance.JoinLobby((CSteamID)ulong.Parse(m_joinLobbyID.text));
     }
     // public override void OnNetworkSpawn()
     // {
@@ -43,13 +53,15 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
 
     // }
-    public void OnClientConnected(ulong clientId){
+    public void OnClientConnected(ulong clientId)
+    {
         var generatePos = PlayerCreatePos.position;
         // generatePos.x = -5 + 5 * (NetworkManager.Singleton.ConnectedClients.Count % 3);
         NetworkObject playerObject = Instantiate(m_playerPrefab, generatePos, Quaternion.identity);
         //接続クライアントをOwnerにしてPlayerObjectとしてスポーン
         playerObject.SpawnAsPlayerObject(clientId);
-        NetworkManager.Singleton.OnClientDisconnectCallback += (clientId) => {
+        NetworkManager.Singleton.OnClientDisconnectCallback += (clientId) =>
+        {
             Debug.Log($"Client {clientId} disconnected. IsHost? {NetworkManager.Singleton.IsHost}");
         };
         // playerObject.transform.position = generatePos;
