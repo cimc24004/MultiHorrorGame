@@ -24,7 +24,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
     }
     public void StartHost()
     {
-        NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
+        // NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         // var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
         // utp.SetConnectionData("0.0.0.0", 7777);
         lobby_id = this.gameObject.GetComponent<LobbyID>();
