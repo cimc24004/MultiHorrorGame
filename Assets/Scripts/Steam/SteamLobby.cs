@@ -59,6 +59,7 @@ public class SteamLobby : MonoBehaviour
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         //ホスト開始
         NetworkManager.Singleton.StartHost();
+
         //シーンを切り替え
         // NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
     }

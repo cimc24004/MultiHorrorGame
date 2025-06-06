@@ -28,12 +28,14 @@ public class GameNetworkController : Singleton<GameNetworkController>
         // var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
         // utp.SetConnectionData("0.0.0.0", 7777);
         lobby_id = this.gameObject.GetComponent<LobbyID>();
-        NetworkManager.Singleton.StartHost();   // ホスト起動
         SteamLobby.Instance.CreateLobby();
+        // NetworkManager.Singleton.StartHost();   // ホスト起動
         DOVirtual.DelayedCall(1, () =>
         {
             this.SteamLobbyId = SteamLobby.Instance.LobbyID.ToString();
         });
+        
+        GUIUtility.systemCopyBuffer = SteamLobbyId;
         //クライアント接続時
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         //すでに存在するクライアント用に関数呼び出す
@@ -46,8 +48,9 @@ public class GameNetworkController : Singleton<GameNetworkController>
     {
         // var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
         // utp.SetConnectionData("192.168.0.10", 7777);
-        NetworkManager.Singleton.StartClient();   // ホスト起動
+        Debug.Log($"m_joinLobbyID.text = {m_joinLobbyID.text}");
         SteamLobby.Instance.JoinLobby((CSteamID)ulong.Parse(m_joinLobbyID.text));
+        // NetworkManager.Singleton.StartClient();   // ホスト起動
     }
     // public override void OnNetworkSpawn()
     // {
