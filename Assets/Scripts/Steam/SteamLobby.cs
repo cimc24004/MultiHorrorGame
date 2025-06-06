@@ -12,11 +12,14 @@ public class SteamLobby : MonoBehaviour
 
     void Start()
     {
+        Debug.Log($"[Host] SteamManager.Initialized = {SteamManager.Initialized}");
+
         if (SteamManager.Initialized)
         {
             m_crLobbyCreated = CallResult<LobbyCreated_t>.Create(OnCreateLobby);
-            m_lobbyEnter    = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+            m_lobbyEnter = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
             Debug.Log("SteamLobby: Start() OK");
+            Debug.Log($"[Host] 自分の SteamID = {SteamUser.GetSteamID()}");
         }
         else
         {
