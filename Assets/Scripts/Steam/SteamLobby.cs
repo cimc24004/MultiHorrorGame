@@ -75,8 +75,8 @@ public class SteamLobby : MonoBehaviour
         }
 
         LobbyID = callback.m_ulSteamIDLobby;
-        Debug.Log($"SteamLobby: ロビー入室成功 LobbyID={LobbyID}");
-
+        Debug.Log("SteamLobby: ロビー入室成功 LobbyID=");
+        Debug.Log($"{LobbyID}");
         string hostAddress = SteamMatchmaking.GetLobbyData(
             new CSteamID(LobbyID),
             s_HostAddressKey);
