@@ -105,9 +105,9 @@ public class SteamLobby : MonoBehaviour
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest req, NetworkManager.ConnectionApprovalResponse res)
     {
+        Debug.Log("ApprovalCheck が呼ばれた"); 
         res.Pending = true;
-
-        if (NetworkManager.Singleton.ConnectedClients.Count >= 2)
+        if (NetworkManager.Singleton.ConnectedClients.Count >= 4)
         {
             res.Approved = false;
             res.Pending = false;
