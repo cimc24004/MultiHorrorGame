@@ -3,6 +3,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Steamworks;
 using TMPro;
+using DG.Tweening;
 public class GameNetworkController : Singleton<GameNetworkController>
 {
     [SerializeField] private Transform PlayerCreatePos;
@@ -29,10 +30,12 @@ public class GameNetworkController : Singleton<GameNetworkController>
         lobby_id = this.gameObject.GetComponent<LobbyID>();
         NetworkManager.Singleton.StartHost();   // ホスト起動
         SteamLobby.Instance.CreateLobby();
-
+        DOVirtual.DelayedCall(1, () =>
+        {
+            this.SteamLobbyId = (int)SteamLobby.Instance.LobbyID;
+        });
         //クライアント接続時
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-
         //すでに存在するクライアント用に関数呼び出す
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
