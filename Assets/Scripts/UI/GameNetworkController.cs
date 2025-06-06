@@ -11,7 +11,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
     [SerializeField] private NetworkObject CamerasPrefab;
     [SerializeField] private NetworkObject CMFpsControllerPrefab;
     private LobbyID lobby_id;
-    [SerializeField] private int SteamLobbyId;
+    [SerializeField] private string SteamLobbyId;
     [SerializeField]
     TMP_InputField m_joinLobbyID;
 
@@ -32,7 +32,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
         SteamLobby.Instance.CreateLobby();
         DOVirtual.DelayedCall(1, () =>
         {
-            this.SteamLobbyId = (int)SteamLobby.Instance.LobbyID;
+            this.SteamLobbyId = SteamLobby.Instance.LobbyID.ToString();
         });
         //クライアント接続時
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
