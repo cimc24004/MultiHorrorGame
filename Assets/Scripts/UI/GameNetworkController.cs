@@ -2,83 +2,61 @@ using UnityEngine;
 using Unity.Netcode;
 using Steamworks;
 using TMPro;
-using DG.Tweening;
 
 public class GameNetworkController : Singleton<GameNetworkController>
 {
-    [SerializeField] private Transform PlayerCreatePos;
-    [SerializeField] private NetworkObject m_playerPrefab;
-    // もし追加でカメラプレハブや CMFpsController が必要ならコメント解除して使って
-    // [SerializeField] private NetworkObject CamerasPrefab;
-    // [SerializeField] private NetworkObject CMFpsControllerPrefab;
+    [SerializeField] private Transform PlayerCreatePos;     // プレイヤースポーン位置
+    [SerializeField] private NetworkObject m_playerPrefab; // プレイヤープレハブ
 
-    [SerializeField] private TMP_InputField m_joinLobbyID;
-    private string SteamLobbyId; // UI 入力用文字列格納
+    [SerializeField] private TMP_InputField m_joinLobbyID; // LobbyID 入力用
+    private string SteamLobbyId;
 
-    private void Start()
+    void Start()
     {
         Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null 
             ? "Transport OK" 
             : "Transport NULL!!");
     }
 
-    /// <summary>
-    /// ボタンなどから呼び出されてホストを立てる
-    /// </summary>
+    // ボタンから呼ぶ：ロビー作成（ホスト立て）
     public void StartHost()
     {
-        // まずはロビー作成を呼ぶだけ。実際のNetworkManager.StartHostは OnCreateLobby 内で行われる
         SteamLobby.Instance.CreateLobby();
-
-        // ロビーが作成されてOnCreateLobbyが呼ばれたあとでホストが立つので、
-        // ここでは特に NetworkManager.StartHost() は呼ばない。
-
-        // ロビーID が返ってくるまで少し時間がかかるから、UIに「コピー用の文字列」を
-        // ここではまだコピーしない。OnCreateLobby 内でコピーするようにする。
+        Debug.Log("GameNetworkController: StartHost() → CreateLobby() 呼んだ");
     }
 
-    /// <summary>
-    /// ボタンなどから呼び出されてクライアントとして参加する
-    /// </summary>
+    // ボタンから呼ぶ：LobbyID 入力して参加
     public void StartClient()
     {
-        // UI から入力された文字列を読む
         SteamLobbyId = m_joinLobbyID.text.Trim();
         if (string.IsNullOrEmpty(SteamLobbyId))
         {
-            Debug.LogError("JoinLobbyID が空文字 or null だよ");
+            Debug.LogError("GameNetworkController: JoinLobbyID が空");
             return;
         }
 
-        // 数字にパースできるかチェック
         if (!ulong.TryParse(SteamLobbyId, out ulong targetLobbyId))
         {
-            Debug.LogError($"JoinLobbyID を ulong にパースできなかった: {SteamLobbyId}");
+            Debug.LogError($"GameNetworkController: JoinLobbyID のパース失敗 → {SteamLobbyId}");
             return;
         }
 
-        // ここで JoinLobby を呼ぶだけ。OnLobbyEntered が呼ばれたタイミングで StartClient が走る
         SteamLobby.Instance.JoinLobby(targetLobbyId);
-        Debug.Log($"JoinLobby 呼び出し: {targetLobbyId}");
+        Debug.Log($"GameNetworkController: StartClient() → JoinLobby({targetLobbyId}) 呼んだ");
     }
 
-    /// <summary>
-    /// クライアントが接続されたときに呼ばれるコールバック（ホスト側で呼ばれる）
-    /// </summary>
-    /// <param name="clientId"></param>
+    // ホスト側でクライアントが接続されたら呼ばれる
     public void OnClientConnected(ulong clientId)
     {
-        // PlayerCreatePos が設定されていないとエラーになるから要注意
         Vector3 spawnPos = PlayerCreatePos != null ? PlayerCreatePos.position : Vector3.zero;
         NetworkObject playerObj = Instantiate(m_playerPrefab, spawnPos, Quaternion.identity);
         playerObj.SpawnAsPlayerObject(clientId);
+        Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤーを生成した");
 
-        Debug.Log($"Client {clientId} のプレイヤー生成完了");
-
-        // 切断時のログだけ拾いたいならこれでもOK
+        // 切断時のログだけ拾いたいならこのままでもOK
         NetworkManager.Singleton.OnClientDisconnectCallback += (uid) =>
         {
-            Debug.Log($"Client {uid} が切断されたよ");
+            Debug.Log($"GameNetworkController: クライアント {uid} が切断");
         };
     }
 
@@ -89,9 +67,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
         get
         {
             if (instance == null)
-            {
                 instance = FindObjectOfType<GameNetworkController>();
-            }
             return instance;
         }
     }
