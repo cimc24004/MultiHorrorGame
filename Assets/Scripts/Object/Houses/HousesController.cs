@@ -16,88 +16,92 @@ public class HousesController : NetworkSingleton<HousesController>
     public override void OnNetworkSpawn()
     {
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
-
-        // ① すべての仏壇 & 付随オブジェクトを OFF
-        foreach (var hd in house_directors)
-        {
-            foreach (var g in hd.Groups)
-            {
-                if (g.Butsudan) g.Butsudan.SetActive(false);
-
-                foreach (var p in g.ExtraPackages)
-                foreach (var o in p.Objs)
-                {
-                    if (o)
-                    {
-                        o.SetActive(false);
-                    }
-
-                }
-            }
-        }
-
-        // ② コルーチン開始（サーバーのみ実行）
         if (IsServer && house_directors.Count > 0)
         {
             SpawnButsudans();
         }
-    }
-    public void RevealButusdans(float RevealTime){
-        foreach(SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers){
-            silhouette_change_controller.SilhouetteChangeWithAutoReset(RevealTime);
-        }
+
     }
     private void SpawnButsudans()
     {
-        // ① HouseDirector をシャッフル
+        // ── リセット
+        ButudansSilhouetteChangeControllers.Clear();
+        foreach (var hd in house_directors)
+            hd.ButsudanExists = false;
+
+        // ── 全グループ取得
+        var allGroups = house_directors
+            .SelectMany(hd => hd.Groups)
+            .Where(g => g.Butsudan != null)
+            .ToList();
+
+        // ── ランダムで残すグループを選択
         var shuffledHouses = house_directors.OrderBy(_ => Random.value).ToList();
+        int keepCount = Mathf.Min(TotalButsudanToSpawn, shuffledHouses.Count);
 
-        // ② 「出現させる家数」を決定
-        int houseCountToUse = Mathf.Min(TotalButsudanToSpawn, shuffledHouses.Count);
-
-        // ③ 上から houseCountToUse 軒ぶんループ
-        for (int i = 0; i < houseCountToUse; i++)
+        var selectedGroups = new List<ButsudanGroup>();
+        for (int i = 0; i < keepCount; i++)
         {
             var hd = shuffledHouses[i];
+            if (hd.Groups == null || hd.Groups.Count == 0) continue;
 
-            if (hd.Groups == null || hd.Groups.Count == 0)       // グループ無い家はスキップ
-                continue;
-
-            // ── この家の仏壇グループから 1 つランダム選択 ──
             var grp = hd.Groups[Random.Range(0, hd.Groups.Count)];
+            if (grp.Butsudan != null)
+                selectedGroups.Add(grp);
+        }
 
-            if (grp.Butsudan == null)                            // 仏壇が設定されていない
-                continue;
+        // ── 残さない仏壇と付随オブジェクトを Despawn して非表示
+        foreach (var grp in allGroups.Except(selectedGroups))
+        {
+            // 仏壇本体
+            var bn = grp.Butsudan.GetComponent<NetworkObject>();
+            if (bn.IsSpawned)
+                bn.Despawn(destroy: true);
 
-            // 1) 仏壇 ON (ネットワーク同期)
-            var butsudanNet = grp.Butsudan.GetComponent<NetworkObject>();
-            if (IsServer && butsudanNet != null && !butsudanNet.IsSpawned)
-            {
-                butsudanNet.Spawn();
-            }
-            grp.Butsudan.SetActive(true);
-            ButudansSilhouetteChangeControllers.Add(grp.Butsudan.GetComponent<SilhouetteChangeController>());
+            // ExtraPackages のオブジェクト
+            foreach (var pkg in grp.ExtraPackages)
+                foreach (var o in pkg.Objs)
+                {
+                    if (o == null) continue;
+                    Debug.Log(o.gameObject);
+                    var on = o.GetComponent<NetworkObject>();
+                    if (on.IsSpawned)
+                        on.Despawn(destroy: true);
+                }
+        }
+
+        // ── 残す仏壇だけ Silhouette に登録＆フラグ立て、付随オブジェクトはパッケージ単位で Despawn
+        foreach (var grp in selectedGroups)
+        {
+            // シルエット用に登録
+            ButudansSilhouetteChangeControllers.Add(
+                grp.Butsudan.GetComponent<SilhouetteChangeController>()
+            );
+            // フラグ立て
+            var hd = house_directors.First(h => h.Groups.Contains(grp));
             hd.ButsudanExists = true;
 
-            // 2) ExtraPackages から 1 パッケージ必ず発動
-            if (grp.ExtraPackages.Count > 0)
-            {
-                var pack = ChooseOnePackage(grp.ExtraPackages);
-                foreach (var obj in pack.Objs)
+            // 付随オブジェクトはパッケージ毎にリセット
+            var chosen = ChooseOnePackage(grp.ExtraPackages);
+            foreach (var pkg in grp.ExtraPackages)
+                foreach (var o in pkg.Objs)
                 {
-                    if (obj)
-                    {
-                        var networkObject = obj.GetComponent<NetworkObject>();
-                        if (IsServer && networkObject != null && !networkObject.IsSpawned)
-                        {
-                            networkObject.Spawn();
-                        }
-                        obj.SetActive(true);
-                    }
-
+                    if (o == null) continue;
+                    var no = o.GetComponent<NetworkObject>();
+                    Debug.Log(no.gameObject);
+                    // 選ばれてないものだけ Despawn
+                    if (no.IsSpawned && pkg != chosen)
+                        no.Despawn(destroy: true);
                 }
-            }
+            // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
+        }
+    }
 
+    public void RevealButusdans(float RevealTime)
+    {
+        foreach (SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers)
+        {
+            silhouette_change_controller.SilhouetteChangeWithAutoReset(RevealTime);
         }
     }
 
