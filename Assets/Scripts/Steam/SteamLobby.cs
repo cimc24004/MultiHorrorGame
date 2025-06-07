@@ -1,3 +1,4 @@
+using System;
 using Netcode.Transports;
 using Steamworks;
 using Unity.Netcode;
@@ -31,6 +32,7 @@ public class SteamLobby : MonoBehaviour
         Debug.Log($"[Host] 自分の SteamID = {SteamUser.GetSteamID()}");
 
         // ★ Netcode コールバックもここで一度だけ登録
+
         NetworkManager.Singleton.OnClientConnectedCallback  += GameNetworkController.instance.OnClientConnected;
         NetworkManager.Singleton.ConnectionApprovalCallback   = ApprovalCheck;
         NetworkManager.Singleton.OnClientDisconnectCallback  += OnClientDisconnect;

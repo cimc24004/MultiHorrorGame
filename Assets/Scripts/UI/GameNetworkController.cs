@@ -69,6 +69,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
     // ──────────────────────────────────────
     public void OnClientConnected(ulong clientId)
     {
+        if (!NetworkManager.Singleton.IsServer) return;
         Debug.Log($"OnClientConnected: {clientId}");
 
         Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
