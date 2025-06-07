@@ -3,6 +3,9 @@ using Unity.Netcode;
 using Steamworks;
 using TMPro;
 using MagicaCloth;
+using System.Reflection;
+using Unity.Collections;
+using System;
 
 public class GameNetworkController : Singleton<GameNetworkController>
 {
@@ -24,8 +27,8 @@ public class GameNetworkController : Singleton<GameNetworkController>
         yield return new WaitUntil(() =>
             NetworkManager.Singleton != null &&
             NetworkManager.Singleton.SceneManager != null);
-
         DumpConfig();
+        DumpRawConfigBase64();
     }
     // ──────────────────────────────────────
     // ボタン：ロビー作成（ホスト）
@@ -109,4 +112,23 @@ public class GameNetworkController : Singleton<GameNetworkController>
         Debug.Log($"=== END DUMP ===");
 
     }
+    public static void DumpRawConfigBase64()
+    {
+        var cfg = NetworkManager.Singleton.NetworkConfig;
+
+        // internal void Serialize(FastBufferWriter writer, int targetTransportId = 0)
+        var m = typeof(NetworkConfig)
+                .GetMethod("Serialize",
+                           BindingFlags.NonPublic | BindingFlags.Instance);
+
+        using var writer = new FastBufferWriter(4096, Allocator.Temp);
+        m.Invoke(cfg, new object[] { writer, 0 });
+
+        // writer → byte[]
+        var bytes = writer.ToArray();
+        string b64 = Convert.ToBase64String(bytes);
+        Debug.Log($"=== RAW CONFIG BASE64 ===\n{b64}\n=== END ===");
+    }
+
+
 }
