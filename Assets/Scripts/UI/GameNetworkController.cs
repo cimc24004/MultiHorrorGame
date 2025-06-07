@@ -21,7 +21,10 @@ public class GameNetworkController : Singleton<GameNetworkController>
     // ──────────────────────────────────────
     public void StartHost()
     {
+        byte[] handshake = { 0x01 };
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
         SteamLobby.Instance.CreateLobby();
+       
         Debug.Log("GameNetworkController: StartHost() → CreateLobby() 呼んだ");
     }
 
@@ -36,7 +39,8 @@ public class GameNetworkController : Singleton<GameNetworkController>
             Debug.LogError($"GameNetworkController: JoinLobbyID パース失敗 → {id}");
             return;
         }
-
+        byte[] handshake = { 0x01 };
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
         SteamLobby.Instance.JoinLobby(lobbyId);
         Debug.Log($"GameNetworkController: StartClient() → JoinLobby({lobbyId}) 呼んだ");
     }
