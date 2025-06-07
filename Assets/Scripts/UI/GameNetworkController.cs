@@ -35,8 +35,8 @@ public class GameNetworkController : Singleton<GameNetworkController>
     // ──────────────────────────────────────
     public void StartHost()
     {
-        byte[] handshake = { 0x01 };
-        NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
+        // byte[] handshake = { 0x01 };
+        // NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
         SteamLobby.Instance.CreateLobby();
         ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
         Debug.Log($"ConfigHash={hash:X8}");
@@ -55,8 +55,8 @@ public class GameNetworkController : Singleton<GameNetworkController>
             Debug.LogError($"GameNetworkController: JoinLobbyID パース失敗 → {id}");
             return;
         }
-        byte[] handshake = { 0x01 };
-        NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
+        // byte[] handshake = { 0x01 };
+        // NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
         ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
         Debug.Log($"ConfigHash={hash:X8}");
 
