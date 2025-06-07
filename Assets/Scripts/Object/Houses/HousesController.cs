@@ -5,7 +5,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
 
-public class HousesController : NetworkSingleton<HousesController>
+public class HousesController : NetworkBehaviour
 {
     [Header("必ず ON にする仏壇の総数")]
     [MinValue(1)]
@@ -13,18 +13,35 @@ public class HousesController : NetworkSingleton<HousesController>
     public List<HouseDirector> house_directors;
     public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers = new List<SilhouetteChangeController>();
     private GameNetworkController game_network_controller;
+    public static HousesController Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
     // ------------------------------- Unity -------------------------------
     public override void OnNetworkSpawn()
     {
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
-        if (IsServer && house_directors.Count > 0)
-        {
-            SpawnButsudans();
-        }
+        Debug.Log("game_network_controller: " + game_network_controller);
+        // if (IsServer && house_directors.Count > 0)
+        // {
+        //     SpawnButsudans();
+        // }
 
     }
-    private void SpawnButsudans()
+    public void SpawnButsudans()
     {
         // ── リセット
         ButudansSilhouetteChangeControllers.Clear();
@@ -58,7 +75,7 @@ public class HousesController : NetworkSingleton<HousesController>
             // 仏壇本体
             var bn = grp.Butsudan.GetComponent<NetworkObject>();
             if (bn.IsSpawned)
-                game_network_controller.despawnedIds.Add(bn.NetworkObjectId);
+                // this.despawnedIds.Add(bn.NetworkObjectId);
 
                 bn.Despawn(destroy: true);
 
@@ -70,7 +87,7 @@ public class HousesController : NetworkSingleton<HousesController>
                     Debug.Log(o.gameObject);
                     var on = o.GetComponent<NetworkObject>();
                     if (on.IsSpawned)
-                        game_network_controller.despawnedIds.Add(on.NetworkObjectId);
+                        // this.despawnedIds.Add(on.NetworkObjectId);
                         on.Despawn(destroy: true);
                 }
         }
@@ -96,7 +113,7 @@ public class HousesController : NetworkSingleton<HousesController>
                     Debug.Log(no.gameObject);
                     // 選ばれてないものだけ Despawn
                     if (no.IsSpawned && pkg != chosen)
-                        game_network_controller.despawnedIds.Add(no.NetworkObjectId);
+                        // this.despawnedIds.Add(no.NetworkObjectId);
                         no.Despawn(destroy: true);
                 }
             // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
