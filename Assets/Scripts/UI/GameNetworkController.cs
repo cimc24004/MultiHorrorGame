@@ -12,6 +12,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
     [SerializeField] private Transform PlayerCreatePos;  // プレイヤー湧き位置
     [SerializeField] private NetworkObject m_playerPrefab;   // プレハブ
     [SerializeField] private TMP_InputField m_joinLobbyID;    // LobbyID入力
+    public NetworkList<ulong> despawnedIds; //初めに削除される予定のidたち
 
     void Start()
     {
@@ -69,6 +70,20 @@ public class GameNetworkController : Singleton<GameNetworkController>
     // ──────────────────────────────────────
     public void OnClientConnected(ulong clientId)
     {
+        if (NetworkManager.Singleton.IsClient
+            && clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            foreach (var despawnId in despawnedIds)
+            {
+                if (NetworkManager.Singleton.SpawnManager.SpawnedObjects
+                    .TryGetValue(despawnId, out var no))
+                {
+                    no.Despawn();
+                }
+            }
+            Debug.Log($"Replayed {despawnedIds.Count} despawns");
+        }
+
         if (!NetworkManager.Singleton.IsServer) return;
         Debug.Log($"OnClientConnected: {clientId}");
 

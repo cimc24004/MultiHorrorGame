@@ -12,10 +12,12 @@ public class HousesController : NetworkSingleton<HousesController>
     public int TotalButsudanToSpawn = 5;
     public List<HouseDirector> house_directors;
     public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers = new List<SilhouetteChangeController>();
+    private GameNetworkController game_network_controller;
     // ------------------------------- Unity -------------------------------
     public override void OnNetworkSpawn()
     {
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
+        game_network_controller = GameNetworkController.instance;
         if (IsServer && house_directors.Count > 0)
         {
             SpawnButsudans();
@@ -56,6 +58,8 @@ public class HousesController : NetworkSingleton<HousesController>
             // 仏壇本体
             var bn = grp.Butsudan.GetComponent<NetworkObject>();
             if (bn.IsSpawned)
+                game_network_controller.despawnedIds.Add(bn.NetworkObjectId);
+
                 bn.Despawn(destroy: true);
 
             // ExtraPackages のオブジェクト
@@ -66,6 +70,7 @@ public class HousesController : NetworkSingleton<HousesController>
                     Debug.Log(o.gameObject);
                     var on = o.GetComponent<NetworkObject>();
                     if (on.IsSpawned)
+                        game_network_controller.despawnedIds.Add(on.NetworkObjectId);
                         on.Despawn(destroy: true);
                 }
         }
@@ -91,6 +96,7 @@ public class HousesController : NetworkSingleton<HousesController>
                     Debug.Log(no.gameObject);
                     // 選ばれてないものだけ Despawn
                     if (no.IsSpawned && pkg != chosen)
+                        game_network_controller.despawnedIds.Add(no.NetworkObjectId);
                         no.Despawn(destroy: true);
                 }
             // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
