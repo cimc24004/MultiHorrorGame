@@ -16,8 +16,17 @@ public class GameNetworkController : Singleton<GameNetworkController>
         Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null
             ? "Transport OK"
             : "Transport NULL!!");
-    }
+        StartCoroutine(DumpWhenReady());
 
+    }
+    System.Collections.IEnumerator DumpWhenReady()
+    {
+        yield return new WaitUntil(() =>
+            NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.SceneManager != null);
+
+        DumpConfig();
+    }
     // ──────────────────────────────────────
     // ボタン：ロビー作成（ホスト）
     // ──────────────────────────────────────
@@ -65,7 +74,6 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
         Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤー生成 ObjectID={pObj.NetworkObjectId}");
     }
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void DumpConfig()
     {
         var cfg = NetworkManager.Singleton.NetworkConfig;
