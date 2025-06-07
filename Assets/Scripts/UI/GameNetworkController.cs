@@ -11,6 +11,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
     void Start()
     {
+        NetworkManager.Singleton.NetworkConfig.ProtocolVersion = 1;
         Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null
             ? "Transport OK"
             : "Transport NULL!!");
@@ -24,7 +25,9 @@ public class GameNetworkController : Singleton<GameNetworkController>
         byte[] handshake = { 0x01 };
         NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
         SteamLobby.Instance.CreateLobby();
-       
+        ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
+        Debug.Log($"ConfigHash={hash:X8}");
+
         Debug.Log("GameNetworkController: StartHost() → CreateLobby() 呼んだ");
     }
 
@@ -41,6 +44,9 @@ public class GameNetworkController : Singleton<GameNetworkController>
         }
         byte[] handshake = { 0x01 };
         NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
+        ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
+        Debug.Log($"ConfigHash={hash:X8}");
+
         SteamLobby.Instance.JoinLobby(lobbyId);
         Debug.Log($"GameNetworkController: StartClient() → JoinLobby({lobbyId}) 呼んだ");
     }
