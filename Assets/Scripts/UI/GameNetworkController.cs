@@ -112,21 +112,31 @@ public class GameNetworkController : Singleton<GameNetworkController>
         Debug.Log($"=== END DUMP ===");
 
     }
-    public static void DumpRawConfigBase64()
+    static void DumpRawConfigBase64()
     {
         var cfg = NetworkManager.Singleton.NetworkConfig;
 
-        // internal void Serialize(FastBufferWriter writer, int targetTransportId = 0)
-        var m = typeof(NetworkConfig)
-                .GetMethod("Serialize",
-                           BindingFlags.NonPublic | BindingFlags.Instance);
+        // Serialize/InternalSerialize のどちらかを探す
+        var flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+        var m = typeof(NetworkConfig).GetMethod("Serialize", flags) ??
+                typeof(NetworkConfig).GetMethod("InternalSerialize", flags);
 
-        using var writer = new FastBufferWriter(4096, Allocator.Temp);
+        if (m == null)
+        {
+            Debug.LogError("NetworkConfig.Serialize() が見つかりませんでした。NGO のバージョンが違うか、リンク時にストリップされた可能性があります。");
+            return;
+        }
+
+        // 余裕を持ったバッファ
+        using var writer = new FastBufferWriter(32 * 1024, Allocator.Temp);
+
+        // targetTransportId は 0 で OK
         m.Invoke(cfg, new object[] { writer, 0 });
 
         // writer → byte[]
-        var bytes = writer.ToArray();
+        var bytes = writer.ToArray();          // 引数なしの ToArray() を使用
         string b64 = Convert.ToBase64String(bytes);
+
         Debug.Log($"=== RAW CONFIG BASE64 ===\n{b64}\n=== END ===");
     }
 
