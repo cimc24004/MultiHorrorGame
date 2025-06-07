@@ -20,7 +20,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
             ? "Transport OK"
             : "Transport NULL!!");
         StartCoroutine(DumpWhenReady());
-        NetworkManager.Singleton.NetworkConfig.EnableSceneManagement = false;
+        // NetworkManager.Singleton.NetworkConfig.EnableSceneManagement = false;
     }
     System.Collections.IEnumerator DumpWhenReady()
     {
