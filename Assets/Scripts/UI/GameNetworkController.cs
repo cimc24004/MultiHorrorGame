@@ -2,11 +2,12 @@ using UnityEngine;
 using Unity.Netcode;
 using Steamworks;
 using TMPro;
+using MagicaCloth;
 
 public class GameNetworkController : Singleton<GameNetworkController>
 {
-    [SerializeField] private Transform      PlayerCreatePos;  // プレイヤー湧き位置
-    [SerializeField] private NetworkObject  m_playerPrefab;   // プレハブ
+    [SerializeField] private Transform PlayerCreatePos;  // プレイヤー湧き位置
+    [SerializeField] private NetworkObject m_playerPrefab;   // プレハブ
     [SerializeField] private TMP_InputField m_joinLobbyID;    // LobbyID入力
 
     void Start()
@@ -63,5 +64,41 @@ public class GameNetworkController : Singleton<GameNetworkController>
         pObj.SpawnAsPlayerObject(clientId);
 
         Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤー生成 ObjectID={pObj.NetworkObjectId}");
+    }
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static void DumpConfig()
+    {
+        var cfg = NetworkManager.Singleton.NetworkConfig;
+
+        // ─ 基本情報 ─
+        ulong hash = cfg.GetConfig();           // 全体ハッシュ
+        Debug.Log($"=== NETWORK CONFIG DUMP ===");
+        Debug.Log($"HASH                  : 0x{hash:X16}");
+        Debug.Log($"ProtocolVersion       : {cfg.ProtocolVersion}");
+        Debug.Log($"EnableSceneManagement : {cfg.EnableSceneManagement}");
+
+        // ─ プレハブ一覧 ─
+        var prefabs = cfg.Prefabs.Prefabs;      // ← 二段階アクセス
+        Debug.Log($"Prefab Count          : {prefabs.Count}");
+        foreach (var p in prefabs)
+        {
+#if UNITY_NETCODE_140_OR_NEWER
+            Debug.Log($"  {p.Prefab.name,-32} PrefabHash={p.PrefabHash}");
+#else
+            Debug.Log($"  {p.Prefab.name,-32} PrefabHash={p.SourcePrefabGlobalObjectIdHash}");
+#endif
+        }
+
+        // ─ シーン一覧 ─
+        if (cfg.EnableSceneManagement)
+        {
+            var scenes = NetworkManager.Singleton.SceneManager.GetSynchronizedScenes(); // 2.x 系
+            Debug.Log($"Scene Count           : {scenes.Count}");
+            foreach (var s in scenes)
+                Debug.Log($"  {s.name}");
+        }
+
+        Debug.Log($"=== END DUMP ===");
+
     }
 }
