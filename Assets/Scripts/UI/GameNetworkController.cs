@@ -77,68 +77,78 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
         Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤー生成 ObjectID={pObj.NetworkObjectId}");
     }
-    static void DumpConfig()
+// ① DumpConfig : Prefab をインデックス付きで表示するよう変更
+// ────────────────────────────────────────────────────────────────
+static void DumpConfig()
+{
+    var cfg  = NetworkManager.Singleton.NetworkConfig;
+    ulong h  = cfg.GetConfig();               // 全体ハッシュ
+
+    Debug.Log($"=== NETWORK CONFIG DUMP ===");
+    Debug.Log($"HASH                  : 0x{h:X16}");
+    Debug.Log($"ProtocolVersion       : {cfg.ProtocolVersion}");
+    Debug.Log($"EnableSceneManagement : {cfg.EnableSceneManagement}");
+
+    // ─ プレハブ一覧（順番も重要なのでインデックス付き）─
+    var list = cfg.Prefabs.Prefabs;           // ← 二段階アクセス
+    Debug.Log($"Prefab Count          : {list.Count}");
+    for (int i = 0; i < list.Count; i++)
     {
-        var cfg = NetworkManager.Singleton.NetworkConfig;
-
-        // ─ 基本情報 ─
-        ulong hash = cfg.GetConfig();           // 全体ハッシュ
-        Debug.Log($"=== NETWORK CONFIG DUMP ===");
-        Debug.Log($"HASH                  : 0x{hash:X16}");
-        Debug.Log($"ProtocolVersion       : {cfg.ProtocolVersion}");
-        Debug.Log($"EnableSceneManagement : {cfg.EnableSceneManagement}");
-
-        // ─ プレハブ一覧 ─
-        var prefabs = cfg.Prefabs.Prefabs;      // ← 二段階アクセス
-        Debug.Log($"Prefab Count          : {prefabs.Count}");
-        foreach (var p in prefabs)
-        {
 #if UNITY_NETCODE_140_OR_NEWER
-            Debug.Log($"  {p.Prefab.name,-32} PrefabHash={p.PrefabHash}");
+        Debug.Log($"{i,2}: {list[i].Prefab.name,-32} PrefabHash={list[i].PrefabHash}");
 #else
-            Debug.Log($"  {p.Prefab.name,-32} PrefabHash={p.SourcePrefabGlobalObjectIdHash}");
+        Debug.Log($"{i,2}: {list[i].Prefab.name,-32} PrefabHash={list[i].SourcePrefabGlobalObjectIdHash}");
 #endif
-        }
-
-        // ─ シーン一覧 ─
-        if (cfg.EnableSceneManagement)
-        {
-            var scenes = NetworkManager.Singleton.SceneManager.GetSynchronizedScenes(); // 2.x 系
-            Debug.Log($"Scene Count           : {scenes.Count}");
-            foreach (var s in scenes)
-                Debug.Log($"  {s.name}");
-        }
-
-        Debug.Log($"=== END DUMP ===");
-
     }
-    static void DumpRawConfigBase64()
+
+    // ─ シーン一覧 ─
+    if (cfg.EnableSceneManagement && NetworkManager.Singleton.SceneManager != null)
     {
-        var cfg = NetworkManager.Singleton.NetworkConfig;
+        var scenes = NetworkManager.Singleton.SceneManager.GetSynchronizedScenes();
+        Debug.Log($"Scene Count           : {scenes.Count}");
+        foreach (var s in scenes)
+            Debug.Log($"  {s.name}");
+    }
 
-        // Serialize/InternalSerialize のどちらかを探す
-        var flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
-        var m = typeof(NetworkConfig).GetMethod("Serialize", flags) ??
-                typeof(NetworkConfig).GetMethod("InternalSerialize", flags);
+    Debug.Log($"=== END DUMP ===");
+}
 
-        if (m == null)
+// ────────────────────────────────────────────────────────────────
+// ② DumpRawConfigBase64 : Serialize / InternalSerialize の両方を探し、
+//    それでも無いときは NetworkConfig.GetConfigBytes() を使う方式に変更
+// ────────────────────────────────────────────────────────────────
+static void DumpRawConfigBase64()
+{
+    var cfg   = NetworkManager.Singleton.NetworkConfig;
+    var flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+
+    MethodInfo serialize =
+          typeof(NetworkConfig).GetMethod("Serialize",        flags)
+       ?? typeof(NetworkConfig).GetMethod("InternalSerialize", flags);
+
+    byte[] bytes;
+
+    if (serialize != null)
+    {
+        using var writer = new FastBufferWriter(32 * 1024, Allocator.Temp);
+        serialize.Invoke(cfg, new object[] { writer, 0 });   // targetTransportId=0
+        bytes = writer.ToArray();                            // 引数なしの ToArray()
+    }
+    else
+    {
+        // ★ NGO 1.7+ など：GetConfigBytes が用意されている場合はこちらで
+        MethodInfo getBytes =
+            typeof(NetworkConfig).GetMethod("GetConfigBytes", flags);
+        if (getBytes == null)
         {
-            Debug.LogError("NetworkConfig.Serialize() が見つかりませんでした。NGO のバージョンが違うか、リンク時にストリップされた可能性があります。");
+            Debug.LogError("NetworkConfig のシリアライズ関数が見つかりませんでした。Strip Level かバージョンをご確認ください。");
             return;
         }
-
-        // 余裕を持ったバッファ
-        using var writer = new FastBufferWriter(32 * 1024, Allocator.Temp);
-
-        // targetTransportId は 0 で OK
-        m.Invoke(cfg, new object[] { writer, 0 });
-
-        // writer → byte[]
-        var bytes = writer.ToArray();          // 引数なしの ToArray() を使用
-        string b64 = Convert.ToBase64String(bytes);
-
-        Debug.Log($"=== RAW CONFIG BASE64 ===\n{b64}\n=== END ===");
+        bytes = (byte[])getBytes.Invoke(cfg, null);
     }
 
+    string b64 = Convert.ToBase64String(bytes);
+    Debug.Log($"=== RAW CONFIG BASE64 ===\n{b64}\n=== END ===");
+}
 
 }
