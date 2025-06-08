@@ -37,7 +37,7 @@ public class HousesController : NetworkBehaviour
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
         Debug.Log("game_network_controller: " + game_network_controller);
-        
+
         if (IsServer)
         {
             // サーバー（ホスト）側でのみロジック実行
@@ -46,18 +46,10 @@ public class HousesController : NetworkBehaviour
         else
         {
             // クライアント側は NetworkList の変更を監視
-            TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
+            ApplyHideObjects();
         }
     }
 
-    // NetworkListが変更されたときにクライアント側で実行される
-    private void OnTargetHideListChanged(NetworkListEvent<ulong> changeEvent)
-    {
-        if (IsServer) return; // サーバー側では実行しない（二重実行防止）
-        
-        // NetworkListの全要素に対してオブジェクトを非表示にする
-        ApplyHideObjects();
-    }
 
     // オブジェクトを非表示にする処理（サーバー・クライアント共通）
     private void ApplyHideObjects()
