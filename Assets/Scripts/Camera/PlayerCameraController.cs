@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.Utilities;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 public class PlayerCameraController : NetworkBehaviour
@@ -10,10 +11,12 @@ public class PlayerCameraController : NetworkBehaviour
     public GameObject DirectionCamera;
     private bool InitPlayer;
     private float camYaw;
+    private AnticipatedNetworkTransform antTrans;
+
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
-        
+
     }
     void OnEnable()
     {
@@ -32,9 +35,18 @@ public class PlayerCameraController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!InitPlayer || !IsOwner) return;
+        // if (!InitPlayer || !IsOwner) return;
+        // float yaw = DirectionCamera.transform.eulerAngles.y;
+        // SendYawToServerRpc(yaw);
+        if (!IsOwner) return;
+
+        // 毎フレ自分のカメラだけ即時回転
         float yaw = DirectionCamera.transform.eulerAngles.y;
-        SendYawToServerRpc(yaw);
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+
+        // （必要なら）先読み補正用に通知
+        antTrans.AnticipateRotate(transform.rotation);
+
     }
 
     [ServerRpc]
