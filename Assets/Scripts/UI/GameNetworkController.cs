@@ -128,7 +128,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
     }
     IEnumerator SpawnButsudanNextFrame()
     {
-        yield return new WaitUntil(() => HousesController.Instance != null);    // 1フレーム待つ
+        yield return new WaitForSeconds(10);  // 1フレーム待つ
         Debug.Log("HousesController.Instance.SpawnButsudans--------------- OnNextFrame");
         HousesController.Instance.SpawnButsudans();
     }
