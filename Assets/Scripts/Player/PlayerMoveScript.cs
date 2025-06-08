@@ -104,7 +104,12 @@ public class PlayerMoveScript : NetworkBehaviour
             bool isRunHeld = runChangeAction.ReadValue<float>() > 0f;
 
             SubmitMoveServerRpc(moveInput, isRunHeld, worldDir);
-
+            float localSpeed = playerStatus.CrouchNetwork.Value
+                ? CrouchSpeed
+                : (runChangeAction.ReadValue<float>() > 0f ? RunSpeed : WalkSpeed);
+            Vector3 localMove = worldDir * localSpeed * Time.deltaTime;
+            characterController.Move(localMove);
+            // anticipatedNetworkTransform.AnticipateMove(transform.position);
             // アニメ同期用の値はクライアント側でも即時更新
             anim.SetFloat("MoveY", moveInput.y);
             anim.SetFloat("MoveX", moveInput.x);
@@ -159,17 +164,18 @@ public class PlayerMoveScript : NetworkBehaviour
                 }
             }
         }
+        if (IsServer && MovePermit && characterController.enabled && !IsOwner)
+        {
+            if (moveDirection != Vector3.zero)
+                characterController.Move(moveDirection * NowSpeed.Value * Time.deltaTime);
+            else
+                characterController.Move(Vector3.up * characterController.velocity.y * Time.deltaTime);
+        }
     }
 
     void FixedUpdate()
     {
-        if (IsServer && MovePermit && characterController.enabled)
-        {
-            if (moveDirection != Vector3.zero)
-                characterController.Move(moveDirection * NowSpeed.Value * Time.fixedDeltaTime);
-            else
-                characterController.Move(Vector3.up * characterController.velocity.y * Time.fixedDeltaTime);
-        }
+
     }
 
     private void OnCrouchPerformed(InputAction.CallbackContext ctx)
