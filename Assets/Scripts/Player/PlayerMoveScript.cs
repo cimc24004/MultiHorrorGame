@@ -104,12 +104,7 @@ public class PlayerMoveScript : NetworkBehaviour
             bool isRunHeld = runChangeAction.ReadValue<float>() > 0f;
 
             SubmitMoveServerRpc(moveInput, isRunHeld, worldDir);
-            float localSpeed = playerStatus.CrouchNetwork.Value
-                ? CrouchSpeed
-                : (runChangeAction.ReadValue<float>() > 0f ? RunSpeed : WalkSpeed);
-            Vector3 localMove = worldDir * localSpeed * Time.deltaTime;
-            characterController.Move(localMove);
-            // anticipatedNetworkTransform.AnticipateMove(transform.position);
+
             // アニメ同期用の値はクライアント側でも即時更新
             anim.SetFloat("MoveY", moveInput.y);
             anim.SetFloat("MoveX", moveInput.x);
