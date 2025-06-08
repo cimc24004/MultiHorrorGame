@@ -37,7 +37,7 @@ public class HousesController : NetworkBehaviour
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
         Debug.Log("game_network_controller: " + game_network_controller);
-
+        
         if (IsServer)
         {
             // サーバー（ホスト）側でのみロジック実行
@@ -45,33 +45,68 @@ public class HousesController : NetworkBehaviour
         }
         else
         {
-            if (!IsHost)
+            // クライアント側は NetworkList の変更を監視
+            // TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
+            
+            // 遅延接続したクライアント用：既にNetworkListにデータがある場合は即座に適用
+            if (TargetHideNetworkLists.Count > 0)
             {
-                // クライアント側は NetworkList の変更を監視
-                ApplyHideObjects();
+                Debug.Log($"Client found existing NetworkList data ({TargetHideNetworkLists.Count} items), applying immediately");
+                // 少し遅延させてからオブジェクトの非表示を実行（NetworkObjectの準備を待つ）
+                StartCoroutine(DelayedApplyHideObjects());
             }
         }
     }
 
+    // 遅延実行用コルーチン
+    private IEnumerator DelayedApplyHideObjects()
+    {
+        // 1フレーム待機してからNetworkObjectの準備を確認
+        yield return null;
+        
+        // さらに少し待機（NetworkObjectの同期完了を待つ）
+        yield return new WaitForSeconds(0.1f);
+        
+        ApplyHideObjects();
+    }
+
+    // NetworkListが変更されたときにクライアント側で実行される
+    private void OnTargetHideListChanged(NetworkListEvent<ulong> changeEvent)
+    {
+        if (IsServer) return; // サーバー側では実行しない（二重実行防止）
+        
+        Debug.Log($"NetworkList changed on client: {changeEvent.Type}, Value: {changeEvent.Value}");
+        
+        // NetworkListの全要素に対してオブジェクトを非表示にする
+        ApplyHideObjects();
+    }
 
     // オブジェクトを非表示にする処理（サーバー・クライアント共通）
     private void ApplyHideObjects()
     {
+        int successCount = 0;
+        int failCount = 0;
+        
         foreach (ulong target_network_id in TargetHideNetworkLists)
         {
             // NetworkObjectが存在するかチェックしてからアクセス
             if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(target_network_id, out NetworkObject networkObject))
             {
-                if (networkObject != null && networkObject.gameObject != null)
+                if (networkObject != null && networkObject.gameObject != null && networkObject.gameObject.activeInHierarchy)
                 {
                     networkObject.gameObject.SetActive(false);
+                    successCount++;
+                    Debug.Log($"Successfully hid NetworkObject ID: {target_network_id}");
                 }
             }
             else
             {
+                failCount++;
                 Debug.LogWarning($"NetworkObject with ID {target_network_id} not found in SpawnedObjects dictionary");
             }
         }
+        
+        Debug.Log($"ApplyHideObjects completed - Success: {successCount}, Failed: {failCount}");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -219,4 +254,12 @@ public class HousesController : NetworkBehaviour
         return ordered[Random.Range(0, ordered.Count)];
     }
 
+    private void OnDestroy()
+    {
+        // イベントリスナーを解除
+        if (TargetHideNetworkLists != null)
+        {
+            // TargetHideNetworkLists.OnListChanged -= OnTargetHideListChanged;
+        }
+    }
 }
