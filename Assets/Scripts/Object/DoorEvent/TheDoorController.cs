@@ -74,13 +74,13 @@ public class TheDoorController : NetworkBehaviour
         open_permit_by_key_controller.OpenPermit.Value = false;
     }
     [ServerRpc(RequireOwnership = false)]
-    public void DoorOpenClosedChangeByStatusServerRPC(ulong _NetworkObjectId, ServerRpcParams serverRpcParams = default)
+    public void DoorOpenClosedChangeByStatusServerRPC(ulong _ActionedNetworkObjectId, ServerRpcParams serverRpcParams = default)
     {
         ulong clientId = serverRpcParams.Receive.SenderClientId;
         //EventActionMan: この関数を行った実行人物(プレイヤーや敵など)
         //ドアをステータスによって変化させる。
         //空いている状態なら閉める。　開いている状態なら開ける。
-        GameObject EventActionMan = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_NetworkObjectId].gameObject;
+        GameObject EventActionMan = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_ActionedNetworkObjectId].gameObject;
         //鍵が必要なドアならまず鍵をこのドアに使ったかどうかを判定。 使ってなかったらreturn; 開けないよ。
         if (NeededKey.Value == true)
         {

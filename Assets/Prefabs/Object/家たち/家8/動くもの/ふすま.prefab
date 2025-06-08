@@ -135,6 +135,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5235987459337935129}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2e40b53d2325cfd45bd9df8299dfcd1d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1866475803031132719}
     - targetCorrespondingSourceObject: {fileID: -2459875658324418586, guid: 2e40b53d2325cfd45bd9df8299dfcd1d,
         type: 3}
       insertIndex: -1
@@ -209,7 +213,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1657c175730b89428524f1993c7bfba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenPermit: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  OpenPermit:
+    m_InternalValue: 0
+--- !u!114 &-1866475803031132719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3332072510431674994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &5508513986092989536 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7966484914801804099, guid: 2e40b53d2325cfd45bd9df8299dfcd1d,
@@ -249,21 +280,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   TriggerChangeModeOpenClose: 1
   open_type: 0
   ToOpenTransform: {fileID: 9041515092389422418}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 2117263393817438437}
   Duration: 0.5
+  OpenStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -288,19 +314,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   door_open_close_controllers:
   - {fileID: 8701866027650052443}
-  door_status: 0
-  NeededKey: 0
+  door_status_network:
+    m_InternalValue: 0
+  NeededKey:
+    m_InternalValue: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 5235987459337935129}
@@ -316,6 +336,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -446,21 +467,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   TriggerChangeModeOpenClose: 1
   open_type: 0
   ToOpenTransform: {fileID: 374913404028207036}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 48284833700572683}
   Duration: 0.5
+  OpenStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -485,19 +501,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   door_open_close_controllers:
   - {fileID: 8510740883819340583}
-  door_status: 0
-  NeededKey: 0
+  door_status_network:
+    m_InternalValue: 0
+  NeededKey:
+    m_InternalValue: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 5235987459337935129}
@@ -513,6 +523,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

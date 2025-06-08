@@ -70,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 079ee88f2388b8e4c80aee82496d651c,
         type: 3}
-      propertyPath: m_Materials.Array.data[1]
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: b7e23a1d95e905641920fee5d578fc18, type: 2}
     - target: {fileID: 919132149155446097, guid: 079ee88f2388b8e4c80aee82496d651c,
@@ -91,6 +91,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4813402360478767066}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 079ee88f2388b8e4c80aee82496d651c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1676891092687491225}
   m_SourcePrefab: {fileID: 100100000, guid: 079ee88f2388b8e4c80aee82496d651c, type: 3}
 --- !u!1 &6989782097338982350 stripped
 GameObject:
@@ -119,3 +123,28 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.6894907, y: 0.44152808, z: 0.04313686}
   m_Center: {x: -0.0042100856, y: -0.0030599385, z: -0.00044975535}
+--- !u!114 &-1676891092687491225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6989782097338982350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0

@@ -87,6 +87,10 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4951029524475902890}
     - targetCorrespondingSourceObject: {fileID: 1899916861882285730, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e,
         type: 3}
       insertIndex: -1
@@ -95,10 +99,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 599039533029161598}
-    - targetCorrespondingSourceObject: {fileID: 1899916861882285730, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5378881817346021206}
     - targetCorrespondingSourceObject: {fileID: 1899916861882285730, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e,
         type: 3}
       insertIndex: -1
@@ -123,10 +123,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7570569973649526479}
-    - targetCorrespondingSourceObject: {fileID: 5547393362251919220, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1964569057063074792}
   m_SourcePrefab: {fileID: 100100000, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e, type: 3}
 --- !u!1 &663782282230427862 stripped
 GameObject:
@@ -252,31 +248,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5378881817346021206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663782282230427862}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &5125699101261798870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,6 +311,37 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1399465176550231668}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2281794457466794789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1399465176550231668}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4951029524475902890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2281794457466794789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2022928902
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!4 &2900925388271210515 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4263165487751306855, guid: 00d8d7b4cd3414e4e8f2df52b27cd81e,
@@ -527,28 +529,3 @@ MonoBehaviour:
   ItemAppearanceWhenOpened: 0
   AlreadyOpened: 0
   move_x_y_z: 0
---- !u!114 &1964569057063074792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6888162132679778560}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0

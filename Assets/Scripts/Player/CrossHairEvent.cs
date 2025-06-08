@@ -33,7 +33,7 @@ public class CrossHairEvent : NetworkBehaviour
     private Ray main_ray;
     private GameStateController game_state_controller;
     private MainNoticedUIController main_noticed_ui_controller;
-    private NetworkObject networkObject;
+    private NetworkObject PlayerNetworkObject;
     // Start は最初のフレーム前に呼ばれる
     void Start()
     {
@@ -52,7 +52,7 @@ public class CrossHairEvent : NetworkBehaviour
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
         this.Player = player_status.gameObject;
         MainCamera = Camera.main;
-        networkObject = this.Player.GetComponent<NetworkObject>();
+        PlayerNetworkObject = this.Player.GetComponent<NetworkObject>();
         InitPlayer = true;
     }
     // 毎フレーム呼び出される
@@ -133,7 +133,7 @@ public class CrossHairEvent : NetworkBehaviour
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     the_door_controller = door_open_close_controlelr.the_door_controller;
                     
-                    the_door_controller.DoorOpenClosedChangeByStatusServerRPC(networkObject.NetworkObjectId);
+                    the_door_controller.DoorOpenClosedChangeByStatusServerRPC(PlayerNetworkObject.NetworkObjectId);
 
                     return;
 
