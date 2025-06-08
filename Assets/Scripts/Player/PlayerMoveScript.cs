@@ -159,7 +159,7 @@ public class PlayerMoveScript : NetworkBehaviour
                 }
             }
         }
-        if (IsServer && MovePermit && characterController.enabled && !IsOwner)
+        if (IsServer && MovePermit && characterController.enabled)
         {
             if (moveDirection != Vector3.zero)
                 characterController.Move(moveDirection * NowSpeed.Value * Time.deltaTime);
