@@ -36,19 +36,11 @@ public class HousesController : NetworkBehaviour
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
         Debug.Log("game_network_controller: " + game_network_controller);
-        RequestHideButsudansWithGroupServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void RequestHideButsudansWithGroupServerRpc()
-    {
-        TargetSetActiveFalseIds();
-        AllClientsSpawnButsudansRequestClientRpc();
-    }
-
-    [ClientRpc]
-    private void AllClientsSpawnButsudansRequestClientRpc()
-    {
+        if (IsHost)
+        {
+            RequestHideButsudansWithGroupServerRpc();
+        }
+        //事前に収納されたオブジェクトたちを取得して、非表示にする。
         foreach (ulong target_network_id in TargetHideNetworkLists)
         {
             // NetworkObjectが存在するかチェックしてからアクセス
@@ -65,6 +57,14 @@ public class HousesController : NetworkBehaviour
             }
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestHideButsudansWithGroupServerRpc()
+    {
+        //サーバー側でまず非表示にすべきオブジェクトを収納しておく。
+        TargetSetActiveFalseIds();
+    }
+
 
     public List<ulong> TargetSetActiveFalseIds()
     {
