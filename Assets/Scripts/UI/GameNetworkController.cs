@@ -130,6 +130,6 @@ public class GameNetworkController : Singleton<GameNetworkController>
     {
         yield return new WaitForSeconds(10);  // 1フレーム待つ
         Debug.Log("HousesController.Instance.SpawnButsudans--------------- OnNextFrame");
-        HousesController.Instance.SpawnButsudans();
+
     }
 }

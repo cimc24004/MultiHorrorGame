@@ -35,26 +35,48 @@ public class HousesController : NetworkBehaviour
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
         Debug.Log("game_network_controller: " + game_network_controller);
-        // if (IsServer && house_directors.Count > 0)
-        // {
-        //     SpawnButsudans();
-        // }
+
+        RequestHideButsudansWithGroupServerRpc();
+    }
+    [ServerRpc]
+    private void RequestHideButsudansWithGroupServerRpc()
+    {
+        var hideIds = ComputeHideIds();
+        HideOnAllClientsClientRpc(hideIds.ToArray(), false);
 
     }
-    public void SpawnButsudans()
+    [ClientRpc]
+    private void HideOnAllClientsClientRpc(ulong[] objectIds, bool setActive)
+    {
+        var spawnManager = NetworkManager.Singleton.SpawnManager;
+        foreach (var id in objectIds)
+        {
+            if (spawnManager.SpawnedObjects.TryGetValue(id, out var netObj))
+            {
+                // シーンオブジェクトにも動的Spawnオブジェクトにも対応
+                netObj.gameObject.SetActive(setActive);
+            }
+            else
+            {
+                Debug.LogWarning($"HideObjectsClientRpc: NetworkObjectId {id} が見つかりませんでした。");
+            }
+        }
+    }
+    private List<ulong> ComputeHideIds()
     {
         // ── リセット
         ButudansSilhouetteChangeControllers.Clear();
         foreach (var hd in house_directors)
             hd.ButsudanExists = false;
 
-        // ── 全グループ取得
+            var hideIds = new List<ulong>();
+        // ── 1: 全グループを取得 ──
         var allGroups = house_directors
             .SelectMany(hd => hd.Groups)
             .Where(g => g.Butsudan != null)
             .ToList();
 
-        // ── ランダムで残すグループを選択
+        // ── 2: ランダムで残すグループを選択 ──
         var shuffledHouses = house_directors.OrderBy(_ => Random.value).ToList();
         int keepCount = Mathf.Min(TotalButsudanToSpawn, shuffledHouses.Count);
 
@@ -63,61 +85,34 @@ public class HousesController : NetworkBehaviour
         {
             var hd = shuffledHouses[i];
             if (hd.Groups == null || hd.Groups.Count == 0) continue;
-
             var grp = hd.Groups[Random.Range(0, hd.Groups.Count)];
             if (grp.Butsudan != null)
                 selectedGroups.Add(grp);
         }
 
-        // ── 残さない仏壇と付随オブジェクトを Despawn して非表示
+        // ── 3: 残さないグループのオブジェクトIDを収集 ──
         foreach (var grp in allGroups.Except(selectedGroups))
         {
-            // 仏壇本体
-            var bn = grp.Butsudan.GetComponent<NetworkObject>();
-            if (bn.IsSpawned)
-                // this.despawnedIds.Add(bn.NetworkObjectId);
+            // 本体
+            var butNO = grp.Butsudan.GetComponent<NetworkObject>();
+            if (butNO != null && butNO.IsSpawned)
+                hideIds.Add(butNO.NetworkObjectId);
 
-                bn.Despawn(destroy: true);
-
-            // ExtraPackages のオブジェクト
+            // 付随オブジェクト
             foreach (var pkg in grp.ExtraPackages)
-                foreach (var o in pkg.Objs)
-                {
-                    if (o == null) continue;
-                    Debug.Log(o.gameObject);
-                    var on = o.GetComponent<NetworkObject>();
-                    if (on.IsSpawned)
-                        // this.despawnedIds.Add(on.NetworkObjectId);
-                        on.Despawn(destroy: true);
-                }
-        }
-
-        // ── 残す仏壇だけ Silhouette に登録＆フラグ立て、付随オブジェクトはパッケージ単位で Despawn
-        foreach (var grp in selectedGroups)
-        {
-            // シルエット用に登録
-            ButudansSilhouetteChangeControllers.Add(
-                grp.Butsudan.GetComponent<SilhouetteChangeController>()
-            );
-            // フラグ立て
-            var hd = house_directors.First(h => h.Groups.Contains(grp));
-            hd.ButsudanExists = true;
-
-            // 付随オブジェクトはパッケージ毎にリセット
-            var chosen = ChooseOnePackage(grp.ExtraPackages);
-            foreach (var pkg in grp.ExtraPackages)
+            {
                 foreach (var o in pkg.Objs)
                 {
                     if (o == null) continue;
                     var no = o.GetComponent<NetworkObject>();
-                    Debug.Log(no.gameObject);
-                    // 選ばれてないものだけ Despawn
-                    if (no.IsSpawned && pkg != chosen)
-                        // this.despawnedIds.Add(no.NetworkObjectId);
-                        no.Despawn(destroy: true);
+                    if (no != null && no.IsSpawned)
+                        hideIds.Add(no.NetworkObjectId);
                 }
-            // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
+            }
         }
+
+        return hideIds;
+
     }
 
     public void RevealButusdans(float RevealTime)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using Unity.Netcode;
 
 /// <summary>
 /// 仏壇本体と、それに紐づく追加オブジェクトのグループ
@@ -30,7 +31,7 @@ public class RandomSpawnPackage
     public float SpawnChance = 1f;   // 1 = 100%, 0.25 = 25%
 }
 
-public class HouseDirector : SerializedMonoBehaviour
+public class HouseDirector : NetworkSingleton<HorrorDirector>
 {
     private HousesController houses_controller;
 
@@ -58,26 +59,36 @@ public class HouseDirector : SerializedMonoBehaviour
         {
             obj.SetActive(false);
         }
-
         // サーバーでのみランダム生成
         if (Unity.Netcode.NetworkManager.Singleton.IsServer)
         {
-            foreach (var obj in RandomObjs)
+            // AllClientsRandomInstantiateRequestClientRpc();
+        }
+    }
+    [ServerRpc]
+    private void RandomInstantiateObjectsRequestServerRpc()
+    {
+
+    }
+    [ClientRpc]
+    private void AllClientsRandomInstantiateRequestClientRpc()
+    {
+        foreach (var obj in RandomObjs)
+        {
+            int r = Random.Range(0, RandomObjProbability);
+            if (r == 0)
             {
-                int r = Random.Range(0, RandomObjProbability);
-                if (r == 0)
+                var networkObject = obj.GetComponent<Unity.Netcode.NetworkObject>();
+
+                // まだ Network Spawn されていなければ Spawn
+                if (networkObject != null && !networkObject.IsSpawned)
                 {
-                    var networkObject = obj.GetComponent<Unity.Netcode.NetworkObject>();
-
-                    // まだ Network Spawn されていなければ Spawn
-                    if (networkObject != null && !networkObject.IsSpawned)
-                    {
-                        networkObject.Spawn();
-                    }
-
-                    obj.SetActive(true);
+                    networkObject.Spawn();
                 }
+
+                obj.SetActive(true);
             }
         }
     }
 }
+
