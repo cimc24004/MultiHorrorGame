@@ -36,7 +36,7 @@ public class HousesController : NetworkBehaviour
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
         Debug.Log("game_network_controller: " + game_network_controller);
-        if (IsHost)
+        if (IsServer)
         {
             RequestHideButsudansWithGroupServerRpc();
         }
