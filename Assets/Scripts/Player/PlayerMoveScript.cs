@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -44,10 +45,11 @@ public class PlayerMoveScript : NetworkBehaviour
 
     private Vector2 moveInput;
     private bool CrouchNow;
-
+    private AnticipatedNetworkTransform anticipatedNetworkTransform;
     public override void OnNetworkSpawn()
     {
         characterController = GetComponent<CharacterController>();
+        anticipatedNetworkTransform = this.gameObject.GetComponent<AnticipatedNetworkTransform>();
         playerStatus        = GetComponent<PlayerStatus>();
         playerInput         = playerStatus.player_input;
 
@@ -102,6 +104,12 @@ public class PlayerMoveScript : NetworkBehaviour
 
             // Åö RunChange ÇÕ ÅgâüÇµÇ¡ÇœÇ»ÇµÅh èÓïÒÇñàÉtÉåëóÇÈ Åö
             bool isRunHeld = runChangeAction.ReadValue<float>() > 0f;
+            float localSpeed = playerStatus.CrouchNetwork.Value
+                ? CrouchSpeed
+                : (runChangeAction.ReadValue<float>() > 0f ? RunSpeed : WalkSpeed);
+            Vector3 localMove = worldDir * localSpeed * Time.deltaTime;
+            characterController.Move(localMove);
+            anticipatedNetworkTransform.AnticipateMove(transform.position);
 
             SubmitMoveServerRpc(moveInput, isRunHeld, worldDir);
 
@@ -163,13 +171,15 @@ public class PlayerMoveScript : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (IsServer && MovePermit && characterController.enabled)
+        if (IsServer && MovePermit && characterController.enabled && !IsOwner)
         {
             if (moveDirection != Vector3.zero)
                 characterController.Move(moveDirection * NowSpeed.Value * Time.fixedDeltaTime);
             else
                 characterController.Move(Vector3.up * characterController.velocity.y * Time.fixedDeltaTime);
+
         }
+
     }
 
     private void OnCrouchPerformed(InputAction.CallbackContext ctx)
