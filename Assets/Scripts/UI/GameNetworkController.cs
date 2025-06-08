@@ -16,13 +16,32 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
     void Start()
     {
-        NetworkManager.Singleton.NetworkConfig.ProtocolVersion = 1;
-        NetworkManager.Singleton.NetworkConfig.EnableSceneManagement = true;
+        // NetworkManager.Singleton.NetworkConfig.ProtocolVersion = 1;
+        // NetworkManager.Singleton.NetworkConfig.EnableSceneManagement = true;
 
         Debug.Log(NetworkManager.Singleton.NetworkConfig.NetworkTransport != null
             ? "Transport OK"
             : "Transport NULL!!");
         StartCoroutine(DumpWhenReady());
+        if (NetworkManager.Singleton.IsServer)
+        {
+            Debug.Log("これ呼ばれますかああ？ SpawnButsudansNextFrame");
+            StartCoroutine(SpawnButsudanNextFrame());
+        }
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Debug.Log($"OnClientConnected: {clientId}");
+            
+
+            if (!NetworkManager.Singleton.IsServer) return;
+            Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
+            NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
+            pObj.SpawnAsPlayerObject(clientId);
+
+            Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤー生成 ObjectID={pObj.NetworkObjectId}");
+
+        }
+
         // NetworkManager.Singleton.NetworkConfig.EnableSceneManagement = false;
     }
     System.Collections.IEnumerator DumpWhenReady()
@@ -33,60 +52,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
         DumpConfig();
         DumpRawConfigBase64();
     }
-    // ──────────────────────────────────────
-    // ボタン：ロビー作成（ホスト）
-    // ──────────────────────────────────────
-    public void StartHost()
-    {
-        // byte[] handshake = { 0x01 };
-        // NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
-        SteamLobby.Instance.CreateLobby();
-        ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
-        Debug.Log($"ConfigHash={hash:X8}");
 
-        Debug.Log("GameNetworkController: StartHost() → CreateLobby() 呼んだ");
-    }
-
-    // ──────────────────────────────────────
-    // ボタン：LobbyID を入力して参加（クライアント）
-    // ──────────────────────────────────────
-    public void StartClient()
-    {
-        string id = m_joinLobbyID.text.Trim();
-        if (!ulong.TryParse(id, out ulong lobbyId))
-        {
-            Debug.LogError($"GameNetworkController: JoinLobbyID パース失敗 → {id}");
-            return;
-        }
-        // byte[] handshake = { 0x01 };
-        // NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
-        ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
-        Debug.Log($"ConfigHash={hash:X8}");
-
-        SteamLobby.Instance.JoinLobby(lobbyId);
-        Debug.Log($"GameNetworkController: StartClient() → JoinLobby({lobbyId}) 呼んだ");
-    }
-
-    // ──────────────────────────────────────
-    // ホスト側：クライアント承認後に呼ばれる
-    // ──────────────────────────────────────
-    public void OnClientConnected(ulong clientId)
-    {
-
-        Debug.Log($"OnClientConnected: {clientId}");
-        
-        if (NetworkManager.Singleton.IsServer)
-        {
-            Debug.Log("これ呼ばれますかああ？ SpawnButsudansNextFrame");
-            StartCoroutine(SpawnButsudanNextFrame());
-        }
-        if (!NetworkManager.Singleton.IsServer) return;
-        Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
-        NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
-        pObj.SpawnAsPlayerObject(clientId);
-
-        Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤー生成 ObjectID={pObj.NetworkObjectId}");
-    }
     // ① DumpConfig : Prefab をインデックス付きで表示するよう変更
     // ────────────────────────────────────────────────────────────────
     static void DumpConfig()
