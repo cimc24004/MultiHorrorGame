@@ -33,7 +33,7 @@ public class SteamLobby : MonoBehaviour
 
         // ★ Netcode コールバックもここで一度だけ登録
 
-        NetworkManager.Singleton.OnClientConnectedCallback  += GameNetworkController.instance.OnClientConnected;
+        // NetworkManager.Singleton.OnClientConnectedCallback  += GameNetworkController.instance.OnClientConnected;
         NetworkManager.Singleton.ConnectionApprovalCallback   = ApprovalCheck;
         NetworkManager.Singleton.OnClientDisconnectCallback  += OnClientDisconnect;
     }
