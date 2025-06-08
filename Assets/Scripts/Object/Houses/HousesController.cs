@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
+using DG.Tweening;
 
 public class HousesController : NetworkBehaviour
 {
@@ -14,7 +15,7 @@ public class HousesController : NetworkBehaviour
     public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers = new List<SilhouetteChangeController>();
     private GameNetworkController game_network_controller;
     public static HousesController Instance { get; private set; }
-
+    [ShowInInspector]public NetworkList<ulong> TargetHideNetworkLists = new NetworkList<ulong>();
     void Awake()
     {
         if (Instance == null)
@@ -41,14 +42,14 @@ public class HousesController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void RequestHideButsudansWithGroupServerRpc()
     {
-        List<ulong> target_network_ids = TargetSetActiveFalseIds();
-        AllClientsSpawnButsudansRequestClientRpc(target_network_ids.ToArray());
+        TargetSetActiveFalseIds();
+        AllClientsSpawnButsudansRequestClientRpc();
     }
 
     [ClientRpc]
-    private void AllClientsSpawnButsudansRequestClientRpc(ulong[] _target_network_ids)
+    private void AllClientsSpawnButsudansRequestClientRpc()
     {
-        foreach (ulong target_network_id in _target_network_ids)
+        foreach (ulong target_network_id in TargetHideNetworkLists)
         {
             // NetworkObjectが存在するかチェックしてからアクセス
             if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(target_network_id, out NetworkObject networkObject))
@@ -102,6 +103,7 @@ public class HousesController : NetworkBehaviour
             if (Butsudan_NetworkObject != null && Butsudan_NetworkObject.IsSpawned)
             {
                 target_network_ids.Add(Butsudan_NetworkObject.NetworkObjectId);
+                this.TargetHideNetworkLists.Add(Butsudan_NetworkObject.NetworkObjectId);
             }
 
             // ExtraPackages のオブジェクト
@@ -113,6 +115,7 @@ public class HousesController : NetworkBehaviour
                     if (ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned)
                     {
                         target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
+                        this.TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId);
                     }
                 }
         }
@@ -148,6 +151,7 @@ public class HousesController : NetworkBehaviour
                         {
                             Debug.Log("ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned 2");
                             target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
+                            this.TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId);
                         }
                     }
                 }
