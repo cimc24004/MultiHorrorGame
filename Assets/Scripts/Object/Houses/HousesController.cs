@@ -35,48 +35,51 @@ public class HousesController : NetworkBehaviour
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
         Debug.Log("game_network_controller: " + game_network_controller);
-
         RequestHideButsudansWithGroupServerRpc();
     }
+
     [ServerRpc(RequireOwnership = false)]
     private void RequestHideButsudansWithGroupServerRpc()
     {
-        var hideIds = ComputeHideIds();
-        HideOnAllClientsClientRpc(hideIds.ToArray(), false);
-
+        List<ulong> target_network_ids = TargetSetActiveFalseIds();
+        AllClientsSpawnButsudansRequestClientRpc(target_network_ids.ToArray());
     }
+
     [ClientRpc]
-    private void HideOnAllClientsClientRpc(ulong[] objectIds, bool setActive)
+    private void AllClientsSpawnButsudansRequestClientRpc(ulong[] _target_network_ids)
     {
-        var spawnManager = NetworkManager.Singleton.SpawnManager;
-        foreach (var id in objectIds)
+        foreach (ulong target_network_id in _target_network_ids)
         {
-            if (spawnManager.SpawnedObjects.TryGetValue(id, out var netObj))
+            // NetworkObjectが存在するかチェックしてからアクセス
+            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(target_network_id, out NetworkObject networkObject))
             {
-                // シーンオブジェクトにも動的Spawnオブジェクトにも対応
-                netObj.gameObject.SetActive(setActive);
+                if (networkObject != null && networkObject.gameObject != null)
+                {
+                    networkObject.gameObject.SetActive(false);
+                }
             }
             else
             {
-                Debug.LogWarning($"HideObjectsClientRpc: NetworkObjectId {id} が見つかりませんでした。");
+                Debug.LogWarning($"NetworkObject with ID {target_network_id} not found in SpawnedObjects dictionary");
             }
         }
     }
-    private List<ulong> ComputeHideIds()
+
+    public List<ulong> TargetSetActiveFalseIds()
     {
+        List<ulong> target_network_ids = new List<ulong>();
         // ── リセット
         ButudansSilhouetteChangeControllers.Clear();
         foreach (var hd in house_directors)
             hd.ButsudanExists = false;
 
-            var hideIds = new List<ulong>();
-        // ── 1: 全グループを取得 ──
+        // ── 全グループ取得
         var allGroups = house_directors
             .SelectMany(hd => hd.Groups)
             .Where(g => g.Butsudan != null)
             .ToList();
 
-        // ── 2: ランダムで残すグループを選択 ──
+        // ── ランダムで残すグループを選択
         var shuffledHouses = house_directors.OrderBy(_ => Random.value).ToList();
         int keepCount = Mathf.Min(TotalButsudanToSpawn, shuffledHouses.Count);
 
@@ -85,41 +88,82 @@ public class HousesController : NetworkBehaviour
         {
             var hd = shuffledHouses[i];
             if (hd.Groups == null || hd.Groups.Count == 0) continue;
+
             var grp = hd.Groups[Random.Range(0, hd.Groups.Count)];
             if (grp.Butsudan != null)
                 selectedGroups.Add(grp);
         }
 
-        // ── 3: 残さないグループのオブジェクトIDを収集 ──
+        // ── 残さない仏壇と付随オブジェクトを非表示対象として追加
         foreach (var grp in allGroups.Except(selectedGroups))
         {
-            // 本体
-            var butNO = grp.Butsudan.GetComponent<NetworkObject>();
-            if (butNO != null && butNO.IsSpawned)
-                hideIds.Add(butNO.NetworkObjectId);
-
-            // 付随オブジェクト
-            foreach (var pkg in grp.ExtraPackages)
+            // 仏壇のNetworkObjectを確認してから追加
+            NetworkObject Butsudan_NetworkObject = grp.Butsudan.GetComponent<NetworkObject>();
+            if (Butsudan_NetworkObject != null && Butsudan_NetworkObject.IsSpawned)
             {
+                target_network_ids.Add(Butsudan_NetworkObject.NetworkObjectId);
+            }
+
+            // ExtraPackages のオブジェクト
+            foreach (var pkg in grp.ExtraPackages)
                 foreach (var o in pkg.Objs)
                 {
                     if (o == null) continue;
-                    var no = o.GetComponent<NetworkObject>();
-                    if (no != null && no.IsSpawned)
-                        hideIds.Add(no.NetworkObjectId);
+                    NetworkObject ExtraPackage_NetworkObject = o.GetComponent<NetworkObject>();
+                    if (ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned)
+                    {
+                        target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
+                    }
                 }
-            }
         }
 
-        return hideIds;
+        // ── 残す仏壇だけ Silhouette に登録＆フラグ立て、付随オブジェクトはパッケージ単位で処理
+        foreach (var grp in selectedGroups)
+        {
+            // シルエット用に登録
+            var silhouetteController = grp.Butsudan.GetComponent<SilhouetteChangeController>();
+            if (silhouetteController != null)
+            {
+                ButudansSilhouetteChangeControllers.Add(silhouetteController);
+            }
+            
+            // フラグ立て
+            var hd = house_directors.FirstOrDefault(h => h.Groups.Contains(grp));
+            if (hd != null)
+            {
+                hd.ButsudanExists = true;
+            }
 
+            // 付随オブジェクトはパッケージ毎にリセット
+            var chosen = ChooseOnePackage(grp.ExtraPackages);
+            foreach (var pkg in grp.ExtraPackages)
+                foreach (var o in pkg.Objs)
+                {
+                    if (o == null) continue;
+                    // 選ばれてないものだけ非表示対象に追加
+                    if (pkg != chosen)
+                    {
+                        NetworkObject ExtraPackage_NetworkObject = o.GetComponent<NetworkObject>();
+                        if (ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned)
+                        {
+                            Debug.Log("ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned 2");
+                            target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
+                        }
+                    }
+                }
+            // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
+        }
+        return target_network_ids;
     }
 
     public void RevealButusdans(float RevealTime)
     {
         foreach (SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers)
         {
-            silhouette_change_controller.SilhouetteChangeWithAutoReset(RevealTime);
+            if (silhouette_change_controller != null)
+            {
+                silhouette_change_controller.SilhouetteChangeWithAutoReset(RevealTime);
+            }
         }
     }
 
