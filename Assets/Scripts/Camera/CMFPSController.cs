@@ -15,12 +15,7 @@ public class CMFPSController : Singleton<CMFPSController>
 
     private void Start()
     {
-        cinemachine_virtual_camera = this.gameObject.GetComponent<CinemachineVirtualCamera>();
-        cinemachine_pov = cinemachine_virtual_camera.GetCinemachineComponent<CinemachinePOV>();
-        DefaultHorizontalMinValue = cinemachine_pov.m_HorizontalAxis.m_MinValue;
-        DefaultHorizontalMaxValue = cinemachine_pov.m_HorizontalAxis.m_MaxValue;
-        DefaultVerticalMinValue = cinemachine_pov.m_VerticalAxis.m_MinValue;
-        DefaultVerticalMaxValue = cinemachine_pov.m_VerticalAxis.m_MaxValue;
+
 
     }
     private void OnEnable()
@@ -32,6 +27,13 @@ public class CMFPSController : Singleton<CMFPSController>
         PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
     }
     private void InitWhenPlayerSpawned(PlayerStatus _player_status){
+        cinemachine_virtual_camera = this.gameObject.GetComponent<CinemachineVirtualCamera>();
+        cinemachine_pov = cinemachine_virtual_camera.GetCinemachineComponent<CinemachinePOV>();
+        DefaultHorizontalMinValue = cinemachine_pov.m_HorizontalAxis.m_MinValue;
+        DefaultHorizontalMaxValue = cinemachine_pov.m_HorizontalAxis.m_MaxValue;
+        DefaultVerticalMinValue = cinemachine_pov.m_VerticalAxis.m_MinValue;
+        DefaultVerticalMaxValue = cinemachine_pov.m_VerticalAxis.m_MaxValue;
+        
         player_status = _player_status;
         cinemachine_virtual_camera.m_Follow = player_status.CameraRoot;
         cinemachine_virtual_camera.m_LookAt = player_status.CameraRoot;
@@ -40,7 +42,7 @@ public class CMFPSController : Singleton<CMFPSController>
         this.cinemachine_pov.m_HorizontalAxis.Value = HorizontalValue;
     }
     public void LimitCameraRotation(float HorizontalMinValue, float HorizontalMaxValue, float VerticalMinValue, float VerticalMaxValue){
-        //ÉJÉÅÉââÒì]Ç…êßå¿Ç¬ÇØÇÈ
+        //ÔøΩJÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ]ÔøΩ…êÔøΩÔøΩÔøΩÔøΩ¬ÇÔøΩÔøΩÔøΩ
         cinemachine_pov.m_HorizontalAxis.m_MinValue = HorizontalMinValue;
         cinemachine_pov.m_HorizontalAxis.m_MaxValue = HorizontalMaxValue;
         cinemachine_pov.m_HorizontalAxis.m_Wrap = false;
