@@ -41,7 +41,12 @@ public class HousesController : NetworkBehaviour
         if (IsServer)
         {
             // サーバー（ホスト）側でのみロジック実行
-            RequestHideButsudansWithGroupServerRpc();
+        
+            // サーバー側でまず非表示にすべきオブジェクトを収納しておく。
+            TargetSetActiveFalseIds();
+            
+            // サーバー側でも即座に適用
+            ApplyHideObjects();
         }
         else
         {
@@ -113,12 +118,7 @@ public class HousesController : NetworkBehaviour
     private void RequestHideButsudansWithGroupServerRpc()
     {
         if (!IsServer) return; // 念のため、サーバーでのみ実行
-        
-        // サーバー側でまず非表示にすべきオブジェクトを収納しておく。
-        TargetSetActiveFalseIds();
-        
-        // サーバー側でも即座に適用
-        ApplyHideObjects();
+
     }
 
     // サーバー側でのみ実行されるロジック
