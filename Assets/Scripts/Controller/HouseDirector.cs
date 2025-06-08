@@ -33,7 +33,6 @@ public class RandomSpawnPackage
 
 public class HouseDirector : NetworkSingleton<HorrorDirector>
 {
-    private HousesController houses_controller;
 
     [ReadOnly]
     public bool ButsudanExists;
@@ -52,7 +51,6 @@ public class HouseDirector : NetworkSingleton<HorrorDirector>
     // ──────────────────────────────────────
     private void Start()
     {
-        houses_controller = HousesController.Instance;
 
         // いったん全て非表示
         foreach (var obj in RandomObjs)

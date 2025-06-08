@@ -38,7 +38,7 @@ public class HousesController : NetworkBehaviour
 
         RequestHideButsudansWithGroupServerRpc();
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void RequestHideButsudansWithGroupServerRpc()
     {
         var hideIds = ComputeHideIds();
