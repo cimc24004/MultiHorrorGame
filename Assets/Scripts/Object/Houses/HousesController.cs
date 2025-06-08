@@ -45,8 +45,11 @@ public class HousesController : NetworkBehaviour
         }
         else
         {
-            // クライアント側は NetworkList の変更を監視
-            ApplyHideObjects();
+            if (!IsHost)
+            {
+                // クライアント側は NetworkList の変更を監視
+                ApplyHideObjects();
+            }
         }
     }
 
@@ -216,12 +219,4 @@ public class HousesController : NetworkBehaviour
         return ordered[Random.Range(0, ordered.Count)];
     }
 
-    private void OnDestroy()
-    {
-        // イベントリスナーを解除
-        if (TargetHideNetworkLists != null)
-        {
-            TargetHideNetworkLists.OnListChanged -= OnTargetHideListChanged;
-        }
-    }
 }
