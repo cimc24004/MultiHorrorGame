@@ -15,7 +15,8 @@ public class HousesController : NetworkBehaviour
     public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers = new List<SilhouetteChangeController>();
     private GameNetworkController game_network_controller;
     public static HousesController Instance { get; private set; }
-    [ShowInInspector]public NetworkList<ulong> TargetHideNetworkLists = new NetworkList<ulong>();
+    [ShowInInspector] public NetworkList<ulong> TargetHideNetworkLists = new NetworkList<ulong>();
+
     void Awake()
     {
         if (Instance == null)
@@ -36,11 +37,31 @@ public class HousesController : NetworkBehaviour
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
         game_network_controller = GameNetworkController.instance;
         Debug.Log("game_network_controller: " + game_network_controller);
+        
         if (IsServer)
         {
+            // サーバー（ホスト）側でのみロジック実行
             RequestHideButsudansWithGroupServerRpc();
         }
-        //事前に収納されたオブジェクトたちを取得して、非表示にする。
+        else
+        {
+            // クライアント側は NetworkList の変更を監視
+            TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
+        }
+    }
+
+    // NetworkListが変更されたときにクライアント側で実行される
+    private void OnTargetHideListChanged(NetworkListEvent<ulong> changeEvent)
+    {
+        if (IsServer) return; // サーバー側では実行しない（二重実行防止）
+        
+        // NetworkListの全要素に対してオブジェクトを非表示にする
+        ApplyHideObjects();
+    }
+
+    // オブジェクトを非表示にする処理（サーバー・クライアント共通）
+    private void ApplyHideObjects()
+    {
         foreach (ulong target_network_id in TargetHideNetworkLists)
         {
             // NetworkObjectが存在するかチェックしてからアクセス
@@ -61,14 +82,29 @@ public class HousesController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void RequestHideButsudansWithGroupServerRpc()
     {
-        //サーバー側でまず非表示にすべきオブジェクトを収納しておく。
+        if (!IsServer) return; // 念のため、サーバーでのみ実行
+        
+        // サーバー側でまず非表示にすべきオブジェクトを収納しておく。
         TargetSetActiveFalseIds();
+        
+        // サーバー側でも即座に適用
+        ApplyHideObjects();
     }
 
-
+    // サーバー側でのみ実行されるロジック
     public List<ulong> TargetSetActiveFalseIds()
     {
+        if (!IsServer)
+        {
+            Debug.LogWarning("TargetSetActiveFalseIds should only be called on server!");
+            return new List<ulong>();
+        }
+
         List<ulong> target_network_ids = new List<ulong>();
+        
+        // NetworkListをクリア（これによりクライアントに同期される）
+        TargetHideNetworkLists.Clear();
+        
         // ── リセット
         ButudansSilhouetteChangeControllers.Clear();
         foreach (var hd in house_directors)
@@ -103,7 +139,7 @@ public class HousesController : NetworkBehaviour
             if (Butsudan_NetworkObject != null && Butsudan_NetworkObject.IsSpawned)
             {
                 target_network_ids.Add(Butsudan_NetworkObject.NetworkObjectId);
-                this.TargetHideNetworkLists.Add(Butsudan_NetworkObject.NetworkObjectId);
+                TargetHideNetworkLists.Add(Butsudan_NetworkObject.NetworkObjectId); // NetworkListに追加（自動同期）
             }
 
             // ExtraPackages のオブジェクト
@@ -115,7 +151,7 @@ public class HousesController : NetworkBehaviour
                     if (ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned)
                     {
                         target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
-                        this.TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId);
+                        TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId); // NetworkListに追加（自動同期）
                     }
                 }
         }
@@ -151,7 +187,7 @@ public class HousesController : NetworkBehaviour
                         {
                             Debug.Log("ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned 2");
                             target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
-                            this.TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId);
+                            TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId); // NetworkListに追加（自動同期）
                         }
                     }
                 }
@@ -186,5 +222,14 @@ public class HousesController : NetworkBehaviour
 
         // ③ 全ハズレ → 並べ替え済みリストからランダム選択
         return ordered[Random.Range(0, ordered.Count)];
+    }
+
+    private void OnDestroy()
+    {
+        // イベントリスナーを解除
+        if (TargetHideNetworkLists != null)
+        {
+            TargetHideNetworkLists.OnListChanged -= OnTargetHideListChanged;
+        }
     }
 }
