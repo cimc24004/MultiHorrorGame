@@ -72,7 +72,7 @@ public class FootStepSoundController : NetworkBehaviour
     {
         if (IsServer)
         {
-            Debug.Log("Player--Check--------: " + playerStatus);
+            Debug.Log("Player--Check--------: " + this.gameObject.transform.parent.gameObject.name);
             Debug.Log("move_status: " + move_status);
             Debug.Log("FootStepSoundLevel: " + FootStepSoundLevel);
 
