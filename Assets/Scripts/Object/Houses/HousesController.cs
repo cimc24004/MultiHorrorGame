@@ -51,7 +51,7 @@ public class HousesController : NetworkBehaviour
         else
         {
             // クライアント側は NetworkList の変更を監視
-            // TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
+            TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
             
             // 遅延接続したクライアント用：既にNetworkListにデータがある場合は即座に適用
             if (TargetHideNetworkLists.Count > 0)
