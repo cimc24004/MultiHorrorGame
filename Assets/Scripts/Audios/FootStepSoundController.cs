@@ -48,108 +48,94 @@ public class FootStepSoundController : NetworkBehaviour
     
     // PlayerStatusの参照を追加
     private PlayerStatus playerStatus;
-
-    // public override void OnNetworkSpawn()
-    // {
-    //     playerStatus = GetComponent<PlayerStatus>();
-    //     if (playerStatus == null)
-    //     {
-    //         Debug.LogError("PlayerStatus component not found!");
-    //     }
-    // }
     void OnEnable()
     {
-        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+        PlayerStatus.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
     }
     void OnDisable()
     {
-        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+        PlayerStatus.OnLocalPlayerSpawned -= OnLocalPlayerSpawned;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
-        playerStatus = _playerStatus;
+    private void OnLocalPlayerSpawned(PlayerStatus player_status){
+        this.playerStatus = player_status;
     }
+
     void Update()
     {
-        if (IsServer)
-        {
-            Debug.Log("Player--Check--------: " + this.gameObject.transform.parent.gameObject.name);
-            Debug.Log("move_status: " + move_status);
-            Debug.Log("FootStepSoundLevel: " + FootStepSoundLevel);
-
-            Debug.Log("End---------");
-        }
-        // サーバー側で全部処理
-        if (!IsServer) return;
         if (playerStatus == null) return;
 
-        // PlayerStatusから移動状態を取得
-        UpdateMoveStatusFromPlayerStatus();
+        // ★重要★ オーナーが状態を管理し、サーバーRPCで通知する
+        if (IsOwner)
+        {
+            // PlayerStatusから移動状態を取得（オーナーが最新状態を持っている）
+            UpdateMoveStatusFromPlayerStatus();
 
-        // レベル自動切替
-        if (AutoFootStepSoundLevelChange)
-        {
-            if (move_status == MoveStatus.Run)
-                FootStepSoundLevel = 1;
-            else if (move_status == MoveStatus.Walk)
-                FootStepSoundLevel = 0.5f;
-            else // Crouch or Stop
-                FootStepSoundLevel = 0;
-        }
-        else
-        {
-            FootStepCantTimeNow += Time.deltaTime;
-            if (FootStepCantTimeNow > FootStepCantTime)
+            // レベル自動切替
+            if (AutoFootStepSoundLevelChange)
             {
-                AutoFootStepSoundLevelChange = true;
-                FootStepCantTimeNow = 0;
+                if (move_status == MoveStatus.Run)
+                    FootStepSoundLevel = 1;
+                else if (move_status == MoveStatus.Walk)
+                    FootStepSoundLevel = 0.5f;
+                else // Crouch or Stop
+                    FootStepSoundLevel = 0;
             }
-        }
-
-        if (!FootStepPlayFromUpdate) return;
-
-        // 一個しかない足音
-        if (OnlyOneFootStepSound)
-        {
-            if ((move_status == MoveStatus.Run || move_status == MoveStatus.Walk)
-                && !audio_source.isPlaying)
+            else
             {
-                audio_source.Play();
-                BroadcastFootStepClientRpc(OwnerClientId, "Single", "");
-            }
-            else if ((move_status == MoveStatus.Stop || move_status == MoveStatus.Crouch)
-                     && audio_source.isPlaying)
-            {
-                audio_source.Stop();
-                BroadcastFootStepClientRpc(OwnerClientId, "StopSingle", "");
-            }
-            return;
-        }
-
-        if (FootStepSoundLevel == 0) return;
-
-        if (ground_check.OnGround)
-        {
-            // 地面タグ変化した瞬間
-            if (ground_check.GroundedTagName != GroundedName)
-            {
-                GroundedName = ground_check.GroundedTagName;
-                var mode = (move_status == MoveStatus.Run) ? "Run" : "Walk";
-                PlayLocalAndNotify(mode, GroundedName);
+                FootStepCantTimeNow += Time.deltaTime;
+                if (FootStepCantTimeNow > FootStepCantTime)
+                {
+                    AutoFootStepSoundLevelChange = true;
+                    FootStepCantTimeNow = 0;
+                }
             }
 
-            // 間隔ごと
-            float delay = (move_status == MoveStatus.Run) ? RunPlayDelay : WalkPlayDelay;
-            PlaySoundDelayTimeNow += Time.deltaTime;
-            if (PlaySoundDelayTimeNow > delay)
+            if (!FootStepPlayFromUpdate) return;
+
+            // 一個しかない足音
+            if (OnlyOneFootStepSound)
+            {
+                if ((move_status == MoveStatus.Run || move_status == MoveStatus.Walk)
+                    && !audio_source.isPlaying)
+                {
+                    audio_source.Play();
+                    NotifyFootStepServerRpc("Single", "");
+                }
+                else if ((move_status == MoveStatus.Stop || move_status == MoveStatus.Crouch)
+                         && audio_source.isPlaying)
+                {
+                    audio_source.Stop();
+                    NotifyFootStepServerRpc("StopSingle", "");
+                }
+                return;
+            }
+
+            if (FootStepSoundLevel == 0) return;
+
+            if (ground_check.OnGround)
+            {
+                // 地面タグ変化した瞬間
+                if (ground_check.GroundedTagName != GroundedName)
+                {
+                    GroundedName = ground_check.GroundedTagName;
+                    var mode = (move_status == MoveStatus.Run) ? "Run" : "Walk";
+                    PlayLocalAndNotify(mode, GroundedName);
+                }
+
+                // 間隔ごと
+                float delay = (move_status == MoveStatus.Run) ? RunPlayDelay : WalkPlayDelay;
+                PlaySoundDelayTimeNow += Time.deltaTime;
+                if (PlaySoundDelayTimeNow > delay)
+                {
+                    PlaySoundDelayTimeNow = 0;
+                    var mode = (move_status == MoveStatus.Run) ? "Run" : "Walk";
+                    PlayLocalAndNotify(mode, GroundedName);
+                }
+            }
+            else
             {
                 PlaySoundDelayTimeNow = 0;
-                var mode = (move_status == MoveStatus.Run) ? "Run" : "Walk";
-                PlayLocalAndNotify(mode, GroundedName);
             }
-        }
-        else
-        {
-            PlaySoundDelayTimeNow = 0;
         }
     }
 
@@ -198,7 +184,7 @@ public class FootStepSoundController : NetworkBehaviour
         FootStepCantTimeNow = 0;
     }
 
-    // ローカル再生＋クライアント通知
+    // ローカル再生＋サーバー通知
     private void PlayLocalAndNotify(string moveMode, string tagName)
     {
         if (!foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(tagName)) return;
@@ -207,21 +193,23 @@ public class FootStepSoundController : NetworkBehaviour
 
         int r = Random.Range(0, list.Count);
         audio_source.PlayOneShot(list[r]);
-        BroadcastFootStepClientRpc(OwnerClientId, moveMode, tagName);
+        // オーナーからサーバーRPCで通知
+        NotifyFootStepServerRpc(moveMode, tagName);
     }
 
-    // Animation Eventから呼ばれる場合用のServerRpc
+    // ★重要★ オーナーからサーバーへの通知
     [ServerRpc]
     private void NotifyFootStepServerRpc(string moveMode, string groundedName)
     {
+        // サーバーから全クライアントへブロードキャスト
         BroadcastFootStepClientRpc(OwnerClientId, moveMode, groundedName);
     }
 
     [ClientRpc]
     private void BroadcastFootStepClientRpc(ulong ownerClientId, string moveMode, string groundedName)
     {
-        // 自分のクライアントでは再生しない（既にローカルで再生済み）
-        if (IsOwner && NetworkManager.Singleton.LocalClientId == ownerClientId) return;
+        // 自分のクライアント（音を既に再生済み）では再生しない
+        if (IsOwner) return;
 
         if (OnlyOneFootStepSound)
         {
