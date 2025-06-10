@@ -9,13 +9,13 @@ public class LockDoorsController : MonoBehaviour
     [SerializeField] private List<TheDoorController> will_lock_the_doors;
     void OnEnable()
     {
-        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+        HousesController.OnHousesControllerInited += OnHousesControllerInited;
     }
     void OnDisable()
     {
-        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+        HousesController.OnHousesControllerInited -= OnHousesControllerInited;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    private void OnHousesControllerInited(HousesController houses_controller){
         if (NetworkManager.Singleton.IsServer)
         {
             foreach (TheDoorController the_door_controller in will_lock_the_doors)
@@ -25,12 +25,4 @@ public class LockDoorsController : MonoBehaviour
         }
 
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-
-    }
-
 }

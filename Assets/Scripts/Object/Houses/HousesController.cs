@@ -5,7 +5,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
 using DG.Tweening;
-
+using System;
 public class HousesController : NetworkBehaviour
 {
     [Header("必ず ON にする仏壇の総数")]
@@ -16,7 +16,8 @@ public class HousesController : NetworkBehaviour
     private GameNetworkController game_network_controller;
     public static HousesController Instance { get; private set; }
     [ShowInInspector] public NetworkList<ulong> TargetHideNetworkLists = new NetworkList<ulong>();
-
+    private PlayerStatus player_status;
+    public static event Action<HousesController> OnHousesControllerInited;
     void Awake()
     {
         if (Instance == null)
@@ -30,18 +31,27 @@ public class HousesController : NetworkBehaviour
             return;
         }
     }
-
-    // ------------------------------- Unity -------------------------------
-    public override void OnNetworkSpawn()
+    void OnEnable()
     {
-        house_directors = FindObjectsOfType<HouseDirector>().ToList();
-        game_network_controller = GameNetworkController.instance;
-        Debug.Log("game_network_controller: " + game_network_controller);
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
+        player_status = _playerStatus;
+        Init_HousesController();
+    }
+    private void Init_HousesController()
+    {
+        Debug.Log("HousesController------InitOnPlayerSpawn");
         
         if (IsServer)
         {
             // サーバー（ホスト）側でのみロジック実行
-        
+            Debug.Log("HousesController.IsServer");
             // サーバー側でまず非表示にすべきオブジェクトを収納しておく。
             TargetSetActiveFalseIds();
             
@@ -50,9 +60,10 @@ public class HousesController : NetworkBehaviour
         }
         else
         {
+            // if (IsHost) return;
+            Debug.Log("Not HousesController.IsServer && Not IsHost");
             // クライアント側は NetworkList の変更を監視
             TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
-            
             // 遅延接続したクライアント用：既にNetworkListにデータがある場合は即座に適用
             if (TargetHideNetworkLists.Count > 0)
             {
@@ -61,6 +72,17 @@ public class HousesController : NetworkBehaviour
                 StartCoroutine(DelayedApplyHideObjects());
             }
         }
+        if (IsServer)
+        {
+            OnHousesControllerInited?.Invoke(this);
+        }
+    }
+    // ------------------------------- Unity -------------------------------
+    public override void OnNetworkSpawn()
+    {
+        house_directors = FindObjectsOfType<HouseDirector>().ToList();
+        game_network_controller = GameNetworkController.instance;
+
     }
 
     // 遅延実行用コルーチン
@@ -91,7 +113,9 @@ public class HousesController : NetworkBehaviour
     {
         int successCount = 0;
         int failCount = 0;
-        
+        Debug.Log("ここではApplyHideObjectsを実行します。");
+        Debug.Log("ApplyHideObjectsのTargetHideNetworkListsの中身の個数をチェックします、");
+        Debug.Log("TargetHideNetworkLists.Count: " + TargetHideNetworkLists.Count);
         foreach (ulong target_network_id in TargetHideNetworkLists)
         {
             // NetworkObjectが存在するかチェックしてからアクセス
@@ -147,7 +171,7 @@ public class HousesController : NetworkBehaviour
             .ToList();
 
         // ── ランダムで残すグループを選択
-        var shuffledHouses = house_directors.OrderBy(_ => Random.value).ToList();
+        var shuffledHouses = house_directors.OrderBy(_ => UnityEngine.Random.value).ToList();
         int keepCount = Mathf.Min(TotalButsudanToSpawn, shuffledHouses.Count);
 
         var selectedGroups = new List<ButsudanGroup>();
@@ -156,7 +180,7 @@ public class HousesController : NetworkBehaviour
             var hd = shuffledHouses[i];
             if (hd.Groups == null || hd.Groups.Count == 0) continue;
 
-            var grp = hd.Groups[Random.Range(0, hd.Groups.Count)];
+            var grp = hd.Groups[UnityEngine.Random.Range(0, hd.Groups.Count)];
             if (grp.Butsudan != null)
                 selectedGroups.Add(grp);
         }
@@ -247,11 +271,11 @@ public class HousesController : NetworkBehaviour
 
         // ② 順に抽選して最初に当たった 1 つを返す
         foreach (var p in ordered)
-            if (Random.value <= p.SpawnChance)
+            if (UnityEngine.Random.value <= p.SpawnChance)
                 return p;                        // 当選！
 
         // ③ 全ハズレ → 並べ替え済みリストからランダム選択
-        return ordered[Random.Range(0, ordered.Count)];
+        return ordered[UnityEngine.Random.Range(0, ordered.Count)];
     }
 
     private void OnDestroy()

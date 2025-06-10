@@ -220,9 +220,9 @@ public class PlayerMoveScript : NetworkBehaviour
         {
             if (runWalkTriggerChange)
             {
-                bool canRun = staminaController.StaminaIncreaseNow
+                bool canRun = staminaController.StaminaIncreaseNow.Value
                     ? staminaController.StaminaCheck()
-                    : (playerStatus.StaminaValueNow > 0);
+                    : (playerStatus.StaminaValueNow.Value > 0);
 
                 if (canRun)
                 {

@@ -205,7 +205,7 @@ public class CurseController : NetworkSingleton<CurseController>
 
     private void PlayerStaminaZeroUpdate()
     {
-        player_status.StaminaValueNow = 0;
+        player_status.StaminaValueNow.Value = 0;
         player_stamina_controller.ConsumeStamina();
     }
 

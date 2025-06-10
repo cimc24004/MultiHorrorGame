@@ -54,7 +54,7 @@ public class PlayerStatus : NetworkBehaviour
     [Header("スタミナコスト")]
     public float StaminaCost = 0.3f;
     [Header("現在のスタミナ値")]
-    public float StaminaValueNow = 100f;
+    public NetworkVariable<float> StaminaValueNow = new NetworkVariable<float>();
     [Header("スタミナ1fにつきの回復力")]
     public float StaminaRetakePower;
     [Header("走れる最小スタミナ")]
@@ -136,6 +136,7 @@ public class PlayerStatus : NetworkBehaviour
             sub_noticed_ui_controller.gameObject.SetActive(false);
             item_belonging_controller.gameObject.SetActive(false);
             main_noticed_ui_controller.gameObject.SetActive(false);
+            player_stamina_controller.StaminaCanvas.gameObject.SetActive(false);
             cross_hair_event.gameObject.SetActive(false);
         }
     }

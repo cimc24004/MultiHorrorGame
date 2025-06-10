@@ -4,94 +4,99 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Events;
-public class PlayerStaminaController : MonoBehaviour
+using Unity.Netcode;
+public class PlayerStaminaController : NetworkBehaviour
 {
 
     public Slider stamina_slider;
     public Color red_color;
+    [SerializeField] public GameObject StaminaCanvas;
     [Header("スタミナがいま消費中かどうか(走ってるときなど)")]
-    public bool StaminaConsumeNow;
+    public NetworkVariable<bool> StaminaConsumeNow = new NetworkVariable<bool>();
     [Header("スタミナ増加中かどうか")]
-    public bool StaminaIncreaseNow;
+    public NetworkVariable<bool> StaminaIncreaseNow = new NetworkVariable<bool>();
     private Color default_color;
     private Image fillRectImageUI;
     private PlayerStatus player_status;
     private float stamina_retake_start_time_now = 0;
     private UIFadeController ui_fade_controller;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         fillRectImageUI = stamina_slider.fillRect.gameObject.GetComponent<Image>();
         default_color = fillRectImageUI.color;
         player_status = this.gameObject.GetComponent<PlayerStatus>();
         ui_fade_controller = stamina_slider.gameObject.GetComponent<UIFadeController>();
-        
+        if (IsOwner)
+        {
+            player_status.StaminaValueNow.OnValueChanged += OnValueChangedStamina;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(player_status.StaminaValueNow <= 100)
-        {
-            stamina_slider.DOValue(player_status.StaminaValueNow / 100.0f, 0.1f).SetLink(this.gameObject);
-        }
-        if (player_status.StaminaValueNow <= player_status.CanMinStaminaRun)
-        {
-            fillRectImageUI.color = red_color;
-        }
-        else
-        {
-            fillRectImageUI.color = default_color;
-        }
-
-
-    }
     private void FixedUpdate()
     {
-        if (!this.StaminaConsumeNow)
+        if (IsServer)
         {
-            stamina_retake_start_time_now += Time.fixedDeltaTime;
-            if (stamina_retake_start_time_now > 1)
+            if (!this.StaminaConsumeNow.Value)
             {
-                StaminaRetake();
+                stamina_retake_start_time_now += Time.fixedDeltaTime;
+                if (stamina_retake_start_time_now > 1)
+                {
+                    StaminaRetake();
+                }
             }
+            else
+            {
+                StaminaIncreaseNow.Value = false;
+                stamina_retake_start_time_now = 0;
+            }
+            this.StaminaConsumeNow.Value = false;
         }
-        else
-        {
-            StaminaIncreaseNow = false;
-            stamina_retake_start_time_now = 0;
-        }
-        this.StaminaConsumeNow = false;
+
     }
     public void ConsumeStamina()
     {
-        ui_fade_controller.AutoFadeIn();
-        player_status.StaminaValueNow -= player_status.StaminaCost;
-        StaminaConsumeNow = true;
+        player_status.StaminaValueNow.Value -= player_status.StaminaCost;
+        StaminaConsumeNow.Value = true;
     }
     public void StaminaRetake()
     {
         //スタミナ回復
-        if(player_status.StaminaValueNow / 100.0f <= 1)
+        if (player_status.StaminaValueNow.Value / 100.0f <= 1)
         {
-            ui_fade_controller.AutoFadeIn();
-            player_status.StaminaValueNow += player_status.StaminaRetakePower;
-            StaminaIncreaseNow = true;
+            player_status.StaminaValueNow.Value += player_status.StaminaRetakePower;
+            StaminaIncreaseNow.Value = true;
         }
         else
         {
-            StaminaIncreaseNow = false;
+            StaminaIncreaseNow.Value = false;
         }
     }
     public bool StaminaCheck()
     {
-        if (player_status.StaminaValueNow <= player_status.CanMinStaminaRun)
+        if (player_status.StaminaValueNow.Value <= player_status.CanMinStaminaRun)
         {
             return false;
         }
         else
         {
             return true;
+        }
+    }
+
+    private void OnValueChangedStamina(float newValue, float oldValue) {
+        ui_fade_controller.AutoFadeIn();
+        if (newValue <= 100)
+        {
+            stamina_slider.DOValue(newValue / 100.0f, 0.1f).SetLink(this.gameObject);
+        }
+        if (newValue <= player_status.CanMinStaminaRun)
+        {
+            fillRectImageUI.color = red_color;
+        }
+        else
+        {
+            fillRectImageUI.color = default_color;
         }
     }
 }

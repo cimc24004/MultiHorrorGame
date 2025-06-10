@@ -60,33 +60,33 @@ public class GameNetworkController : Singleton<GameNetworkController>
         var cfg  = NetworkManager.Singleton.NetworkConfig;
         ulong h  = cfg.GetConfig();               // 全体ハッシュ
 
-        Debug.Log($"=== NETWORK CONFIG DUMP ===");
-        Debug.Log($"HASH                  : 0x{h:X16}");
-        Debug.Log($"ProtocolVersion       : {cfg.ProtocolVersion}");
-        Debug.Log($"EnableSceneManagement : {cfg.EnableSceneManagement}");
+        // Debug.Log($"=== NETWORK CONFIG DUMP ===");
+        // Debug.Log($"HASH                  : 0x{h:X16}");
+        // Debug.Log($"ProtocolVersion       : {cfg.ProtocolVersion}");
+        // Debug.Log($"EnableSceneManagement : {cfg.EnableSceneManagement}");
 
         // ─ プレハブ一覧（順番も重要なのでインデックス付き）─
-        var list = cfg.Prefabs.Prefabs;           // ← 二段階アクセス
-        Debug.Log($"Prefab Count          : {list.Count}");
-        for (int i = 0; i < list.Count; i++)
-        {
-    #if UNITY_NETCODE_140_OR_NEWER
-            Debug.Log($"{i,2}: {list[i].Prefab.name,-32} PrefabHash={list[i].PrefabHash}");
-    #else
-            Debug.Log($"{i,2}: {list[i].Prefab.name,-32} PrefabHash={list[i].SourcePrefabGlobalObjectIdHash}");
-    #endif
-        }
+        // var list = cfg.Prefabs.Prefabs;           // ← 二段階アクセス
+    //     Debug.Log($"Prefab Count          : {list.Count}");
+    //     for (int i = 0; i < list.Count; i++)
+    //     {
+    // #if UNITY_NETCODE_140_OR_NEWER
+    //         Debug.Log($"{i,2}: {list[i].Prefab.name,-32} PrefabHash={list[i].PrefabHash}");
+    // #else
+    //         Debug.Log($"{i,2}: {list[i].Prefab.name,-32} PrefabHash={list[i].SourcePrefabGlobalObjectIdHash}");
+    // #endif
+    //     }
 
         // ─ シーン一覧 ─
         if (cfg.EnableSceneManagement && NetworkManager.Singleton.SceneManager != null)
         {
             var scenes = NetworkManager.Singleton.SceneManager.GetSynchronizedScenes();
-            Debug.Log($"Scene Count           : {scenes.Count}");
-            foreach (var s in scenes)
-                Debug.Log($"  {s.name}");
+            // Debug.Log($"Scene Count           : {scenes.Count}");
+            // foreach (var s in scenes)
+            //     Debug.Log($"  {s.name}");
         }
 
-        Debug.Log($"=== END DUMP ===");
+        // Debug.Log($"=== END DUMP ===");
     }
 
     // ────────────────────────────────────────────────────────────────
