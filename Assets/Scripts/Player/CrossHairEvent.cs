@@ -34,6 +34,7 @@ public class CrossHairEvent : NetworkBehaviour
     private GameStateController game_state_controller;
     private MainNoticedUIController main_noticed_ui_controller;
     private NetworkObject PlayerNetworkObject;
+    private PrayController pushing_raycasted_pray_controller;
     // Start は最初のフレーム前に呼ばれる
     void Start()
     {
@@ -46,7 +47,8 @@ public class CrossHairEvent : NetworkBehaviour
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         player_input = player_status.player_input;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
@@ -54,15 +56,18 @@ public class CrossHairEvent : NetworkBehaviour
         MainCamera = Camera.main;
         PlayerNetworkObject = this.Player.GetComponent<NetworkObject>();
         InitPlayer = true;
+
+        player_input.actions["RaycastAction"].started += RaycastActionStart;
+        player_input.actions["RaycastAction"].canceled += RaycastActionCanceled;
     }
     // 毎フレーム呼び出される
     void Update()
     {
-        if(!InitPlayer) return;
-        if(!IsOwner) return;
+        if (!InitPlayer) return;
+        if (!IsOwner) return;
         // 画面中心からレイを飛ばす
         main_ray = MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        Debug.DrawRay(MainCamera.transform.position,MainCamera.transform.forward * RaycastDistance, Color.yellow);
+        Debug.DrawRay(MainCamera.transform.position, MainCamera.transform.forward * RaycastDistance, Color.yellow);
         if (Physics.Raycast(main_ray, out raycast_hit, RaycastDistance, TargetLayerMaskViewToPoint))
         {
             //触れてる間に色々するとこ↓
@@ -76,7 +81,8 @@ public class CrossHairEvent : NetworkBehaviour
                 }
                 // pray_controller.OnTouchOn();
             }
-            if(raycast_hit.collider.gameObject.tag == "HideActionObject"){
+            if (raycast_hit.collider.gameObject.tag == "HideActionObject")
+            {
                 main_noticed_ui_controller.Notice("隠れる", 1);
             }
             RaycasstedObj = raycast_hit.collider.gameObject;
@@ -97,7 +103,7 @@ public class CrossHairEvent : NetworkBehaviour
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             }
 
-            if(!CrossHairEventRaycastPermit) return;
+            if (!CrossHairEventRaycastPermit) return;
             if (player_input.actions["RaycastAction"].triggered)
             {
                 Debug.Log("RaycastAction---------------------Triggered!!!!!!!!!!!!!!!!!!!!!");
@@ -110,7 +116,7 @@ public class CrossHairEvent : NetworkBehaviour
 
                     return;
                 }
-                if(raycast_hit.collider.gameObject.tag == "DeliverPlace")
+                if (raycast_hit.collider.gameObject.tag == "DeliverPlace")
                 {
                     DeliverMemoryPlace deliver_memory_place = raycast_hit.collider.gameObject.GetComponent<DeliverMemoryPlace>();
                     deliver_memory_place.Deliver(item_belonging_controller);
@@ -123,7 +129,7 @@ public class CrossHairEvent : NetworkBehaviour
                         NetworkObject networkObject = raycast_hit.collider.gameObject.GetComponent<NetworkObject>();
                         player_hide_object_action.HideUnHideRayCastActionPerformedRequestServerRpc(networkObject.NetworkObjectId);
                     }
-                        
+
                     return;
 
                 }
@@ -132,7 +138,7 @@ public class CrossHairEvent : NetworkBehaviour
 
                     DoorOpenCloseController door_open_close_controlelr = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     the_door_controller = door_open_close_controlelr.the_door_controller;
-                    
+
                     the_door_controller.DoorOpenClosedChangeByStatusServerRPC(PlayerNetworkObject.NetworkObjectId);
 
                     return;
@@ -145,7 +151,7 @@ public class CrossHairEvent : NetworkBehaviour
                     return;
                 }
 
-                if(raycast_hit.collider.gameObject.tag == "Light")
+                if (raycast_hit.collider.gameObject.tag == "Light")
                 {
 
                     TurningOnOffLightController turn_on_off_by_status = raycast_hit.collider.gameObject.GetComponent<TurningOnOffLightController>();
@@ -153,36 +159,67 @@ public class CrossHairEvent : NetworkBehaviour
                     turn_on_off_by_status.ToggleLight();
                     return;
                 }
-                if(raycast_hit.collider.gameObject.tag == "ReadEvent")
+                if (raycast_hit.collider.gameObject.tag == "ReadEvent")
                 {
                     ReadEventController read_event_controller = raycast_hit.collider.gameObject.GetComponent<ReadEventController>();
                     read_event_controller.ReadEventStart();
                 }
-                if(raycast_hit.collider.gameObject.tag == "GameClear"){
+                if (raycast_hit.collider.gameObject.tag == "GameClear")
+                {
                     SceneManager.LoadScene("GameClear");
                 }
             }
 
 
 
-            if (player_input.actions["RaycastAction"].IsPressed())
-            {
-                //こっちは長押し用のイベント
-                if(raycast_hit.collider.gameObject.tag == "Pray")
-                {
-                    Debug.Log("Pray------------COl");
-                    if (pray_controller != null)
-                    {
-                        pray_controller.Pray();
-                    }
-                }
-            }else{
-            }
+            // if (player_input.actions["RaycastAction"].IsPressed())
+            // {
+            //     //こっちは長押し用のイベント
+            //     if(raycast_hit.collider.gameObject.tag == "Pray")
+            //     {
+            //         Debug.Log("Pray------------COl");
+            //         if (pray_controller != null)
+            //         {
+            //             pray_controller.Pray();
+            //         }
+            //     }
+            // }else{
+            // }
         }
         else
         {
             cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             RaycasstedObj = null;
+        }
+    }
+    private void RaycastActionStart(InputAction.CallbackContext ctx) {
+        RaycastActionPushingEvent(true);
+    }
+    private void RaycastActionCanceled(InputAction.CallbackContext ctx) {
+        RaycastActionPushingEvent(false);
+    }
+    private void RaycastActionPushingEvent(bool _Pushing)
+    {
+        if (RaycasstedObj == null) return;
+        //長押しはこっちで管理する。
+        if (_Pushing)
+        {
+            //長押ししている間
+            if (RaycasstedObj.tag == "Pray")
+            {
+                pushing_raycasted_pray_controller = RaycasstedObj.GetComponent<PrayController>();
+                pushing_raycasted_pray_controller.PrayNowTrueRequestServerRpc();
+            }
+        }
+        else
+        {
+            //離した瞬間
+            if (RaycasstedObj.tag == "Pray")
+            {
+                pushing_raycasted_pray_controller.PrayNowFalseRequestServerRpc();
+                pushing_raycasted_pray_controller = null;
+            }
+
         }
     }
 }

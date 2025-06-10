@@ -35,31 +35,37 @@ public class PrayController : NetworkBehaviour
 
     // ÉçÅ[ÉJÉãóp
     private bool Inited;
-    private bool PrayNow;
+    private NetworkVariable<bool> PrayNow = new NetworkVariable<bool>();
     private bool PrayForStartOnce;
+    private bool NotPrayForStartOnce;
     private PlayerStatus player_status;
     private CrossHairStatus cross_hair_status;
     private GameObject GageCanvas;
     private Image GageImageUI;
     private MainNoticedUIController main_noticed_ui_controller;
     private bool once;
-
     void OnEnable() => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         player_status = _playerStatus;
         cross_hair_status = player_status.cross_hair_event.cross_hair_status;
-        GageCanvas       = player_status.GageCanvas;
-        GageImageUI      = player_status.GageImage;
+        GageCanvas = player_status.GageCanvas;
+        GageImageUI = player_status.GageImage;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
+
         Inited = true;
+        
     }
 
     public override void OnNetworkSpawn()
     {
-        PrayTimeNow.OnValueChanged         += OnPrayTimeNowChanged;
-        PrayPermit.OnValueChanged          += OnPrayPermitChanged;
+        if (IsServer)
+        {
+            PrayTimeNow.OnValueChanged         += OnPrayTimeNowChanged;
+            PrayPermit.OnValueChanged          += OnPrayPermitChanged;
+        }
+
         AlreadyPrayCompleted.OnValueChanged += OnAlreadyPrayCompletedChanged;
     }
 
@@ -76,13 +82,28 @@ public class PrayController : NetworkBehaviour
             cross_hair_status.RaycastHitedExistsByCrossHairEvent &&
             cross_hair_status.HitedObj == this.gameObject)
         {
+            //Pray?????????????
             GageImageUI.fillAmount = PrayTimeNow.Value / NeedToPrayTime;
             GageCanvas.SetActive(true);
             main_noticed_ui_controller.Notice(NoticeMessage, 1);
             once = false;
+            NotPrayForStartOnce = false;
+        }
+        else
+        {
+            //???????
+            if (PrayNow.Value)
+            {
+                if (!NotPrayForStartOnce)
+                {
+                    PrayNowFalseRequestServerRpc();
+                    NotPrayForStartOnce = true;
+                }
+            }
+
         }
 
-        if (IsServer && PrayNow && PrayPermit.Value && !AlreadyPrayCompleted.Value)
+        if (IsServer && PrayNow.Value && PrayPermit.Value && !AlreadyPrayCompleted.Value)
         {
             if (!PrayForStartOnce)
             {
@@ -100,22 +121,19 @@ public class PrayController : NetworkBehaviour
                 PrayCompletedClientRpc();
                 PrayForStartOnce = false;
             }
-
-            PrayNow = false;
         }
     }
 
-    public void Pray()
-    {
-        PrayRequestServerRpc();
-    }
-
     [ServerRpc(RequireOwnership = false)]
-    private void PrayRequestServerRpc(ServerRpcParams rpcParams = default)
+    public void PrayNowTrueRequestServerRpc()
     {
-        PrayNow = true;
+        PrayNow.Value = true;
     }
-
+    [ServerRpc(RequireOwnership = false)]
+    public void PrayNowFalseRequestServerRpc()
+    {
+        PrayNow.Value = false;
+    }
     [ClientRpc]
     private void PrayCompletedClientRpc(ClientRpcParams rpcParams = default)
     {

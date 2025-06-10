@@ -25,22 +25,16 @@ public class GameNetworkController : Singleton<GameNetworkController>
         StartCoroutine(DumpWhenReady());
         if (NetworkManager.Singleton.IsServer)
         {
-            Debug.Log("これ呼ばれますかああ？ SpawnButsudansNextFrame");
-            StartCoroutine(SpawnButsudanNextFrame());
+            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                Debug.Log($"OnClientConnected: {clientId}");
+                Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
+                NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
+                pObj.SpawnAsPlayerObject(clientId);
+
+            }
         }
-        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            Debug.Log($"OnClientConnected: {clientId}");
-            
 
-            if (!NetworkManager.Singleton.IsServer) return;
-            Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
-            NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
-            pObj.SpawnAsPlayerObject(clientId);
-
-            Debug.Log($"GameNetworkController: クライアント {clientId} のプレイヤー生成 ObjectID={pObj.NetworkObjectId}");
-
-        }
 
         // NetworkManager.Singleton.NetworkConfig.EnableSceneManagement = false;
     }
@@ -125,11 +119,5 @@ public class GameNetworkController : Singleton<GameNetworkController>
 
         string b64 = Convert.ToBase64String(bytes);
         Debug.Log($"=== RAW CONFIG BASE64 ===\n{b64}\n=== END ===");
-    }
-    IEnumerator SpawnButsudanNextFrame()
-    {
-        yield return new WaitForSeconds(10);  // 1フレーム待つ
-        Debug.Log("HousesController.Instance.SpawnButsudans--------------- OnNextFrame");
-
     }
 }
