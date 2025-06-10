@@ -24,7 +24,7 @@ public class PlayerMoveScript : NetworkBehaviour
     private Animator anim;
     private Vector3 moveDirection = Vector3.zero;
 
-    public NetworkVariable<float> NowSpeed = new NetworkVariable<float>();
+    public float NowSpeed = 0;
     public bool MovePermit = true;
 
     private float defaultRunSpeed;
@@ -63,7 +63,7 @@ public class PlayerMoveScript : NetworkBehaviour
 
         // サーバー起動時は WalkSpeed で初期化
         if (IsServer)
-            NowSpeed.Value = WalkSpeed;
+            NowSpeed = WalkSpeed;
 
         staminaController = GetComponent<PlayerStaminaController>();
         subNoticedUI      = playerStatus.sub_noticed_ui_controller;
@@ -114,10 +114,10 @@ public class PlayerMoveScript : NetworkBehaviour
         if (IsServer)
         {
             // しゃがみ中はまず CrouchSpeed を優先
-            if (playerStatus.CrouchNetwork.Value)
+            if (playerStatus.Crouch)
             {
-                playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
-                NowSpeed.Value = CrouchSpeed;
+                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Crouch;
+                NowSpeed = CrouchSpeed;
                 playerStatus.MoveSpeed = CrouchSpeed;
             }
             else
@@ -126,18 +126,18 @@ public class PlayerMoveScript : NetworkBehaviour
                 if (moveInput.sqrMagnitude > 0.01f)
                 {
                     // Stop → Walk 復帰
-                    if (playerStatus.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Stop)
+                    if (playerStatus.player_move_state == PlayerStatus.PlayerMoveState.Stop)
                     {
-                        playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
-                        NowSpeed.Value = WalkSpeed;
+                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                        NowSpeed = WalkSpeed;
                     }
-                    playerStatus.MoveSpeed = NowSpeed.Value;
+                    playerStatus.MoveSpeed = NowSpeed;
                 }
                 else
                 {
                     // 入力ナシ → 完全停止
-                    playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Stop;
-                    NowSpeed.Value = 0f;
+                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Stop;
+                    NowSpeed = 0f;
                     playerStatus.MoveSpeed = 0f;
                 }
 
@@ -162,7 +162,7 @@ public class PlayerMoveScript : NetworkBehaviour
         if (IsServer && MovePermit && characterController.enabled)
         {
             if (moveDirection != Vector3.zero)
-                characterController.Move(moveDirection * NowSpeed.Value * Time.deltaTime);
+                characterController.Move(moveDirection * NowSpeed * Time.deltaTime);
             else
                 characterController.Move(Vector3.up * characterController.velocity.y * Time.deltaTime);
         }
@@ -176,7 +176,6 @@ public class PlayerMoveScript : NetworkBehaviour
     private void OnCrouchPerformed(InputAction.CallbackContext ctx)
     {
         CrouchNow = !CrouchNow;
-        anim.SetBool("Crouch", CrouchNow);
         playerStatus.CrouchStandCameraPosChange(CrouchNow);
 
         UpdateCrouchNetworkChangeServerRpc(CrouchNow);
@@ -195,7 +194,8 @@ public class PlayerMoveScript : NetworkBehaviour
     [ServerRpc]
     private void UpdateCrouchNetworkChangeServerRpc(bool newCrouch)
     {
-        playerStatus.CrouchNetwork.Value = newCrouch;
+        anim.SetBool("Crouch", newCrouch);
+        playerStatus.Crouch = newCrouch;
     }
 
     [ServerRpc]
@@ -214,31 +214,31 @@ public class PlayerMoveScript : NetworkBehaviour
 
     private void HandleRunWalk()
     {
-        var state = playerStatus.player_move_state_network.Value;
+        var state = playerStatus.player_move_state;
         if (state == PlayerStatus.PlayerMoveState.Run ||
             state == PlayerStatus.PlayerMoveState.Walk)
         {
             if (runWalkTriggerChange)
             {
-                bool canRun = staminaController.StaminaIncreaseNow.Value
+                bool canRun = staminaController.StaminaIncreaseNow
                     ? staminaController.StaminaCheck()
                     : (playerStatus.StaminaValueNow.Value > 0);
 
                 if (canRun)
                 {
-                    playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Run;
-                    NowSpeed.Value = RunSpeed;
+                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Run;
+                    NowSpeed = RunSpeed;
                 }
                 else
                 {
-                    playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
-                    NowSpeed.Value = WalkSpeed;
+                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                    NowSpeed = WalkSpeed;
                 }
             }
             else if (runChangeAction.WasReleasedThisFrame())
             {
-                playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
-                NowSpeed.Value = WalkSpeed;
+                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                NowSpeed = WalkSpeed;
                 runWalkTriggerChange = false;
             }
         }

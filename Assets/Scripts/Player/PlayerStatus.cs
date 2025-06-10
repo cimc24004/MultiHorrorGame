@@ -38,12 +38,7 @@ public class PlayerStatus : NetworkBehaviour
     public enum PlayerMoveState { Walk, Run, Crouch, Stop }
 
     // サーバー書き込み・全員読取
-    public NetworkVariable<PlayerMoveState> player_move_state_network
-        = new NetworkVariable<PlayerMoveState>(
-            PlayerMoveState.Walk,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
-        );
+    public PlayerMoveState player_move_state;
 
     [Header("移動速度")]
     public float MoveSpeed;
@@ -82,13 +77,6 @@ public class PlayerStatus : NetworkBehaviour
     private Tween crouchTween;
     private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
 
-    // しゃがみ状態同期用 NetworkVariable（オーナー書き込み）
-    public NetworkVariable<bool> CrouchNetwork = new NetworkVariable<bool>(
-        false,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
-
     public override void OnNetworkDespawn()
     {
         if (IsOwner && LocalInstance == this)
@@ -113,19 +101,6 @@ public class PlayerStatus : NetworkBehaviour
 
         InitPlayer = true;
 
-        // サーバー書き込み・全クライアント読取の移動状態を監視
-        player_move_state_network.OnValueChanged += OnMoveStateChanged;
-        // クライアント起動時に現在値を反映
-        if (!IsServer)
-        {
-            OnMoveStateChanged(player_move_state_network.Value, player_move_state_network.Value);
-        }
-
-        if (IsServer)
-        {
-            CrouchNetwork.OnValueChanged += OnCrouchChanged;
-        }
-
         if (IsOwner)
         {
             LocalInstance = this;
@@ -138,32 +113,6 @@ public class PlayerStatus : NetworkBehaviour
             main_noticed_ui_controller.gameObject.SetActive(false);
             player_stamina_controller.StaminaCanvas.gameObject.SetActive(false);
             cross_hair_event.gameObject.SetActive(false);
-        }
-    }
-
-    // サーバーで変わった移動状態をクライアント側の足音制御に反映
-    private void OnMoveStateChanged(
-        PlayerMoveState oldValue,
-        PlayerMoveState newValue
-    )
-    {
-        // クライアント側（ホスト含む）でのみ実行
-        if (IsServer && !IsOwner) return;
-
-        switch (newValue)
-        {
-            case PlayerMoveState.Run:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
-                break;
-            case PlayerMoveState.Crouch:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
-                break;
-            case PlayerMoveState.Stop:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
-                break;
-            default:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
-                break;
         }
     }
 
@@ -184,7 +133,7 @@ public class PlayerStatus : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (IsServer && MoveSpeed != 0 && player_move_state_network.Value == PlayerMoveState.Run)
+        if (IsServer && MoveSpeed != 0 && player_move_state == PlayerMoveState.Run)
         {
             player_stamina_controller.ConsumeStamina();
         }
@@ -192,7 +141,7 @@ public class PlayerStatus : NetworkBehaviour
 
     public void StopEvent()
     {
-        player_move_state_network.Value = PlayerMoveState.Walk;
+        player_move_state = PlayerMoveState.Walk;
         MoveX = 0;
         MoveY = 0;
         MoveSpeed = 0;
@@ -246,13 +195,13 @@ public class PlayerStatus : NetworkBehaviour
     {
         if (newValue)
         {
-            player_move_state_network.Value = PlayerMoveState.Crouch;
-            player_move_script.NowSpeed.Value = player_move_script.CrouchSpeed;
+            player_move_state = PlayerMoveState.Crouch;
+            player_move_script.NowSpeed = player_move_script.CrouchSpeed;
         }
         else
         {
-            player_move_state_network.Value = PlayerMoveState.Walk;
-            player_move_script.NowSpeed.Value = player_move_script.WalkSpeed;
+            player_move_state = PlayerMoveState.Walk;
+            player_move_script.NowSpeed = player_move_script.WalkSpeed;
         }
         anim.SetBool("Crouch", newValue);
         if (IsOwner)

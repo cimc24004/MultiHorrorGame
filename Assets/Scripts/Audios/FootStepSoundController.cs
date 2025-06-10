@@ -45,11 +45,31 @@ public class FootStepSoundController : NetworkBehaviour
     private string GroundedName;
     private float FootStepCantTimeNow;
     private float FootStepCantTime;
+    
+    // PlayerStatusの参照を追加
+    private PlayerStatus playerStatus;
+
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+        playerStatus = _playerStatus;
+
+    }
 
     void Update()
     {
-        // オーナーだけ動かす
-        if (!IsOwner) return;
+        // サーバー側で全部処理
+        if (!IsServer) return;
+        if (playerStatus == null) return;
+
+        // PlayerStatusから移動状態を取得
+        UpdateMoveStatusFromPlayerStatus();
 
         // レベル自動切替
         if (AutoFootStepSoundLevelChange)
@@ -80,13 +100,13 @@ public class FootStepSoundController : NetworkBehaviour
                 && !audio_source.isPlaying)
             {
                 audio_source.Play();
-                NotifyFootStepServerRpc("Single", "");
+                BroadcastFootStepClientRpc(OwnerClientId, "Single", "");
             }
             else if ((move_status == MoveStatus.Stop || move_status == MoveStatus.Crouch)
                      && audio_source.isPlaying)
             {
                 audio_source.Stop();
-                NotifyFootStepServerRpc("StopSingle", "");
+                BroadcastFootStepClientRpc(OwnerClientId, "StopSingle", "");
             }
             return;
         }
@@ -119,6 +139,26 @@ public class FootStepSoundController : NetworkBehaviour
         }
     }
 
+    // PlayerStatusから移動状態を取得してmove_statusを更新
+    private void UpdateMoveStatusFromPlayerStatus()
+    {
+        switch (playerStatus.player_move_state)
+        {
+            case PlayerStatus.PlayerMoveState.Run:
+                move_status = MoveStatus.Run;
+                break;
+            case PlayerStatus.PlayerMoveState.Crouch:
+                move_status = MoveStatus.Crouch;
+                break;
+            case PlayerStatus.PlayerMoveState.Stop:
+                move_status = MoveStatus.Stop;
+                break;
+            default:
+                move_status = MoveStatus.Walk;
+                break;
+        }
+    }
+
     [Button]
     public void FootStepSoundPlay(string _MoveMode)
     {
@@ -144,7 +184,7 @@ public class FootStepSoundController : NetworkBehaviour
         FootStepCantTimeNow = 0;
     }
 
-    // ローカル再生＋サーバー通知
+    // ローカル再生＋クライアント通知
     private void PlayLocalAndNotify(string moveMode, string tagName)
     {
         if (!foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(tagName)) return;
@@ -153,24 +193,28 @@ public class FootStepSoundController : NetworkBehaviour
 
         int r = Random.Range(0, list.Count);
         audio_source.PlayOneShot(list[r]);
-        NotifyFootStepServerRpc(moveMode, tagName);
+        BroadcastFootStepClientRpc(OwnerClientId, moveMode, tagName);
     }
 
+    // Animation Eventから呼ばれる場合用のServerRpc
     [ServerRpc]
-    private void NotifyFootStepServerRpc(string moveMode, string groundedName, ServerRpcParams rpcParams = default)
+    private void NotifyFootStepServerRpc(string moveMode, string groundedName)
     {
         BroadcastFootStepClientRpc(OwnerClientId, moveMode, groundedName);
     }
 
     [ClientRpc]
-    private void BroadcastFootStepClientRpc(ulong ownerClientId, string moveMode, string groundedName, ClientRpcParams rpcParams = default)
+    private void BroadcastFootStepClientRpc(ulong ownerClientId, string moveMode, string groundedName)
     {
+        // 自分のクライアントでは再生しない（既にローカルで再生済み）
         if (IsOwner && NetworkManager.Singleton.LocalClientId == ownerClientId) return;
 
         if (OnlyOneFootStepSound)
         {
-            if (moveMode == "Single" && !audio_source.isPlaying) audio_source.Play();
-            else if (moveMode == "StopSingle" && audio_source.isPlaying) audio_source.Stop();
+            if (moveMode == "Single" && !audio_source.isPlaying) 
+                audio_source.Play();
+            else if (moveMode == "StopSingle" && audio_source.isPlaying) 
+                audio_source.Stop();
             return;
         }
 

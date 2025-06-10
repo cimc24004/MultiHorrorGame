@@ -6502,7 +6502,8 @@ MonoBehaviour:
   MoveX: 0
   MoveY: 0
   StaminaCost: 0.2
-  StaminaValueNow: 100
+  StaminaValueNow:
+    m_InternalValue: 0
   StaminaRetakePower: 0.6
   CanMinStaminaRun: 30
   HideActionAudioDatas: {fileID: 2952609976867138473}
@@ -6683,10 +6684,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24111aada716f844a8f0008a4dcfc563, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   stamina_slider: {fileID: 4543268296800926870}
   red_color: {r: 0.8037735, g: 0, b: 0, a: 1}
-  StaminaConsumeNow: 0
-  StaminaIncreaseNow: 0
+  StaminaCanvas: {fileID: 1799491917719848259}
+  StaminaConsumeNow:
+    m_InternalValue: 0
+  StaminaIncreaseNow:
+    m_InternalValue: 0
 --- !u!114 &6939560754763208192
 MonoBehaviour:
   m_ObjectHideFlags: 0

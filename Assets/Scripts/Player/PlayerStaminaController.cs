@@ -12,9 +12,9 @@ public class PlayerStaminaController : NetworkBehaviour
     public Color red_color;
     [SerializeField] public GameObject StaminaCanvas;
     [Header("スタミナがいま消費中かどうか(走ってるときなど)")]
-    public NetworkVariable<bool> StaminaConsumeNow = new NetworkVariable<bool>();
+    public bool StaminaConsumeNow = false;
     [Header("スタミナ増加中かどうか")]
-    public NetworkVariable<bool> StaminaIncreaseNow = new NetworkVariable<bool>();
+    public bool StaminaIncreaseNow = false;
     private Color default_color;
     private Image fillRectImageUI;
     private PlayerStatus player_status;
@@ -37,7 +37,7 @@ public class PlayerStaminaController : NetworkBehaviour
     {
         if (IsServer)
         {
-            if (!this.StaminaConsumeNow.Value)
+            if (!this.StaminaConsumeNow)
             {
                 stamina_retake_start_time_now += Time.fixedDeltaTime;
                 if (stamina_retake_start_time_now > 1)
@@ -47,17 +47,17 @@ public class PlayerStaminaController : NetworkBehaviour
             }
             else
             {
-                StaminaIncreaseNow.Value = false;
+                StaminaIncreaseNow = false;
                 stamina_retake_start_time_now = 0;
             }
-            this.StaminaConsumeNow.Value = false;
+            this.StaminaConsumeNow = false;
         }
 
     }
     public void ConsumeStamina()
     {
         player_status.StaminaValueNow.Value -= player_status.StaminaCost;
-        StaminaConsumeNow.Value = true;
+        StaminaConsumeNow = true;
     }
     public void StaminaRetake()
     {
@@ -65,11 +65,11 @@ public class PlayerStaminaController : NetworkBehaviour
         if (player_status.StaminaValueNow.Value / 100.0f <= 1)
         {
             player_status.StaminaValueNow.Value += player_status.StaminaRetakePower;
-            StaminaIncreaseNow.Value = true;
+            StaminaIncreaseNow = true;
         }
         else
         {
-            StaminaIncreaseNow.Value = false;
+            StaminaIncreaseNow = false;
         }
     }
     public bool StaminaCheck()
