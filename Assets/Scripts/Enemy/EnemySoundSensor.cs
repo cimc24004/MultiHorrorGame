@@ -135,7 +135,7 @@ public class EnemySoundSensor : MonoBehaviour
         //ここからはプレイヤーの足音がなったときの話。
         if (player_status.MoveSpeed != 0)
         {
-            if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Run)
+            if (player_status.player_move_state_network == PlayerStatus.PlayerMoveState.Run)
             {
                 //プレイヤーが走っている場合
                 if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerRunDistance)
@@ -151,7 +151,7 @@ public class EnemySoundSensor : MonoBehaviour
                     this.sound_by_obj = false;
                 }
             }
-            else if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Walk)
+            else if (player_status.player_move_state_network == PlayerStatus.PlayerMoveState.Walk)
             {
                 //プレイヤーが歩いている場合
                 if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerWalkDistance)
@@ -170,7 +170,7 @@ public class EnemySoundSensor : MonoBehaviour
 
                 }
             }
-            else if (player_status.player_move_state == PlayerStatus.PlayerMoveState.Crouch)
+            else if (player_status.player_move_state_network == PlayerStatus.PlayerMoveState.Crouch)
             {
                 //プレイヤーがしゃがんでいる場合
                 if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerCrouchWalkDistance)

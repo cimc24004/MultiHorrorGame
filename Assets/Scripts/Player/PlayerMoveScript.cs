@@ -116,7 +116,7 @@ public class PlayerMoveScript : NetworkBehaviour
             // しゃがみ中はまず CrouchSpeed を優先
             if (playerStatus.Crouch)
             {
-                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Crouch;
+                playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
                 NowSpeed = CrouchSpeed;
                 playerStatus.MoveSpeed = CrouchSpeed;
             }
@@ -126,9 +126,9 @@ public class PlayerMoveScript : NetworkBehaviour
                 if (moveInput.sqrMagnitude > 0.01f)
                 {
                     // Stop → Walk 復帰
-                    if (playerStatus.player_move_state == PlayerStatus.PlayerMoveState.Stop)
+                    if (playerStatus.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Stop)
                     {
-                        playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                        playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                         NowSpeed = WalkSpeed;
                     }
                     playerStatus.MoveSpeed = NowSpeed;
@@ -136,7 +136,7 @@ public class PlayerMoveScript : NetworkBehaviour
                 else
                 {
                     // 入力ナシ → 完全停止
-                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Stop;
+                    playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Stop;
                     NowSpeed = 0f;
                     playerStatus.MoveSpeed = 0f;
                 }
@@ -214,7 +214,7 @@ public class PlayerMoveScript : NetworkBehaviour
 
     private void HandleRunWalk()
     {
-        var state = playerStatus.player_move_state;
+        var state = playerStatus.player_move_state_network.Value;
         if (state == PlayerStatus.PlayerMoveState.Run ||
             state == PlayerStatus.PlayerMoveState.Walk)
         {
@@ -226,18 +226,18 @@ public class PlayerMoveScript : NetworkBehaviour
 
                 if (canRun)
                 {
-                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Run;
+                    playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Run;
                     NowSpeed = RunSpeed;
                 }
                 else
                 {
-                    playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                    playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                     NowSpeed = WalkSpeed;
                 }
             }
             else if (runChangeAction.WasReleasedThisFrame())
             {
-                playerStatus.player_move_state = PlayerStatus.PlayerMoveState.Walk;
+                playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed = WalkSpeed;
                 runWalkTriggerChange = false;
             }

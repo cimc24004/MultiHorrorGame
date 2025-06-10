@@ -38,7 +38,7 @@ public class PlayerStatus : NetworkBehaviour
     public enum PlayerMoveState { Walk, Run, Crouch, Stop }
 
     // サーバー書き込み・全員読取
-    public PlayerMoveState player_move_state;
+    public NetworkVariable<PlayerMoveState> player_move_state_network = new NetworkVariable<PlayerMoveState>();
 
     [Header("移動速度")]
     public float MoveSpeed;
@@ -133,7 +133,7 @@ public class PlayerStatus : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (IsServer && MoveSpeed != 0 && player_move_state == PlayerMoveState.Run)
+        if (IsServer && MoveSpeed != 0 && player_move_state_network.Value == PlayerMoveState.Run)
         {
             player_stamina_controller.ConsumeStamina();
         }
@@ -141,7 +141,7 @@ public class PlayerStatus : NetworkBehaviour
 
     public void StopEvent()
     {
-        player_move_state = PlayerMoveState.Walk;
+        player_move_state_network.Value = PlayerMoveState.Walk;
         MoveX = 0;
         MoveY = 0;
         MoveSpeed = 0;
@@ -189,23 +189,6 @@ public class PlayerStatus : NetworkBehaviour
             expand.FaceExpandingUnActive();
             player_continue_controller.Continue();
         });
-    }
-
-    private void OnCrouchChanged(bool oldValue, bool newValue)
-    {
-        if (newValue)
-        {
-            player_move_state = PlayerMoveState.Crouch;
-            player_move_script.NowSpeed = player_move_script.CrouchSpeed;
-        }
-        else
-        {
-            player_move_state = PlayerMoveState.Walk;
-            player_move_script.NowSpeed = player_move_script.WalkSpeed;
-        }
-        anim.SetBool("Crouch", newValue);
-        if (IsOwner)
-            CrouchStandCameraPosChange(newValue);
     }
 
     public void CrouchStandCameraPosChange(bool _Crouch)

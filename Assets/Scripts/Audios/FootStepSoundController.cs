@@ -142,7 +142,7 @@ public class FootStepSoundController : NetworkBehaviour
     // PlayerStatus‚©‚çˆÚ“®ó‘Ô‚ğæ“¾‚µ‚Ämove_status‚ğXV
     private void UpdateMoveStatusFromPlayerStatus()
     {
-        switch (playerStatus.player_move_state)
+        switch (playerStatus.player_move_state_network.Value)
         {
             case PlayerStatus.PlayerMoveState.Run:
                 move_status = MoveStatus.Run;
