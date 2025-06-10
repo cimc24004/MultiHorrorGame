@@ -6514,8 +6514,6 @@ MonoBehaviour:
   ItemController: {fileID: 8435485924296425593}
   foot_step_sound_controller: {fileID: 1050056454735755526}
   item_menu_controller: {fileID: 0}
-  CrouchNetwork:
-    m_InternalValue: 0
 --- !u!114 &4640989651405648362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6533,8 +6531,7 @@ MonoBehaviour:
   WalkSpeed: 2
   CrouchSpeed: 1
   rotationSmoothSpeed: 1
-  NowSpeed:
-    m_InternalValue: 0
+  NowSpeed: 0
   MovePermit: 1
   playerStatus: {fileID: 0}
 --- !u!114 &7228379173649806129
@@ -6688,10 +6685,8 @@ MonoBehaviour:
   stamina_slider: {fileID: 4543268296800926870}
   red_color: {r: 0.8037735, g: 0, b: 0, a: 1}
   StaminaCanvas: {fileID: 1799491917719848259}
-  StaminaConsumeNow:
-    m_InternalValue: 0
-  StaminaIncreaseNow:
-    m_InternalValue: 0
+  StaminaConsumeNow: 0
+  StaminaIncreaseNow: 0
 --- !u!114 &6939560754763208192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17710,6 +17705,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393960173864736346, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
+        type: 3}
+      propertyPath: MaxDistance
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8483580507634944193, guid: 51db287b1e5d1ac40a6bf5a326fa93b5,
         type: 3}
