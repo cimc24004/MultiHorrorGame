@@ -49,17 +49,13 @@ public class FootStepSoundController : NetworkBehaviour
     // PlayerStatusÇÃéQè∆Çí«â¡
     private PlayerStatus playerStatus;
 
-    void OnEnable()
+    public override void OnNetworkSpawn()
     {
-        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
-    }
-    void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
-    }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
-        playerStatus = _playerStatus;
-
+        playerStatus = GetComponent<PlayerStatus>();
+        if (playerStatus == null)
+        {
+            Debug.LogError("PlayerStatus component not found!");
+        }
     }
 
     void Update()
