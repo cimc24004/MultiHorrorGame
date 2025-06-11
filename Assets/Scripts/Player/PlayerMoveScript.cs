@@ -51,27 +51,27 @@ public class PlayerMoveScript : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         characterController = GetComponent<CharacterController>();
-        playerStatus        = GetComponent<PlayerStatus>();
-        playerInput         = playerStatus.player_input;
+        playerStatus = GetComponent<PlayerStatus>();
+        playerInput = playerStatus.player_input;
 
         // アクション取得
-        moveAction          = playerInput.actions["Move"];
-        runChangeAction     = playerInput.actions["RunChange"];
-        crouchChangeAction  = playerInput.actions["CrouchChange"];
+        moveAction = playerInput.actions["Move"];
+        runChangeAction = playerInput.actions["RunChange"];
+        crouchChangeAction = playerInput.actions["CrouchChange"];
 
-        anim                = GetComponent<Animator>();
-        defaultRunSpeed     = RunSpeed;
-        defaultWalkSpeed    = WalkSpeed;
-        defaultCrouchSpeed  = CrouchSpeed;
+        anim = GetComponent<Animator>();
+        defaultRunSpeed = RunSpeed;
+        defaultWalkSpeed = WalkSpeed;
+        defaultCrouchSpeed = CrouchSpeed;
 
         // サーバー起動時は WalkSpeed で初期化
         if (IsServer)
             NowSpeed = WalkSpeed;
 
         staminaController = GetComponent<PlayerStaminaController>();
-        subNoticedUI      = playerStatus.sub_noticed_ui_controller;
-        timeManager       = TimeManager.instance;
-        DirectionCamera   = playerStatus.virtual_camera.VirtualCameraGameObject;
+        subNoticedUI = playerStatus.sub_noticed_ui_controller;
+        timeManager = TimeManager.instance;
+        DirectionCamera = playerStatus.virtual_camera.VirtualCameraGameObject;
 
         // ← 追加：初期の MoveState を保持
         prevMoveState = playerStatus.player_move_state_network.Value;
@@ -85,7 +85,11 @@ public class PlayerMoveScript : NetworkBehaviour
 
             // しゃがみはPerformedでトグル
             crouchChangeAction.performed += OnCrouchPerformed;
+            //歩き、走りの切り替えを行う。
+            runChangeAction.started += OnRunChangePerformed;
+            runChangeAction.canceled += OnRunChangePerformed;
         }
+        
     }
 
     void Update()
@@ -106,10 +110,7 @@ public class PlayerMoveScript : NetworkBehaviour
             Vector3 rgt = Quaternion.Euler(0, yaw, 0) * Vector3.right;
             Vector3 worldDir = (fwd * moveInput.y + rgt * moveInput.x).normalized;
 
-            // ★ RunChange は “押しっぱなし” 情報を毎フレ送る ★
-            bool isRunHeld = runChangeAction.ReadValue<float>() > 0f;
-
-            SubmitMoveServerRpc(moveInput, isRunHeld, worldDir);
+            SubmitMoveServerRpc(moveInput, worldDir);
 
             // アニメ同期用の値はクライアント側でも即時更新
             anim.SetFloat("MoveY", moveInput.y);
@@ -202,7 +203,11 @@ public class PlayerMoveScript : NetworkBehaviour
         playerStatus.CrouchStandCameraPosChange(CrouchNow);
         UpdateCrouchNetworkChangeServerRpc(CrouchNow);
     }
+    private void OnRunChangePerformed(InputAction.CallbackContext ctx) {
+        bool isRunPressed = ctx.ReadValue<float>() > 0f;
+        UpdateRunStateServerRpc(isRunPressed);
 
+    }
     public void MoveSpeedUp(float addSpeed, float effectTime)
     {
         RunSpeed    += addSpeed;
@@ -219,18 +224,20 @@ public class PlayerMoveScript : NetworkBehaviour
         anim.SetBool("Crouch", newCrouch);
         playerStatus.Crouch = newCrouch;
     }
-
+    [ServerRpc]
+    private void UpdateRunStateServerRpc(bool isRun)
+    {
+        runWalkTriggerChange = isRun;
+    }
     [ServerRpc]
     private void SubmitMoveServerRpc(
         Vector2 _moveInput,
-        bool _runChangePressed,
         Vector3 worldDir
     )
     {
         moveInput            = _moveInput;
         playerStatus.MoveY   = _moveInput.y;
         playerStatus.MoveX   = _moveInput.x;
-        runWalkTriggerChange = _runChangePressed;
         moveDirection        = worldDir;
     }
 
@@ -257,7 +264,7 @@ public class PlayerMoveScript : NetworkBehaviour
                     NowSpeed = WalkSpeed;
                 }
             }
-            else if (runChangeAction.WasReleasedThisFrame())
+            else if (!runWalkTriggerChange)
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed = WalkSpeed;
