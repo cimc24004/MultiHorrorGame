@@ -56,9 +56,12 @@ public class CrossHairEvent : NetworkBehaviour
         MainCamera = Camera.main;
         PlayerNetworkObject = this.Player.GetComponent<NetworkObject>();
         InitPlayer = true;
+        if (IsOwner)
+        {
+            player_input.actions["RaycastAction"].started += RaycastActionStart;
+            player_input.actions["RaycastAction"].canceled += RaycastActionCanceled;
+        }
 
-        player_input.actions["RaycastAction"].started += RaycastActionStart;
-        player_input.actions["RaycastAction"].canceled += RaycastActionCanceled;
     }
     // 毎フレーム呼び出される
     void Update()
@@ -199,6 +202,7 @@ public class CrossHairEvent : NetworkBehaviour
     }
     private void RaycastActionPushingEvent(bool _Pushing)
     {
+        Debug.Log("RaycastActionPushingEvent_Mode: " + _Pushing);
         if (RaycasstedObj == null) return;
         //長押しはこっちで管理する。
         if (_Pushing)

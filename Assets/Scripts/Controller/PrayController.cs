@@ -123,9 +123,7 @@ public class PrayController : NetworkBehaviour
 
             if (PrayTimeNow.Value >= NeedToPrayTime)
             {
-                AlreadyPrayCompleted.Value = true;
-                PrayPermit.Value = false;
-                PrayTimeNow.Value = 0f;
+
                 PrayCompleted();
                 
                 PrayForStartOnce = false;
@@ -159,6 +157,9 @@ public class PrayController : NetworkBehaviour
     }
     private void PrayCompleted()
     {
+        AlreadyPrayCompleted.Value = true;
+        PrayPermit.Value = false;
+        PrayTimeNow.Value = 0f;
         PrayCompletedClientRpc();
         PrayCompletedEventForLocal.Invoke();
     }
