@@ -172,19 +172,24 @@ public class CrossHairEvent : NetworkBehaviour
 
 
 
-            // if (player_input.actions["RaycastAction"].IsPressed())
-            // {
-            //     //こっちは長押し用のイベント
-            //     if(raycast_hit.collider.gameObject.tag == "Pray")
-            //     {
-            //         Debug.Log("Pray------------COl");
-            //         if (pray_controller != null)
-            //         {
-            //             pray_controller.Pray();
-            //         }
-            //     }
-            // }else{
-            // }
+            if (player_input.actions["RaycastAction"].IsPressed())
+            {
+                
+                //こっちはUpdate関数内で設定した
+                if(raycast_hit.collider.gameObject.tag == "Pray")
+                {
+                    if (RaycasstedObj != pushing_raycasted_pray_controller.gameObject)
+                    {
+                        pushing_raycasted_pray_controller = RaycasstedObj.GetComponent<PrayController>();
+                        Debug.Log("Pray------------COl");
+                        if (pray_controller != null)
+                        {
+                            pray_controller.Pushing();
+                        }
+                    }
+
+                }
+            }
         }
         else
         {
@@ -207,8 +212,10 @@ public class CrossHairEvent : NetworkBehaviour
             //長押ししている間
             if (RaycasstedObj.tag == "Pray")
             {
-                pushing_raycasted_pray_controller = RaycasstedObj.GetComponent<PrayController>();
-                pushing_raycasted_pray_controller.PrayNowTrueRequestServerRpc();
+                if (pushing_raycasted_pray_controller != null)
+                {
+                    pushing_raycasted_pray_controller.PrayNowTrueRequestServerRpc();
+                }
             }
         }
         else
@@ -216,7 +223,10 @@ public class CrossHairEvent : NetworkBehaviour
             //離した瞬間
             if (RaycasstedObj.tag == "Pray")
             {
-                pushing_raycasted_pray_controller.PrayNowFalseRequestServerRpc();
+                if (pushing_raycasted_pray_controller != null)
+                {
+                    pushing_raycasted_pray_controller.PrayNowFalseRequestServerRpc();
+                }
                 pushing_raycasted_pray_controller = null;
             }
 

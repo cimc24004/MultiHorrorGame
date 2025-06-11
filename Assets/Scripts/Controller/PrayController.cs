@@ -43,6 +43,8 @@ public class PrayController : NetworkBehaviour
     private GameObject GageCanvas;
     private Image GageImageUI;
     private MainNoticedUIController main_noticed_ui_controller;
+    //?????????????
+    private bool PushingAction = false;
     private bool once;
     void OnEnable() => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
@@ -91,19 +93,22 @@ public class PrayController : NetworkBehaviour
         }
         else
         {
-            //???????
-            if (PrayNow.Value)
+            if (PushingAction)
             {
-                if (!NotPrayForStartOnce)
+                //???????????
+                if (PrayNow.Value)
                 {
-                    PrayNowFalseRequestServerRpc();
-                    NotPrayForStartOnce = true;
+                    //???Pray??????? PrayNow?false?? ??
+                    if (!NotPrayForStartOnce)
+                    {
+                        PrayNowFalseRequestServerRpc();
+                        NotPrayForStartOnce = true;
+                    }
                 }
             }
-
         }
 
-        if (IsServer && PrayNow.Value && PrayPermit.Value && !AlreadyPrayCompleted.Value)
+        if (IsServer && PrayNow.Value && PrayPermit.Value && !AlreadyPrayCompleted.Value && PushingAction)
         {
             if (!PrayForStartOnce)
             {
@@ -116,14 +121,21 @@ public class PrayController : NetworkBehaviour
             if (PrayTimeNow.Value >= NeedToPrayTime)
             {
                 AlreadyPrayCompleted.Value = true;
-                PrayPermit.Value           = false;
-                PrayTimeNow.Value          = 0f;
+                PrayPermit.Value = false;
+                PrayTimeNow.Value = 0f;
                 PrayCompletedClientRpc();
                 PrayForStartOnce = false;
             }
         }
+        if (PushingAction)
+        {
+            PushingAction = false;
+        }
     }
-
+    public void Pushing()
+    {
+        PushingAction = true;
+    }
     [ServerRpc(RequireOwnership = false)]
     public void PrayNowTrueRequestServerRpc()
     {
