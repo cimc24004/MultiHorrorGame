@@ -63,7 +63,7 @@ public class HousesController : NetworkBehaviour
             // if (IsHost) return;
             Debug.Log("Not HousesController.IsServer && Not IsHost");
             // クライアント側は NetworkList の変更を監視
-            TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
+            // TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
             // 遅延接続したクライアント用：既にNetworkListにデータがある場合は即座に適用
             if (TargetHideNetworkLists.Count > 0)
             {
@@ -138,23 +138,16 @@ public class HousesController : NetworkBehaviour
         Debug.Log($"ApplyHideObjects completed - Success: {successCount}, Failed: {failCount}");
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void RequestHideButsudansWithGroupServerRpc()
-    {
-        if (!IsServer) return; // 念のため、サーバーでのみ実行
-
-    }
 
     // サーバー側でのみ実行されるロジック
-    public List<ulong> TargetSetActiveFalseIds()
+    public void TargetSetActiveFalseIds()
     {
         if (!IsServer)
         {
             Debug.LogWarning("TargetSetActiveFalseIds should only be called on server!");
-            return new List<ulong>();
+            return;
         }
 
-        List<ulong> target_network_ids = new List<ulong>();
         
         // NetworkListをクリア（これによりクライアントに同期される）
         TargetHideNetworkLists.Clear();
@@ -184,7 +177,24 @@ public class HousesController : NetworkBehaviour
             if (grp.Butsudan != null)
                 selectedGroups.Add(grp);
         }
+        foreach (HouseDirector house_director in house_directors)
+        {
+            //HouseDirectorのRandomObjを日表示していく。 
+            //RandomObj当たったものだけ非表示
+            List<GameObject> RandomObjects = house_director.RandomObjs;
+            for (int i = 0; i < RandomObjects.Count; i++)
+            {
+                int random = UnityEngine.Random.Range(0, 5 - house_director.RandomObjProbability);
+                Debug.Log("RandomDirector.RnadomObjects.random: " + random);
+                if (random == 0)
+                {
+                    GameObject TargetRandomObj = RandomObjects[i];
+                    NetworkObject RandomObjects_NetworkObject = TargetRandomObj.GetComponent<NetworkObject>();
+                    TargetHideNetworkLists.Add(RandomObjects_NetworkObject.NetworkObjectId);// NetworkListに追加（自動同期）
+                }
 
+            }
+        }
         // ── 残さない仏壇と付随オブジェクトを非表示対象として追加
         foreach (var grp in allGroups.Except(selectedGroups))
         {
@@ -192,7 +202,6 @@ public class HousesController : NetworkBehaviour
             NetworkObject Butsudan_NetworkObject = grp.Butsudan.GetComponent<NetworkObject>();
             if (Butsudan_NetworkObject != null && Butsudan_NetworkObject.IsSpawned)
             {
-                target_network_ids.Add(Butsudan_NetworkObject.NetworkObjectId);
                 TargetHideNetworkLists.Add(Butsudan_NetworkObject.NetworkObjectId); // NetworkListに追加（自動同期）
             }
 
@@ -204,7 +213,6 @@ public class HousesController : NetworkBehaviour
                     NetworkObject ExtraPackage_NetworkObject = o.GetComponent<NetworkObject>();
                     if (ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned)
                     {
-                        target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
                         TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId); // NetworkListに追加（自動同期）
                     }
                 }
@@ -240,14 +248,12 @@ public class HousesController : NetworkBehaviour
                         if (ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned)
                         {
                             Debug.Log("ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned 2");
-                            target_network_ids.Add(ExtraPackage_NetworkObject.NetworkObjectId);
                             TargetHideNetworkLists.Add(ExtraPackage_NetworkObject.NetworkObjectId); // NetworkListに追加（自動同期）
                         }
                     }
                 }
             // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
         }
-        return target_network_ids;
     }
 
     public void RevealButusdans(float RevealTime)

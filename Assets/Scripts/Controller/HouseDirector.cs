@@ -44,7 +44,8 @@ public class HouseDirector : NetworkSingleton<HorrorDirector>
     public List<GameObject> RandomObjs;
 
     [Header("確率の分母 (1 / N)")]
-    public int RandomObjProbability = 1;          // 1 なら必ず出現、2 なら 1/2
+    [Range(0f, 5f)]
+    public int RandomObjProbability = 3;          // 1 なら必ず出現、2 なら 1/2
 
     // ──────────────────────────────────────
     // 初期化
@@ -52,16 +53,16 @@ public class HouseDirector : NetworkSingleton<HorrorDirector>
     private void Start()
     {
 
-        // いったん全て非表示
-        foreach (var obj in RandomObjs)
-        {
-            obj.SetActive(false);
-        }
-        // サーバーでのみランダム生成
-        if (Unity.Netcode.NetworkManager.Singleton.IsServer)
-        {
-            // AllClientsRandomInstantiateRequestClientRpc();
-        }
+        // // いったん全て非表示
+        // foreach (var obj in RandomObjs)
+        // {
+        //     obj.SetActive(false);
+        // }
+        // // サーバーでのみランダム生成
+        // if (Unity.Netcode.NetworkManager.Singleton.IsServer)
+        // {
+        //     // AllClientsRandomInstantiateRequestClientRpc();
+        // }
     }
     [ServerRpc]
     private void RandomInstantiateObjectsRequestServerRpc()

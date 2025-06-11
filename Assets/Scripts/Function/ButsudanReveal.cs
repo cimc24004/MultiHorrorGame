@@ -27,14 +27,7 @@ public class ButsudansReveal : NetworkBehaviour
 
     public void RevealButsudansAction()
     {
-        if (IsServer)
-        {
-            RevealButsudansClientRpc();
-        }
-        else
-        {
-            RevealButsudansServerRpc();
-        }
+        RevealButsudansServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]

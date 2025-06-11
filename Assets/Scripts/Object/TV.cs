@@ -7,7 +7,7 @@ using Unity.Netcode;
 public class TV : MonoBehaviour
 {
     private ButsudansReveal butsudans_reveal;
-    [SerializeField]private Material TurnOnTVMaterialMonitor;
+    [SerializeField] private Material TurnOnTVMaterialMonitor;
     [SerializeField] private Material TurnOffTVMaterialMonitor;
     [SerializeField] private MeshRenderer TVMonitorMeshRenderer;
     [SerializeField] private AudioSource TVAudioSource;
@@ -18,7 +18,8 @@ public class TV : MonoBehaviour
         butsudans_reveal = this.gameObject.GetComponent<ButsudansReveal>();
     }
 
-    public void TurnOn(){
+    public void TurnOn()
+    {
         // ① 今の配列を取る
         var mats = TVMonitorMeshRenderer.sharedMaterials;   // ← 複製配列
 
@@ -29,22 +30,25 @@ public class TV : MonoBehaviour
         TVMonitorMeshRenderer.sharedMaterials = mats;
 
         TVAudioSource.Play();
-        DOVirtual.DelayedCall(1, () => {
+        DOVirtual.DelayedCall(1, () =>
+        {
             TurnOff();
         });
     }
     public void TurnOff()
     {
-        if (NetworkManager.Singleton.IsServer)
-        {
-            butsudans_reveal.RevealButsudansAction();
-        }
+        butsudans_reveal.RevealButsudansAction();
+        RequestTvMonitorClientRpc();
 
+    }
+    [ClientRpc]
+    private void RequestTvMonitorClientRpc()
+    {
         var mats = TVMonitorMeshRenderer.sharedMaterials;
         if (mats.Length > 1) mats[1] = TurnOffTVMaterialMonitor;
 
         TVMonitorMeshRenderer.sharedMaterials = mats;
         HouseRevealAudioSource.Play();
         TVAudioSource.Stop();
-    }
+    } 
 }
