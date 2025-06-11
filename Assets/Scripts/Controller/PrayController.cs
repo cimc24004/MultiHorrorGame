@@ -111,7 +111,7 @@ public class PrayController : NetworkBehaviour
             }
         }
 
-        if (IsServer && PrayNow.Value && PrayPermit.Value && !AlreadyPrayCompleted.Value && PushingAction)
+        if (IsServer && PrayNow.Value && PrayPermit.Value && !AlreadyPrayCompleted.Value)
         {
             if (!PrayForStartOnce)
             {
