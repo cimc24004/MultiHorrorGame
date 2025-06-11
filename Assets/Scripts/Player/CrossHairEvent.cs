@@ -174,20 +174,14 @@ public class CrossHairEvent : NetworkBehaviour
 
             if (player_input.actions["RaycastAction"].IsPressed())
             {
-                
                 //こっちはUpdate関数内で設定した
                 if(raycast_hit.collider.gameObject.tag == "Pray")
                 {
-                    if (RaycasstedObj != pushing_raycasted_pray_controller.gameObject)
+                    Debug.Log("Pray------------COl");
+                    if (pray_controller != null)
                     {
-                        pushing_raycasted_pray_controller = RaycasstedObj.GetComponent<PrayController>();
-                        Debug.Log("Pray------------COl");
-                        if (pray_controller != null)
-                        {
-                            pray_controller.Pushing();
-                        }
+                        pray_controller.Pushing();
                     }
-
                 }
             }
         }
@@ -212,6 +206,7 @@ public class CrossHairEvent : NetworkBehaviour
             //長押ししている間
             if (RaycasstedObj.tag == "Pray")
             {
+                pushing_raycasted_pray_controller = RaycasstedObj.GetComponent<PrayController>();
                 if (pushing_raycasted_pray_controller != null)
                 {
                     pushing_raycasted_pray_controller.PrayNowTrueRequestServerRpc();
