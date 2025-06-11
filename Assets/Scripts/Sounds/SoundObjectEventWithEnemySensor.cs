@@ -54,14 +54,19 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
 
         //‰¹‚ğ–Â‚ç‚·‚Æ“¯‚Éenemy_sound_sensor_mode‚àtrue‚É‚·‚éB
         Debug.Log("SensorSoundPlay!!!!!!");
-        enemy_sound_sensor_mode.Value = true;
+        EnemySoundSensorModeRequestServerRpc(true);
         audio_source.Play();
     }
     public void SensorSoundStop()
     {
+        EnemySoundSensorModeRequestServerRpc(false);
         SoundStopEvent.Invoke();
-        enemy_sound_sensor_mode.Value = false;
         audio_source.Stop();
     }
 
+    [ServerRpc]
+    private void EnemySoundSensorModeRequestServerRpc(bool _Value)
+    {
+        enemy_sound_sensor_mode.Value = _Value;
+    }
 }
