@@ -29,6 +29,7 @@ public class ObjectBuffController : NetworkBehaviour
     private PlayerMoveScript player_move_script;
     private FootStepSoundController foot_step_sound_controller;
     private SubNoticedUIController sub_noticed_ui_controller;
+    private Tween DestroyAnimationTween;
     // Start is called before the first frame update
     // void Start()
     // {
@@ -59,29 +60,38 @@ public class ObjectBuffController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         pray_controller = this.gameObject.GetComponent<PrayController>();
-        pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroy);
+        pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroyForClients);
+        pray_controller.PrayCompletedEventForLocal.AddListener(ObjectPartDestroyForLocal);
         PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
         sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
     }
 
     // Update is called once per frame
-    void Update()
+    // void Update()
+    // {
+
+    // }
+
+    //バラバラにして破壊する 全クライアントに共有
+    public void ObjectPartDestroyForClients()
     {
-
-    }
-
-    //バラバラにして破壊する
-    public void ObjectPartDestroy(){
         PartedObj.SetActive(true);
         JoinedObj.SetActive(false);
         SoundObjectSoundArea.gameObject.SetActive(true);
         sound_object_event_with_enemy_sensor.SensorSoundPlay();
-        DOTween.To(
+        DestroyAnimationTween = DOTween.To(
             () => PartedSkinnedMeshRenderer.GetBlendShapeWeight(0),
-            x  => PartedSkinnedMeshRenderer.SetBlendShapeWeight(0, x),
+            x => PartedSkinnedMeshRenderer.SetBlendShapeWeight(0, x),
             130f,
             BrokenBlendDuration
-        ).SetEase(Ease.Linear).OnComplete(() => {
+        ).SetEase(Ease.Linear);
+        
+    }
+    //ローカルのみで実行する。
+    public void ObjectPartDestroyForLocal()
+    {
+        DestroyAnimationTween.OnComplete(() =>
+        {
             OnBrokenCompleted();
             Destroy(this.gameObject, 1.1f);
         });   

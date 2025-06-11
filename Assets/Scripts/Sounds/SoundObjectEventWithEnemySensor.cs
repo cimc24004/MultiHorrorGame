@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SoundObjectEventWithEnemySensor : MonoBehaviour
+public class SoundObjectEventWithEnemySensor : NetworkBehaviour
 {
     //SoundObjectにつける　敵がこのオブジェクトの音を感知する為のスクリプト。
 
@@ -11,7 +12,7 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
     //敵が音に反応した。 このenemy_sound_sensor_modeがTrueかつ、
     //EnemyについているSoundEnemyObjectColliderForEventスクリプトのInSoundRangeがTrueならば
     //このオブジェクトについてくる。
-    public bool enemy_sound_sensor_mode;
+    public NetworkVariable<bool> enemy_sound_sensor_mode = new NetworkVariable<bool>();
 
 
     [Header("音を慣らしておく時間 ")]
@@ -20,26 +21,28 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
     public UnityEvent SoundStopEvent;
     private float SoundPlayingTimeNow = 0;
     private AudioSource audio_source;
-    private TimeManager time_manager;
     // Start is called before the first frame update
     void Start()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
-        time_manager = TimeManager.instance;
     }
     private void Update()
     {
-        if (enemy_sound_sensor_mode)
+        if (IsServer)
         {
-            //ある程度時間がたったら音声停止。
-            SoundPlayingTimeNow += Time.deltaTime;
-
-            if(SoundPlayingTimeNow > SoundPlayingTime)
+            if (enemy_sound_sensor_mode.Value)
             {
-                SensorSoundStop();
-                SoundPlayingTimeNow = 0;
+                //ある程度時間がたったら音声停止。
+                SoundPlayingTimeNow += Time.deltaTime;
+
+                if (SoundPlayingTimeNow > SoundPlayingTime)
+                {
+                    SensorSoundStop();
+                    SoundPlayingTimeNow = 0;
+                }
             }
         }
+
     }
 
     void OnDestroy()
@@ -51,13 +54,13 @@ public class SoundObjectEventWithEnemySensor : MonoBehaviour
 
         //音を鳴らすと同時にenemy_sound_sensor_modeもtrueにする。
         Debug.Log("SensorSoundPlay!!!!!!");
-        enemy_sound_sensor_mode = true;
+        enemy_sound_sensor_mode.Value = true;
         audio_source.Play();
     }
     public void SensorSoundStop()
     {
         SoundStopEvent.Invoke();
-        enemy_sound_sensor_mode = false;
+        enemy_sound_sensor_mode.Value = false;
         audio_source.Stop();
     }
 

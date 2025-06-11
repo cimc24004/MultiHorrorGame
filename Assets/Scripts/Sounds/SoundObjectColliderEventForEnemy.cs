@@ -68,7 +68,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
         // „Ÿ„Ÿ ˆÈ~‚ÍŒ³‚ÌƒƒWƒbƒN‚»‚Ì‚Ü‚Ü „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
         if (InSoundRange)
         {
-            if (sound_object_event_with_sensor.enemy_sound_sensor_mode)
+            if (sound_object_event_with_sensor.enemy_sound_sensor_mode.Value)
             {
                 enemy_sound_sensor.SoundSeonsor(
                     sound_object_event_with_sensor.transform.position,
@@ -77,7 +77,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
 
                 enemy_sound_sensor.sound_by_obj = true;
             }
-            before_enemy_sound_sensor_mode = sound_object_event_with_sensor.enemy_sound_sensor_mode;
+            before_enemy_sound_sensor_mode = sound_object_event_with_sensor.enemy_sound_sensor_mode.Value;
         }
     }
 
