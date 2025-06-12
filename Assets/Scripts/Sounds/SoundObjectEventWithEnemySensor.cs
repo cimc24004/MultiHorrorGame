@@ -37,7 +37,7 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
 
                 if (SoundPlayingTimeNow > SoundPlayingTime)
                 {
-                    SensorSoundPlayForRequestClientRpc();
+                    SensorSoundStopForClientRpc();
                     SoundPlayingTimeNow = 0;
                 }
             }
@@ -47,10 +47,9 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
 
     void OnDestroy()
     {
-        SensorSoundStop();
+        SensorSoundStopForClientRpc();
     }
-    [ClientRpc]
-    public void SensorSoundPlayForRequestClientRpc()
+    public void SensorSoundPlay()
     {
         //ClientRpc‚©‚çÀs‚³‚ê‚é—\’èB
         //‰¹‚ğ–Â‚ç‚·‚Æ“¯‚Éenemy_sound_sensor_mode‚àtrue‚É‚·‚éB
@@ -58,7 +57,8 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
         EnemySoundSensorModeRequestServerRpc(true);
         audio_source.Play();
     }
-    public void SensorSoundStop()
+    [ClientRpc]
+    private void SensorSoundStopForClientRpc()
     {
         EnemySoundSensorModeRequestServerRpc(false);
         SoundStopEvent.Invoke();
