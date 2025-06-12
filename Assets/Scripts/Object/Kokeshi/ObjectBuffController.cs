@@ -30,6 +30,7 @@ public class ObjectBuffController : NetworkBehaviour
     private FootStepSoundController foot_step_sound_controller;
     private SubNoticedUIController sub_noticed_ui_controller;
     private Tween DestroyAnimationTween;
+    private NetworkObject m_NetworkObject;
     // Start is called before the first frame update
     // void Start()
     // {
@@ -63,6 +64,7 @@ public class ObjectBuffController : NetworkBehaviour
         pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroyForClients);
         pray_controller.PrayCompletedEventForLocal.AddListener(ObjectPartDestroyForLocal);
         PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
+        m_NetworkObject = this.gameObject.GetComponent<NetworkObject>();
         sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
     }
 
@@ -85,7 +87,10 @@ public class ObjectBuffController : NetworkBehaviour
             130f,
             BrokenBlendDuration
         ).SetEase(Ease.Linear);
-        
+        DestroyAnimationTween.OnComplete(() =>
+        {
+            Destroy(this.gameObject, 1.1f);
+        });
     }
     //ローカルのみで実行する。
     public void ObjectPartDestroyForLocal()
@@ -93,14 +98,13 @@ public class ObjectBuffController : NetworkBehaviour
         DestroyAnimationTween.OnComplete(() =>
         {
             OnBrokenCompleted();
-            Destroy(this.gameObject, 1.1f);
         });   
     }
     [Button]
     public void OnBrokenCompleted(){
         if(buff_effect_type == BuffType.Speed){
             sub_noticed_ui_controller.Notice("脚力が上がった。");
-            player_move_script.MoveSpeedUp(1, 60);
+            player_move_script.MoveSpeedUpRequestServerRpc(1, 60);
         }else if(buff_effect_type == BuffType.ItemDrop){
 
             Instantiate(InstantiateItemPrefabOnDestroy, this.transform.position, Quaternion.identity);

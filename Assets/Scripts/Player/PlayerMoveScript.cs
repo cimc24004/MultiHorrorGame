@@ -208,14 +208,15 @@ public class PlayerMoveScript : NetworkBehaviour
         UpdateRunStateServerRpc(isRunPressed);
 
     }
-    public void MoveSpeedUp(float addSpeed, float effectTime)
+    [ServerRpc]
+    public void MoveSpeedUpRequestServerRpc(float addSpeed, float effectTime)
     {
-        RunSpeed    += addSpeed;
-        WalkSpeed   += addSpeed * 0.5f;
+        RunSpeed += addSpeed;
+        WalkSpeed += addSpeed * 0.5f;
         CrouchSpeed += addSpeed * 0.25f;
         moveSpeedUpDuration = effectTime;
-        moveSpeedUpNow      = true;
-        moveSpeedUpTimer    = 0f;
+        moveSpeedUpNow = true;
+        moveSpeedUpTimer = 0f;
     }
 
     [ServerRpc]
