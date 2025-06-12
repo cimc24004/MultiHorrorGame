@@ -13,7 +13,11 @@ public class HorizontalProjectile : NetworkBehaviour
     // 投射物が地面に付いているかどうか
     public bool OnGround;
     // 地面に着いたときに呼ばれるイベント
+    [Header("地面についたときにServer側で実行する")]
     public UnityEvent OnGroundEvent;
+    [Header("地面についたとき全クライアントに共有する関数")]
+    public UnityEvent OnGroundEventForClients;
+
 
     // 敵にヒットした際にオブジェクトを生成するか
     [SerializeField] private bool InstantiateOnEnemyHit;
@@ -75,6 +79,7 @@ public class HorizontalProjectile : NetworkBehaviour
     [ClientRpc]
     private void OnGroundedClientRpc()
     {
+        OnGroundEventForClients.Invoke();
         rigid.isKinematic = true;
     }
     [ClientRpc]
