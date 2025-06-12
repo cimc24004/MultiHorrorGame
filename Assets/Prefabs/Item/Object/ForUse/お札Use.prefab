@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5007184443225665439}
   - component: {fileID: 3294226047180700996}
   - component: {fileID: 5036844258042664734}
+  - component: {fileID: 9139382017728656783}
   - component: {fileID: 8177297459139619117}
   - component: {fileID: 3995488017776089419}
   - component: {fileID: 2424533088178203792}
@@ -63,6 +64,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -88,6 +92,31 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9139382017728656783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2560351184006967456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1401170168
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &8177297459139619117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,6 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611f159e1371f724b9f1f4dd5f9229c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   item_status: {fileID: 11400000, guid: 0ffd72d9dbed94a4cb8cd11982cca58d, type: 2}
   ItemGetAddEvent:
     m_PersistentCalls:
@@ -116,6 +146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f233798fe3bfd6b4f8327e8f38636e0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  look_at: 0
+  play_mode: 0
+  initialized: 0
 --- !u!82 &2424533088178203792
 AudioSource:
   m_ObjectHideFlags: 0
@@ -127,6 +160,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f2a340d4f62830f4bbdc6026b83d7ac5, type: 3}
+  m_Resource: {fileID: 8300000, guid: f2a340d4f62830f4bbdc6026b83d7ac5, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.669
   m_Pitch: 1

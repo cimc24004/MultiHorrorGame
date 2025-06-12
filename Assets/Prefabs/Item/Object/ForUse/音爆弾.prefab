@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3294226047180700996}
   - component: {fileID: 5036844258042664734}
   - component: {fileID: 229994668436465297}
+  - component: {fileID: 6290047571018459951}
   - component: {fileID: 8036080520467748999}
   - component: {fileID: 2168927718610686170}
   - component: {fileID: 2175855036313305512}
@@ -66,6 +67,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -112,6 +116,31 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.1, y: 0.1, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6290047571018459951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2560351184006967456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3359357280
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &8036080520467748999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,15 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb4185fc0241d74db4e0c20af8ef501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   throw_now: 0
   OnGround: 0
   OnGroundEvent:
@@ -181,7 +202,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f0eeb5dca81f2042b3016b28d23ce28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy_sound_sensor_mode: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  enemy_sound_sensor_mode:
+    m_InternalValue: 0
   SoundPlayingTime: 1
   SoundStopEvent:
     m_PersistentCalls:
@@ -219,10 +242,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2560351184006967456}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 3
-  m_Drag: 1
-  m_AngularDrag: 0.05
+  m_LinearDamping: 1
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -250,6 +273,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 0ffa204cc4a037c4080383ec894561ab, type: 3}
+  m_Resource: {fileID: 8300000, guid: 0ffa204cc4a037c4080383ec894561ab, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -347,6 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611f159e1371f724b9f1f4dd5f9229c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   item_status: {fileID: 11400000, guid: 99da8d2bc3eb91543ae3b09b9a82825a, type: 2}
   ItemGetAddEvent:
     m_PersistentCalls:

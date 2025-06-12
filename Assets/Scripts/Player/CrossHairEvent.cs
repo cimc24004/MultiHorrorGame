@@ -203,32 +203,25 @@ public class CrossHairEvent : NetworkBehaviour
     private void RaycastActionPushingEvent(bool _Pushing)
     {
         Debug.Log("RaycastActionPushingEvent_Mode: " + _Pushing);
-        if (RaycasstedObj == null) return;
-        //長押しはこっちで管理する。
         if (_Pushing)
         {
-            //長押ししている間
-            if (RaycasstedObj.tag == "Pray")
+            // 長押し開始時だけ RaycasstedObj から PrayController を拾って保持
+            if (RaycasstedObj != null && RaycasstedObj.tag == "Pray")
             {
                 pushing_raycasted_pray_controller = RaycasstedObj.GetComponent<PrayController>();
                 if (pushing_raycasted_pray_controller != null)
-                {
                     pushing_raycasted_pray_controller.PrayNowTrueRequestServerRpc();
-                }
             }
         }
         else
         {
-            //離した瞬間
-            if (RaycasstedObj.tag == "Pray")
+            // 長押し終了時は、RaycasstedObj なんか見ずに、
+            // 最初に保持したコントローラに必ず「やめたよ」を投げる
+            if (pushing_raycasted_pray_controller != null)
             {
-                if (pushing_raycasted_pray_controller != null)
-                {
-                    pushing_raycasted_pray_controller.PrayNowFalseRequestServerRpc();
-                }
+                pushing_raycasted_pray_controller.PrayNowFalseRequestServerRpc();
                 pushing_raycasted_pray_controller = null;
             }
-
         }
     }
 }

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-public class HorizontalProjectile : SerializedMonoBehaviour
+using Unity.Netcode;
+public class HorizontalProjectile : NetworkBehaviour
 {
     // 投射物を投げている間 true
     public bool throw_now;
@@ -41,11 +42,12 @@ public class HorizontalProjectile : SerializedMonoBehaviour
     // 毎フレーム呼び出される
     void Update()
     {
+        if (!IsServer) return;
         // 着地後は移動処理を止める
         if (OnGround && throw_now)
         {
             // 地面に刺さったときは物理挙動を止める
-            Debug.DrawRay(this.transform.position,normal * 10, Color.blue);
+            Debug.DrawRay(this.transform.position, normal * 10, Color.blue);
             if ((col_layer.value & (1 << hited_obj.gameObject.layer)) != 0)
             {
                 if (Vector3.Dot(Vector3.up, normal) >= 0.5f)
@@ -53,7 +55,8 @@ public class HorizontalProjectile : SerializedMonoBehaviour
 
                     // 着地したら isKinematic を true にする
                     OnGroundEvent.Invoke();
-                    rigid.isKinematic = true;
+                    OnGroundedClientRpc();
+                    
                     OnGround = false;
                 }
             }
@@ -65,18 +68,34 @@ public class HorizontalProjectile : SerializedMonoBehaviour
     public void Throw(float _FirstSpeed, Vector3 _forward)
     {
         // ItemThrowController から呼ばれて投げる
+        ThrowForAllClientRpc(_FirstSpeed, _forward);
+        ThrowRequestServerRpc();
+
+    }
+    [ClientRpc]
+    private void OnGroundedClientRpc()
+    {
+        rigid.isKinematic = true;
+    }
+    [ClientRpc]
+    private void ThrowForAllClientRpc(float _FirstSpeed, Vector3 _forward)
+    {
         this.gameObject.isStatic = false;
         Debug.Log("throwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
         rigid = this.gameObject.GetComponent<Rigidbody>();
         rigid.isKinematic = false;
         this.FirstSpeed = _FirstSpeed;
-
         // 指定方向へ速度を与える
-        throw_now = true;
         rigid.linearVelocity = _forward * _FirstSpeed;
+    }
+    [ServerRpc]
+    private void ThrowRequestServerRpc()
+    {
+        throw_now = true;
     }
     private void OnCollisionEnter(Collision other)
     {
+        if (!IsServer) return;
         Debug.DrawRay(this.gameObject.transform.position, other.contacts[0].normal * 10, Color.green);
         hited_obj = other.gameObject;
         if (throw_now)
@@ -87,8 +106,10 @@ public class HorizontalProjectile : SerializedMonoBehaviour
                 OnGround = true;
             }
 
-            if(hited_obj.tag == "Enemy"){
-                if(InstantiateOnEnemyHit){
+            if (hited_obj.tag == "Enemy")
+            {
+                if (InstantiateOnEnemyHit)
+                {
                     InstantiateObjWhenHitedEnemy = Instantiate(InstantiatePrefabWhenEnemyHit, this.transform.position, Quaternion.identity);
                     ThrowedEnemyHitController throwed_enemy_hit_controller = InstantiateObjWhenHitedEnemy.GetComponent<ThrowedEnemyHitController>();
                     Debug.Log("ThrowedEnemyHitController? " + throwed_enemy_hit_controller);
@@ -102,6 +123,7 @@ public class HorizontalProjectile : SerializedMonoBehaviour
     }
     private void OnCollisionStay(Collision collision)
     {
+        if (!IsServer) return;
         if ((col_layer.value & (1 << collision.gameObject.layer)) != 0)
         {
             normal = collision.contacts[0].normal;
@@ -110,6 +132,7 @@ public class HorizontalProjectile : SerializedMonoBehaviour
     }
     private void OnCollisionExit(Collision other)
     {
+        if (!IsServer) return;
         if (other.gameObject.layer == col_layer && throw_now)
         {
             hited_obj = null;
