@@ -15,10 +15,10 @@ GameObject:
   - component: {fileID: 5843602303120257523}
   - component: {fileID: 8036080520467748999}
   - component: {fileID: 2168927718610686170}
-  - component: {fileID: 2175855036313305512}
   - component: {fileID: 3305612839892290971}
   - component: {fileID: 7396010553086035570}
   - component: {fileID: 8177297459139619117}
+  - component: {fileID: 1387385945615451277}
   m_Layer: 0
   m_Name: "\u7206\u7AF9\u6295\u3052"
   m_TagString: Untagged
@@ -159,19 +159,7 @@ MonoBehaviour:
   OnGround: 0
   OnGroundEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2168927718610686170}
-        m_TargetAssemblyTypeName: SoundObjectEventWithEnemySensor, Assembly-CSharp
-        m_MethodName: SensorSoundPlay
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnGroundEventForClients:
     m_PersistentCalls:
       m_Calls:
@@ -191,6 +179,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2168927718610686170}
+        m_TargetAssemblyTypeName: SoundObjectEventWithEnemySensor, Assembly-CSharp
+        m_MethodName: SensorSoundPlay
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -224,33 +224,22 @@ MonoBehaviour:
   SoundPlayingTime: 5
   SoundStopEvent:
     m_PersistentCalls:
+      m_Calls: []
+  SoundStopEventForServer:
+    m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2175855036313305512}
-        m_TargetAssemblyTypeName: DestroyEvent, Assembly-CSharp
-        m_MethodName: DODestroy
+      - m_Target: {fileID: 1387385945615451277}
+        m_TargetAssemblyTypeName: NetworkDespawnEvent, Assembly-CSharp
+        m_MethodName: DODestroyWithTime
         m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 0.5
+          m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2175855036313305512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560351184006967456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ed7779f1a7f44d4a96729cee117c388, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnStart: 0
-  OnStartDestroyTime: 0
 --- !u!54 &3305612839892290971
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -392,6 +381,21 @@ MonoBehaviour:
   ItemGetAddEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1387385945615451277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2560351184006967456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1247efdeaed92a84c82d7c7c80bf631e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  OnStart: 0
+  OnStartDestroyTime: 0
 --- !u!1001 &4699819560823428267
 PrefabInstance:
   m_ObjectHideFlags: 0

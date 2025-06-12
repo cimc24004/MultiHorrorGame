@@ -6,68 +6,80 @@ using UnityEngine.Events;
 
 public class SoundObjectEventWithEnemySensor : NetworkBehaviour
 {
-    //SoundObjectにつける　敵がこのオブジェクトの音を感知する為のスクリプト。
-
-
-    //敵が音に反応した。 このenemy_sound_sensor_modeがTrueかつ、
-    //EnemyについているSoundEnemyObjectColliderForEventスクリプトのInSoundRangeがTrueならば
-    //このオブジェクトについてくる。
     public NetworkVariable<bool> enemy_sound_sensor_mode = new NetworkVariable<bool>();
 
-
-    [Header("音を慣らしておく時間 ")]
-    public float SoundPlayingTime = 5;
-    [Header("音がなり終えたあとに実行する関数")]
+    [Header("音を鳴らし続ける時間(s)")]
+    public float SoundPlayingTime = 5f;
+    [Header("音が鳴り終わったあとに実行する関数")]
     public UnityEvent SoundStopEvent;
-    private float SoundPlayingTimeNow = 0;
+    [Header("サーバー側で実行する関数")]
+    public UnityEvent SoundStopEventForServer;
+
+    private float soundTimer = 0f;
     private AudioSource audio_source;
-    // Start is called before the first frame update
+
     void Start()
     {
-        audio_source = this.gameObject.GetComponent<AudioSource>();
+        audio_source = GetComponent<AudioSource>();
     }
-    private void Update()
-    {
-        if (IsServer)
-        {
-            if (enemy_sound_sensor_mode.Value)
-            {
-                //ある程度時間がたったら音声停止。
-                SoundPlayingTimeNow += Time.deltaTime;
 
-                if (SoundPlayingTimeNow > SoundPlayingTime)
-                {
-                    SensorSoundStopForClientRpc();
-                    SoundPlayingTimeNow = 0;
-                }
+    void Update()
+    {
+        if (!IsServer) return;
+
+        if (enemy_sound_sensor_mode.Value)
+        {
+            soundTimer += Time.deltaTime;
+            if (soundTimer >= SoundPlayingTime)
+            {
+                // サーバー側イベント
+                SoundStopEventForServer.Invoke();
+
+                // クライアント全員に止めろって通知
+                SensorSoundStopClientRpc();
+
+                soundTimer = 0f;
             }
         }
-
     }
 
-    void OnDestroy()
-    {
-        SensorSoundStopForClientRpc();
-    }
+    // 外部から音を鳴らしたいときはコレ呼ぶ
     public void SensorSoundPlay()
     {
-        //ClientRpcから実行される予定。
-        //音を鳴らすと同時にenemy_sound_sensor_modeもtrueにする。
-        Debug.Log("SensorSoundPlay!!!!!!");
-        EnemySoundSensorModeRequestServerRpc(true);
-        audio_source.Play();
-    }
-    [ClientRpc]
-    private void SensorSoundStopForClientRpc()
-    {
-        EnemySoundSensorModeRequestServerRpc(false);
-        SoundStopEvent.Invoke();
-        audio_source.Stop();
+        // サーバーに「鳴らして！」要求して
+        SensorSoundPlayRequestServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void EnemySoundSensorModeRequestServerRpc(bool _Value)
+    private void SensorSoundPlayRequestServerRpc(ServerRpcParams rpcParams = default)
     {
-        enemy_sound_sensor_mode.Value = _Value;
+        // フラグ立て
+        enemy_sound_sensor_mode.Value = true;
+        // クライアント全員に音再生命令
+        SensorSoundPlayClientRpc();
+    }
+
+    [ClientRpc]
+    private void SensorSoundPlayClientRpc(ClientRpcParams rpcParams = default)
+    {
+        // クライアントで音鳴らす
+        audio_source.Play();
+    }
+
+    [ClientRpc]
+    private void SensorSoundStopClientRpc(ClientRpcParams rpcParams = default)
+    {
+        // クライアントで音止める & イベント
+        audio_source.Stop();
+        SoundStopEvent.Invoke();
+        // サーバー側フラグクリア
+        if (IsOwner || IsServer)
+            EnemySoundSensorModeRequestServerRpc(false);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void EnemySoundSensorModeRequestServerRpc(bool value, ServerRpcParams rpcParams = default)
+    {
+        enemy_sound_sensor_mode.Value = value;
     }
 }
