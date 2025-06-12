@@ -62,7 +62,6 @@ public class ObjectBuffController : NetworkBehaviour
     {
         pray_controller = this.gameObject.GetComponent<PrayController>();
         pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroyForClients);
-        pray_controller.PrayCompletedEventForLocal.AddListener(ObjectPartDestroyForLocal);
         PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
         m_NetworkObject = this.gameObject.GetComponent<NetworkObject>();
         sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
@@ -91,15 +90,9 @@ public class ObjectBuffController : NetworkBehaviour
         {
             Destroy(this.gameObject, 1.1f);
         });
+        OnBrokenCompleted();
     }
-    //ローカルのみで実行する。
-    public void ObjectPartDestroyForLocal()
-    {
-        DestroyAnimationTween.OnComplete(() =>
-        {
-            OnBrokenCompleted();
-        });   
-    }
+
     [Button]
     public void OnBrokenCompleted(){
         if(buff_effect_type == BuffType.Speed){

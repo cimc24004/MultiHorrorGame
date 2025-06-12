@@ -29,11 +29,8 @@ public class PrayController : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
-    [Header("? ????????????????")]
+    [Header("?????????????")]
     public UnityEvent2 PrayCompletedEvent;
-    [Header("??????????????")]
-    public UnityEvent2 PrayCompletedEventForLocal;
-
     [SerializeField] private UnityEvent2 PrayStartEvent;
 
     // ÉçÅ[ÉJÉãóp
@@ -152,6 +149,7 @@ public class PrayController : NetworkBehaviour
     private void PrayCompletedClientRpc(ClientRpcParams rpcParams = default)
     {
         GageImageUI.fillAmount = 0f;
+        //???????????????????
         PrayCompletedEvent.Invoke();
         this.gameObject.tag = "Untagged";
     }
@@ -161,7 +159,6 @@ public class PrayController : NetworkBehaviour
         PrayPermit.Value = false;
         PrayTimeNow.Value = 0f;
         PrayCompletedClientRpc();
-        PrayCompletedEventForLocal.Invoke();
     }
     private void OnPrayTimeNowChanged(float _, float newVal)
     {
