@@ -64,7 +64,7 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
         audio_source.Stop();
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void EnemySoundSensorModeRequestServerRpc(bool _Value)
     {
         enemy_sound_sensor_mode.Value = _Value;
