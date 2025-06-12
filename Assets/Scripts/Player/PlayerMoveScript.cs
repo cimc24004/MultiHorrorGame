@@ -1,4 +1,5 @@
 // PlayerMoveScript.cs
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -173,7 +174,7 @@ public class PlayerMoveScript : NetworkBehaviour
                     RunSpeed    = defaultRunSpeed;
                     WalkSpeed   = defaultWalkSpeed;
                     CrouchSpeed = defaultCrouchSpeed;
-                    subNoticedUI.Notice("‹r—Í‚ªŒ³‚É–ß‚Á‚½");
+                    MoveSpeedUpFinishedClientRpc();
                     moveSpeedUpNow   = false;
                     moveSpeedUpTimer = 0f;
                 }
@@ -207,6 +208,12 @@ public class PlayerMoveScript : NetworkBehaviour
         bool isRunPressed = ctx.ReadValue<float>() > 0f;
         UpdateRunStateServerRpc(isRunPressed);
 
+    }
+    [ClientRpc]
+    private void MoveSpeedUpFinishedClientRpc()
+    {
+        if (!IsOwner) return;
+        subNoticedUI.Notice("‹r—Í‚ªŒ³‚É–ß‚Á‚½");
     }
     [ServerRpc]
     public void MoveSpeedUpRequestServerRpc(float addSpeed, float effectTime)
