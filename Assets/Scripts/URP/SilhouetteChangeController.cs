@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using Unity.Netcode;
 using UnityEngine;
 
-public class SilhouetteChangeController : SerializedMonoBehaviour
+public class SilhouetteChangeController : NetworkBehaviour
 {
     public bool SilhouetteNow;
     [Header("ある程度の範囲に入ったらシルエット表示を終了するかどうか")]
@@ -42,7 +42,7 @@ public class SilhouetteChangeController : SerializedMonoBehaviour
     }
     void Update()
     {
-        if (NetworkManager.Singleton.IsServer)
+        if (IsServer)
         {
             if (SilhouetteAutoResetStart)
             {
@@ -67,6 +67,7 @@ public class SilhouetteChangeController : SerializedMonoBehaviour
         }
         SilhouetteChangeClientRpc(_silhouette);
     }
+    [ClientRpc]
     private void SilhouetteChangeClientRpc(bool _silhouette)
     {
         //全クライアントに共有するため。
