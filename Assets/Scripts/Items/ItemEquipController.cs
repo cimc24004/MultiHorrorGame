@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using System;
 
-public class ItemEquipController : Singleton<ItemEquipController>
+public class ItemEquipController : SerializedMonoBehaviour
 {
     // 装備アイテムとその状態を保持する辞書
     [SerializeField] public Dictionary<ItemStatus, GameObject> equip_items_with_item_status;
@@ -16,7 +16,7 @@ public class ItemEquipController : Singleton<ItemEquipController>
     // 直前に装備されていたアイテムのGameObject
     [SerializeField]
     private GameObject BeforeEquip;
-
+    public Camera ItemEquipCamera;
     // // Startメソッド：初期化処理を行う（今回は未使用）
     // void Start()
     // {

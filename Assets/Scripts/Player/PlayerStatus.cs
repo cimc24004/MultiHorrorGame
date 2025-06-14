@@ -70,6 +70,8 @@ public class PlayerStatus : NetworkBehaviour
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
     public ItemMenuController item_menu_controller;
+    public ItemEquipController item_equip_controller;
+
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
     private CharacterController player_character_controller;
@@ -98,9 +100,7 @@ public class PlayerStatus : NetworkBehaviour
         horror_director = HorrorDirector.Instance;
         player_to_enemy_distance_controller = GetComponent<PlayerToEnemyDistanceController>();
         player_move_script = GetComponent<PlayerMoveScript>();
-
         InitPlayer = true;
-
         if (IsOwner)
         {
             LocalInstance = this;
@@ -108,6 +108,7 @@ public class PlayerStatus : NetworkBehaviour
         }
         if (!IsOwner)
         {
+            item_equip_controller.gameObject.SetActive(false);
             sub_noticed_ui_controller.gameObject.SetActive(false);
             item_belonging_controller.gameObject.SetActive(false);
             main_noticed_ui_controller.gameObject.SetActive(false);

@@ -10,6 +10,7 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
 using System.Linq;
+using Cinemachine;
 public class ItemMenuController : SerializedMonoBehaviour
 {
     //アイテムのメニューコントローラー　
@@ -58,7 +59,9 @@ public class ItemMenuController : SerializedMonoBehaviour
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         player_input = player_status.player_input;
         player_input.actions["ItemSelectNumber"].performed += OnNumbericKeyPressed;
-        item_equip_controller = ItemEquipController.instance;
+        item_equip_controller = player_status.item_equip_controller;
+        player_status.virtual_camera.VirtualCameraGameObject.gameObject.GetComponent<CinemachineBrain>();
+        
         InitPlayer = true;
     }
     private void Update()

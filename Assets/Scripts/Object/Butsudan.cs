@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Butsudan : NetworkBehaviour
+public class Butsudan : MonoBehaviour
 {
     private PrayToDeliverItemAppearPlace pray_to_deliver_item_appear_place;
     private EnemyAllController enemy_all_controller;
     private SubNoticedUIController sub_noticed_ui_controller;
     [SerializeField]private SilhouetteChangeController silhouette_change_controller;
+    [SerializeField] private PrayController pray_controller;
     private HousesController houses_controller;
-    private enum ButsudanDefenseType{
+    private AudioSource audioSource;
+    private ObjectLayerControl object_layer_control;
+    private enum ButsudanDefenseType
+    {
         JapaneseNingyo,
         Darumasan,
         OshiireNoMouja,
@@ -24,15 +28,28 @@ public class Butsudan : NetworkBehaviour
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         enemy_all_controller = EnemyAllController.Instance;
         sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
         houses_controller = HousesController.Instance;
+        audioSource = pray_controller.gameObject.GetComponent<AudioSource>();
+        object_layer_control = pray_controller.gameObject.GetComponent<ObjectLayerControl>();
+        pray_controller.PrayCompletedEvent.AddListener(() =>
+        {
+            ButsudanPrayCompleted();
+            SilhouetteDelete();
+            audioSource.Play();
+            object_layer_control.ChangeLayerByName("Default");
+
+        });
+
     }
 
     public void ButsudanPrayCompleted()
     {
+        Debug.Log("ButsudanPrayCompleted()を実行！");
         Debug.Log("deliver_item_apperance: " + pray_to_deliver_item_appear_place) ;
         pray_to_deliver_item_appear_place.OnPrayCompleted();
         sub_noticed_ui_controller.Notice("仏壇にお祈りした");

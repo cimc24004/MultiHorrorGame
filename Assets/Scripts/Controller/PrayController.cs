@@ -8,12 +8,12 @@ using Cinemachine;
 
 public class PrayController : NetworkBehaviour
 {
-    [Header("Notice—pƒƒbƒZ[ƒW")]
+    [Header("Prayã™ã‚‹ã¨ãã«è¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸")]
     [SerializeField] private string NoticeMessage;
-    [Header("•K—v‚È‹F‚èŠÔ")]
+    [Header("ç¥ˆã‚‹ã®ã«å¿…è¦ãªæ™‚é–“")]
     public float NeedToPrayTime;
 
-    // „Ÿ„Ÿ„Ÿ ƒlƒbƒg“¯Šú‚µ‚½‚¢•Ï” „Ÿ„Ÿ„Ÿ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½lï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public NetworkVariable<float> PrayTimeNow = new NetworkVariable<float>(
         0f,
         NetworkVariableReadPermission.Everyone,
@@ -29,11 +29,11 @@ public class PrayController : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
-    [Header("?????????????")]
+    [Header("ç¥ˆã‚Šã‚³ãƒ³ãƒ—ãƒªãƒ¼ãƒˆEvent å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«å…±æœ‰")]
     public UnityEvent2 PrayCompletedEvent;
     [SerializeField] private UnityEvent2 PrayStartEvent;
 
-    // ƒ[ƒJƒ‹—p
+    // ï¿½ï¿½ï¿½[ï¿½Jï¿½ï¿½ï¿½p
     private bool Inited;
     private NetworkVariable<bool> PrayNow = new NetworkVariable<bool>();
     private bool PrayForStartOnce;
