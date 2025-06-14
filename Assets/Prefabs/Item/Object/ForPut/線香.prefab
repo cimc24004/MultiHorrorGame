@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 3294226047180700996}
   - component: {fileID: 5036844258042664734}
   - component: {fileID: 229994668436465297}
+  - component: {fileID: 1506767702976081134}
   - component: {fileID: 8177297459139619117}
   - component: {fileID: 5737380473531767706}
-  - component: {fileID: 1506767702976081134}
   m_Layer: 13
   m_Name: "\u7DDA\u9999"
   m_TagString: Untagged
@@ -112,6 +112,31 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.03, y: 0.23, z: 0.03}
   m_Center: {x: 0, y: 0.09, z: 0}
+--- !u!114 &1506767702976081134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2560351184006967456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2126949432
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &8177297459139619117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611f159e1371f724b9f1f4dd5f9229c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   item_status: {fileID: 11400000, guid: 921ed887d57b6394f85e2478e03e479f, type: 2}
   ItemGetAddEvent:
     m_PersistentCalls:
@@ -155,31 +181,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 1
---- !u!114 &1506767702976081134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560351184006967456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!1001 &468826482304375463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -192,6 +193,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CanCheckActionUIController
+      objectReference: {fileID: 0}
+    - target: {fileID: 3951565010801811909, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3951565010801811909, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
@@ -242,6 +268,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7231467695360485089, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: initialLocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7231467695360485089, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: initialLocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7231467695360485089, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: initialLocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7836069159154365488, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}

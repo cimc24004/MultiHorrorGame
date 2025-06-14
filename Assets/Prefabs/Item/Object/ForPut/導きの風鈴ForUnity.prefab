@@ -13,6 +13,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanCheckActionUIController
       objectReference: {fileID: 0}
+    - target: {fileID: 3951565010801811909, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3951565010801811909, guid: 5baa18b1931387b4fa45f01652e79015,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -303,6 +313,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bd144f60866a27949934e40db71c1814,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: -2265845192739970629}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bd144f60866a27949934e40db71c1814,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 3832062111409576025}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bd144f60866a27949934e40db71c1814,
         type: 3}
@@ -320,10 +334,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4969311108028777605}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bd144f60866a27949934e40db71c1814,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: -2265845192739970629}
   m_SourcePrefab: {fileID: 100100000, guid: bd144f60866a27949934e40db71c1814, type: 3}
 --- !u!4 &6018377366823949577 stripped
 Transform:
@@ -337,6 +347,31 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6057107480800375522}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &-2265845192739970629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6399125755799441331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3381563163
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &3832062111409576025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,6 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611f159e1371f724b9f1f4dd5f9229c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   item_status: {fileID: 11400000, guid: 2ac7ef4a1c5977047b207781817f1493, type: 2}
   ItemGetAddEvent:
     m_PersistentCalls:
@@ -399,8 +435,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.49999994, y: 1.5371807, z: 0.42}
-  m_Center: {x: -0.6074564, y: 1.0906712, z: -0.08017707}
+  m_Size: {x: 0.4764245, y: 1.429468, z: 0.41999996}
+  m_Center: {x: -0.0195816, y: -0.065890275, z: -0.08017707}
 --- !u!33 &4277398439285837375
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -454,28 +490,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-2265845192739970629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6399125755799441331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0

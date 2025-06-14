@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using System;
 
-public class ItemEquipController : SerializedMonoBehaviour
+public class ItemEquipController : Singleton<ItemEquipController>
 {
     // 装備アイテムとその状態を保持する辞書
     [SerializeField] public Dictionary<ItemStatus, GameObject> equip_items_with_item_status;

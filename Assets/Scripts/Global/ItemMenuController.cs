@@ -58,6 +58,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         player_input = player_status.player_input;
         player_input.actions["ItemSelectNumber"].performed += OnNumbericKeyPressed;
+        item_equip_controller = ItemEquipController.instance;
         InitPlayer = true;
     }
     private void Update()

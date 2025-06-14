@@ -19,12 +19,32 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
 
     public GameObject TargetImage;
     private BoxCollider can_check_display_range_collider;
+    private GameObject PlayerOfOwner;
     private void Start()
     {
         can_check_display_range_collider = this.gameObject.GetComponent<BoxCollider>();
         DoHide();
     }
-
+    private void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitWhenPlayerSpawned(PlayerStatus.LocalInstance);
+        }
+    }
+    private void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitWhenPlayerSpawned(PlayerStatus.LocalInstance);
+        }
+    }
+    private void InitWhenPlayerSpawned(PlayerStatus _player_status)
+    {
+        PlayerOfOwner = _player_status.gameObject;
+    }
     [Button]
     public void DoDisplay()
     {
@@ -59,7 +79,7 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject == PlayerOfOwner)
         {
             DoDisplay();
         }
@@ -67,7 +87,7 @@ public class CanCheckActionUIController : SerializedMonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject == PlayerOfOwner)
         {
             DoHide();        
         }

@@ -39,30 +39,37 @@ public class ItemDatabases : Singleton<ItemDatabases>
     {
         return ForPutItems.Find((x) => x.item_type == item_type);
     }
-    public GameObject ItemCreate(ItemStatus item_status, Transform Parent, Vector3 Position){
-        GameObject item_obj = Instantiate(item_status.ItemPutObjectPrefab,Position,item_status.ItemPutObjectPrefab.transform.rotation, Parent.transform);
-        item_obj.transform.localPosition = Vector3.zero;
-        item_obj.GetComponent<Rigidbody>().isKinematic = true;
+    public GameObject ItemCreate(ItemStatus item_status, Transform Parent, Vector3 Position)
+    {
+        GameObject item_obj = Instantiate(item_status.ItemPutObjectPrefab, Position, item_status.ItemPutObjectPrefab.transform.rotation);
+        // 親を先に設定
+        
+        // ローカル座標をゼロに設定（親の位置に配置）
+        // item_obj.transform.localPosition = Vector3.zero;
+        
+        // Rigidbodyの設定
+        var rigidbody = item_obj.GetComponent<Rigidbody>();
+        if (rigidbody != null)
+        {
+            rigidbody.isKinematic = true;
+        }
         return item_obj;
     }
+
+
+    // RandomItemCreate メソッドも同様に修正
     public GameObject RandomItemCreate(Transform Parent)
     {
         int r = Random.Range(0, 100);
         List<ItemStatus> resulted_items = new List<ItemStatus>();
         
-        //ランダムされたrの値でレア度をチェックする。
-
+        // レア度チェックロジック（既存のまま）
         foreach(ItemStatus item_status in ForPutItems)
         {
             Debug.Log("item_status: " + item_status);
-            if(r>=0 && r <= 5)
+            if(r >= 0 && r <= 5)
             {
-                //激レアアイテムはいま存在しないため。エラーがでるかな
-                //if(ItemStatus.ApperanceRatio.VeryRareToHit == item_status.apperance_ratio)
-                //{
-                //    resulted_items.Add(item_status);
-                //}
-                return null;
+                return null; // 激レアアイテムは未実装
             }
             else if(r > 5 && r <= 25)
             {
@@ -70,11 +77,6 @@ public class ItemDatabases : Singleton<ItemDatabases>
                 {
                     resulted_items.Add(item_status);
                 }
-                else
-                {
-                    Debug.Log(item_status.ItemName + "は存在しませんでした");
-                }
-
             }
             else if(r > 25 && r <= 55)
             {
@@ -82,32 +84,29 @@ public class ItemDatabases : Singleton<ItemDatabases>
                 {
                     resulted_items.Add(item_status);
                 }
-                else
-                {
-                    Debug.Log(item_status.ItemName + "は存在しませんでした");
-                }
-
-
             }
-            else if(r>55 && r <= 100)
+            else if(r > 55 && r <= 100)
             {
                 if (ItemStatus.ApperanceRatio.EasyToHit == item_status.apperance_ratio)
                 {
                     resulted_items.Add(item_status);
                 }
-                else
-                {
-                    Debug.Log(item_status.ItemName + "は存在しませんでした");
-                }
-
             }
         }
-        Debug.Log($"resulted_itemsCOunt: {resulted_items.Count} r={r}");
-        int result_r = Random.Range(0,resulted_items.Count);
+        
+        if (resulted_items.Count == 0)
+        {
+            Debug.LogWarning("該当するレア度のアイテムが見つかりませんでした");
+            return null;
+        }
+        
+        Debug.Log($"resulted_itemsCount: {resulted_items.Count} r={r}");
+        int result_r = Random.Range(0, resulted_items.Count);
         ItemStatus decided_result_item = resulted_items[result_r];
 
         Debug.Log($"アイテムは....{decided_result_item.apperance_ratio.ToString()}の{decided_result_item.ItemName}が当たりました！");
-        return ItemCreate(decided_result_item, Parent, Parent.transform.position);
+        
+        // ItemCreate で親子関係も設定される
+        return ItemCreate(decided_result_item, Parent, Parent.position);
     }
-
 }

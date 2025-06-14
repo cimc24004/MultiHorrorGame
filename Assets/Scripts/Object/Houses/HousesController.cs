@@ -255,9 +255,10 @@ public class HousesController : NetworkBehaviour
             // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
         }
     }
-
-    public void RevealButusdans(float RevealTime)
+    [ServerRpc]
+    public void RevealButusdansRequestServerRpc(float RevealTime)
     {
+
         foreach (SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers)
         {
             if (silhouette_change_controller != null)

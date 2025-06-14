@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
 using UnityEngine;
 
 public class SilhouetteChangeController : SerializedMonoBehaviour
@@ -41,33 +42,53 @@ public class SilhouetteChangeController : SerializedMonoBehaviour
     }
     void Update()
     {
-        if(SilhouetteAutoResetStart){
-            ToResetSilhouetteTimeNow += Time.deltaTime;
-            if(ToResetSilhouetteTime < ToResetSilhouetteTimeNow){
-                SilhouetteChange(false);
-                SilhouetteAutoResetStart = false;
-                ToResetSilhouetteTimeNow = 0;
+        if (NetworkManager.Singleton.IsServer)
+        {
+            if (SilhouetteAutoResetStart)
+            {
+                ToResetSilhouetteTimeNow += Time.deltaTime;
+                if (ToResetSilhouetteTime < ToResetSilhouetteTimeNow)
+                {
+                    SilhouetteChange(false);
+                    SilhouetteAutoResetStart = false;
+                    ToResetSilhouetteTimeNow = 0;
+                }
             }
         }
+
 
 
     }
     public void SilhouetteChange(bool _silhouette, bool AutoSilhouetteModeChange = true){
-        if(AutoSilhouetteModeChange){
+        //こちらはサーバー側で実行される
+        if (AutoSilhouetteModeChange)
+        {
             SilhouetteNow = _silhouette;
         }
-        if(_silhouette){
-            foreach(GameObject target in TargetChangeSilhouetteObjs ){
+        SilhouetteChangeClientRpc(_silhouette);
+    }
+    private void SilhouetteChangeClientRpc(bool _silhouette)
+    {
+        //全クライアントに共有するため。
+        if (_silhouette)
+        {
+            foreach (GameObject target in TargetChangeSilhouetteObjs)
+            {
                 target.gameObject.layer = LayerMask.NameToLayer("NoSilhouette");
             }
-        }else{
-            foreach(GameObject target in TargetChangeSilhouetteObjs ){
+        }
+        else
+        {
+            foreach (GameObject target in TargetChangeSilhouetteObjs)
+            {
                 target.gameObject.layer = LayerMask.NameToLayer(ResetLayerName);
             }
         }
     }
 
-    public void SilhouetteChangeWithAutoReset(float _time){
+    public void SilhouetteChangeWithAutoReset(float _time)
+    {
+        //これもサーバー側で実行される。
         SilhouetteChange(true);
         ToResetSilhouetteTimeNow = 0;
         ToResetSilhouetteTime = _time;
