@@ -255,7 +255,7 @@ public class HousesController : NetworkBehaviour
             // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
         }
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void RevealButusdansRequestServerRpc(float RevealTime)
     {
 
