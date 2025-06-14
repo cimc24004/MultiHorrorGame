@@ -27,17 +27,16 @@ public class ButsudansReveal : NetworkBehaviour
 
     public void RevealButsudansAction()
     {
-        RevealButsudansServerRpc();
+        RevealButsudansForClients();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void RevealButsudansServerRpc(ServerRpcParams rpcParams = default)
-    {
-        RevealButsudansClientRpc();
-    }
+    // [ServerRpc(RequireOwnership = false)]
+    // public void RevealButsudansServerRpc(ServerRpcParams rpcParams = default)
+    // {
+    //     RevealButsudansClientRpc();
+    // }
 
-    [ClientRpc]
-    private void RevealButsudansClientRpc(ClientRpcParams rpcParams = default)
+    private void RevealButsudansForClients(ClientRpcParams rpcParams = default)
     {
         sub_noticed_ui_controller?.Notice("仏壇の位置が明らかになった..!!");
         houses_controller?.RevealButusdansRequestServerRpc(ButsudansRevealTime);

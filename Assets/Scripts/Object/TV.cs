@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Unity.Netcode;
-public class TV : NetworkBehaviour
+public class TV : MonoBehaviour
 {
     private ButsudansReveal butsudans_reveal;
     [SerializeField] private Material TurnOnTVMaterialMonitor;
@@ -20,6 +20,7 @@ public class TV : NetworkBehaviour
 
     public void TurnOn()
     {
+        //PrayControllerのOnCompletedEvent(ClientRpc)から実行される予定
         // ① 今の配列を取る
         var mats = TVMonitorMeshRenderer.sharedMaterials;   // ← 複製配列
 
@@ -37,12 +38,12 @@ public class TV : NetworkBehaviour
     }
     public void TurnOff()
     {
+        //こちらもクライアント側で実行される。
         butsudans_reveal.RevealButsudansAction();
-        RequestTvMonitorClientRpc();
+        RequestTvMonitorChange();
 
     }
-    [ClientRpc]
-    private void RequestTvMonitorClientRpc()
+    private void RequestTvMonitorChange()
     {
         var mats = TVMonitorMeshRenderer.sharedMaterials;
         if (mats.Length > 1) mats[1] = TurnOffTVMaterialMonitor;
