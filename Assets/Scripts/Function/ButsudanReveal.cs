@@ -25,10 +25,10 @@ public class ButsudansReveal : NetworkBehaviour
         houses_controller = HousesController.Instance;
     }
 
-    // public void RevealButsudansAction()
-    // {
-    //     RevealButsudansServerRpc();
-    // }
+    public void RevealButsudansAction()
+    {
+        RevealButsudansServerRpc();
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void RevealButsudansServerRpc(ServerRpcParams rpcParams = default)
