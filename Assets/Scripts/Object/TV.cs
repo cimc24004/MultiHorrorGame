@@ -58,14 +58,7 @@ public class TV : NetworkBehaviour
     // ボタンやスクリプトから呼ぶ OFF メソッド
     public void TurnOff()
     {
-        if (IsServer)
-        {
-            DoTurnOff();
-        }
-        else
-        {
-            TurnOffServerRpc();
-        }
+        TurnOffServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
