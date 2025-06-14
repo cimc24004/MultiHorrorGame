@@ -1,54 +1,99 @@
-
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using DG.Tweening;
 using Unity.Netcode;
-public class TV : MonoBehaviour
+using UnityEngine;
+
+public class TV : NetworkBehaviour
 {
     private ButsudansReveal butsudans_reveal;
+
     [SerializeField] private Material TurnOnTVMaterialMonitor;
     [SerializeField] private Material TurnOffTVMaterialMonitor;
     [SerializeField] private MeshRenderer TVMonitorMeshRenderer;
     [SerializeField] private AudioSource TVAudioSource;
     [SerializeField] private AudioSource HouseRevealAudioSource;
-    // Start is called before the first frame update
-    void Start()
+
+    void Awake()
     {
-        butsudans_reveal = this.gameObject.GetComponent<ButsudansReveal>();
+        butsudans_reveal = GetComponent<ButsudansReveal>();
+        if (butsudans_reveal == null)
+        {
+            Debug.LogError("ButsudansReveal がアタッチされてないよ！");
+        }
     }
 
+    // ボタンやスクリプトから呼ぶ ON メソッド
     public void TurnOn()
     {
-        // ① 今の配列を取る
-        var mats = TVMonitorMeshRenderer.sharedMaterials;   // ← 複製配列
-
-        // ② 差し替える
-        if (mats.Length > 1) mats[1] = TurnOnTVMaterialMonitor;
-
-        // ③ 戻し直す
-        TVMonitorMeshRenderer.sharedMaterials = mats;
-
-        TVAudioSource.Play();
-        DOVirtual.DelayedCall(1, () =>
+        if (IsServer)
         {
-            TurnOff();
-        });
+            DoTurnOn();
+        }
+        else
+        {
+            TurnOnServerRpc();
+        }
     }
-    public void TurnOff()
-    {
-        butsudans_reveal.RevealButsudansAction();
-        RequestTvMonitorClientRpc();
 
+    [ServerRpc(RequireOwnership = false)]
+    private void TurnOnServerRpc(ServerRpcParams rpcParams = default)
+    {
+        DoTurnOn();
     }
-    [ClientRpc]
-    private void RequestTvMonitorClientRpc()
+
+    private void DoTurnOn()
     {
         var mats = TVMonitorMeshRenderer.sharedMaterials;
-        if (mats.Length > 1) mats[1] = TurnOffTVMaterialMonitor;
+        if (mats.Length > 1)
+        {
+            mats[1] = TurnOnTVMaterialMonitor;
+            TVMonitorMeshRenderer.sharedMaterials = mats;
+        }
 
-        TVMonitorMeshRenderer.sharedMaterials = mats;
+        TVAudioSource.Play();
+        // 1秒後に TurnOff() へ
+        DOVirtual.DelayedCall(1f, () => TurnOff());
+    }
+
+    // ボタンやスクリプトから呼ぶ OFF メソッド
+    public void TurnOff()
+    {
+        if (IsServer)
+        {
+            DoTurnOff();
+        }
+        else
+        {
+            TurnOffServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TurnOffServerRpc(ServerRpcParams rpcParams = default)
+    {
+        DoTurnOff();
+    }
+
+    private void DoTurnOff()
+    {
+        // 仏壇位置表示のサーバーRPC（内部でClientRpc飛ぶ）
+        butsudans_reveal.RevealButsudansServerRpc();
+
+        // TV モニターOFF同期
+        RequestTvMonitorClientRpc();
+    }
+
+    [ClientRpc]
+    private void RequestTvMonitorClientRpc(ClientRpcParams rpcParams = default)
+    {
+        var mats = TVMonitorMeshRenderer.sharedMaterials;
+        if (mats.Length > 1)
+        {
+            mats[1] = TurnOffTVMaterialMonitor;
+            TVMonitorMeshRenderer.sharedMaterials = mats;
+        }
+
         HouseRevealAudioSource.Play();
         TVAudioSource.Stop();
-    } 
+    }
 }
