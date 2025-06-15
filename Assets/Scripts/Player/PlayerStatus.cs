@@ -50,6 +50,7 @@ public class PlayerStatus : NetworkBehaviour
     public float StaminaCost = 0.3f;
     [Header("現在のスタミナ値")]
     public NetworkVariable<float> StaminaValueNow = new NetworkVariable<float>();
+    public NetworkVariable<bool> StaminaValueAutoIncrease = new NetworkVariable<bool>(true);
     [Header("スタミナ1fにつきの回復力")]
     public float StaminaRetakePower;
     [Header("走れる最小スタミナ")]

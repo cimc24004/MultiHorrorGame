@@ -76,12 +76,6 @@ public class CurseController : NetworkSingleton<CurseController>
             //サーバー側で実行する。
             CurseMaxEventWhileTimeNow += Time.deltaTime;
 
-
-            if (curse_event_type == CurseEventType.PlayerStamina)
-            {
-                PlayerStaminaZeroUpdate();
-            }
-
             if (CurseMaxEventWhileTimeNow > CurseMaxEventWhileTime)
             {
                 this.CurseDecrease(this.CurseValueNow.Value);
@@ -121,7 +115,6 @@ public class CurseController : NetworkSingleton<CurseController>
         else if (i == 2)
         {
             //個々もあとで同期行う
-            return;
             PlayerStaminaZero();
         }
 
@@ -153,7 +146,10 @@ public class CurseController : NetworkSingleton<CurseController>
             ItemUnlockClientRpc();
             // item_belongings_controller.RequestCanUseItem(true, locked_item_status);
         }
-
+        if (curse_event_type == CurseEventType.PlayerStamina)
+        {
+            player_status.StaminaValueAutoIncrease.Value = true;
+        }
         CurseMaxEventWhileTimeNow = 0;
         CurseMaxedEventNow = false;
     }
@@ -179,18 +175,21 @@ public class CurseController : NetworkSingleton<CurseController>
     }
     private void PlayerStaminaZero()
     {
+        //サーバー側で実行される。
         curse_event_type = CurseEventType.PlayerStamina;
         sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
         DOVirtual.DelayedCall(1, () =>
         {
             sub_noticed_ui_controller.Notice("しばらくの間スタミナが枯渇し、\n動きが鈍くなる……");
         });
+        player_status.StaminaValueAutoIncrease.Value = false;
+        player_status.StaminaValueNow.Value = 0;
+        player_stamina_controller.ConsumeStamina();
     }
 
     private void PlayerStaminaZeroUpdate()
     {
-        player_status.StaminaValueNow.Value = 0;
-        player_stamina_controller.ConsumeStamina();
+
     }
 
     [Button]

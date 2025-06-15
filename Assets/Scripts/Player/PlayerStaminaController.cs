@@ -37,6 +37,9 @@ public class PlayerStaminaController : NetworkBehaviour
     {
         if (IsServer)
         {
+            if (player_status.StaminaValueAutoIncrease.Value == false) {
+                return;
+            }
             if (!this.StaminaConsumeNow)
             {
                 stamina_retake_start_time_now += Time.fixedDeltaTime;
