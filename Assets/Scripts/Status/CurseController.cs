@@ -103,11 +103,14 @@ public class CurseController : NetworkSingleton<CurseController>
 
         this.CurseMaxEventWhileTime = _CurseMaxEventWhileTime;
         this.CurseMaxEventWhileTimeNow = 0;
-        int i = UnityEngine.Random.Range(0, 3);
+        // int i = UnityEngine.Random.Range(0, 3);
+        int i = 1;
         //ランダムで何かの関数を実行するとする
         CurseMaxedEventNow = true;
         if (i == 0)
         {
+            //いったんてきのどうきをしてからここはおこなう。
+            return;
             MikoInstantiate();
 
         }
@@ -117,12 +120,15 @@ public class CurseController : NetworkSingleton<CurseController>
         }
         else if (i == 2)
         {
+            //個々もあとで同期行う
+            return;
             PlayerStaminaZero();
         }
 
     }
     public void CurseMaxedReset()
     {
+        HorrorDirector horror_director = HorrorDirector.Instance;
         sub_noticed_ui_controller.Notice("呪いの影響がすべて消滅した……");
         if (curse_event_type == CurseEventType.MikoInstantiate)
         {
