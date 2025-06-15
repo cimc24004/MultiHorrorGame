@@ -36,7 +36,7 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
     {
         game_progress_controller.OnPrayedButsudan();
         //どこかの仏壇で祈りがコンプリートされたとき。
-        if (game_progress_controller.NeedPrayCount <= game_progress_controller.PrayCountNow)
+        if (game_progress_controller.NeedPrayCount <= game_progress_controller.PrayCountNow.Value)
         {
             //必要な祈り回数が必要になったら最終イベントアイテムを出現させる。
             DeliverItemAppear();
