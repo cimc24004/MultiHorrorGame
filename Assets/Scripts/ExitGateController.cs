@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExitGateController : Singleton<ExitGateController>
+public class ExitGateController : NetworkSingleton<ExitGateController>
 {
     private Animator m_Animator;
     private PrayController pray_controller;
@@ -17,7 +17,7 @@ public class ExitGateController : Singleton<ExitGateController>
     [SerializeField] private AudioSource OpenCompletedAudioSource;
 
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         m_Animator = this.gameObject.GetComponent<Animator>();
         pray_controller = this.gameObject.GetComponent<PrayController>();
