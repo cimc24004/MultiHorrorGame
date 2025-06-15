@@ -251,32 +251,6 @@ public class ItemBelongingsController : NetworkBehaviour
     public void RequestCanUseItem(bool canUse, ItemStatus status)
     {
         // 自分のアイテムGlobalIdを渡す
-        CanUseItemServerRpc(status.GlobalId, canUse);
-    }
-    [ServerRpc]
-    // 2) サーバー側で実行
-    private void CanUseItemServerRpc(uint itemGlobalId, bool canUse, ServerRpcParams rpcParams = default)
-    {
-        var status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
-        if (status == null || !belonging_items.ContainsKey(status)) return;
-
-        // サーバーで権限を担保して更新
-        belonging_items[status].CanUse = canUse;
-
-        // 結果を送信。発行元クライアントだけに返したいなら rpcParams.SourceClientId を使う
-        var clientRpcParams = new ClientRpcParams {
-            Send = new ClientRpcSendParams {
-                TargetClientIds = new ulong[]{ rpcParams.Receive.SenderClientId }
-            }
-        };
-        CanUseItemClientRpc(itemGlobalId, canUse, clientRpcParams);
-    }
-
-    // 3) クライアント側で実行
-    [ClientRpc]
-    private void CanUseItemClientRpc(uint itemGlobalId, bool canUse, ClientRpcParams rpcParams = default)
-    {
-        var status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
         if (status == null || !belonging_items.ContainsKey(status)) return;
 
         // ローカル辞書も更新して…
@@ -284,7 +258,6 @@ public class ItemBelongingsController : NetworkBehaviour
         // UI 更新
         item_menu_controller.OnCanItemUseChangeUI(canUse, status);
     }
-
     public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType t)
     {
         var dict = belonging_items
@@ -292,7 +265,6 @@ public class ItemBelongingsController : NetworkBehaviour
                    .ToDictionary(x => x.Key, x => x.Value);
         return dict.Keys.ToList();
     }
-
     // 個数減少＆UI更新
     private void ItemUse(int beforeCount, ItemStatus status)
     {
