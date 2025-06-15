@@ -93,7 +93,6 @@ public class PlayerStaminaController : NetworkBehaviour
         {
             this.player_status.StaminaValueAutoIncrease.Value = false;
             player_status.StaminaValueNow.Value = 0;
-            this.ConsumeStamina();
         }
         else
         {
@@ -101,6 +100,7 @@ public class PlayerStaminaController : NetworkBehaviour
         }
     }
     private void OnValueChangedStamina(float newValue, float oldValue) {
+        Debug.Log("OnValuChangedStamina");
         ui_fade_controller.AutoFadeIn();
         if (newValue <= 100)
         {
