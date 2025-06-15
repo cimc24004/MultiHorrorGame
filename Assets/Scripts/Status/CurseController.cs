@@ -148,7 +148,7 @@ public class CurseController : NetworkSingleton<CurseController>
         }
         if (curse_event_type == CurseEventType.PlayerStamina)
         {
-            player_status.StaminaValueAutoIncrease.Value = true;
+            player_stamina_controller.StaminaEnableDisableRequestServerRpc(true);
         }
         CurseMaxEventWhileTimeNow = 0;
         CurseMaxedEventNow = false;
@@ -177,20 +177,20 @@ public class CurseController : NetworkSingleton<CurseController>
     {
         //サーバー側で実行される。
         curse_event_type = CurseEventType.PlayerStamina;
+        PlayerStaminaZeroToAllPlayerClientRpc();
+
+    }
+    [ClientRpc]
+    private void PlayerStaminaZeroToAllPlayerClientRpc()
+    {
         sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
         DOVirtual.DelayedCall(1, () =>
         {
             sub_noticed_ui_controller.Notice("しばらくの間スタミナが枯渇し、\n動きが鈍くなる……");
         });
-        player_status.StaminaValueAutoIncrease.Value = false;
-        player_status.StaminaValueNow.Value = 0;
-        player_stamina_controller.ConsumeStamina();
+        player_stamina_controller.StaminaEnableDisableRequestServerRpc(false);
     }
 
-    private void PlayerStaminaZeroUpdate()
-    {
-
-    }
 
     [Button]
     public void CurseIncrease(float CurseRetakePower)

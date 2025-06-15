@@ -86,7 +86,20 @@ public class PlayerStaminaController : NetworkBehaviour
             return true;
         }
     }
-
+    [ServerRpc]
+    public void StaminaEnableDisableRequestServerRpc(bool _enable)
+    {
+        if (!_enable)
+        {
+            this.player_status.StaminaValueAutoIncrease.Value = false;
+            player_status.StaminaValueNow.Value = 0;
+            this.ConsumeStamina();
+        }
+        else
+        {
+            this.player_status.StaminaValueAutoIncrease.Value = true;
+        }
+    }
     private void OnValueChangedStamina(float newValue, float oldValue) {
         ui_fade_controller.AutoFadeIn();
         if (newValue <= 100)
