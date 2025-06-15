@@ -37,8 +37,8 @@ public class GameProgressController : NetworkBehaviour
         }
         this.PrayCountNow.OnValueChanged += PrayCountNowOnValueChanged;
     }
-
-    public void OnPrayedButsudan()
+    [ServerRpc]
+    public void OnPrayedButsudanRequestServerRpc()
     {
         PrayCountNow.Value += 1;
     }
