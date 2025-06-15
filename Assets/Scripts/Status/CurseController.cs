@@ -64,15 +64,15 @@ public class CurseController : NetworkSingleton<CurseController>
         item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
-
-    }
-    public override void OnNetworkSpawn()
-    {
-        horror_director = HorrorDirector.Instance;
         this.OnValueChangeCurseEvent.AddListener(() =>
         {
             CurseGageUI.DOValue(this.CurseValueNow.Value / 100.0f, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
         });
+    }
+    public override void OnNetworkSpawn()
+    {
+        horror_director = HorrorDirector.Instance;
+
         this.OnCurseGageMaxEvent.AddListener(() =>
         {
             CurseMaxed(CurseMaxEventWhileTime);
