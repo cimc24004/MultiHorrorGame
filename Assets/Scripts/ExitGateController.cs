@@ -21,7 +21,7 @@ public class ExitGateController : Singleton<ExitGateController>
     {
         m_Animator = this.gameObject.GetComponent<Animator>();
         pray_controller = this.gameObject.GetComponent<PrayController>();
-        game_progress_controller = GameProgressController.instance;
+        game_progress_controller = GameProgressController.Instance;
     }
 
     // Update is called once per frame
