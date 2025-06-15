@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
-public class GameProgressController : Singleton<GameProgressController>
+using Unity.Netcode;
+public class GameProgressController : NetworkSingleton<GameProgressController>
 {
     [Header("お祈りが必要な数")]
     public int NeedPrayCount = 5;
 
     [Header("現在のお祈り数")]
-    public int PrayCountNow = 0;
+    public NetworkVariable<int> PrayCountNow = new NetworkVariable<int>(0);
 
     public bool DeliverItemGeted;
     
@@ -25,7 +26,8 @@ public class GameProgressController : Singleton<GameProgressController>
     [SerializeField] private Dictionary<string, GameToDoListUIData> TodoName_with_game_todo_list_ui_datas;
     [SerializeField]private TextMeshProUGUI ButsudanCountNowTextUI;
     // Start is called before the first frame update
-    void Start()
+
+    public override void OnNetworkSpawn()
     {
         ButsudanCountNowTextUI.text = $"{PrayCountNow}/{NeedPrayCount}";
         int index = 0;
@@ -35,25 +37,28 @@ public class GameProgressController : Singleton<GameProgressController>
             }
             index++;
         }
+        this.PrayCountNow.OnValueChanged += PrayCountNowOnValueChanged;
     }
-
 
     public void OnPrayedButsudan()
     {
-        PrayCountNow++;
-        ButsudanCountNowTextUI.text = $"{PrayCountNow}/{NeedPrayCount}";
-        if (PrayCountNow >= NeedPrayCount)
+        PrayCountNow.Value += 1;
+    }
+    private void PrayCountNowOnValueChanged(int _PrayCountNow, int _)
+    {
+        //全クライアントに共有
+        ButsudanCountNowTextUI.text = $"{_PrayCountNow}/{NeedPrayCount}";
+        FadeOutTextUI(TodoName_with_game_todo_list_ui_datas["OnPrayedButsudan"].TodoTextUI);
+        FadeOutTextUI(ButsudanCountNowTextUI);
+        FadeInTextUI(TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoTextUI);
+        if (_PrayCountNow >= NeedPrayCount)
         {
-            ButsudanCountNowTextUI.text = $"{PrayCountNow}/{NeedPrayCount}";
-            FadeOutTextUI(TodoName_with_game_todo_list_ui_datas["OnPrayedButsudan"].TodoTextUI);
-            FadeOutTextUI(ButsudanCountNowTextUI);
-            FadeInTextUI(TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoTextUI);
+            ButsudanCountNowTextUI.text = $"{_PrayCountNow}/{NeedPrayCount}";
             DOVirtual.DelayedCall(1, () => {
                 TodoName_with_game_todo_list_ui_datas["OnPrayedButsudan"].TodoBox.gameObject.SetActive(false);
             });
         }
     }
-
     public void OnItemGeted()
     {
         DeliverItemGeted = true;
