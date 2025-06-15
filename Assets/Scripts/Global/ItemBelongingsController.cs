@@ -253,7 +253,7 @@ public class ItemBelongingsController : NetworkBehaviour
         // 自分のアイテムGlobalIdを渡す
         CanUseItemServerRpc(status.GlobalId, canUse);
     }
-
+    [ServerRpc]
     // 2) サーバー側で実行
     private void CanUseItemServerRpc(uint itemGlobalId, bool canUse, ServerRpcParams rpcParams = default)
     {
