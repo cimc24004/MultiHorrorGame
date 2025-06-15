@@ -247,10 +247,42 @@ public class ItemBelongingsController : NetworkBehaviour
     public bool WhichCanUseItem(ItemStatus s)
         => belonging_items[s].CanUse;
 
-    public void CanUseItem(bool can, ItemStatus s)
+    // 1) クライアント呼び出し用
+    public void RequestCanUseItem(bool canUse, ItemStatus status)
     {
-        belonging_items[s].CanUse = can;
-        item_menu_controller.OnCanItemUseChangeUI(can, s);
+        // 自分のアイテムGlobalIdを渡す
+        CanUseItemServerRpc(status.GlobalId, canUse);
+    }
+
+    // 2) サーバー側で実行
+    private void CanUseItemServerRpc(uint itemGlobalId, bool canUse, ServerRpcParams rpcParams = default)
+    {
+        var status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
+        if (status == null || !belonging_items.ContainsKey(status)) return;
+
+        // サーバーで権限を担保して更新
+        belonging_items[status].CanUse = canUse;
+
+        // 結果を送信。発行元クライアントだけに返したいなら rpcParams.SourceClientId を使う
+        var clientRpcParams = new ClientRpcParams {
+            Send = new ClientRpcSendParams {
+                TargetClientIds = new ulong[]{ rpcParams.Receive.SenderClientId }
+            }
+        };
+        CanUseItemClientRpc(itemGlobalId, canUse, clientRpcParams);
+    }
+
+    // 3) クライアント側で実行
+    [ClientRpc]
+    private void CanUseItemClientRpc(uint itemGlobalId, bool canUse, ClientRpcParams rpcParams = default)
+    {
+        var status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
+        if (status == null || !belonging_items.ContainsKey(status)) return;
+
+        // ローカル辞書も更新して…
+        belonging_items[status].CanUse = canUse;
+        // UI 更新
+        item_menu_controller.OnCanItemUseChangeUI(canUse, status);
     }
 
     public List<ItemStatus> ItemFindByItemType(ItemStatus.ItemType t)
