@@ -148,7 +148,7 @@ public class CurseController : NetworkSingleton<CurseController>
         }
         if (curse_event_type == CurseEventType.PlayerStamina)
         {
-            player_stamina_controller.StaminaEnableDisableRequestServerRpc(true);
+            this.PlayerStaminaZeroResetToAllPlayerClientRpc();
         }
         CurseMaxEventWhileTimeNow = 0;
         CurseMaxedEventNow = false;
@@ -190,7 +190,11 @@ public class CurseController : NetworkSingleton<CurseController>
         });
         player_stamina_controller.StaminaEnableDisableRequestServerRpc(false);
     }
-
+    [ClientRpc]
+    private void PlayerStaminaZeroResetToAllPlayerClientRpc()
+    {
+        player_stamina_controller.StaminaEnableDisableRequestServerRpc(true);
+    }
 
     [Button]
     public void CurseIncrease(float CurseRetakePower)
