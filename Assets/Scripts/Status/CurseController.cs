@@ -28,8 +28,6 @@ public class CurseController : NetworkSingleton<CurseController>
     private float CurseMaxValue = 100;
 
     [SerializeField] private Slider CurseGageUI;
-
-    [SerializeField] public UnityEvent2 OnValueChangeCurseEvent;
     [SerializeField] public UnityEvent2 OnCurseGageMaxEvent;
 
     private GameObject InstantiatedMiko;
@@ -59,15 +57,13 @@ public class CurseController : NetworkSingleton<CurseController>
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
-        this.OnValueChangeCurseEvent.AddListener(() =>
-        {
-            CurseGageUI.DOValue(this.CurseValueNow.Value / 100.0f, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
-        });
+        this.CurseValueNow.OnValueChanged += OnValueChangeCurseEvent;
     }
     public override void OnNetworkSpawn()
     {
@@ -115,18 +111,19 @@ public class CurseController : NetworkSingleton<CurseController>
         int i = UnityEngine.Random.Range(0, 3);
         //ランダムで何かの関数を実行するとする
         CurseMaxedEventNow = true;
-        if(i == 0)
+        if (i == 0)
         {
             MikoInstantiate();
 
         }
-        else if(i == 1)
+        else if (i == 1)
         {
-            ItemLock(() => {
+            ItemLock(() =>
+            {
                 CurseMaxed(CurseMaxEventWhileTime);
             });
         }
-        else if(i == 2)
+        else if (i == 2)
         {
             PlayerStaminaZero();
         }
@@ -135,11 +132,12 @@ public class CurseController : NetworkSingleton<CurseController>
     public void CurseMaxedReset()
     {
         sub_noticed_ui_controller.Notice("呪いの影響がすべて消滅した……");
-        if(curse_event_type == CurseEventType.MikoInstantiate)
+        if (curse_event_type == CurseEventType.MikoInstantiate)
         {
             if (InstantiatedMiko != null)
             {
-                if(horror_director.nearEnemyCount == 0 && horror_director.discoveredEnemyCount == 0){
+                if (horror_director.nearEnemyCount == 0 && horror_director.discoveredEnemyCount == 0)
+                {
                     horror_director.ChangeHorrorState(HorrorState.None);
                 }
                 horror_director.MainBGMReset();
@@ -156,19 +154,20 @@ public class CurseController : NetworkSingleton<CurseController>
             //リセットされるときにしっかりとアイテムはロック解除しておく。
             item_belongings_controller.CanUseItem(true, locked_item_status);
         }
-        
+
         CurseMaxEventWhileTimeNow = 0;
         CurseMaxedEventNow = false;
     }
     private void MikoInstantiate()
     {
         sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
-        DOVirtual.DelayedCall(1, () => {
+        DOVirtual.DelayedCall(1, () =>
+        {
             sub_noticed_ui_controller.Notice("闇に潜む巫女が目を覚ました……");
         });
         //もうすでに作ってあるなら無視
         if (InstantiatedMiko != null) return;
-        
+
         curse_event_type = CurseEventType.MikoInstantiate;
         InstantiatedMiko = Instantiate(MikoPrefab, MikoApperancePlaceTrans.position, Quaternion.identity);
         horror_director.MikoApperance();
@@ -176,7 +175,7 @@ public class CurseController : NetworkSingleton<CurseController>
     }
     private void ItemLock(Action ActionWhenNoneItems)
     {
-        if(!item_belongings_controller.ExistsItems()) return;
+        if (!item_belongings_controller.ExistsItems()) return;
         List<ItemStatus> target_item_statues = item_belongings_controller.belonging_items.Keys.Where(x => x.item_type == ItemStatus.ItemType.Consumable || x.item_type == ItemStatus.ItemType.CanThrow).ToList();
         if (target_item_statues.Count == 0)
         {
@@ -189,7 +188,8 @@ public class CurseController : NetworkSingleton<CurseController>
         locked_item_status = taget_item_status;
         //アイテムを使えなくする。
         sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
-        DOVirtual.DelayedCall(1, () => {
+        DOVirtual.DelayedCall(1, () =>
+        {
             sub_noticed_ui_controller.Notice($"{locked_item_status.ItemName}は呪いによって\nしばらくの間使用不能になった……");
         });
         item_belongings_controller.CanUseItem(false, locked_item_status);
@@ -199,7 +199,8 @@ public class CurseController : NetworkSingleton<CurseController>
     {
         curse_event_type = CurseEventType.PlayerStamina;
         sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
-        DOVirtual.DelayedCall(1, () => {
+        DOVirtual.DelayedCall(1, () =>
+        {
             sub_noticed_ui_controller.Notice("しばらくの間スタミナが枯渇し、\n動きが鈍くなる……");
         });
     }
@@ -214,7 +215,6 @@ public class CurseController : NetworkSingleton<CurseController>
     public void CurseIncrease(float CurseRetakePower)
     {
         //CurseIncreaseはServerが側で実行
-        OnValueChangeCurseEvent.Invoke();
         if (CurseMaxValue >= CurseValueNow.Value + CurseRetakePower)
         {
             CurseValueNow.Value += CurseRetakePower;
@@ -235,13 +235,15 @@ public class CurseController : NetworkSingleton<CurseController>
         //Server側で実行
         if ((CurseValueNow.Value - CurseReducedPower) >= 0)
         {
-            OnValueChangeCurseEvent.Invoke();
-
             CurseValueNow.Value -= CurseReducedPower;
         }
         else
         {
             CurseValueNow.Value = 0;
         }
+    }
+    
+    private void OnValueChangeCurseEvent(float old, float newValue){
+            CurseGageUI.DOValue(newValue / 100.0f, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
     }
 }
