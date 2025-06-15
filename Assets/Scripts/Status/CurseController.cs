@@ -7,6 +7,7 @@ using DG.Tweening;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
+using Unity.Netcode;
 public class CurseController : NetworkSingleton<CurseController>
 {
     public enum CurseEventType
@@ -21,7 +22,7 @@ public class CurseController : NetworkSingleton<CurseController>
 
     [SerializeField]
     [Header("現在の呪いゲージ値")]
-    public float CurseValueNow = 0;
+    public NetworkVariable<float> CurseValueNow = new NetworkVariable<float>(0);
     [SerializeField]
     [Header("呪いゲージのMAX値")]
     private float CurseMaxValue = 100;
@@ -36,7 +37,6 @@ public class CurseController : NetworkSingleton<CurseController>
     private SubNoticedUIController sub_noticed_ui_controller;
     private PlayerStaminaController player_stamina_controller;
     private ItemBelongingsController item_belongings_controller;
-    private ItemMenuController item_menu_controller;
     public bool CurseMaxedEventNow;
     [SerializeField]
     //呪いゲージがマックスになった時イベントが起こり続ける時間
@@ -62,7 +62,6 @@ public class CurseController : NetworkSingleton<CurseController>
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
         player_status = _playerStatus;
         item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
-        item_menu_controller = item_belongings_controller.item_menu_controller;
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
 
@@ -72,6 +71,7 @@ public class CurseController : NetworkSingleton<CurseController>
         horror_director = HorrorDirector.Instance;
         this.OnValueChangeCurseEvent.AddListener(() =>
         {
+            CurseGageUI.DOValue(this.CurseValueNow.Value / 100.0f, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
         });
         this.OnCurseGageMaxEvent.AddListener(() =>
         {
@@ -81,26 +81,27 @@ public class CurseController : NetworkSingleton<CurseController>
     }
     private void Update()
     {
-        CurseGageUI.DOValue(this.CurseValueNow / 100.0f, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
+        if (!IsServer) return;
         if (CurseMaxedEventNow)
         {
             CurseMaxEventWhileTimeNow += Time.deltaTime;
-            
 
-            if(curse_event_type == CurseEventType.PlayerStamina)
+
+            if (curse_event_type == CurseEventType.PlayerStamina)
             {
                 PlayerStaminaZeroUpdate();
             }
 
-            if(CurseMaxEventWhileTimeNow > CurseMaxEventWhileTime)
+            if (CurseMaxEventWhileTimeNow > CurseMaxEventWhileTime)
             {
-                this.CurseDecrease(this.CurseValueNow);
+                this.CurseDecrease(this.CurseValueNow.Value);
                 CurseMaxedReset();
             }
         }
     }
     private void FixedUpdate()
     {
+        if (!IsServer) return;
         CurseIncrease(0.01f);
     }
 
@@ -212,16 +213,17 @@ public class CurseController : NetworkSingleton<CurseController>
     [Button]
     public void CurseIncrease(float CurseRetakePower)
     {
+        //CurseIncreaseはServerが側で実行
         OnValueChangeCurseEvent.Invoke();
-        if (CurseMaxValue >= CurseValueNow + CurseRetakePower)
+        if (CurseMaxValue >= CurseValueNow.Value + CurseRetakePower)
         {
-            CurseValueNow += CurseRetakePower;
+            CurseValueNow.Value += CurseRetakePower;
         }
         else
         {
-            CurseValueNow = CurseMaxValue;
+            CurseValueNow.Value = CurseMaxValue;
         }
-        if (CurseMaxValue <= CurseValueNow)
+        if (CurseMaxValue <= CurseValueNow.Value)
         {
             //呪いゲージがMAXを超えたなら
             OnCurseGageMaxEvent.Invoke();
@@ -230,15 +232,16 @@ public class CurseController : NetworkSingleton<CurseController>
     [Button]
     public void CurseDecrease(float CurseReducedPower)
     {
-        if ((CurseValueNow - CurseReducedPower) >= 0)
+        //Server側で実行
+        if ((CurseValueNow.Value - CurseReducedPower) >= 0)
         {
             OnValueChangeCurseEvent.Invoke();
 
-            CurseValueNow -= CurseReducedPower;
+            CurseValueNow.Value -= CurseReducedPower;
         }
         else
         {
-            CurseValueNow = 0;
+            CurseValueNow.Value = 0;
         }
     }
 }
