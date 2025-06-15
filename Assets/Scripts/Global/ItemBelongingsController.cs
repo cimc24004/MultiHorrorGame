@@ -40,8 +40,8 @@ public class ItemBelongingsController : NetworkBehaviour
     [HideInInspector] public ItemMenuController item_menu_controller;
 
     //── ランタイム用 ───────────────────────────
-    public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new Dictionary<ItemStatus, ItemCountWithPermit>();
-    public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new Dictionary<ItemStatus, ItemStatusUI>();
+    [ShowInInspector]public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new Dictionary<ItemStatus, ItemCountWithPermit>();
+    [ShowInInspector]public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new Dictionary<ItemStatus, ItemStatusUI>();
 
     private ItemThrowController     item_throw_controller;
     private PlayerStatus            player_status;
