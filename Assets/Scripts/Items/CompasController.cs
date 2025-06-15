@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CompasController : MonoBehaviour
+public class CompasController : NetworkBehaviour
 {
     [Header("コンパスの磁針を指定")]
     [SerializeField] private GameObject CompasBlue;
@@ -32,20 +33,26 @@ public class CompasController : MonoBehaviour
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    void Start()
-    {
+    // public override void OnNetworkSpawn()
+    // {
 
-        pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
-        deliver_memory_place = DeliverMemoryPlace.instance;
-        exit_gate_controller = ExitGateController.instance;
-        BlueTargetDirectionTransform = pray_to_deliver_item_appear_place.gameObject.transform;
-        RedTargetDirectionTransform = deliver_memory_place.gameObject.transform;
-        GreenTargetDirectionTransform = exit_gate_controller.gameObject.transform;
-    }
-    void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    // }
+    // void Start()
+    // {
+
+
+    // }
+    void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         Player = player_status.gameObject;
         MainCamera = player_status.virtual_camera.gameObject;
+        pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
+        deliver_memory_place = DeliverMemoryPlace.instance;
+        exit_gate_controller = ExitGateController.Instance;
+        BlueTargetDirectionTransform = pray_to_deliver_item_appear_place.gameObject.transform;
+        RedTargetDirectionTransform = deliver_memory_place.gameObject.transform;
+        GreenTargetDirectionTransform = exit_gate_controller.gameObject.transform;
     }
     void Update()
     {

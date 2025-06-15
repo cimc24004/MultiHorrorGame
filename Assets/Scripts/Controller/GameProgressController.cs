@@ -5,7 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using Unity.Netcode;
-public class GameProgressController : NetworkSingleton<GameProgressController>
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+public class GameProgressController : NetworkBehaviour
 {
     [Header("お祈りが必要な数")]
     public int NeedPrayCount = 5;
@@ -17,22 +19,18 @@ public class GameProgressController : NetworkSingleton<GameProgressController>
     
     public bool DeliveredToSakura;
 
-    private class GameToDoListUIData{
-        public TextMeshProUGUI TodoTextUI;
-        public GameObject TodoBox;
-    }
-
-    [Header("UI情報")]
-    [SerializeField] private Dictionary<string, GameToDoListUIData> TodoName_with_game_todo_list_ui_datas;
-    [SerializeField]private TextMeshProUGUI ButsudanCountNowTextUI;
+    private GameProgressUIData game_progress_ui_data;
     // Start is called before the first frame update
 
     public override void OnNetworkSpawn()
     {
-        ButsudanCountNowTextUI.text = $"{PrayCountNow}/{NeedPrayCount}";
         int index = 0;
-        foreach(GameToDoListUIData game_to_do_list_ui_data in TodoName_with_game_todo_list_ui_datas.Values){
-            if(index != 0){
+        game_progress_ui_data = this.gameObject.GetComponent<GameProgressUIData>();
+        game_progress_ui_data.ButsudanCountNowTextUI.text = $"{PrayCountNow.Value}/{NeedPrayCount}";
+        foreach (GameProgressUIData.GameToDoListUIData game_to_do_list_ui_data in game_progress_ui_data.TodoName_with_game_todo_list_ui_datas.Values)
+        {
+            if (index != 0)
+            {
                 game_to_do_list_ui_data.TodoTextUI.alpha = 0.2f;
             }
             index++;
@@ -44,37 +42,40 @@ public class GameProgressController : NetworkSingleton<GameProgressController>
     {
         PrayCountNow.Value += 1;
     }
-    private void PrayCountNowOnValueChanged(int _PrayCountNow, int _)
+    private void PrayCountNowOnValueChanged(int _oldPrayCountNow, int _PrayCountNow)
     {
         //全クライアントに共有
-        ButsudanCountNowTextUI.text = $"{_PrayCountNow}/{NeedPrayCount}";
-        FadeOutTextUI(TodoName_with_game_todo_list_ui_datas["OnPrayedButsudan"].TodoTextUI);
-        FadeOutTextUI(ButsudanCountNowTextUI);
-        FadeInTextUI(TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoTextUI);
+        Debug.Log("OnValueChanged1 : " + _PrayCountNow);
+        Debug.Log("OnValueChanged2 : " + _oldPrayCountNow);
+        Debug.Log("NeedPrayCount: " + NeedPrayCount);
+        game_progress_ui_data.ButsudanCountNowTextUI.text = $"{_PrayCountNow}/{NeedPrayCount}";
         if (_PrayCountNow >= NeedPrayCount)
         {
-            ButsudanCountNowTextUI.text = $"{_PrayCountNow}/{NeedPrayCount}";
+            FadeOutTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnPrayedButsudan"].TodoTextUI);
+            FadeOutTextUI(game_progress_ui_data.ButsudanCountNowTextUI);
+            FadeInTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoTextUI);
+            game_progress_ui_data.ButsudanCountNowTextUI.text = $"{_PrayCountNow}/{NeedPrayCount}";
             DOVirtual.DelayedCall(1, () => {
-                TodoName_with_game_todo_list_ui_datas["OnPrayedButsudan"].TodoBox.gameObject.SetActive(false);
+                game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnPrayedButsudan"].TodoBox.gameObject.SetActive(false);
             });
         }
     }
     public void OnItemGeted()
     {
         DeliverItemGeted = true;
-        FadeOutTextUI(TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoTextUI);
-        FadeInTextUI(TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoTextUI);
+        FadeOutTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoTextUI);
+        FadeInTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoTextUI);
         DOVirtual.DelayedCall(1, () => {
-            TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoBox.gameObject.SetActive(false);
+            game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoBox.gameObject.SetActive(false);
         });
     }
 
     public void OnDeliverSakura(){
         DeliveredToSakura = true;
-        FadeOutTextUI(TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoTextUI);
-        FadeInTextUI(TodoName_with_game_todo_list_ui_datas["Escape"].TodoTextUI);
+        FadeOutTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoTextUI);
+        FadeInTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["Escape"].TodoTextUI);
         DOVirtual.DelayedCall(1, () => {
-            TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoBox.gameObject.SetActive(false);
+            game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoBox.gameObject.SetActive(false);
         });
     }
 

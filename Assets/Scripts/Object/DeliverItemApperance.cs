@@ -23,7 +23,7 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
     {
         item_databases = ItemDatabases.instance;
         audio_source = this.gameObject.GetComponent<AudioSource>();
-        game_progress_controller = GameProgressController.Instance;
+        game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
     }
 
     // Update is called once per frame

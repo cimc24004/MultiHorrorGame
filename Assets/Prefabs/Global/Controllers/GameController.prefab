@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 310270129932899514}
   - component: {fileID: 490329350961075074}
   - component: {fileID: 7249805406758919115}
+  - component: {fileID: 564485258932695814}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -101,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 46236746
+  GlobalObjectIdHash: 3755845760
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -143,132 +144,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 788c08c798eb7e148a9202e3febcbade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1312059543374122871}
-    - {fileID: 6475365386578038148}
-    - {fileID: 6827895754936162809}
-    - {fileID: 1524977214007794442}
-    - {fileID: 1641065415931307070}
-    - {fileID: 6714442616662025933}
-    - {fileID: 91386294063498482}
-    - {fileID: 5380933939334432257}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: TodoName_with_game_todo_list_ui_datas
-      Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[GameProgressController+GameToDoListUIData,
-        Assembly-CSharp]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
-        mscorlib]], mscorlib
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 4
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 1
-      Data: OnPrayedButsudan
-    - Name: $v
-      Entry: 7
-      Data: 2|GameProgressController+GameToDoListUIData, Assembly-CSharp
-    - Name: TodoTextUI
-      Entry: 10
-      Data: 0
-    - Name: TodoBox
-      Entry: 10
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 1
-      Data: OnItemGeted
-    - Name: $v
-      Entry: 7
-      Data: 3|GameProgressController+GameToDoListUIData, Assembly-CSharp
-    - Name: TodoTextUI
-      Entry: 10
-      Data: 2
-    - Name: TodoBox
-      Entry: 10
-      Data: 3
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 1
-      Data: OnDeliverSakura
-    - Name: $v
-      Entry: 7
-      Data: 4|GameProgressController+GameToDoListUIData, Assembly-CSharp
-    - Name: TodoTextUI
-      Entry: 10
-      Data: 4
-    - Name: TodoBox
-      Entry: 10
-      Data: 5
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 1
-      Data: Escape
-    - Name: $v
-      Entry: 7
-      Data: 5|GameProgressController+GameToDoListUIData, Assembly-CSharp
-    - Name: TodoTextUI
-      Entry: 10
-      Data: 6
-    - Name: TodoBox
-      Entry: 10
-      Data: 7
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+  ShowTopMostFoldoutHeaderGroup: 1
   NeedPrayCount: 5
-  PrayCountNow: 0
+  PrayCountNow:
+    m_InternalValue: 0
   DeliverItemGeted: 0
   DeliveredToSakura: 0
-  ButsudanCountNowTextUI: {fileID: 4510057207935889694}
 --- !u!114 &310270129932899514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +249,140 @@ MonoBehaviour:
   before_open_permit_by_key_controller: {fileID: 0}
   NeedKeysCount: 0
   open_permit_by_key_controllers: []
+--- !u!114 &564485258932695814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212090357542631498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa0b5d6119243e6449f8a168e18395d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 1312059543374122871}
+    - {fileID: 6475365386578038148}
+    - {fileID: 6827895754936162809}
+    - {fileID: 1524977214007794442}
+    - {fileID: 1641065415931307070}
+    - {fileID: 6714442616662025933}
+    - {fileID: 91386294063498482}
+    - {fileID: 5380933939334432257}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: TodoName_with_game_todo_list_ui_datas
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[GameProgressUIData+GameToDoListUIData,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: OnPrayedButsudan
+    - Name: $v
+      Entry: 7
+      Data: 2|GameProgressUIData+GameToDoListUIData, Assembly-CSharp
+    - Name: TodoTextUI
+      Entry: 10
+      Data: 0
+    - Name: TodoBox
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: OnDeliverSakura
+    - Name: $v
+      Entry: 7
+      Data: 3|GameProgressUIData+GameToDoListUIData, Assembly-CSharp
+    - Name: TodoTextUI
+      Entry: 10
+      Data: 2
+    - Name: TodoBox
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: OnItemGeted
+    - Name: $v
+      Entry: 7
+      Data: 4|GameProgressUIData+GameToDoListUIData, Assembly-CSharp
+    - Name: TodoTextUI
+      Entry: 10
+      Data: 4
+    - Name: TodoBox
+      Entry: 10
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Escape
+    - Name: $v
+      Entry: 7
+      Data: 5|GameProgressUIData+GameToDoListUIData, Assembly-CSharp
+    - Name: TodoTextUI
+      Entry: 10
+      Data: 6
+    - Name: TodoBox
+      Entry: 10
+      Data: 7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  ButsudanCountNowTextUI: {fileID: 4510057207935889694}
 --- !u!1 &2450293162203496801
 GameObject:
   m_ObjectHideFlags: 0

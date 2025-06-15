@@ -15,19 +15,35 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     [SerializeField] private AudioSource OpenAudioSource;
     [SerializeField] private AudioSource CloseAudioSource;
     [SerializeField] private AudioSource OpenCompletedAudioSource;
+    private PlayerStatus player_status;
 
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
         m_Animator = this.gameObject.GetComponent<Animator>();
         pray_controller = this.gameObject.GetComponent<PrayController>();
-        game_progress_controller = GameProgressController.Instance;
+        game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
     }
-
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitOnPlayerSpawn(PlayerStatus.LocalInstance);
+        }
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
+        player_status = _playerStatus;
+    }
     // Update is called once per frame
     void Update()
     {
-        if(OnCompleteDoorOpen) return;
+        if(OnCompleteDoorOpen || player_status == null) return;
         if(game_progress_controller.DeliveredToSakura){
             //すでにサクラの木に納めてるならドアを開けられる
             this.gameObject.tag = "Pray";

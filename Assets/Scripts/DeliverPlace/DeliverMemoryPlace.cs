@@ -19,7 +19,7 @@ public class DeliverMemoryPlace : Singleton<DeliverMemoryPlace>
     {
         player_status = PlayerStatus.LocalInstance;
         item_databases = ItemDatabases.instance;
-        game_progress_controller = GameProgressController.Instance;
+        game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
     }
 
     // Update is called once per frame
