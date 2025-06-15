@@ -27,10 +27,10 @@ public class PlayerStaminaController : NetworkBehaviour
         default_color = fillRectImageUI.color;
         player_status = this.gameObject.GetComponent<PlayerStatus>();
         ui_fade_controller = stamina_slider.gameObject.GetComponent<UIFadeController>();
-        if (IsOwner)
-        {
+        // if (IsOwner)
+        // {
             player_status.StaminaValueNow.OnValueChanged += OnValueChangedStamina;
-        }
+        // }
     }
 
     private void FixedUpdate()
