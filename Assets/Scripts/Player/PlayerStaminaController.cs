@@ -27,10 +27,10 @@ public class PlayerStaminaController : NetworkBehaviour
         default_color = fillRectImageUI.color;
         player_status = this.gameObject.GetComponent<PlayerStatus>();
         ui_fade_controller = stamina_slider.gameObject.GetComponent<UIFadeController>();
-        // if (IsOwner)
-        // {
+        if (IsOwner)
+        {
             player_status.StaminaValueNow.OnValueChanged += OnValueChangedStamina;
-        // }
+        }
     }
 
     private void FixedUpdate()
@@ -93,13 +93,19 @@ public class PlayerStaminaController : NetworkBehaviour
         {
             this.player_status.StaminaValueAutoIncrease.Value = false;
             player_status.StaminaValueNow.Value = 0;
+            StaminaUIZeroClientRpc();
         }
         else
         {
             this.player_status.StaminaValueAutoIncrease.Value = true;
         }
     }
-    private void OnValueChangedStamina(float newValue, float oldValue) {
+    [ClientRpc]
+    private void StaminaUIZeroClientRpc(){
+        stamina_slider.DOValue(0, 0.1f).SetLink(this.gameObject);
+    }
+    private void OnValueChangedStamina(float newValue, float oldValue)
+    {
         Debug.Log("OnValuChangedStamina");
         ui_fade_controller.AutoFadeIn();
         if (newValue <= 100)
