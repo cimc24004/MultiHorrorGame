@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using Unity.Netcode;
-public class CurseDecreaseController : NetworkBehaviour
+public class CurseDecreaseController : MonoBehaviour
 {
     private PlayerStatus player_status;
     private GameObject CrossHairCanvas;
@@ -18,13 +17,13 @@ public class CurseDecreaseController : NetworkBehaviour
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         CrossHairCanvas = player_status.cross_hair_event.gameObject;
-    }
-    public override void OnNetworkSpawn()
-    {
-        curse_controller = CurseController.Instance;
+        curse_controller = CurseController.Instance 
+                    ?? FindObjectOfType<CurseController>();
+
     }
 
     // Update is called once per frame
@@ -35,7 +34,9 @@ public class CurseDecreaseController : NetworkBehaviour
 
     public void CurseDecrease()
     {
-        if(curse_controller.CurseMaxedEventNow){
+
+        if (curse_controller.CurseMaxedEventNow)
+        {
             //呪い値がマックスならば、CurseMaxedEventをリセット！
             curse_controller.CurseMaxedReset();
         }
