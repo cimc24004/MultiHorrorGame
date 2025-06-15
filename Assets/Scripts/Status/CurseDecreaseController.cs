@@ -35,8 +35,8 @@ public class CurseDecreaseController : NetworkBehaviour
 
     public void CurseDecrease()
     {
-        Debug.Log("CurseDecrease!!!!!!!!!!!!!!!!!!!!!!");
         if(curse_controller.CurseMaxedEventNow){
+            //呪い値がマックスならば、CurseMaxedEventをリセット！
             curse_controller.CurseMaxedReset();
         }
         player_status.sub_noticed_ui_controller.Notice("呪い値が下がった");

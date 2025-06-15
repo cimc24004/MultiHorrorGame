@@ -78,6 +78,7 @@ public class CurseController : NetworkSingleton<CurseController>
 
             if (CurseMaxEventWhileTimeNow > CurseMaxEventWhileTime)
             {
+                //マックスに達してある程度時間がたったら0にするといった感じ。
                 this.CurseDecrease(this.CurseValueNow.Value);
                 CurseMaxedReset();
             }
