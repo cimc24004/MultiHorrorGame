@@ -30,7 +30,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
                 Debug.Log($"OnClientConnected: {clientId}");
                 Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
                 NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
-                pObj.SpawnAsPlayerObject(clientId);
+                pObj.SpawnAsPlayerObject(clientId, true);
 
             }
         }

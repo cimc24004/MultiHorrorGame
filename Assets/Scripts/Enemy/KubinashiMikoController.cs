@@ -26,7 +26,7 @@ public class KubinashiMikoController : MonoBehaviour
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
-        horror_director = HorrorDirector.Instance;
+        horror_director = HorrorDirector.instance;
         enemy_action_for_door_controller = this.gameObject.GetComponent<EnemyActionForDoorController>();
     }
 

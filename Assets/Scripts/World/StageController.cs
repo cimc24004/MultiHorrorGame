@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
-public class StageController : NetworkSingleton<StageController>
+using System;
+public class StageController : Singleton<StageController>
 {
     public CursorLockMode DefaultCursorLockMode;
     public string NowSceneName;
@@ -35,10 +36,7 @@ public class StageController : NetworkSingleton<StageController>
 
         NowSceneName = SceneManager.GetActiveScene().name;
     }
-    public override void OnNetworkSpawn()
-    {
 
-    }
 
     // Update is called once per frame
     void Update()

@@ -6488,7 +6488,7 @@ MonoBehaviour:
   cross_hair_event: {fileID: 3063867986630336566}
   player_hide_object_action: {fileID: 7228379173649806129}
   player_input: {fileID: 6754800367279928261}
-  flash_light_controller: {fileID: 0}
+  flash_light_controller: {fileID: 7590448557644487797}
   sub_noticed_ui_controller: {fileID: 8769203124032230796}
   main_noticed_ui_controller: {fileID: 1765592740080041507}
   GageCanvas: {fileID: 9075224308170336773}
@@ -6505,6 +6505,8 @@ MonoBehaviour:
   StaminaCost: 0.2
   StaminaValueNow:
     m_InternalValue: 0
+  StaminaValueAutoIncrease:
+    m_InternalValue: 1
   StaminaRetakePower: 0.6
   CanMinStaminaRun: 30
   HideActionAudioDatas: {fileID: 2952609976867138473}
@@ -7765,35 +7767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9ef6ffbeda8f484fbaf3fa9a13fa1b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: EnemiesWithPlayerNearSensors
-      Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[UnityEngine.GameObject, UnityEngine.CoreModule],[PlayerNearSensor,
-        Assembly-CSharp]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[UnityEngine.GameObject,
-        UnityEngine.CoreModule]], mscorlib
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+  ShowTopMostFoldoutHeaderGroup: 1
   NearEnemy: 0
 --- !u!54 &5474756954540797281
 Rigidbody:
@@ -17702,6 +17676,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7394193212534740619}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7590448557644487797 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1138217957705009918, guid: 7e60fe48001d7c04c94a4d727e2fb634,
+    type: 3}
+  m_PrefabInstance: {fileID: 7394193212534740619}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fa6cb86e7717cc4ea8c7b87bdef9729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!108 &8388951965552184987 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 1366553114579130384, guid: 7e60fe48001d7c04c94a4d727e2fb634,
@@ -17897,6 +17883,12 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 2916974180710713385, guid: 5aee47686e8f5e8489f95c6199729058,
+        type: 3}
+    - target: {fileID: 4170753717530780572, guid: 5aee47686e8f5e8489f95c6199729058,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 4170753717530780572, guid: 5aee47686e8f5e8489f95c6199729058,
         type: 3}
     - target: {fileID: 5766105088690865961, guid: 5aee47686e8f5e8489f95c6199729058,
         type: 3}

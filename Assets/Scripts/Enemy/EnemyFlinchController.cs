@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyFlinchController : MonoBehaviour
+public class EnemyFlinchController : NetworkBehaviour
 {
     private FollowObjectByNav follow_object_by_nav;
     private EnemyToPlayerKillController enemy_to_player_kill_controller;
@@ -23,7 +24,7 @@ public class EnemyFlinchController : MonoBehaviour
     private bool ChangeApplyMotionWhenFlinch = false;
     private bool DefaultApplyMotion;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
 using UnityEngine;
@@ -27,26 +28,20 @@ public class DiscoveryPlayerController : NetworkBehaviour
     public bool SightningPlayer;
     //プレイヤーが隠れた時に敵はその隠れた所を見ているかどうか。
     public bool SightningPlayerWhenHidePlayer;
-    
-    private GameObject Player;
-    private Transform PlayersHeadTransform;
     private FollowObjectByNav follow_object_nav;
-    private PlayerStatus player_status;
     private Animator anim;
     private RaycastHit raycast_hit;
     //プレイヤーが見つけられる範囲以内にいるかどうか。
-    public bool InsidePlayer;
     [HideInInspector]
     public Vector3 direction;
     private Vector3 DefaultPos;
-    private float ToPlayerDistance;
     private EnemyStatus enemy_status;
     private CameraEnemyFaceExpanding camera_enemy_face_expanding;
     private EnemyRoutingController enemy_routing_controller;
     private TimeManager time_manager;
     private MaterialChangeController material_change_controller;
     //private VisibleThroughTheWallController visible_through_the_wall_controller;
-    [SerializeField]private GameObject raycasted_obj;
+    [SerializeField] private GameObject raycasted_obj;
     //プレイヤーが自分の視界から外れている間の時間Now
     public float SightOutPlayerTimeNow;
 
@@ -55,28 +50,37 @@ public class DiscoveryPlayerController : NetworkBehaviour
     private bool DiscoveriedEventOnce;
     private bool NonDiscoveriedEventOnce;
     private SilhouetteChangeController silhouette_change_controller;
+    //発見したプレイヤーたち
+    [SerializeField]public List<GameObject> DiscoveriedPlayers = new List<GameObject>();
+    [SerializeField]private GameObject FirstKeyOfDiscoveriedPlayers;
+    private ToPlayersDistanceTracker to_players_distance_tracker;
+    [SerializeField, ShowInInspector] private Dictionary<GameObject, PlayerVisibilityMapStatus> PlayersVisibilityMapStatuesWithKey = new Dictionary<GameObject, PlayerVisibilityMapStatus>();
+    private class PlayerVisibilityMapStatus
+    {
+        public Vector3 ToPlayerDirection;
+        public bool InsidePlayer;
+        public bool InAngle;
+        public PlayerStatus player_status;
+    }
     // Start is called before the first frame update
-    void OnEnable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
-    }
-    void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
-    }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
-        player_status = _playerStatus;
-        Player = player_status.gameObject;
-        PlayersHeadTransform = player_status.HeadPos;
-    }
+    // void OnEnable()
+    // {
+    //     PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    // }
+    // void OnDisable()
+    // {
+    //     PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+    // }
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
+        to_players_distance_tracker = this.gameObject.GetComponent<ToPlayersDistanceTracker>();
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
         material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
         silhouette_change_controller = this.gameObject.GetComponent<SilhouetteChangeController>();
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
-
+        horror_director = HorrorDirector.instance;
         DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
@@ -84,25 +88,50 @@ public class DiscoveryPlayerController : NetworkBehaviour
         character_audio_controller = enemy_status.character_audio_controller;
         time_manager = TimeManager.instance;
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
-        horror_director = HorrorDirector.Instance;
         discovery_player_status = original_discovery_player_status;
+        StartCoroutine(DisctionarySet());
     }
-    
+    IEnumerator DisctionarySet()
+    {
+        yield return null;
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            Debug.Log("NetworkManager.Singleton.SpawnManager.PlayerObjects.Count: " + NetworkManager.Singleton.SpawnManager.PlayerObjects.Count);
+            NetworkObject PlayerNetworkObject = client.PlayerObject;
+            Debug.Log("PlayerNetworkObject: " + PlayerNetworkObject);
+            PlayerStatus playerStatus = PlayerNetworkObject.gameObject.GetComponent<PlayerStatus>();
+            PlayerVisibilityMapStatus player_visibility_map_status = new PlayerVisibilityMapStatus() { ToPlayerDirection = Vector3.zero, InAngle = false, InsidePlayer = false, player_status = playerStatus };
+            PlayersVisibilityMapStatuesWithKey.Add(PlayerNetworkObject.gameObject, player_visibility_map_status);
+        }
+    }
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
+        
+    }
+    private void OnLocalPlayerSpawned(PlayerStatus _) {
+
+    }
     // Update is called once per frame
     void Update()
     {
-        direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
-        ToPlayerDistance = Vector3.Distance(Player.transform.position, this.transform.position);
-        if (player_status.PlayerDeaded) {
-            enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-            follow_object_nav.ArrivedTarget = false;
-            enemy_routing_controller?.NearRouteSet();
-            DiscoveryPlayer(false);
-        } 
-        if (ToPlayerDistance <= discovery_player_status.PlayerDiscoveryRange)
-            InsidePlayer = true;
-        else
-            InsidePlayer = false;
+        if (!IsServer) return;
+        if (DiscoveriedPlayers.Count != 0)
+        {
+            //ここは後々必要になる。 一時的にオフ
+            // if (player_status.PlayerDeaded)
+            // {
+            //     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+            //     follow_object_nav.ArrivedTarget = false;
+            //     enemy_routing_controller?.NearRouteSet();
+            //     DiscoveryPlayer(false);
+            // }
+        }
+
         if (DiscoveryPlayerNow)
         {
             //horror_director.DiscoveryNow = true;
@@ -131,7 +160,10 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 NonDiscoveriedEventOnce = true;
             }
         }
-        anim.SetBool("PlayerHidingNow", player_status.HidingNow.Value);
+        if (DiscoveriedPlayers.Count != 0)
+        {
+            anim.SetBool("PlayerHidingNow", PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value);
+        }
         if (DiscoveryPlayerNow && !SightningPlayer)
         {
             //敵に見つかっているかつプレイヤーが見えてなかったら
@@ -150,8 +182,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 enemy_routing_controller?.NearRouteSet();
 
                 DiscoveryPlayer(false);
-
-
+                RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);
                 //follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
                 SightOutPlayerTimeNow = 0;
             }
@@ -165,7 +196,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
         if (SightningPlayer)
         {
-            if (player_status.HidingNow.Value)
+            if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
             {
                 //視認しているかつ隠れてる場合は隠れてること知ってるよー　変数をTrueに。
                 SightningPlayerWhenHidePlayer = true;
@@ -173,26 +204,42 @@ public class DiscoveryPlayerController : NetworkBehaviour
         }
         if (SightningPlayerWhenHidePlayer)
         {
-            if (ToPlayerDistance <= 2)
+            if (to_players_distance_tracker.ToPlayerDistanceLists[FirstKeyOfDiscoveriedPlayers] <= 2)
             {
                 //隠れてることがバレていてかつ近くにいたら場合はこの関数を実行。
-                player_status.player_hide_object_action.GetCoughtWhenHidingByEnemy(this.gameObject);
+                PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.player_hide_object_action.GetCoughtWhenHidingByEnemy(this.gameObject);
                 this.SightningPlayerWhenHidePlayer = false;
             }
         }
-        if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle && InsidePlayer)
+        foreach (KeyValuePair<GameObject, PlayerVisibilityMapStatus> PlayerVisibilityMapStatuesWithKey in PlayersVisibilityMapStatuesWithKey)
         {
-            //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
-            Debug.Log("プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか");
-            if(Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit,Mathf.Infinity, discovery_player_status.layerMask))
+            GameObject TargetPlayer = PlayerVisibilityMapStatuesWithKey.Key;
+            Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
+            direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
+            bool InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
+            PlayersVisibilityMapStatuesWithKey[TargetPlayer].InsidePlayer = InsidePlayer;
+            if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle && InsidePlayer)
+            {
+                //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
+                //壁は関係ない。
+                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = true;
+            }
+            else
+            {
+                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = false;
+                SightningPlayer = false;
+            }
+            
+            if (Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit, Mathf.Infinity, discovery_player_status.layerMask))
             {
                 raycasted_obj = raycast_hit.collider.gameObject;
                 //Raycastをプレイヤーにとりあえず飛ばす。
                 //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
                 if (raycast_hit.collider.gameObject.tag == "Player")
                 {
+                    AddPlayerToDiscoveryPlayerLists(TargetPlayer);
                     Debug.Log("Playerが敵に見つかりました！");
-                    if (!player_status.HidingNow.Value)
+                    if (!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
                     {
                         //プレイヤーを視認しているナウ。
                         SightningPlayer = true;
@@ -208,21 +255,23 @@ public class DiscoveryPlayerController : NetworkBehaviour
                     SightningPlayer = false;
                 }
             }
-            else {
+            else
+            {
                 SightningPlayer = false;
             }
+
         }
-        else
-        {
-            SightningPlayer = false;
-        }
+
+        
+        Debug.Log("プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか");
+    
         Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.green);
 
         if (DiscoveryPlayerNow && !SightningPlayerWhenHidePlayer)
         {
-            if(!SightningPlayer)
+            if (!SightningPlayer)
             {
-                if (player_status.HidingNow.Value)
+                if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
                 {
                     //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
                     follow_object_nav.StoppingDistance = 4;
@@ -257,19 +306,19 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
             }
 
-            follow_object_nav.ChaseToTargetSet(true, Player.transform.position, move_speed_controller.RunSpeed);
+            follow_object_nav.ChaseToTargetSet(true, FirstKeyOfDiscoveriedPlayers.transform.position, move_speed_controller.RunSpeed);
         }
         else
         {
 
         }
     }
-    
+
 
     private void OnDrawGizmos()
     {
         if (!DiscoveryPlayerBySightning) return;
-        if(discovery_player_status == null)
+        if (discovery_player_status == null)
             discovery_player_status = original_discovery_player_status;
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(EyePosition.transform.position, (Quaternion.Euler(0, -discovery_player_status.VisionFieldAngle, 0) * EyePosition.forward) * 10);
@@ -288,6 +337,44 @@ public class DiscoveryPlayerController : NetworkBehaviour
             discovery_player_status = _discovery_player_status;
         }
 
+    }
+    public void RemovePlayerOfDiscoveryPlayerLists(GameObject _Player)
+    {
+        if (DiscoveriedPlayers.Count != 0)
+        {
+            if (DiscoveriedPlayers.Contains(_Player))
+            {
+                DiscoveriedPlayers.Remove(_Player);
+                if (DiscoveriedPlayers.Count != 0)
+                {
+                    FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[0];
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+
+    }
+    public void AddPlayerToDiscoveryPlayerLists(GameObject _Player)
+    {
+        //見つけたプレイヤーたちをすべて格納するための情報
+        if (DiscoveriedPlayers.Count != 0)
+        {
+            //すでにプレイヤー追加されていないなら
+            if (!DiscoveriedPlayers.Contains(_Player))
+            {
+                DiscoveriedPlayers.Add(_Player);
+            }
+        }
+        else
+        {
+            //0個なら確認なしに挿入する。
+            DiscoveriedPlayers.Add(_Player);
+        }
+
+        FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[0];
     }
 
 }

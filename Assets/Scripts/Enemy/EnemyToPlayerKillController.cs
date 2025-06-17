@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class EnemyToPlayerKillController : MonoBehaviour
+public class EnemyToPlayerKillController : NetworkBehaviour
 {
     public Transform boxCenter;                  // 範囲の中心（敵の目の前に置く）
     public Vector3   boxHalfExtents = new(0.3f, 0.6f, 0.4f);
@@ -9,16 +10,32 @@ public class EnemyToPlayerKillController : MonoBehaviour
     private DiscoveryPlayerController discovery;
     private PlayerStatus              playerStatus;
     private Collider[] hitBuffer = new Collider[4];   // 最大ヒット数を決め打ちで確保
-
-    void Start()
+    private bool InitedPlayer;
+    public override void OnNetworkSpawn()
     {
-        discovery    = GetComponent<DiscoveryPlayerController>();
-        playerStatus = PlayerStatus.LocalInstance;
+        discovery    = this.gameObject.GetComponent<DiscoveryPlayerController>();
     }
-
+    private void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitWhenPlayerSpawned(PlayerStatus.LocalInstance);
+        }
+    }
+    private void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
+    }
+    private void InitWhenPlayerSpawned(PlayerStatus _playerStatus)
+    {
+        playerStatus = _playerStatus;
+        InitedPlayer = true;
+    }
     void Update()
     {
-        return;
+        // return;
+        if (!InitedPlayer) return;
         if (playerStatus.Dead.Value == true || playerStatus.HidingNow.Value == true || !discovery.DiscoveryPlayerNow)
             return;
 

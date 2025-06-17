@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System;
-public class EnemyRoutingController : SerializedMonoBehaviour
+using Unity.Netcode;
+public class EnemyRoutingController : NetworkBehaviour
 {
     private StageRoutings stage_routings;
     private FollowObjectByNav follow_object_by_nav;
@@ -36,10 +37,10 @@ public class EnemyRoutingController : SerializedMonoBehaviour
     [ShowIf("OriginalRouting")]
     public List<GameObject> Routings;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         //StageRoutingsからルーティングたちを取得。
-        stage_routings = StageController.Instance.gameObject.GetComponent<StageRoutings>();
+        stage_routings = StageController.instance.gameObject.GetComponent<StageRoutings>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         time_manager = TimeManager.instance;

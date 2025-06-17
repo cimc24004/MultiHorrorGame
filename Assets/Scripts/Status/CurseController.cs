@@ -45,7 +45,6 @@ public class CurseController : NetworkSingleton<CurseController>
 
     private ItemStatus locked_item_status;
     private HorrorDirector horror_director;
-
     [SerializeField] public AudioClip AppearanceMikoBGM;
 
     void OnEnable()
@@ -66,7 +65,7 @@ public class CurseController : NetworkSingleton<CurseController>
     }
     public override void OnNetworkSpawn()
     {
-        horror_director = HorrorDirector.Instance;
+        horror_director = HorrorDirector.instance;
     }
     private void Update()
     {
@@ -122,7 +121,7 @@ public class CurseController : NetworkSingleton<CurseController>
     }
     public void CurseMaxedReset()
     {
-        HorrorDirector horror_director = HorrorDirector.Instance;
+        HorrorDirector horror_director = HorrorDirector.instance;
         sub_noticed_ui_controller.Notice("éÙÇ¢ÇÃâeãøÇ™Ç∑Ç◊Çƒè¡ñ≈ÇµÇΩÅcÅc");
         if (curse_event_type == CurseEventType.MikoInstantiate)
         {

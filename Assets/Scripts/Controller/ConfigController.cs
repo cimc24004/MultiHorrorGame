@@ -44,7 +44,7 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        stage_controller = StageController.Instance;
+        stage_controller = StageController.instance;
         game_state_controller = game_controller_all_scene.gameObject.GetComponent<GameStateController>();
     }
 
@@ -82,7 +82,7 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        stage_controller = StageController.Instance;
+        stage_controller = StageController.instance;
         Debug.Log("StageController: " + stage_controller);
     }
 }

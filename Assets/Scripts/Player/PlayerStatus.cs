@@ -98,7 +98,7 @@ public class PlayerStatus : NetworkBehaviour
         player_hide_object_action = GetComponent<PlayerHideObjectAction>();
         item_belonging_controller = ItemController.GetComponent<ItemBelongingsController>();
         item_menu_controller = ItemController.GetComponent<ItemMenuController>();
-        horror_director = HorrorDirector.Instance;
+        horror_director = HorrorDirector.instance;
         player_to_enemy_distance_controller = GetComponent<PlayerToEnemyDistanceController>();
         player_move_script = GetComponent<PlayerMoveScript>();
         InitPlayer = true;
@@ -157,7 +157,7 @@ public class PlayerStatus : NetworkBehaviour
             EnemyStatus enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
             EnemyFlinchController flinch = enemy_status.enemy_flinch_controller;
             var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
-            if (items != null)
+            if (items.Count != 0)
             {
                 var item = items[0];
                 GameObject g = Instantiate(item.ItemThrowPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
@@ -186,10 +186,10 @@ public class PlayerStatus : NetworkBehaviour
 
         DOVirtual.DelayedCall(4, () =>
         {
-            SceneManager.LoadScene("GameOver");
+            // SceneManager.LoadScene("GameOver");
             PlayerDeaded = false;
             expand.FaceExpandingUnActive();
-            player_continue_controller.Continue();
+            // player_continue_controller.Continue();
         });
     }
 

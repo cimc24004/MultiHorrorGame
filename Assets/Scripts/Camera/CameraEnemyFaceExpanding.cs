@@ -3,22 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Sirenix.OdinInspector;
-public class CameraEnemyFaceExpanding : SerializedMonoBehaviour
+using Unity.Netcode;
+public class CameraEnemyFaceExpanding : NetworkBehaviour
 {
     //“G‚ÉŒ©‚Â‚©‚Á‚ÄG‚ê‚½‚É“G‚ÌŠç‚ªƒhƒAƒbƒv‚É‚È‚éB ‹°•|‰‰o
     [Required]public GameObject FaceExpandingCameraObj;
     private Animator anim;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         anim = this.gameObject.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     [Button]
     public void FaceExpandingActive(GameObject Player)
     {

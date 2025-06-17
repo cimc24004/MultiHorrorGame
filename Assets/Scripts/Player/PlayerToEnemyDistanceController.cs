@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
-public class PlayerToEnemyDistanceController : SerializedMonoBehaviour
+public class PlayerToEnemyDistanceController : NetworkBehaviour
 {
     // îÕàÕì‡ÇÃìGÇí«ê’Ç∑ÇÈÉäÉXÉg
     [SerializeField]
@@ -13,10 +15,13 @@ public class PlayerToEnemyDistanceController : SerializedMonoBehaviour
 
     private HorrorDirector horror_director;
     private ClosestEnemyController closest_enemy_controller;
-    private void Start()
+    void Start()
     {
-        horror_director = HorrorDirector.Instance;
+    }
+    public override void OnNetworkSpawn()
+    {
         closest_enemy_controller = ClosestEnemyController.instance;
+        horror_director = HorrorDirector.instance;
     }
 
     private void Update()

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class SoundEnemyObjectColliderForEvent : MonoBehaviour
+public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
 {
     //敵につける音センサーイベントスクリプト(プレイヤーの足音以外のアイテムから出る音など)
 
@@ -27,7 +28,7 @@ public class SoundEnemyObjectColliderForEvent : MonoBehaviour
     private MoveSpeedController move_speed_controller;
     // private List<GameObject> triggeries;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         enemy_status       = GetComponent<EnemyStatus>();
         follow_object_by_nav = GetComponent<FollowObjectByNav>();

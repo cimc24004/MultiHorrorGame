@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class EnemySoundSensor : MonoBehaviour
+public class EnemySoundSensor : NetworkBehaviour
 {
     //ë´âπÇ…ÇÊÇ¡ÇƒìGÇ™äÒÇ¡ÇƒÇ≠ÇÈã@î\ÅB
     private DiscoveryPlayerController discovery_player_controller;
@@ -40,22 +41,38 @@ public class EnemySoundSensor : MonoBehaviour
     //Ç‡Ç∆Ç‡Ç∆ÇÃScriptableObject
     private SoundSensorStatus original_sound_sensor_status;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        player_status = PlayerStatus.LocalInstance;
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
-        player_foot_step_sound_controller = player_status.foot_step_sound_controller;
         enemy_databases = EnemyDatabases.instance;
         sound_sensor_status = original_sound_sensor_status;
         enemy_all_controller = EnemyAllController.Instance;
-        Player = player_status.gameObject;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
         time_manager = TimeManager.instance;
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
+    }
+    private void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitWhenPlayerSpawned(PlayerStatus.LocalInstance);
+        }
+    }
+    private void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
+    }
+    private void InitWhenPlayerSpawned(PlayerStatus _playerStatus)
+    {
+        player_status = PlayerStatus.LocalInstance;
+        Player = player_status.gameObject;
+        player_foot_step_sound_controller = player_status.foot_step_sound_controller;
+
     }
     private void Update()
     {

@@ -6,7 +6,8 @@ using UnityEngine.Events;
 using System;
 using DG.Tweening;
 using UnityEngine.UIElements;
-public class FollowObjectByNav : MonoBehaviour
+using Unity.Netcode;
+public class FollowObjectByNav : NetworkBehaviour
 {
     //ただ追いかける為だけのクラス ここに直接イベントは書かないこと。
     private NavMeshAgent nav_mesh_agent;
@@ -23,7 +24,6 @@ public class FollowObjectByNav : MonoBehaviour
     public Vector3 ChaseTargetPosition;
 
     [SerializeField]public bool MovePermit = true;
-    private Vector3 Move;
     [HideInInspector]
     public float DefaultStoppingDistance;
     private Vector3 NavmeshNextPos;
@@ -33,7 +33,7 @@ public class FollowObjectByNav : MonoBehaviour
     private NavMeshHit nav_mesh_hit;
     private EnemyStatus enemy_status;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
         //rigid = this.gameObject.GetComponent<Rigidbody>();

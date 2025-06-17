@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-public class EnemyStatus : MonoBehaviour
+public class EnemyStatus : NetworkBehaviour
 {
     public enum EnemyMoveState
     {
@@ -42,7 +43,7 @@ public class EnemyStatus : MonoBehaviour
     [SerializeField]
     public UnityEvent OnChangeEnemyMoveEvent;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         character_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
@@ -52,9 +53,11 @@ public class EnemyStatus : MonoBehaviour
         anim = this.gameObject.GetComponent<Animator>();
         time_manager = TimeManager.instance;
     }
+    
+
     private void Update()
     {
-        if(foot_step_sound_controller != null)
+        if (foot_step_sound_controller != null)
         {
             switch (enemy_move_state)
             {

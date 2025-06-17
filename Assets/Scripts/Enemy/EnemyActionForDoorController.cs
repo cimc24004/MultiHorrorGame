@@ -36,7 +36,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
 
     [SerializeField] private GameObject AttackedDoorEffectPrefab;
     // Start は最初のフレーム前に呼ばれる
-    void Start()
+    public override void OnNetworkSpawn()
     {
         networkObject = this.gameObject.GetComponent<NetworkObject>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();

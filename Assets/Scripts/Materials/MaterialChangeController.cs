@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MaterialChangeController : MonoBehaviour
+public class MaterialChangeController : NetworkBehaviour
 {
     public bool MaterialChange;
     [Header("マテリアルが変更されてからデフォルトのマテリアルに戻るまでの時間")]

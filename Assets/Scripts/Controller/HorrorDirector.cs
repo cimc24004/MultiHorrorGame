@@ -4,7 +4,7 @@ using DG.Tweening;
 using Cinemachine;
 using Sirenix.OdinInspector;
 using UnityEngine.Rendering;
-
+using System;
 public enum HorrorState
 {
     None,             // í èÌèÛë‘
@@ -14,7 +14,7 @@ public enum HorrorState
     PlayerKilled //éEÇ≥ÇÍÇÈÅB
 }
 
-public class HorrorDirector : NetworkSingleton<HorrorDirector>
+public class HorrorDirector : Singleton<HorrorDirector>
 {
     public bool MainBGMAutoChange = true;
     [Title("ÉÅÉCÉìBGMä÷òA")]
@@ -71,21 +71,16 @@ public class HorrorDirector : NetworkSingleton<HorrorDirector>
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    //======================================================
-    // èâä˙âª
-    //======================================================
-    public override void OnNetworkSpawn()
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
-    }
-
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
         player_status = _playerStatus;
-        curse_controller = CurseController.Instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         urp_fx_controller = game_controller_on_all_scene.GetComponent<URPFxController>();
         closest_enemy_controller = ClosestEnemyController.instance;
         MainDefaultBGM = MainBGM.clip;
+        curse_controller = GameController.instance.gameObject.GetComponent<CurseController>();
     }
+
     private void Update()
     {
         if(player_status == null) return;
