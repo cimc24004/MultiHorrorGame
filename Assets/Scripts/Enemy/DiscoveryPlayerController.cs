@@ -211,55 +211,59 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 this.SightningPlayerWhenHidePlayer = false;
             }
         }
+        
         foreach (KeyValuePair<GameObject, PlayerVisibilityMapStatus> PlayerVisibilityMapStatuesWithKey in PlayersVisibilityMapStatuesWithKey)
         {
             GameObject TargetPlayer = PlayerVisibilityMapStatuesWithKey.Key;
-            Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
-            direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
             bool InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
-            PlayersVisibilityMapStatuesWithKey[TargetPlayer].InsidePlayer = InsidePlayer;
-            if (Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle && InsidePlayer)
+            if (InsidePlayer)
             {
-                //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
-                //壁は関係ない。
-                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = true;
-            }
-            else
-            {
-                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = false;
-                SightningPlayer = false;
-            }
-            
-            if (Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit, Mathf.Infinity, discovery_player_status.layerMask))
-            {
-                raycasted_obj = raycast_hit.collider.gameObject;
-                //Raycastをプレイヤーにとりあえず飛ばす。
-                //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
-                if (raycast_hit.collider.gameObject.tag == "Player")
+                Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
+                direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
+                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InsidePlayer = InsidePlayer;
+                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle;
+                if (PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle && InsidePlayer)
                 {
-                    AddPlayerToDiscoveryPlayerLists(TargetPlayer);
-                    Debug.Log("Playerが敵に見つかりました！");
-                    if (!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                    //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
+                    //壁は関係ない。
+                    if (Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit, Mathf.Infinity, discovery_player_status.layerMask))
                     {
-                        //プレイヤーを視認しているナウ。
-                        SightningPlayer = true;
-                        //即見つかる判定ではある。
-                        if (DiscoveryPlayerBySightning)
+                        raycasted_obj = raycast_hit.collider.gameObject;
+                        //Raycastをプレイヤーにとりあえず飛ばす。
+                        //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
+                        if (raycast_hit.collider.gameObject.tag == "Player")
                         {
-                            DiscoveryPlayerNow = true;
+                            AddPlayerToDiscoveryPlayerLists(TargetPlayer);
+                            Debug.Log("Playerが敵に見つかりました！");
+                            if (!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                            {
+                                //プレイヤーを視認しているナウ。
+                                SightningPlayer = true;
+                                //即見つかる判定ではある。
+                                if (DiscoveryPlayerBySightning)
+                                {
+                                    DiscoveryPlayerNow = true;
+                                }
+                            }
                         }
+                        else
+                        {
+                            SightningPlayer = false;
+                        }
+                    }
+                    else
+                    {
+                        SightningPlayer = false;
                     }
                 }
                 else
                 {
                     SightningPlayer = false;
                 }
-            }
-            else
-            {
-                SightningPlayer = false;
-            }
 
+
+
+            }
         }
 
         
