@@ -46,8 +46,8 @@ public class EnemyFlinchController : NetworkBehaviour
             FlinchTimeNow += Time.deltaTime;
             enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             enemy_to_player_kill_controller.enabled = false;
-            discovery_player_controller.DiscoveryPlayerNow = false;
-            discovery_player_controller.SightningPlayer = false;
+            discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = false;
+            discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].SightningPlayer = false;
             discovery_player_controller.SightningPlayerWhenHidePlayer = false;
             discovery_player_controller.enabled = false;
             nav_mesh_agent.speed = 0;

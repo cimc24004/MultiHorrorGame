@@ -78,12 +78,12 @@ public class SisenAsobiDousiController : MonoBehaviour
         previousFlinchNow = enemy_flinch_controller.FlinchNow;
 
 
-        if (discovery_player_controller.DiscoveryPlayerNow && !MouthOpenNow)
+        if (discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow && !MouthOpenNow)
         {
 
             HumanKaradaMeshRenderer.SetBlendShapeWeight(0, 200);
         }
-        if(MouthOpenNow || discovery_player_controller.DiscoveryPlayerNow){
+        if(MouthOpenNow || discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow){
             if(BeforeHumanKaradaMaterial != ChasePlayerBodyMaterial){
                 HumanKaradaMeshRenderer.material = ChasePlayerBodyMaterial;
             }
@@ -98,12 +98,12 @@ public class SisenAsobiDousiController : MonoBehaviour
         {
             return;
         }
-        if (!discovery_player_controller.DiscoveryPlayerNow)
+        if (!discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
         {
             player_near_sensor.IsNearToKillEffect = false;
             if (!MouthOpenNow)
             {
-                if (head_look_at_target_controller.LookAtTargetNow && discovery_player_controller.SightningPlayer)
+                if (head_look_at_target_controller.LookAtTargetNow && discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
                 {
                     //ãﬂÇ≠Ç…ìGÇ™Ç¢ÇÈÇ»ÇÁ Ç∆Ç¢Ç§îªíËÇÕhead_look_at_target_controllerÇ™targetÇå©ÇƒÇÈÇ©Ç«Ç§Ç©Ç≈îªíËÇ∑ÇÈÅB
                     //follow_object_by_nav.ChaseToTargetSet(true, BeforePosition, 0);
@@ -151,7 +151,7 @@ public class SisenAsobiDousiController : MonoBehaviour
                 enemy_to_player_kill_controller.enabled = true;
                 follow_object_by_nav.MovePermit = true;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-                discovery_player_controller.DiscoveryPlayerNow = true;
+                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
                 urp_fx_controller.InteferecesChange(false);
                 player_near_sensor.IsNearToKillEffect = true;
                 MouthOpenNow = false;

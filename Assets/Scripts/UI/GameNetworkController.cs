@@ -7,13 +7,14 @@ using System.Reflection;
 using Unity.Collections;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameNetworkController : Singleton<GameNetworkController>
 {
     [SerializeField] private Transform PlayerCreatePos;  // プレイヤー湧き位置
     [SerializeField] private NetworkObject m_playerPrefab;   // プレハブ
     [SerializeField] private TMP_InputField m_joinLobbyID;    // LobbyID入力
-
+    [SerializeField] public List<GameObject> SpawededPlayers;
     void Start()
     {
         // NetworkManager.Singleton.NetworkConfig.ProtocolVersion = 1;
@@ -31,7 +32,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
                 Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
                 NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
                 pObj.SpawnAsPlayerObject(clientId, true);
-
+                SpawededPlayers.Add(pObj.gameObject);
             }
         }
 

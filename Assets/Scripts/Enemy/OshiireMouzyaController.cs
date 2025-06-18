@@ -67,7 +67,7 @@ public class OshiireMouzyaController : MonoBehaviour
         {
             if(!(player_foot_step_sound_controller.FootStepSoundLevel == 0))
             {
-                discovery_player_controller.DiscoveryPlayerNow = true;
+                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
                 OshiireAttackMode = true;
                 if (!BrokenOshiire)
                 {
@@ -115,7 +115,7 @@ public class OshiireMouzyaController : MonoBehaviour
             if(ToDeathWaitTimeNowFromBrokeOshiire > ToDeathWaitTimeFromBrokeOshiire)
             {
                 enemy_death_controller.DeadStart();
-                discovery_player_controller.DiscoveryPlayerNow = false;
+                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = false;
             }
         }
     }

@@ -33,10 +33,10 @@ public class KubinashiMikoController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!discovery_player_controller.DiscoveryPlayerNow)
+        if (!discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
         {
             // 
-            discovery_player_controller.DiscoveryPlayerNow = true;
+            discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
             no_discovery_player_once = false;
 
         }else{

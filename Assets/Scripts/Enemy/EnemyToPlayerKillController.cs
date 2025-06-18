@@ -7,13 +7,13 @@ public class EnemyToPlayerKillController : NetworkBehaviour
     public Vector3   boxHalfExtents = new(0.3f, 0.6f, 0.4f);
     public LayerMask layerMask;    // Player レイヤーだけにしておく
 
-    private DiscoveryPlayerController discovery;
+    private DiscoveryPlayerController discovery_player_controller;
     private PlayerStatus              playerStatus;
     private Collider[] hitBuffer = new Collider[4];   // 最大ヒット数を決め打ちで確保
     private bool InitedPlayer;
     public override void OnNetworkSpawn()
     {
-        discovery    = this.gameObject.GetComponent<DiscoveryPlayerController>();
+        discovery_player_controller    = this.gameObject.GetComponent<DiscoveryPlayerController>();
     }
     private void OnEnable()
     {
@@ -36,7 +36,7 @@ public class EnemyToPlayerKillController : NetworkBehaviour
     {
         // return;
         if (!InitedPlayer) return;
-        if (playerStatus.Dead.Value == true || playerStatus.HidingNow.Value == true || !discovery.DiscoveryPlayerNow)
+        if (playerStatus.Dead.Value == true || playerStatus.HidingNow.Value == true || !discovery_player_controller.DiscoveryPlayerNowCheck())
             return;
 
         // Box の向きは敵の forward に合わせる

@@ -111,7 +111,7 @@ public class TheDoorController : NetworkBehaviour
             //敵がプレイヤーを発見していたら、閉められた扉は壊して開けるようにする。
             DiscoveryPlayerController discovery_player_controller = EventActionMan.GetComponent<DiscoveryPlayerController>();
             EnemySoundSensor enemy_sound_sensor = EventActionMan.GetComponent<EnemySoundSensor>();
-            if (discovery_player_controller.DiscoveryPlayerNow)
+            if (discovery_player_controller.DiscoveryPlayerNowCheck())
             {
                 return;
             }

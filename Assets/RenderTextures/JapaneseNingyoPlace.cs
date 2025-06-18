@@ -25,8 +25,10 @@ public class JapaneseNingyoPlace : SerializedMonoBehaviour
         EnemyNingyoApperancePlaceTransform = null;
     }
     [Button]
-    public void EnemyNingyoDiscoveryPlayer(){
-        discovery_player_controller.DiscoveryPlayerNow = true;
+    public void EnemyNingyoDiscoveryPlayer()
+    {
+        // discovery_player_controller.DiscoveryPlayerNow = true;
+        discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
     }
     // Update is called once per frame
     void Update()

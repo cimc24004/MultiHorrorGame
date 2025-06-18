@@ -109,7 +109,7 @@ public class DarumasanKorondaGameController : SerializedMonoBehaviour
                             DarumasanParent.transform.SetParent(null);
                             character_move_permit.Move();
                             DOVirtual.DelayedCall(0.1f, () => {
-                                discovery_player_controller.DiscoveryPlayerNow = true;
+                                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
                             });
                             this.gameObject.SetActive(false);
                             KorondaVoiceReset();

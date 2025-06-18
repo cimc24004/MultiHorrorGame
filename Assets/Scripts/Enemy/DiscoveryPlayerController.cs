@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class DiscoveryPlayerController : NetworkBehaviour
 {
-    public bool DiscoveryPlayerNow;
     [Header("視界から見つけるかどうか")]
     public bool DiscoveryPlayerBySightning;
     public Transform EyePosition;
@@ -25,7 +24,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     private CharacterAudioController character_audio_controller;
 
     //プレイヤーを視認しているかどうか
-    public bool SightningPlayer;
+    // public bool SightningPlayer;
     //プレイヤーが隠れた時に敵はその隠れた所を見ているかどうか。
     public bool SightningPlayerWhenHidePlayer;
     private FollowObjectByNav follow_object_nav;
@@ -51,16 +50,19 @@ public class DiscoveryPlayerController : NetworkBehaviour
     private bool NonDiscoveriedEventOnce;
     private SilhouetteChangeController silhouette_change_controller;
     //発見したプレイヤーたち
-    [SerializeField]public List<GameObject> DiscoveriedPlayers = new List<GameObject>();
-    [SerializeField]private GameObject FirstKeyOfDiscoveriedPlayers;
+    [SerializeField] public List<GameObject> DiscoveriedPlayers = new List<GameObject>();
+    [SerializeField]public GameObject FirstKeyOfDiscoveriedPlayers;
     private ToPlayersDistanceTracker to_players_distance_tracker;
-    [SerializeField, ShowInInspector] private Dictionary<GameObject, PlayerVisibilityMapStatus> PlayersVisibilityMapStatuesWithKey = new Dictionary<GameObject, PlayerVisibilityMapStatus>();
-    private class PlayerVisibilityMapStatus
+    private GameNetworkController game_network_controller;
+    [SerializeField, ShowInInspector] public Dictionary<GameObject, PlayerVisibilityMapStatus> PlayersVisibilityMapStatuesWithKey = new Dictionary<GameObject, PlayerVisibilityMapStatus>();
+    public class PlayerVisibilityMapStatus
     {
         public Vector3 ToPlayerDirection;
         public bool InsidePlayer;
         public bool InAngle;
         public PlayerStatus player_status;
+        public bool SightningPlayer;
+        public bool DiscoveryPlayerNow;
     }
     // Start is called before the first frame update
     // void OnEnable()
@@ -89,6 +91,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         time_manager = TimeManager.instance;
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         discovery_player_status = original_discovery_player_status;
+        game_network_controller = GameNetworkController.instance;
         StartCoroutine(DisctionarySet());
     }
     IEnumerator DisctionarySet()
@@ -98,7 +101,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         {
             Debug.Log("NetworkManager.Singleton.SpawnManager.PlayerObjects.Count: " + NetworkManager.Singleton.SpawnManager.PlayerObjects.Count);
             NetworkObject PlayerNetworkObject = client.PlayerObject;
-            Debug.Log("PlayerNetworkObject: " + PlayerNetworkObject);
+            
             PlayerStatus playerStatus = PlayerNetworkObject.gameObject.GetComponent<PlayerStatus>();
             PlayerVisibilityMapStatus player_visibility_map_status = new PlayerVisibilityMapStatus() { ToPlayerDirection = Vector3.zero, InAngle = false, InsidePlayer = false, player_status = playerStatus };
             PlayersVisibilityMapStatuesWithKey.Add(PlayerNetworkObject.gameObject, player_visibility_map_status);
@@ -132,7 +135,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
             // }
         }
 
-        if (DiscoveryPlayerNow)
+        if (this.DiscoveryPlayerNowCheck())
         {
             //horror_director.DiscoveryNow = true;
             if (!DiscoveriedEventOnce)
@@ -163,58 +166,60 @@ public class DiscoveryPlayerController : NetworkBehaviour
         if (DiscoveriedPlayers.Count != 0)
         {
             anim.SetBool("PlayerHidingNow", PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value);
-        }
-        if (DiscoveryPlayerNow && !SightningPlayer)
-        {
-            //敵に見つかっているかつプレイヤーが見えてなかったら
-
-
-            //時間を計り、ある程度の時間がたったら追いかけるのをやめる
-            SightOutPlayerTimeNow += Time.deltaTime;
-            if (SightOutPlayerTimeNow > discovery_player_status.SightOutPlayerTime)
+            if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow && !PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightningPlayer)
             {
-                Debug.Log("時間経過しましたよ");
-                //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
-                //今はデフォルト位置に戻る設定にしているが近くの徘徊ルートに行くという設定する予定。
-                //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
-                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-                follow_object_nav.ArrivedTarget = false;
-                enemy_routing_controller?.NearRouteSet();
+                //敵に見つかっているかつプレイヤーが見えてなかったら
 
-                DiscoveryPlayer(false);
-                RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);
-                //follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
+
+                //時間を計り、ある程度の時間がたったら追いかけるのをやめる
+                SightOutPlayerTimeNow += Time.deltaTime;
+                if (SightOutPlayerTimeNow > discovery_player_status.SightOutPlayerTime)
+                {
+                    Debug.Log("時間経過しましたよ");
+                    //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
+                    //今はデフォルト位置に戻る設定にしているが近くの徘徊ルートに行くという設定する予定。
+                    //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
+                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                    follow_object_nav.ArrivedTarget = false;
+                    enemy_routing_controller?.NearRouteSet();
+
+                    DiscoveryPlayer(false);
+                    RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);
+                    //follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
+                    SightOutPlayerTimeNow = 0;
+                }
+
+            }
+            else
+            {
                 SightOutPlayerTimeNow = 0;
             }
 
-        }
-        else
-        {
-            SightOutPlayerTimeNow = 0;
+
+            if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightningPlayer)
+            {
+                if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                {
+                    //視認しているかつ隠れてる場合は隠れてること知ってるよー　変数をTrueに。
+                    SightningPlayerWhenHidePlayer = true;
+                }
+            }
+            if (SightningPlayerWhenHidePlayer)
+            {
+                if (to_players_distance_tracker.ToPlayerDistanceLists[FirstKeyOfDiscoveriedPlayers] <= 2)
+                {
+                    //隠れてることがバレていてかつ近くにいたら場合はこの関数を実行。
+                    PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.player_hide_object_action.GetCoughtWhenHidingByEnemy(this.gameObject);
+                    this.SightningPlayerWhenHidePlayer = false;
+                }
+            }
         }
 
 
-        if (SightningPlayer)
+        for (int i = 0; i < game_network_controller.SpawededPlayers.Count; i++)
         {
-            if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
-            {
-                //視認しているかつ隠れてる場合は隠れてること知ってるよー　変数をTrueに。
-                SightningPlayerWhenHidePlayer = true;
-            }
-        }
-        if (SightningPlayerWhenHidePlayer)
-        {
-            if (to_players_distance_tracker.ToPlayerDistanceLists[FirstKeyOfDiscoveriedPlayers] <= 2)
-            {
-                //隠れてることがバレていてかつ近くにいたら場合はこの関数を実行。
-                PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.player_hide_object_action.GetCoughtWhenHidingByEnemy(this.gameObject);
-                this.SightningPlayerWhenHidePlayer = false;
-            }
-        }
-        
-        foreach (KeyValuePair<GameObject, PlayerVisibilityMapStatus> PlayerVisibilityMapStatuesWithKey in PlayersVisibilityMapStatuesWithKey)
-        {
-            GameObject TargetPlayer = PlayerVisibilityMapStatuesWithKey.Key;
+            if ( to_players_distance_tracker.ToPlayerDistanceLists.Count == 0) return;
+            GameObject TargetPlayer = game_network_controller.SpawededPlayers[i];
             bool InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
             if (InsidePlayer)
             {
@@ -235,54 +240,59 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         {
                             AddPlayerToDiscoveryPlayerLists(TargetPlayer);
                             Debug.Log("Playerが敵に見つかりました！");
-                            if (!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                            if (!PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HidingNow.Value)
                             {
                                 //プレイヤーを視認しているナウ。
-                                SightningPlayer = true;
+                                PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = true;
+                                // SightningPlayer = true;
                                 //即見つかる判定ではある。
                                 if (DiscoveryPlayerBySightning)
                                 {
-                                    DiscoveryPlayerNow = true;
+                                    PlayersVisibilityMapStatuesWithKey[TargetPlayer].DiscoveryPlayerNow = true;
                                 }
                             }
                         }
                         else
                         {
-                            SightningPlayer = false;
+                            // SightningPlayer = false;
+                            PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
                         }
                     }
                     else
                     {
-                        SightningPlayer = false;
+                        // SightningPlayer = false;
+                        PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
                     }
                 }
                 else
                 {
-                    SightningPlayer = false;
+                    // SightningPlayer = false;
+                    PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
                 }
 
 
 
             }
-        }
 
-        
-        Debug.Log("プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか");
-    
-        Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.green);
-
-        if (DiscoveryPlayerNow && !SightningPlayerWhenHidePlayer)
-        {
-            if (!SightningPlayer)
+            Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.green);
+            if (!DiscoveryPlayerNowCheck()) return;
+            if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow && !SightningPlayerWhenHidePlayer)
             {
-                if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                if (!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightningPlayer)
                 {
-                    //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
-                    follow_object_nav.StoppingDistance = 4;
+                    if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                    {
+                        //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
+                        follow_object_nav.StoppingDistance = 4;
+                    }
+                    else
+                    {
+                        //それ以外ならデフォルトのストップ距離にしておく。
+                        follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
+                    }
                 }
                 else
                 {
-                    //それ以外ならデフォルトのストップ距離にしておく。
                     follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
                 }
             }
@@ -291,15 +301,14 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
             }
         }
-        else
-        {
-            follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
-        }
+
+        
+
 
     }
     private void DiscoveryPlayer(bool _discovery)
     {
-        DiscoveryPlayerNow = _discovery;
+        PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = _discovery;
         if (!_discovery) return;
         //敵に見つかったとき、または見つかってる状態をリセットしたい時に使う。
         //Trueならば見つかったときのイベント、Falseならば見つからなくなったときにリセットするための関数
@@ -380,5 +389,15 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
         FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[0];
     }
-
+    public bool DiscoveryPlayerNowCheck()
+    {
+        if (FirstKeyOfDiscoveriedPlayers != null)
+        {
+            if (this.PlayersVisibilityMapStatuesWithKey[this.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

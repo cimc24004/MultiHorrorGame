@@ -80,9 +80,9 @@ public class EnemyActionForDoorController : NetworkBehaviour
                         the_door_controller = door_open_close_controller.the_door_controller;
                     }
                     if(DoorOpenClosePermit){
-                        if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey.Value) || !discovery_player_controller.DiscoveryPlayerNow)
+                        if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey.Value) || !discovery_player_controller.DiscoveryPlayerNowCheck())
                         {
-                            if (!discovery_player_controller.DiscoveryPlayerNow)
+                            if (!discovery_player_controller.DiscoveryPlayerNowCheck())
                             {
                                 the_door_controller.DoorOpenClosedChangeByStatusServerRPC(networkObject.NetworkObjectId);
                             }
@@ -90,7 +90,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
                     }
 
 
-                    if (the_door_controller.NeededKey.Value || discovery_player_controller.DiscoveryPlayerNow)
+                    if (the_door_controller.NeededKey.Value || discovery_player_controller.DiscoveryPlayerNowCheck())
                     {
                         Debug.Log("鍵が掛かっているかプレイヤーを発見したので攻撃します");
 
