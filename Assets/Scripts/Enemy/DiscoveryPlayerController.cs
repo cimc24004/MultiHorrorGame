@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class DiscoveryPlayerController : NetworkBehaviour
@@ -50,7 +51,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     private SilhouetteChangeController silhouette_change_controller;
     //発見したプレイヤーたち
     [SerializeField] public List<GameObject> DiscoveriedPlayers = new List<GameObject>();
-    [SerializeField]public GameObject FirstKeyOfDiscoveriedPlayers;
+    [SerializeField] public GameObject FirstKeyOfDiscoveriedPlayers;
     private ToPlayersDistanceTracker to_players_distance_tracker;
     private GameNetworkController game_network_controller;
     [SerializeField, ShowInInspector] public Dictionary<GameObject, PlayerVisibilityMapStatus> PlayersVisibilityMapStatuesWithKey = new Dictionary<GameObject, PlayerVisibilityMapStatus>();
@@ -101,7 +102,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         {
             Debug.Log("NetworkManager.Singleton.SpawnManager.PlayerObjects.Count: " + NetworkManager.Singleton.SpawnManager.PlayerObjects.Count);
             NetworkObject PlayerNetworkObject = client.PlayerObject;
-            
+
             PlayerStatus playerStatus = PlayerNetworkObject.gameObject.GetComponent<PlayerStatus>();
             PlayerVisibilityMapStatus player_visibility_map_status = new PlayerVisibilityMapStatus() { ToPlayerDirection = Vector3.zero, InAngle = false, InsidePlayer = false, player_status = playerStatus };
             PlayersVisibilityMapStatuesWithKey.Add(PlayerNetworkObject.gameObject, player_visibility_map_status);
@@ -114,31 +115,32 @@ public class DiscoveryPlayerController : NetworkBehaviour
     void OnDisable()
     {
         PlayerStatus.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
-        
+
     }
-    private void OnLocalPlayerSpawned(PlayerStatus _) {
+    private void OnLocalPlayerSpawned(PlayerStatus _)
+    {
 
     }
     // Update is called once per frame
     void Update()
     {
         if (!IsServer) return;
-        if (IsServer)
-        {
-            foreach (var kvp in PlayersVisibilityMapStatuesWithKey)
-            {
-                var go = kvp.Key;
-                Debug.DrawLine(
-                    EyePosition.position,
-                    go.transform.position,
-                    Color.red);      // これがプレイヤーRoot
+        // if (IsServer)
+        // {
+        //     foreach (var kvp in PlayersVisibilityMapStatuesWithKey)
+        //     {
+        //         var go = kvp.Key;
+        //         Debug.DrawLine(
+        //             EyePosition.position,
+        //             go.transform.position,
+        //             Color.red);      // これがプレイヤーRoot
 
-                Debug.DrawLine(
-                    EyePosition.position,
-                    kvp.Value.player_status.HeadPos.position,
-                    Color.blue);     // こっちは HeadPos
-            }
-        }
+        //         Debug.DrawLine(
+        //             EyePosition.position,
+        //             kvp.Value.player_status.HeadPos.position,
+        //             Color.blue);     // こっちは HeadPos
+        //     }
+        // }
         if (DiscoveriedPlayers.Count != 0)
         {
             //ここは後々必要になる。 一時的にオフ
@@ -158,7 +160,10 @@ public class DiscoveryPlayerController : NetworkBehaviour
             {
                 character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Chase);
                 silhouette_change_controller?.SilhouetteChangeWithAutoReset(3);
-                horror_director.EnemyDiscoveredPlayer();
+                var sendParams = new ClientRpcSendParams{
+                    TargetClientIds = new ulong[]{ FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
+                };
+                DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
                 DiscoveriedEventOnce = true;
             }
             // if (follow_object_nav.ArrivedTarget)
@@ -174,7 +179,15 @@ public class DiscoveryPlayerController : NetworkBehaviour
             DiscoveriedEventOnce = false;
             if (!NonDiscoveriedEventOnce)
             {
-                horror_director.EnemyLostPlayer();
+                if (FirstKeyOfDiscoveriedPlayers != null)
+                {
+                    var sendParams = new ClientRpcSendParams{
+                        TargetClientIds = new ulong[]{ FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
+                    };
+                    // DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
+
+                    NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
+                }
                 character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Normal);
                 NonDiscoveriedEventOnce = true;
             }
@@ -289,11 +302,11 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         enemy_routing_controller?.NearRouteSet();
                         DiscoveryPlayer(false);
                         RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);
-     
+
                     }
                     PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightOutPlayerTimeNow = 0;
                     //follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
-                
+
 
                 }
             }
@@ -331,7 +344,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
         }
 
-        
+
 
 
     }
@@ -393,7 +406,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 }
                 else
                 {
-                    
+
                 }
             }
         }
@@ -428,5 +441,16 @@ public class DiscoveryPlayerController : NetworkBehaviour
             }
         }
         return false;
+    }
+    [ClientRpc]
+    private void DiscoveryPlayerClientRpc(ClientRpcParams rpcParams = default)
+    {
+        // silhouette_change_controller?.SilhouetteChangeWithAutoReset(3);
+        horror_director.EnemyDiscoveredPlayer();
+    }
+    [ClientRpc]
+    private void NonDiscoveriedClientRpc(ClientRpcParams rpcParams = default)
+    {
+        horror_director.EnemyLostPlayer();
     }
 }
