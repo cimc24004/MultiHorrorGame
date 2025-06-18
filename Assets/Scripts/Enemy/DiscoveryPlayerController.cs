@@ -185,8 +185,10 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
         for (int i = 0; i < game_network_controller.SpawededPlayers.Count; i++)
         {
-            if ( to_players_distance_tracker.ToPlayerDistanceLists.Count == 0) return;
+            Debug.Log("iStart------------: " + i + " : --------------------");
+            if (to_players_distance_tracker.ToPlayerDistanceLists.Count == 0) return;
             GameObject TargetPlayer = game_network_controller.SpawededPlayers[i];
+            Debug.Log("to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer]: " + to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer]);
             bool InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
             if (InsidePlayer)
             {
