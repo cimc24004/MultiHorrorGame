@@ -182,11 +182,11 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
 
 
-
+        Debug.Log("game_network_controller.SpawededPlayers.Count: " + game_network_controller.SpawededPlayers.Count);
         for (int i = 0; i < game_network_controller.SpawededPlayers.Count; i++)
         {
             Debug.Log("iStart------------: " + i + " : --------------------");
-            if (to_players_distance_tracker.ToPlayerDistanceLists.Count == 0) return;
+            // if (to_players_distance_tracker.ToPlayerDistanceLists.Count == 0) return;
             GameObject TargetPlayer = game_network_controller.SpawededPlayers[i];
             Debug.Log("to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer]: " + to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer]);
             bool InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
@@ -301,19 +301,25 @@ public class DiscoveryPlayerController : NetworkBehaviour
             {
                 PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightOutPlayerTimeNow = 0;
             }
-            if (!DiscoveryPlayerNowCheck()) return;
-            if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow && !SightningPlayerWhenHidePlayer)
+            if (DiscoveryPlayerNowCheck())
             {
-                if (!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightningPlayer)
+                if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow && !SightningPlayerWhenHidePlayer)
                 {
-                    if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                    if (!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightningPlayer)
                     {
-                        //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
-                        follow_object_nav.StoppingDistance = 4;
+                        if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
+                        {
+                            //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
+                            follow_object_nav.StoppingDistance = 4;
+                        }
+                        else
+                        {
+                            //それ以外ならデフォルトのストップ距離にしておく。
+                            follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
+                        }
                     }
                     else
                     {
-                        //それ以外ならデフォルトのストップ距離にしておく。
                         follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
                     }
                 }
@@ -322,10 +328,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                     follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
                 }
             }
-            else
-            {
-                follow_object_nav.StoppingDistance = follow_object_nav.DefaultStoppingDistance;
-            }
+
         }
 
         
