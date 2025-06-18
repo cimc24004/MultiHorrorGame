@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DiscoveryPlayerController : NetworkBehaviour
 {
@@ -62,8 +64,23 @@ public class DiscoveryPlayerController : NetworkBehaviour
         public bool InAngle;
         public PlayerStatus player_status;
         public bool SightningPlayer;
-        public bool DiscoveryPlayerNow;
         public float SightOutPlayerTimeNow;
+        public UnityEvent<bool> DiscoveryPlayerFlagChanged;
+        // バックアップ用フィールド
+        private bool _discoveryPlayerNow;
+        // プロパティ化
+        public bool DiscoveryPlayerNow
+        {
+            get => _discoveryPlayerNow;
+            set
+            {
+                if (_discoveryPlayerNow == value) return;  // 変化なしなら抜ける
+                _discoveryPlayerNow = value;
+                // 引数で new の値を渡すなら
+                DiscoveryPlayerFlagChanged?.Invoke(_discoveryPlayerNow);
+                // 引数いらなければ UnityEvent にして Invoke() だけでもOK
+            }
+        }
     }
     // Start is called before the first frame update
     // void OnEnable()
@@ -93,6 +110,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         discovery_player_status = original_discovery_player_status;
         game_network_controller = GameNetworkController.instance;
+
         StartCoroutine(DisctionarySet());
     }
     IEnumerator DisctionarySet()
@@ -106,7 +124,36 @@ public class DiscoveryPlayerController : NetworkBehaviour
             PlayerStatus playerStatus = PlayerNetworkObject.gameObject.GetComponent<PlayerStatus>();
             PlayerVisibilityMapStatus player_visibility_map_status = new PlayerVisibilityMapStatus() { ToPlayerDirection = Vector3.zero, InAngle = false, InsidePlayer = false, player_status = playerStatus };
             PlayersVisibilityMapStatuesWithKey.Add(PlayerNetworkObject.gameObject, player_visibility_map_status);
+            PlayersVisibilityMapStatuesWithKey[PlayerNetworkObject.gameObject].DiscoveryPlayerFlagChanged.AddListener(OnChangedDiscoveryPlayerNow);
         }
+    }
+    private void OnChangedDiscoveryPlayerNow(bool _discoveryPlayerNow) {
+        if (_discoveryPlayerNow)
+        {
+            character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Chase);
+            silhouette_change_controller?.SilhouetteChangeWithAutoReset(3);
+            var sendParams = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
+            };
+            DiscoveryPlayer(true);
+            DiscoveryPlayerClientRpc(new ClientRpcParams { Send = sendParams });
+        }
+        else
+        {
+            if (FirstKeyOfDiscoveriedPlayers != null)
+            {
+                var sendParams = new ClientRpcSendParams{
+                    TargetClientIds = new ulong[]{ FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
+                };
+                // DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
+
+                NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
+            }
+            character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Normal);
+        }
+
+
     }
     void OnEnable()
     {
@@ -158,39 +205,22 @@ public class DiscoveryPlayerController : NetworkBehaviour
             //horror_director.DiscoveryNow = true;
             if (!DiscoveriedEventOnce)
             {
-                character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Chase);
-                silhouette_change_controller?.SilhouetteChangeWithAutoReset(3);
-                var sendParams = new ClientRpcSendParams{
-                    TargetClientIds = new ulong[]{ FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
-                };
-                DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
                 DiscoveriedEventOnce = true;
             }
             // if (follow_object_nav.ArrivedTarget)
             // {
             // }
-            DiscoveryPlayer(true);
             //見つかっている状態でプレイヤーの位置に到着したら
             // enemy_routing_controller?.PermitFunction(false);
             NonDiscoveriedEventOnce = false;
         }
         else
         {
-            DiscoveriedEventOnce = false;
-            if (!NonDiscoveriedEventOnce)
-            {
-                if (FirstKeyOfDiscoveriedPlayers != null)
-                {
-                    var sendParams = new ClientRpcSendParams{
-                        TargetClientIds = new ulong[]{ FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
-                    };
-                    // DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
-
-                    NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
-                }
-                character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Normal);
-                NonDiscoveriedEventOnce = true;
-            }
+            // DiscoveriedEventOnce = false;
+            // if (!NonDiscoveriedEventOnce)
+            // {
+            //     NonDiscoveriedEventOnce = true;
+            // }
         }
 
 
