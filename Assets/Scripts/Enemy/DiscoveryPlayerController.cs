@@ -192,8 +192,12 @@ public class DiscoveryPlayerController : NetworkBehaviour
             {
                 Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
                 direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
+
+
                 PlayersVisibilityMapStatuesWithKey[TargetPlayer].InsidePlayer = InsidePlayer;
+                Debug.Log($"ToDirection   DiscoveryPlayerAngle___{i}: " + Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)));
                 PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle;
+
                 if (PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle && InsidePlayer)
                 {
                     //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
