@@ -93,6 +93,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     // }
     public override void OnNetworkSpawn()
     {
+        horror_director = HorrorDirector.instance;
         if (!IsServer) return;
         to_players_distance_tracker = this.gameObject.GetComponent<ToPlayersDistanceTracker>();
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
@@ -100,7 +101,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
         anim = this.gameObject.GetComponent<Animator>();
         silhouette_change_controller = this.gameObject.GetComponent<SilhouetteChangeController>();
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
-        horror_director = HorrorDirector.instance;
         DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
