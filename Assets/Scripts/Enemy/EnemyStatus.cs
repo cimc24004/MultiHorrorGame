@@ -57,6 +57,7 @@ public class EnemyStatus : NetworkBehaviour
 
     private void Update()
     {
+        if (!IsServer) return;
         if (foot_step_sound_controller != null)
         {
             switch (enemy_move_state)
@@ -91,16 +92,10 @@ public class EnemyStatus : NetworkBehaviour
         }
     }
     // Update is called once per frame
-    void FixedUpdate()
-    {
 
-        if (follow_object_by_nav.ArrivedTarget)
-        {
-        }
-
-    }
     public void StopEnemyByPlayer(float stop_time)
     {
+        //サーバー側で実行されます。
         enemy_flinch_controller.FlinchStart(stop_time);
         enemy_routing_controller?.NearRouteSet();
 

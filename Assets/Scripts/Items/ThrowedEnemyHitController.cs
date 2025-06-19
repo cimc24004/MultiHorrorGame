@@ -9,6 +9,7 @@ public class ThrowedEnemyHitController : MonoBehaviour
 
     public void EnemyThrowCollisionEvent()
     {
+        //サーバー側で実行される。
         //敵にアイテムが当たったときのイベント
         if (item_status.MakingStopEnemyItem)
         {

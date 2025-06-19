@@ -308,7 +308,6 @@ public class HorrorDirector : Singleton<HorrorDirector>
     public void DiscoveriedHorror()
     {
         ResetSetting();
-        curse_controller.CurseIncrease(10.0f);
 
         DiscoveriedSound.SetActive(false);
         DiscoveriedSound.SetActive(true);

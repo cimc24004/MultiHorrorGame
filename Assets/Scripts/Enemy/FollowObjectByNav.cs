@@ -54,6 +54,7 @@ public class FollowObjectByNav : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsServer) return;
         if (!MovePermit)
         {
             return;
@@ -99,6 +100,7 @@ public class FollowObjectByNav : NetworkBehaviour
     }
     private void FixedUpdate()
     {
+        if (!IsServer) return;
         if (!MovePermit) return;
         if (ChaseToTargetMode)
         {
@@ -118,6 +120,10 @@ public class FollowObjectByNav : NetworkBehaviour
     }
     public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed)
     {
+        if (!IsServer)
+        {
+            Debug.LogError("この関数はサーバーからでしか実行できませんよ！");
+        }
         //この関数は外部から使用する。 targetの位置をセットする為の関数 
         //_SetDestinationOnceとは SetDestinationを何回もやってると重くなるのでプレイヤーなど動くもの以外は
         //一回だけ探索ゴールを設定するようにしておく。 軽量化のため。
@@ -146,6 +152,10 @@ public class FollowObjectByNav : NetworkBehaviour
 
     public bool CanMoveCheck(Vector3 targetPos)
     {
+        if (!IsServer)
+        {
+            Debug.LogError("この関数はサーバーからでしか実行できませんよ！");
+        }
         NavMeshPath checkPath = new NavMeshPath();
         nav_mesh_agent.CalculatePath(targetPos, checkPath);
 
@@ -158,6 +168,10 @@ public class FollowObjectByNav : NetworkBehaviour
     }
     public Vector3 BlueRangeNearPositionGet(Vector3 targetPos, float maxDistance)
     {
+        if (!IsServer)
+        {
+            Debug.LogError("この関数はサーバーからでしか実行できませんよ！");
+        }
         //青の範囲内の中で近いものをゲット
         NavMeshPath path = new NavMeshPath();
         bool found = NavMesh.SamplePosition(targetPos, out nav_mesh_hit, maxDistance, NavMesh.AllAreas);

@@ -56,6 +56,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     [SerializeField] public GameObject FirstKeyOfDiscoveriedPlayers;
     private ToPlayersDistanceTracker to_players_distance_tracker;
     private GameNetworkController game_network_controller;
+    private CurseController curse_controller;
     [SerializeField, ShowInInspector] public Dictionary<GameObject, PlayerVisibilityMapStatus> PlayersVisibilityMapStatuesWithKey = new Dictionary<GameObject, PlayerVisibilityMapStatus>();
     public class PlayerVisibilityMapStatus
     {
@@ -106,6 +107,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         character_audio_controller = enemy_status.character_audio_controller;
+        curse_controller = GameController.instance.gameObject.GetComponent<CurseController>();
         time_manager = TimeManager.instance;
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         discovery_player_status = original_discovery_player_status;
@@ -128,6 +130,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         }
     }
     private void OnChangedDiscoveryPlayerNow(bool _discoveryPlayerNow) {
+        //切り替わった瞬間だけ実行される。
         if (_discoveryPlayerNow)
         {
             character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Chase);
@@ -136,19 +139,20 @@ public class DiscoveryPlayerController : NetworkBehaviour
             {
                 TargetClientIds = new ulong[] { FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
             };
-            DiscoveryPlayer(true);
+            curse_controller.CurseIncrease(10.0f);
             DiscoveryPlayerClientRpc(new ClientRpcParams { Send = sendParams });
         }
         else
         {
             if (FirstKeyOfDiscoveriedPlayers != null)
             {
-                var sendParams = new ClientRpcSendParams{
-                    TargetClientIds = new ulong[]{ FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
+                var sendParams = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
                 };
                 // DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
 
-                NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
+                NonDiscoveriedClientRpc(new ClientRpcParams { Send = sendParams });
             }
             character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Normal);
         }
