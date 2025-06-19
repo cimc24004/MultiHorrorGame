@@ -58,7 +58,7 @@ public class FootStepSoundController : NetworkBehaviour
     {
 
         // ★重要★ オーナーが状態を管理し、サーバーRPCで通知する
-        if (HasFootstepAuthority)
+        if (IsOwner)
         {
             // PlayerStatusから移動状態を取得（オーナーが最新状態を持っている）
             // UpdateMoveStatusFromPlayerStatus();
@@ -173,7 +173,7 @@ public class FootStepSoundController : NetworkBehaviour
         if (IsServer && !IsOwner)
         {
             // NPC：サーバーが直接全クライアントへ
-            BroadcastFootStepClientRpc(OwnerClientId, moveMode, tagName);
+            BroadcastFootStepClientRpc(moveMode, tagName);
         }
         else if (IsOwner)
         {
@@ -187,11 +187,11 @@ public class FootStepSoundController : NetworkBehaviour
     private void NotifyFootStepServerRpc(string moveMode, string groundedName)
     {
         // サーバーから全クライアントへブロードキャスト
-        BroadcastFootStepClientRpc(OwnerClientId, moveMode, groundedName);
+        BroadcastFootStepClientRpc(moveMode, groundedName);
     }
 
     [ClientRpc]
-    private void BroadcastFootStepClientRpc(ulong ownerClientId, string moveMode, string groundedName)
+    private void BroadcastFootStepClientRpc(string moveMode, string groundedName)
     {
         // 自分のクライアント（音を既に再生済み）では再生しない
         if (IsOwner) return;
