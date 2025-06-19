@@ -43,6 +43,7 @@ public class EnemySoundSensor : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
@@ -76,7 +77,7 @@ public class EnemySoundSensor : NetworkBehaviour
     }
     private void Update()
     {
-
+        if (!IsServer) return;
         if (follow_object_nav.ArrivedTarget && MoveToSoundPlaceNow)
         {
             ArriveSoundPlaceWaitTimeToReturnNow += Time.deltaTime;
@@ -85,7 +86,7 @@ public class EnemySoundSensor : NetworkBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
+        if (!IsServer) return;
         //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
         ToPlayerDistance = Vector3.Distance(this.transform.position, Player.transform.position);
         ToSoundPlaceDistance = follow_object_nav.ToTargetPosDistance;

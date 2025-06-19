@@ -7,7 +7,7 @@ using Unity.Netcode;
 public class EnemyActionForDoorController : NetworkBehaviour
 {
     // 扉を攻撃したり開閉したりする処理
-    
+
     [SerializeField] private float RaycastDistance = 1f;
     [SerializeField] private int BrokeDoorPlusCount = 1;
     public DoorOpenCloseController door_open_close_controller;
@@ -38,6 +38,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
     // Start は最初のフレーム前に呼ばれる
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         networkObject = this.gameObject.GetComponent<NetworkObject>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
@@ -51,8 +52,9 @@ public class EnemyActionForDoorController : NetworkBehaviour
     // 毎フレーム呼び出される
     void Update()
     {
+        if (!IsServer) return;
         if (!AutoDoorAttack) return;
-        if(DoorTouchNow) DoorTouchNow = false;
+        if (DoorTouchNow) DoorTouchNow = false;
         anim.SetBool("DoorAttack", false);
         DoorAttackNow = false;
 
@@ -61,7 +63,7 @@ public class EnemyActionForDoorController : NetworkBehaviour
         {
             if (start == null) continue;                     // null のトランスフォームは無視
             Debug.DrawRay(start.position, start.forward * RaycastDistance, Color.red);
-            
+
             if (Physics.Raycast(start.position, start.forward, out raycast_hit, RaycastDistance, layer_mask))
             {
                 Debug.Log("raycast_hit_collider.gameObject: " + raycast_hit.collider.gameObject);
@@ -76,10 +78,12 @@ public class EnemyActionForDoorController : NetworkBehaviour
                         door_open_close_controller = raycast_hit.collider.gameObject.GetComponent<DoorOpenCloseController>();
                     }
                     raycast_hit_obj = raycast_hit.collider.gameObject;
-                    if(door_open_close_controller != null){
+                    if (door_open_close_controller != null)
+                    {
                         the_door_controller = door_open_close_controller.the_door_controller;
                     }
-                    if(DoorOpenClosePermit){
+                    if (DoorOpenClosePermit)
+                    {
                         if ((the_door_controller.OpenedClosedCompleted && !the_door_controller.NeededKey.Value) || !discovery_player_controller.DiscoveryPlayerNowCheck())
                         {
                             if (!discovery_player_controller.DiscoveryPlayerNowCheck())
@@ -107,7 +111,8 @@ public class EnemyActionForDoorController : NetworkBehaviour
                 }
             }
         }
-        if(DoorAttackNow && the_door_controller != null){
+        if (DoorAttackNow && the_door_controller != null)
+        {
             discovery_player_controller.enabled = false;
             follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 0);
             follow_object_by_nav.StoppingDistance = 2;
@@ -119,11 +124,12 @@ public class EnemyActionForDoorController : NetworkBehaviour
     }
     public void AttackToDoor()
     {
-        
-        if(the_door_controller != null){
+        //Animation Eventで実行される。
+        if (the_door_controller != null)
+        {
             door_attacked_controller = the_door_controller.door_attacked_controller;
         }
-        if(door_attacked_controller == null)
+        if (door_attacked_controller == null)
         {
             return;
         }
@@ -132,13 +138,20 @@ public class EnemyActionForDoorController : NetworkBehaviour
         if (DoorBroken)
         {
             follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
+        }
+        DoorAttackForAllClientRpc(DoorBroken);
+    }
+
+    [ClientRpc]
+    private void DoorAttackForAllClientRpc(bool _doorBroken)
+    {
+        if (_doorBroken)
+        {
             DoorAttackSource.PlayOneShot(DoorBrokenClip);
             DoorAttackSource.PlayOneShot(DoorAttackClip);
         }
         else
         {
-            // GameObject effect = Instantiate(AttackedDoorEffectPrefab, the_door_controller.gameObject.transform.position + (Vector3.up * 0.2f), Quaternion.identity);
-            // effect.transform.forward = this.transform.forward;
             DoorAttackSource.PlayOneShot(DoorAttackClip);
         }
     }

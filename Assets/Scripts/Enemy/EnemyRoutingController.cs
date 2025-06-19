@@ -39,6 +39,7 @@ public class EnemyRoutingController : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         //StageRoutingsからルーティングたちを取得。
         stage_routings = StageController.instance.gameObject.GetComponent<StageRoutings>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
@@ -56,6 +57,7 @@ public class EnemyRoutingController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsServer) return;
         if (!RoutingMovePermit) return;
         if (ArrivedNextRouteMode)
         {
@@ -191,7 +193,8 @@ public class EnemyRoutingController : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Route")
+        if (!IsServer) return;
+        if (other.gameObject.tag == "Route")
         {
             NearRouteObject = other.gameObject;
         }
