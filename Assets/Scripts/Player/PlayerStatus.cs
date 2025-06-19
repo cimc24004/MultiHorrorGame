@@ -121,7 +121,10 @@ public class PlayerStatus : NetworkBehaviour
     void Update()
     {
         if (!InitPlayer) return;
-
+        if (IsOwner)
+        {
+            UpdateMoveStatusFromPlayerStatus();
+        }
         if (IsServer)
         {
             // 自分以外のキャラのアニメだけ同期
@@ -205,5 +208,24 @@ public class PlayerStatus : NetworkBehaviour
             tgtY,
             0.2f
         ).SetEase(Ease.OutQuad);
+    }
+    // PlayerStatusから移動状態を取得してmove_statusを更新
+    private void UpdateMoveStatusFromPlayerStatus()
+    {
+        switch (this.player_move_state_network.Value)
+        {
+            case PlayerStatus.PlayerMoveState.Run:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                break;
+            case PlayerStatus.PlayerMoveState.Crouch:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
+                break;
+            case PlayerStatus.PlayerMoveState.Stop:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
+                break;
+            default:
+                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                break;
+        }
     }
 }

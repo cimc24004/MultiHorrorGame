@@ -45,30 +45,23 @@ public class FootStepSoundController : NetworkBehaviour
     private string GroundedName;
     private float FootStepCantTimeNow;
     private float FootStepCantTime;
+    private bool HasFootstepAuthority
+    {
+        get
+        {
+            return IsOwner || (IsServer && !IsOwner);
+        }
+    }
     
-    // PlayerStatusの参照を追加
-    private PlayerStatus playerStatus;
-    void OnEnable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
-    }
-    void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned -= OnLocalPlayerSpawned;
-    }
-    private void OnLocalPlayerSpawned(PlayerStatus player_status){
-        this.playerStatus = player_status;
-    }
 
     void Update()
     {
-        if (playerStatus == null) return;
 
         // ★重要★ オーナーが状態を管理し、サーバーRPCで通知する
-        if (IsOwner)
+        if (HasFootstepAuthority)
         {
             // PlayerStatusから移動状態を取得（オーナーが最新状態を持っている）
-            UpdateMoveStatusFromPlayerStatus();
+            // UpdateMoveStatusFromPlayerStatus();
 
             // レベル自動切替
             if (AutoFootStepSoundLevelChange)
@@ -139,30 +132,12 @@ public class FootStepSoundController : NetworkBehaviour
         }
     }
 
-    // PlayerStatusから移動状態を取得してmove_statusを更新
-    private void UpdateMoveStatusFromPlayerStatus()
-    {
-        switch (playerStatus.player_move_state_network.Value)
-        {
-            case PlayerStatus.PlayerMoveState.Run:
-                move_status = MoveStatus.Run;
-                break;
-            case PlayerStatus.PlayerMoveState.Crouch:
-                move_status = MoveStatus.Crouch;
-                break;
-            case PlayerStatus.PlayerMoveState.Stop:
-                move_status = MoveStatus.Stop;
-                break;
-            default:
-                move_status = MoveStatus.Walk;
-                break;
-        }
-    }
+
 
     [Button]
     public void FootStepSoundPlay(string _MoveMode)
     {
-        if (!IsOwner) return;
+        if (!HasFootstepAuthority) return;
         if (FootStepPlayFromUpdate || OnlyOneFootStepSound || !PlayFootStepFromAnimationEvent) return;
         if (!ground_check.OnGround) return;
 
@@ -187,14 +162,24 @@ public class FootStepSoundController : NetworkBehaviour
     // ローカル再生＋サーバー通知
     private void PlayLocalAndNotify(string moveMode, string tagName)
     {
+        Debug.Log("PlayLocalAndNotify-------------------------moveMode: " + moveMode + "tagName: " + tagName);
         if (!foot_step_controller_status.audio_random_with_grounded_name.ContainsKey(tagName)) return;
         var list = foot_step_controller_status.audio_random_with_grounded_name[tagName][moveMode];
         if (list.Count == 0) return;
-
         int r = Random.Range(0, list.Count);
         audio_source.PlayOneShot(list[r]);
         // オーナーからサーバーRPCで通知
-        NotifyFootStepServerRpc(moveMode, tagName);
+        // NPC（サーバー所有）ならサーバーがそのままブロードキャスト
+        if (IsServer && !IsOwner)
+        {
+            // NPC：サーバーが直接全クライアントへ
+            BroadcastFootStepClientRpc(OwnerClientId, moveMode, tagName);
+        }
+        else if (IsOwner)
+        {
+            // プレイヤー所有：クライアント→サーバー→全体
+            NotifyFootStepServerRpc(moveMode, tagName);
+        }
     }
 
     // ★重要★ オーナーからサーバーへの通知

@@ -65,7 +65,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         public PlayerStatus player_status;
         public bool SightningPlayer;
         public float SightOutPlayerTimeNow;
-        public UnityEvent<bool> DiscoveryPlayerFlagChanged;
+        public UnityEvent<bool> DiscoveryPlayerFlagChanged = new UnityEvent<bool>();
         // バックアップ用フィールド
         private bool _discoveryPlayerNow;
         // プロパティ化
@@ -207,6 +207,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
             {
                 DiscoveriedEventOnce = true;
             }
+            DiscoveryPlayer(true);
             // if (follow_object_nav.ArrivedTarget)
             // {
             // }
@@ -226,13 +227,16 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
 
         Debug.Log("game_network_controller.SpawededPlayers.Count: " + game_network_controller.SpawededPlayers.Count);
+        // if (PlayersVisibilityMapStatuesWithKey.Count == 0) return;
         for (int i = 0; i < game_network_controller.SpawededPlayers.Count; i++)
         {
             Debug.Log("iStart------------: " + i + " : --------------------");
-            // if (to_players_distance_tracker.ToPlayerDistanceLists.Count == 0) return;
             GameObject TargetPlayer = game_network_controller.SpawededPlayers[i];
-            Debug.Log("to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer]: " + to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer]);
-            bool InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
+            bool InsidePlayer = false;
+            if (to_players_distance_tracker.ToPlayerDistanceLists.Count != 0)
+            {
+                InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
+            }
             if (InsidePlayer)
             {
                 Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
@@ -314,6 +318,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
 
             Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.green);
+            if (PlayersVisibilityMapStatuesWithKey.Count == 0) return;
             if (PlayersVisibilityMapStatuesWithKey[TargetPlayer].DiscoveryPlayerNow && !PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer)
             {
                 PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightOutPlayerTimeNow += Time.deltaTime;
