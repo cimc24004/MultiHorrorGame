@@ -33,6 +33,7 @@ public class PlayerToEnemyDistanceController : NetworkBehaviour
     // トリガーに敵が入った時
     private void OnTriggerEnter(Collider other)
     {
+        if (!IsOwner) return;
         if (other.CompareTag("PlayerNearSensor")) // "Enemy"タグが付いたオブジェクトのみ反応
         {
             GameObject Enemy = other.gameObject.transform.parent.gameObject;
@@ -43,22 +44,25 @@ public class PlayerToEnemyDistanceController : NetworkBehaviour
 
                 EnemiesWithPlayerNearSensors.Add(Enemy, player_near_sensor);
 
-                if(player_near_sensor.IsNearEffect){
+                if (player_near_sensor.IsNearEffect)
+                {
                     horror_director.AddNearEnemy();
                 }
             }
-            ClosestEnemyController.ClosestEnemyWithDistanceValue closestEnemyWithDistanceValue = new ClosestEnemyController.ClosestEnemyWithDistanceValue(){
+            ClosestEnemyController.ClosestEnemyWithDistanceValue closestEnemyWithDistanceValue = new ClosestEnemyController.ClosestEnemyWithDistanceValue()
+            {
                 Distance = 0,
                 player_near_sensor = player_near_sensor
             };
-            if(!closest_enemy_controller.EnemiesInRangeWithToPlayerDistance.ContainsKey(Enemy)){
+            if (!closest_enemy_controller.EnemiesInRangeWithToPlayerDistance.ContainsKey(Enemy))
+            {
                 closest_enemy_controller.EnemiesInRangeWithToPlayerDistance.Add(Enemy, closestEnemyWithDistanceValue);
             }
         }
     }
     private void OnTriggerStay(Collider other)
     {
-        
+        if (!IsOwner) return;
         if(other.CompareTag("PlayerNearSensor")){
             GameObject Enemy = other.gameObject.transform.parent.gameObject;
             if(closest_enemy_controller.EnemiesInRangeWithToPlayerDistance.ContainsKey(Enemy)){
@@ -69,20 +73,23 @@ public class PlayerToEnemyDistanceController : NetworkBehaviour
     // トリガーから敵が出た時
     private void OnTriggerExit(Collider other)
     {
+        if (!IsOwner) return;
         if (other.CompareTag("PlayerNearSensor")) // "Enemy"タグが付いたオブジェクトのみ反応
         {
             GameObject Enemy = other.gameObject.transform.parent.gameObject;
             // リストから敵を削除
             if (EnemiesWithPlayerNearSensors.ContainsKey(Enemy))
             {
-                
-                if(EnemiesWithPlayerNearSensors[Enemy].IsNearEffect){
+
+                if (EnemiesWithPlayerNearSensors[Enemy].IsNearEffect)
+                {
                     horror_director.RemoveNearEnemy();
                 }
 
                 EnemiesWithPlayerNearSensors.Remove(Enemy);
             }
-            if(closest_enemy_controller.EnemiesInRangeWithToPlayerDistance.ContainsKey(Enemy)){
+            if (closest_enemy_controller.EnemiesInRangeWithToPlayerDistance.ContainsKey(Enemy))
+            {
                 closest_enemy_controller.EnemiesInRangeWithToPlayerDistance.Remove(Enemy);
             }
         }
