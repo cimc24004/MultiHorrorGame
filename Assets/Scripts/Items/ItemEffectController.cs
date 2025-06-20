@@ -63,6 +63,7 @@ public class ItemEffectController : NetworkSingleton<ItemEffectController>
                 enemy_all_controller.AllDiscoveryPlayerSoundSensorChange(null, true);
                 // var target = MakeTargetParams(lastUserClientId);
                 this.SenkouEffectFinishedForUsedPlayerClientRpc();
+                senkou_item_use.usingNow = false;
                 senkou_item_use.SenkouUsingTimeNow = 0;
             }
         }
@@ -107,19 +108,4 @@ public class ItemEffectController : NetworkSingleton<ItemEffectController>
 
     }
     
-
-    /* ---------- 共通ユーティリティ ---------- */
-    private ulong lastUserClientId;   // ← セッション中に保持しておく
-
-    private ClientRpcParams MakeTargetParams(ulong clientId)
-    {
-        // 毎回 new で OK。GC 気になるなら static 使い回しでも可
-        return new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { clientId }
-            }
-        };
-    }
 }
