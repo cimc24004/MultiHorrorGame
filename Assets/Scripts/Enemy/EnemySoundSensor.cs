@@ -49,7 +49,7 @@ public class EnemySoundSensor : NetworkBehaviour
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
         enemy_databases = EnemyDatabases.instance;
         sound_sensor_status = original_sound_sensor_status;
-        enemy_all_controller = EnemyAllController.Instance;
+        enemy_all_controller = EnemyAllController.instance;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;

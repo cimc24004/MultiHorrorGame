@@ -9,9 +9,10 @@ public class SenkouController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        item_effect_controller = ItemEffectController.instance;
+        item_effect_controller = GameController.instance.gameObject.GetComponent<ItemEffectController>();
         instantiate_item_script = this.gameObject.GetComponent<InstantiateItemScript>();
-        item_effect_controller.SenkouUse(instantiate_item_script.item_status.ConsumableEffectTime);
+        //クライアントから実行される。
+        item_effect_controller.SenkouUseRequestServerRpc(instantiate_item_script.item_status.ConsumableEffectTime);
     }
 
     // Update is called once per frame

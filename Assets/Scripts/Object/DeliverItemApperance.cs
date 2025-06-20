@@ -26,14 +26,10 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
         game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     [Button]
     public void OnPrayCompleted()
     {
+        //クライアントから実行されるはず
         game_progress_controller.OnPrayedButsudanRequestServerRpc();
         //どこかの仏壇で祈りがコンプリートされたとき。
         if (game_progress_controller.NeedPrayCount <= game_progress_controller.PrayCountNow.Value)

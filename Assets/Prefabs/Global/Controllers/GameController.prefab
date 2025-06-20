@@ -162,38 +162,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abeeceaf0293cdb4cbd443d2d0ef3994, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: c9b0ce67b710d774199af309ee0f9410, type: 2}
-    - {fileID: 11400000, guid: d6e2bec30b111ae46aceea4c1c46a821, type: 2}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: senkou_item_use
-      Entry: 7
-      Data: 0|ItemEffectController+SenkouItemUse, Assembly-CSharp
-    - Name: SenkouUsingTimeNow
-      Entry: 4
-      Data: 0
-    - Name: SenkouUsingTime
-      Entry: 4
-      Data: 0
-    - Name: usingNow
-      Entry: 5
-      Data: false
-    - Name: discovery_player_status
-      Entry: 10
-      Data: 0
-    - Name: sound_sensor_status
-      Entry: 10
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  senkou_item_use:
+    SenkouUsingTimeNow: 0
+    SenkouUsingTime: 0
+    usingNow: 0
+    discovery_player_status: {fileID: 11400000, guid: c9b0ce67b710d774199af309ee0f9410,
+      type: 2}
+    sound_sensor_status: {fileID: 11400000, guid: d6e2bec30b111ae46aceea4c1c46a821,
+      type: 2}
 --- !u!114 &490329350961075074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,15 +187,10 @@ MonoBehaviour:
   MikoPrefab: {fileID: 1364320428859499873, guid: 34c1332d2e27fea43b5e99b6c2303584,
     type: 3}
   MikoApperancePlaceTrans: {fileID: 0}
-  CurseValueNow: 0
+  CurseValueNow:
+    m_InternalValue: 0
   CurseMaxValue: 100
   CurseGageUI: {fileID: 2332979244096101431}
-  OnValueChangeCurseEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCurseGageMaxEvent:
-    m_PersistentCalls:
-      m_Calls: []
   CurseMaxedEventNow: 0
   CurseMaxEventWhileTime: 60
   CurseMaxEventWhileTimeNow: 0
@@ -605,7 +577,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4f84888e8912ac40ae0b028d11c61ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   enemy_sound_sensors: []
   discovery_player_controllers: []
   enemy_move_speed_controllers: []

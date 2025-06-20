@@ -8,10 +8,8 @@ public class NetworkDespawnEvent : NetworkBehaviour
     public bool OnStart;
     [ShowIf("OnStart")]
     public float OnStartDestroyTime;
-    private NetworkObject m_NetworkObject;
     public override void OnNetworkSpawn()
     {
-        m_NetworkObject = this.gameObject.GetComponent<NetworkObject>();
         if (OnStart)
         {
             DODestroyWithTime(OnStartDestroyTime);
@@ -26,6 +24,6 @@ public class NetworkDespawnEvent : NetworkBehaviour
     private IEnumerator DODestroyIEnumerator(float WaitTime)
     {
         yield return new WaitForSeconds(WaitTime);
-        m_NetworkObject.Despawn(true);
+        NetworkObject.Despawn(true);
     }
 }

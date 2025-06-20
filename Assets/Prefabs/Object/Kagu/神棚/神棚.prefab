@@ -374,7 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 4054033877
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -399,7 +399,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aefdb4263df60245a426c82554e2412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   CurseDecreaseAmount: 30
 --- !u!114 &2818056805728107258
 MonoBehaviour:
@@ -416,17 +415,15 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NoticeMessage: "\u304A\u7948\u308A\u3059\u308B"
   NeedToPrayTime: 7
-  PrayNow: 0
-  PrayPermit: 1
-  PrayTimeNow: 0
+  PrayTimeNow:
+    m_InternalValue: 0
+  PrayPermit:
+    m_InternalValue: 1
+  AlreadyPrayCompleted:
+    m_InternalValue: 0
   PrayCompletedEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Arguments: []
-        m_CallState: 2
-        m_Target: {fileID: 2665154010786089112}
-        m_MethodName: CurseDecrease
-        m_Modes: 01000000
       - m_Arguments:
         - m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: System.Boolean, mscorlib
@@ -527,6 +524,14 @@ MonoBehaviour:
         m_Target: {fileID: 8484627361934002478}
         m_MethodName: set_color
         m_Modes: 16000000
+  PrayCompletedEventForServer:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 2665154010786089112}
+        m_MethodName: CurseDecrease
+        m_Modes: 01000000
   PrayStartEvent:
     m_PersistentCalls:
       m_Calls: []

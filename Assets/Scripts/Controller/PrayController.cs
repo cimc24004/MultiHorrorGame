@@ -31,6 +31,8 @@ public class PrayController : NetworkBehaviour
     );
     [Header("祈りコンプリートEvent 全クライアントに共有")]
     public UnityEvent2 PrayCompletedEvent;
+    [Header("祈りコンプリートEvent サーバー側でのみ実行される")]
+    public UnityEvent2 PrayCompletedEventForServer;
     [SerializeField] private UnityEvent2 PrayStartEvent;
 
     // ���[�J���p
@@ -155,6 +157,7 @@ public class PrayController : NetworkBehaviour
     }
     private void PrayCompleted()
     {
+        PrayCompletedEventForServer.Invoke();
         AlreadyPrayCompleted.Value = true;
         PrayPermit.Value = false;
         PrayTimeNow.Value = 0f;

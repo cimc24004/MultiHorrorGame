@@ -214,8 +214,25 @@ public class CurseController : NetworkSingleton<CurseController>
             CurseMaxed(CurseMaxEventWhileTime);
         }
     }
+    [ServerRpc]
+    public void CurseDecreaseRequestFromOutsideRequestServerRpc(float _curseReducedPower)
+    {
+        //外部からCurseDecreaseを実行するならこれ！ クライアントからこの関数を呼ぶ
+        if (this.CurseMaxedEventNow)
+        {
+            //呪い値がマックスならば、CurseMaxedEventをリセット！
+            this.CurseMaxedReset();
+        }
+        CurseDecreaseFromOutsideForAllClientRpc();
+        CurseDecrease(_curseReducedPower);
+    }
+    [ClientRpc]
+    private void CurseDecreaseFromOutsideForAllClientRpc()
+    {
+        player_status.sub_noticed_ui_controller.Notice("呪い値が下がった");
+    }
     [Button]
-    public void CurseDecrease(float CurseReducedPower)
+    private void CurseDecrease(float CurseReducedPower)
     {
         //Server側で実行
         if ((CurseValueNow.Value - CurseReducedPower) >= 0)

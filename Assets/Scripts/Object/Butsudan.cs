@@ -31,29 +31,32 @@ public class Butsudan : MonoBehaviour
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
-        enemy_all_controller = EnemyAllController.Instance;
+        enemy_all_controller = EnemyAllController.instance;
         sub_noticed_ui_controller = PlayerStatus.LocalInstance.sub_noticed_ui_controller;
         houses_controller = HousesController.Instance;
         audioSource = pray_controller.gameObject.GetComponent<AudioSource>();
         object_layer_control = pray_controller.gameObject.GetComponent<ObjectLayerControl>();
         pray_controller.PrayCompletedEvent.AddListener(() =>
         {
-            ButsudanPrayCompleted();
+            ButsudanPrayCompletedForClients();
             SilhouetteDelete();
             audioSource.Play();
             object_layer_control.ChangeLayerByName("Default");
 
         });
-
+        pray_controller.PrayCompletedEventForServer.AddListener(() =>
+        {
+            enemy_all_controller.IncreaseEnemiesMoveSpeed();
+        });
     }
 
-    public void ButsudanPrayCompleted()
+    public void ButsudanPrayCompletedForClients()
     {
+        //クライアントから実行される。 PrayController.OnCompletedEventとおなじタイミングなので
         Debug.Log("ButsudanPrayCompleted()を実行！");
         Debug.Log("deliver_item_apperance: " + pray_to_deliver_item_appear_place) ;
         pray_to_deliver_item_appear_place.OnPrayCompleted();
         sub_noticed_ui_controller.Notice("仏壇にお祈りした");
-        enemy_all_controller.IncreaseEnemiesMoveSpeed();
         sub_noticed_ui_controller.Notice("敵の能力が向上した....。", 1);
     }
 

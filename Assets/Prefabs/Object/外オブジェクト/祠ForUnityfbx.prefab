@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1385575151
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -417,11 +417,6 @@ MonoBehaviour:
   PrayCompletedEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Arguments: []
-        m_CallState: 2
-        m_Target: {fileID: 575013917172829890}
-        m_MethodName: CurseDecrease
-        m_Modes: 01000000
       - m_Arguments: []
         m_CallState: 2
         m_Target: {fileID: 6535687018867813307}
@@ -477,6 +472,14 @@ MonoBehaviour:
         m_Target: {fileID: 7395616011007137558}
         m_MethodName: set_color
         m_Modes: 16000000
+  PrayCompletedEventForServer:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 575013917172829890}
+        m_MethodName: CurseDecrease
+        m_Modes: 01000000
   PrayStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -492,7 +495,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aefdb4263df60245a426c82554e2412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   CurseDecreaseAmount: 30
 --- !u!82 &6535687018867813307
 AudioSource:

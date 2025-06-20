@@ -30,7 +30,6 @@ public class ObjectBuffController : NetworkBehaviour
     private FootStepSoundController foot_step_sound_controller;
     private SubNoticedUIController sub_noticed_ui_controller;
     private Tween DestroyAnimationTween;
-    private NetworkObject m_NetworkObject;
     // Start is called before the first frame update
     // void Start()
     // {
@@ -63,7 +62,6 @@ public class ObjectBuffController : NetworkBehaviour
         pray_controller = this.gameObject.GetComponent<PrayController>();
         pray_controller.PrayCompletedEvent.AddListener(ObjectPartDestroyForClients);
         PartedSkinnedMeshRenderer = PartedObj.GetComponent<SkinnedMeshRenderer>();
-        m_NetworkObject = this.gameObject.GetComponent<NetworkObject>();
         sound_object_event_with_enemy_sensor = this.gameObject.GetComponent<SoundObjectEventWithEnemySensor>();
     }
 

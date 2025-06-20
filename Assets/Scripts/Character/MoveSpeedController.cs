@@ -30,7 +30,7 @@ public class MoveSpeedController : NetworkBehaviour
         PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
     }
     private void InitWhenPlayerSpawned(PlayerStatus _playerStatus){
-        enemy_all_controller = EnemyAllController.Instance;
+        enemy_all_controller = EnemyAllController.instance;
         Debug.Log("enemy_all_controller: " + enemy_all_controller);
         enemy_all_controller.enemy_move_speed_controllers.Add(this);
         m_Animator = this.gameObject.GetComponent<Animator>();    
