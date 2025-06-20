@@ -64,30 +64,26 @@ public class HouseDirector : Singleton<HouseDirector>
         //     // AllClientsRandomInstantiateRequestClientRpc();
         // }
     }
-    [ServerRpc]
-    private void RandomInstantiateObjectsRequestServerRpc()
-    {
 
-    }
-    [ClientRpc]
-    private void AllClientsRandomInstantiateRequestClientRpc()
-    {
-        foreach (var obj in RandomObjs)
-        {
-            int r = Random.Range(0, RandomObjProbability);
-            if (r == 0)
-            {
-                var networkObject = obj.GetComponent<Unity.Netcode.NetworkObject>();
+    // [ClientRpc]
+    // private void AllClientsRandomInstantiateRequestClientRpc()
+    // {
+    //     foreach (var obj in RandomObjs)
+    //     {
+    //         int r = Random.Range(0, RandomObjProbability);
+    //         if (r == 0)
+    //         {
+    //             var networkObject = obj.GetComponent<Unity.Netcode.NetworkObject>();
 
-                // まだ Network Spawn されていなければ Spawn
-                if (networkObject != null && !networkObject.IsSpawned)
-                {
-                    networkObject.Spawn();
-                }
+    //             // まだ Network Spawn されていなければ Spawn
+    //             if (networkObject != null && !networkObject.IsSpawned)
+    //             {
+    //                 networkObject.Spawn();
+    //             }
 
-                obj.SetActive(true);
-            }
-        }
-    }
+    //             obj.SetActive(true);
+    //         }
+    //     }
+    // }
 }
 

@@ -61,8 +61,8 @@ public class ItemEffectController : NetworkSingleton<ItemEffectController>
                 //サーバーから実行されるねえ
                 enemy_all_controller.AllEnemySoundSensorChange(null, true);
                 enemy_all_controller.AllDiscoveryPlayerSoundSensorChange(null, true);
-                var target = MakeTargetParams(lastUserClientId);
-                this.SenkouEffectFinishedForUsedPlayerClientRpc(target);
+                // var target = MakeTargetParams(lastUserClientId);
+                this.SenkouEffectFinishedForUsedPlayerClientRpc();
                 senkou_item_use.SenkouUsingTimeNow = 0;
             }
         }
@@ -74,9 +74,9 @@ public class ItemEffectController : NetworkSingleton<ItemEffectController>
         ItemUsePlayerNetworkId = rpcParams.Receive.SenderClientId;   // ←ここ
         senkou_item_use.SenkouUsingTime = _time;
         senkou_item_use.usingNow = true;
-        var target = MakeTargetParams(ItemUsePlayerNetworkId);
+        // var target = MakeTargetParams(ItemUsePlayerNetworkId);
 
-        SenkouEffectStartForUsedPlayerClientRpc(target);
+        SenkouEffectStartForUsedPlayerClientRpc();
         enemy_all_controller.AllEnemySoundSensorChange(senkou_item_use.sound_sensor_status, false);
         enemy_all_controller.AllDiscoveryPlayerSoundSensorChange(senkou_item_use.discovery_player_status, false);
         senkou_item_use.SenkouUsingTimeNow = 0;

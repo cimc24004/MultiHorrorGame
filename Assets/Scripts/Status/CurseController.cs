@@ -214,7 +214,7 @@ public class CurseController : NetworkSingleton<CurseController>
             CurseMaxed(CurseMaxEventWhileTime);
         }
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void CurseDecreaseRequestFromOutsideRequestServerRpc(float _curseReducedPower)
     {
         //外部からCurseDecreaseを実行するならこれ！ クライアントからこの関数を呼ぶ
