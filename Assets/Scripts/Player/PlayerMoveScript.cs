@@ -36,7 +36,6 @@ public class PlayerMoveScript : NetworkBehaviour
     [SerializeField] private PlayerStatus playerStatus;
     private PlayerStaminaController staminaController;
     private SubNoticedUIController subNoticedUI;
-    private TimeManager timeManager;
 
     // スピードアップ用
     private bool moveSpeedUpNow     = false;
@@ -51,34 +50,37 @@ public class PlayerMoveScript : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        characterController = GetComponent<CharacterController>();
-        playerStatus = GetComponent<PlayerStatus>();
-        playerInput = playerStatus.player_input;
+        if (IsOwner || IsServer)
+        {
+            playerStatus = this.gameObject.GetComponent<PlayerStatus>();
+        }
 
         // アクション取得
-        moveAction = playerInput.actions["Move"];
-        runChangeAction = playerInput.actions["RunChange"];
-        crouchChangeAction = playerInput.actions["CrouchChange"];
-
-        anim = GetComponent<Animator>();
-        defaultRunSpeed = RunSpeed;
-        defaultWalkSpeed = WalkSpeed;
-        defaultCrouchSpeed = CrouchSpeed;
-
         // サーバー起動時は WalkSpeed で初期化
         if (IsServer)
+        {
+            defaultRunSpeed = RunSpeed;
+            defaultWalkSpeed = WalkSpeed;
+            defaultCrouchSpeed = CrouchSpeed;
+            anim = GetComponent<Animator>();
+            characterController = GetComponent<CharacterController>();
+            staminaController = GetComponent<PlayerStaminaController>();
             NowSpeed = WalkSpeed;
+        }
 
-        staminaController = GetComponent<PlayerStaminaController>();
-        subNoticedUI = playerStatus.sub_noticed_ui_controller;
-        timeManager = TimeManager.instance;
-        DirectionCamera = playerStatus.virtual_camera.VirtualCameraGameObject;
 
         // ← 追加：初期の MoveState を保持
-        prevMoveState = playerStatus.player_move_state_network.Value;
 
         if (IsOwner)
         {
+            playerInput = playerStatus.player_input;
+            subNoticedUI = playerStatus.sub_noticed_ui_controller;
+            prevMoveState = playerStatus.player_move_state_network.Value;
+            DirectionCamera = playerStatus.virtual_camera.VirtualCameraGameObject;
+            moveAction = playerInput.actions["Move"];
+            runChangeAction = playerInput.actions["RunChange"];
+            crouchChangeAction = playerInput.actions["CrouchChange"];
+
             // ★ 必ず全 InputAction を Enable する ★
             moveAction.Enable();
             runChangeAction.Enable();
@@ -90,7 +92,6 @@ public class PlayerMoveScript : NetworkBehaviour
             runChangeAction.started += OnRunChangePerformed;
             runChangeAction.canceled += OnRunChangePerformed;
         }
-        
     }
 
     void Update()

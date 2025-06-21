@@ -39,6 +39,7 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsServer) return;
         // „Ÿ„Ÿ ‚±‚±‚Å BoxCastiÀ¿ OverlapBoxj „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
         Collider[] hits = Physics.OverlapBox(
             transform.position,
