@@ -212,7 +212,6 @@ public class PlayerStatus : NetworkBehaviour
     private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-        Debug.Log("DeadPlayerClientRpc----: " + clientRpcParams.Send.TargetClientIds.Count);
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
         if (items.Count > 0)
