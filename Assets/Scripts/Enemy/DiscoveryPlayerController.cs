@@ -238,7 +238,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
                         if (raycast_hit.collider.gameObject.tag == "Player")
                         {
-                            AddPlayerToDiscoveryPlayerLists(TargetPlayer);
                             Debug.Log("Playerが敵に見つかりました！");
                             if (!PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HidingNow.Value)
                             {
@@ -248,7 +247,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                                 //即見つかる判定ではある。
                                 if (DiscoveryPlayerBySightning)
                                 {
-                                    PlayersVisibilityMapStatuesWithKey[TargetPlayer].DiscoveryPlayerNow = true;
+                                    AddPlayerToDiscoveryPlayerLists(TargetPlayer);
                                 }
                             }
                         }
@@ -372,7 +371,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     }
     private void DiscoveryPlayer(bool _discovery)
     {
-        PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = _discovery;
+        // PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = _discovery;
         if (!_discovery) return;
         //敵に見つかったとき、または見つかってる状態をリセットしたい時に使う。
         //Trueならば見つかったときのイベント、Falseならば見つからなくなったときにリセットするための関数
@@ -421,6 +420,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         {
             if (DiscoveriedPlayers.Contains(_Player))
             {
+                PlayersVisibilityMapStatuesWithKey[_Player].DiscoveryPlayerNow = false;
                 DiscoveriedPlayers.Remove(_Player);
                 if (DiscoveriedPlayers.Count != 0)
                 {
@@ -454,6 +454,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 // NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
 
                 DiscoveryPlayerClientRpc(new ClientRpcParams { Send = sendParams });
+                PlayersVisibilityMapStatuesWithKey[_Player].DiscoveryPlayerNow = true;
                 DiscoveriedPlayers.Add(_Player);
             }
         }
@@ -467,6 +468,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
             // NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
 
             DiscoveryPlayerClientRpc(new ClientRpcParams { Send = sendParams });
+            PlayersVisibilityMapStatuesWithKey[_Player].DiscoveryPlayerNow = true;
             DiscoveriedPlayers.Add(_Player);
         }
 
