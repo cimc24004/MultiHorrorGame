@@ -1,42 +1,26 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-
+using Sirenix.OdinInspector;
 public class EnemyToPlayerKillController : NetworkBehaviour
 {
     public Transform boxCenter;                  // 範囲の中心（敵の目の前に置く）
     public Vector3   boxHalfExtents = new(0.3f, 0.6f, 0.4f);
     public LayerMask layerMask;    // Player レイヤーだけにしておく
-
+    
     private DiscoveryPlayerController discovery_player_controller;
-    private PlayerStatus              playerStatus;
     private Collider[] hitBuffer = new Collider[4];   // 最大ヒット数を決め打ちで確保
-    private bool InitedPlayer;
+    private GameNetworkController game_network_controller;
     public override void OnNetworkSpawn()
     {
-        discovery_player_controller    = this.gameObject.GetComponent<DiscoveryPlayerController>();
+        game_network_controller = GameNetworkController.instance;
+        discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
     }
-    private void OnEnable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
-        if (PlayerStatus.LocalInstance != null)
-        {
-            InitWhenPlayerSpawned(PlayerStatus.LocalInstance);
-        }
-    }
-    private void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
-    }
-    private void InitWhenPlayerSpawned(PlayerStatus _playerStatus)
-    {
-        playerStatus = _playerStatus;
-        InitedPlayer = true;
-    }
+
     void Update()
     {
-        // return;
-        if (!InitedPlayer) return;
-        if (playerStatus.Dead.Value == true || playerStatus.HidingNow.Value == true || !discovery_player_controller.DiscoveryPlayerNowCheck())
+        if(!IsServer) return;
+        if (!discovery_player_controller.DiscoveryPlayerNowCheck())
             return;
 
         // Box の向きは敵の forward に合わせる
@@ -54,7 +38,13 @@ public class EnemyToPlayerKillController : NetworkBehaviour
         {
             if (hitBuffer[i].CompareTag("Player"))
             {
-                playerStatus.DeadEvent(this.gameObject);
+                //プレイヤーに触れたら
+                GameObject player = hitBuffer[i].gameObject;
+                PlayerStatus playerStatus = game_network_controller.SpawnedPlayersWithPlayerStatuses[player];
+                if (!playerStatus.Dead.Value || playerStatus.HidingNow.Value == true)
+                {
+                    game_network_controller.SpawnedPlayersWithPlayerStatuses[player].DeadEvent(this.gameObject);
+                }
                 break;
             }
         }

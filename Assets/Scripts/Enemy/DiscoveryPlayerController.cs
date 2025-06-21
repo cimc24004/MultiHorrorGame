@@ -220,12 +220,12 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
 
 
-        Debug.Log("game_network_controller.SpawededPlayers.Count: " + game_network_controller.SpawededPlayers.Count);
+        Debug.Log("game_network_controller.SpawededPlayers.Count: " + game_network_controller.SpawnedPlayers.Count);
         // if (PlayersVisibilityMapStatuesWithKey.Count == 0) return;
-        for (int i = 0; i < game_network_controller.SpawededPlayers.Count; i++)
+        for (int i = 0; i < game_network_controller.SpawnedPlayers.Count; i++)
         {
             Debug.Log("iStart------------: " + i + " : --------------------");
-            GameObject TargetPlayer = game_network_controller.SpawededPlayers[i];
+            GameObject TargetPlayer = game_network_controller.SpawnedPlayers[i];
             bool InsidePlayer = false;
             if (to_players_distance_tracker.ToPlayerDistanceLists.Count != 0)
             {
