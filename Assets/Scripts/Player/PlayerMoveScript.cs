@@ -53,6 +53,7 @@ public class PlayerMoveScript : NetworkBehaviour
         if (IsOwner || IsServer)
         {
             playerStatus = this.gameObject.GetComponent<PlayerStatus>();
+            anim = GetComponent<Animator>();
         }
 
         // ƒAƒNƒVƒ‡ƒ“Žæ“¾
@@ -62,7 +63,6 @@ public class PlayerMoveScript : NetworkBehaviour
             defaultRunSpeed = RunSpeed;
             defaultWalkSpeed = WalkSpeed;
             defaultCrouchSpeed = CrouchSpeed;
-            anim = GetComponent<Animator>();
             characterController = GetComponent<CharacterController>();
             staminaController = GetComponent<PlayerStaminaController>();
             NowSpeed = WalkSpeed;
