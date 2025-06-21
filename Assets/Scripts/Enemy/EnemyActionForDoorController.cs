@@ -114,11 +114,11 @@ public class EnemyActionForDoorController : NetworkBehaviour
         if (DoorAttackNow && the_door_controller != null)
         {
             discovery_player_controller.enabled = false;
-            follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 0);
+            follow_object_by_nav.ChaseToTargetSet(true, the_door_controller.gameObject.transform.position, 0, FollowObjectByNav.MoveStyle.Stop);
             follow_object_by_nav.StoppingDistance = 2;
             character_controller.Move(Vector3.zero);
             anim.SetBool("DoorAttack", true);
-            enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+            // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             discovery_player_controller.enabled = true;
         }
     }

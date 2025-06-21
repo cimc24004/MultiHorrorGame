@@ -26,6 +26,7 @@ public class EnemyFlinchController : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         m_Animator = this.gameObject.GetComponent<Animator>();
@@ -41,17 +42,22 @@ public class EnemyFlinchController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsServer) return;
         if (FlinchNow)
         {
             FlinchTimeNow += Time.deltaTime;
             enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             enemy_to_player_kill_controller.enabled = false;
-            discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = false;
-            discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].SightningPlayer = false;
+            if (discovery_player_controller.DiscoveriedPlayers.Count != 0)
+            {
+                // discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = false;
+                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].SightningPlayer = false;
+            }
             discovery_player_controller.SightningPlayerWhenHidePlayer = false;
-            discovery_player_controller.enabled = false;
+            discovery_player_controller.DiscoveryPlayerBySightning = false;
             nav_mesh_agent.speed = 0;
-            if(ChangeApplyMotionWhenFlinch){
+            if (ChangeApplyMotionWhenFlinch)
+            {
                 m_Animator.applyRootMotion = false;
             }
             character_controller.Move(Move);
@@ -76,11 +82,11 @@ public class EnemyFlinchController : NetworkBehaviour
         if(ChangeApplyMotionWhenFlinch){
             m_Animator.applyRootMotion = DefaultApplyMotion;
         }
-        discovery_player_controller.enabled = true;
         nav_mesh_agent.speed = DefaultNavMeshSpeed;
         enemy_to_player_kill_controller.enabled = true;
         follow_object_by_nav.MovePermit = true;
-        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+        discovery_player_controller.DiscoveryPlayerBySightning = true;
+        // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
         FlinchNow = false;
     }
 }

@@ -75,7 +75,8 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
                 enemy_sound_sensor.SoundSeonsor(
                     sound_object_event_with_sensor.transform.position,
                     move_speed_controller.RunSpeed,
-                    true);
+                    true
+                    ,FollowObjectByNav.MoveStyle.Run);
 
                 enemy_sound_sensor.sound_by_obj = true;
             }

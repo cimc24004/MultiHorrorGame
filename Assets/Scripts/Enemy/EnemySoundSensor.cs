@@ -102,7 +102,7 @@ public class EnemySoundSensor : NetworkBehaviour
 
             if(follow_object_nav.ArrivedTarget)
             {
-                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+                // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //音が鳴った位置に到着し終えた場合 少し時間を待ってから元の位置に戻るようにする。
                 if (ArriveSoundPlaceWaitTimeToReturnNow >= sound_sensor_status.ArriveSoundPlaceWaitTimeToReturn)
                 {
@@ -138,11 +138,11 @@ public class EnemySoundSensor : NetworkBehaviour
             {
                 if (sound_by_obj)
                 {
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
                 }
                 else
                 {
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                 }
             }
         }
@@ -159,8 +159,8 @@ public class EnemySoundSensor : NetworkBehaviour
                 if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerRunDistance)
                 {
                     Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
-                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false);
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
+                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
                     {
@@ -176,8 +176,8 @@ public class EnemySoundSensor : NetworkBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
-                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false);
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
+                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
                     {
@@ -195,8 +195,8 @@ public class EnemySoundSensor : NetworkBehaviour
                 {
                     //プレイヤーとの距離が気づく範囲にいる場合
                     Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
-                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false);
-                    enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
+                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
                     if (!MoveToSoundPlaceNow)
                     {
@@ -213,7 +213,7 @@ public class EnemySoundSensor : NetworkBehaviour
     }
     //TargetPos: 音が鳴った目標先の場所 ReturnPos: 音が鳴って目標先に到着した後帰る先の場所
 
-    public void SoundSeonsor(Vector3 TargetPos, float _speed, bool _SoundObject)
+    public void SoundSeonsor(Vector3 TargetPos, float _speed, bool _SoundObject, FollowObjectByNav.MoveStyle move_style)
     {
         enemy_routing_controller.PermitFunction(false);
         //どこからか音鳴らすときこの関数を呼ぶ。 例(プレイヤーの足音や非常ベルの音をならす関数などで)
@@ -228,7 +228,7 @@ public class EnemySoundSensor : NetworkBehaviour
             if (follow_object_nav.CanMoveCheck(TargetPos))
             {
                 //目標の地点がNavmeshの青枠内ならば 普通にその目標地点に向かう
-                follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed);
+                follow_object_nav.ChaseToTargetSet(true, TargetPos, _speed, move_style);
 
             }
             else
@@ -237,7 +237,7 @@ public class EnemySoundSensor : NetworkBehaviour
                 //してそのピックアップされた地点を目標地点として設定する。
 
                 Vector3 NearPosition = follow_object_nav.BlueRangeNearPositionGet(TargetPos, 3f);
-                follow_object_nav.ChaseToTargetSet(true, NearPosition, _speed);
+                follow_object_nav.ChaseToTargetSet(true, NearPosition, _speed, move_style);
             }
             follow_object_nav.StoppingDistance = 1f;
             SoundPlacePosition = TargetPos;

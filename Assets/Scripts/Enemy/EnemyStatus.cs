@@ -45,6 +45,7 @@ public class EnemyStatus : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         character_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();

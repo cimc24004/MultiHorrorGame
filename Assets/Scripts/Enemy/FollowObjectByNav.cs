@@ -7,8 +7,11 @@ using System;
 using DG.Tweening;
 using UnityEngine.UIElements;
 using Unity.Netcode;
+
 public class FollowObjectByNav : NetworkBehaviour
 {
+    public enum MoveStyle { Stop, Walk, Run }
+    private MoveStyle requestStyle = MoveStyle.Stop;
     //ただ追いかける為だけのクラス ここに直接イベントは書かないこと。
     private NavMeshAgent nav_mesh_agent;
     public bool ChaseToTargetMode;
@@ -32,9 +35,16 @@ public class FollowObjectByNav : NetworkBehaviour
     private Vector3 Vector3Move;
     private NavMeshHit nav_mesh_hit;
     private EnemyStatus enemy_status;
+    
+    // 到着状態を管理するための追加フィールド
+    private bool wasArrived;
+    private Vector3 lastTargetPosition;
+    private float arrivalCheckThreshold = 0.1f; // ターゲット位置変更の閾値
+
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
         //rigid = this.gameObject.GetComponent<Rigidbody>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
@@ -49,41 +59,64 @@ public class FollowObjectByNav : NetworkBehaviour
         //navmeshagentによる動きを停止。 動きはCharacterControllerで行いnavmeshagentは探索結果のみを用いる。
         nav_mesh_agent.updatePosition = true;
         nav_mesh_agent.updateRotation = false;
+        
+        // 初期化
+        lastTargetPosition = ChaseTargetPosition;
+        wasArrived = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!IsServer) return;
+        EnemyStatus.EnemyMoveState final =
+            ArrivedTarget
+                ? EnemyStatus.EnemyMoveState.Stop
+                : (requestStyle == MoveStyle.Run
+                      ? EnemyStatus.EnemyMoveState.Run
+                      : EnemyStatus.EnemyMoveState.Walk);
+
+        enemy_status.enemy_move_state = final;
         if (!MovePermit)
         {
             return;
         }
+        
         //追いかけるターゲットと自分との距離
         ToTargetPosDistance = Math.Round(Vector3.Distance(ChaseTargetPosition, this.transform.position), 1, MidpointRounding.ToEven);
-        PosGetByFinder(ChaseTargetPosition);
-        nav_mesh_agent?.SetDestination(ChaseTargetPosition);
+        if (!ArrivedTarget)
+        {
+            PosGetByFinder(ChaseTargetPosition);
+            nav_mesh_agent.SetDestination(ChaseTargetPosition);
+        }        
         if (ChaseToTargetMode)
         {
-
-            //Debug.Log(Math.Round(ToTargetPosDistance, 1));
-            if (!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance)
-            {
-                //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
-                Debug.Log("!nav_mesh_agent.Length > 2 && ToTargetPosDIstance <= StoppingDIsntance");
-                ArrivedTarget = true;
-            }
-            else
+            // ターゲット位置が大きく変更された場合は到着状態をリセット
+            if (Vector3.Distance(lastTargetPosition, ChaseTargetPosition) > arrivalCheckThreshold)
             {
                 ArrivedTarget = false;
+                wasArrived = false;
+                lastTargetPosition = ChaseTargetPosition;
+            }
 
+            // 到着判定（一度到着したら、新しいターゲットが設定されるまで維持）
+            if (!wasArrived)
+            {
+                if (!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance)
+                {
+                    //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
+                    Debug.Log("!nav_mesh_agent.Length > 2 && ToTargetPosDIstance <= StoppingDIsntance");
+                    ArrivedTarget = true;
+                    wasArrived = true;
+                }
             }
 
             if (ArrivedTarget)
             {
                 //ターゲットの位置に到着したらChaseToTargetModeはFalseにしてリセット
                 Vector3Move = Vector3.down * character_controller.velocity.y;
-                ChaseToTargetMode = false;
+                // ChaseToTargetModeのリセットは外部から制御する方が良い場合もある
+                // ChaseToTargetMode = false;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             }
             else
@@ -92,19 +125,18 @@ public class FollowObjectByNav : NetworkBehaviour
                 Vector3 target = (NavmeshNextPos - this.transform.position).normalized;
                 Vector3Move = target * speed;
             }
-
-
         }
+
         nav_mesh_agent.velocity = character_controller.velocity;
         character_controller.Move(new Vector3(Vector3Move.x * Time.deltaTime, 0, Vector3Move.z * Time.deltaTime));
     }
+    
     private void FixedUpdate()
     {
         if (!IsServer) return;
         if (!MovePermit) return;
         if (ChaseToTargetMode)
         {
-
             //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
             Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
             direction = new Vector3(direction.x, 0, direction.z);
@@ -116,23 +148,46 @@ public class FollowObjectByNav : NetworkBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
             }
         }
-
     }
-    public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed)
+    
+    public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed,MoveStyle style)
     {
         if (!IsServer)
         {
             Debug.LogError("この関数はサーバーからでしか実行できませんよ！");
         }
-        //この関数は外部から使用する。 targetの位置をセットする為の関数 
-        //_SetDestinationOnceとは SetDestinationを何回もやってると重くなるのでプレイヤーなど動くもの以外は
-        //一回だけ探索ゴールを設定するようにしておく。 軽量化のため。
-        this.ArrivedTarget = false;
+        
+        // ターゲット位置が大きく変更された場合は到着状態をリセット
+        if (Vector3.Distance(_position, ChaseTargetPosition) > arrivalCheckThreshold)
+        {
+            ArrivedTarget = false;
+            wasArrived = false;
+        }
+        
+        // 停止距離より遠い場合のみ到着状態をリセット
+        if ((_position - transform.position).sqrMagnitude > StoppingDistance * StoppingDistance)
+        {
+            if (Vector3.Distance(_position, ChaseTargetPosition) > arrivalCheckThreshold)
+            {
+                ArrivedTarget = false;
+                wasArrived = false;
+            }
+        }
+        requestStyle        = style;     // ★記憶
         this.ChaseToTargetMode = _mode;
         this.speed = _speed;
         this.ChaseTargetPosition = _position;
         this.ToTargetPosDistance = Math.Round(Vector3.Distance(ChaseTargetPosition, this.transform.position), 1, MidpointRounding.ToEven);
+        this.lastTargetPosition = _position;
     }
+    
+    // 外部から到着状態を手動でリセットする関数
+    public void ResetArrivedTarget()
+    {
+        ArrivedTarget = false;
+        wasArrived = false;
+    }
+    
     public void PosGetByFinder(Vector3 target_pos)
     {
         //探索結果を取得するコード
@@ -145,9 +200,7 @@ public class FollowObjectByNav : NetworkBehaviour
             NavmeshNextPos = target_pos;
         }
 
-
         nav_mesh_agent.nextPosition = this.transform.position;
-
     }
 
     public bool CanMoveCheck(Vector3 targetPos)
@@ -166,6 +219,7 @@ public class FollowObjectByNav : NetworkBehaviour
         }
         return true;
     }
+    
     public Vector3 BlueRangeNearPositionGet(Vector3 targetPos, float maxDistance)
     {
         if (!IsServer)
@@ -177,13 +231,13 @@ public class FollowObjectByNav : NetworkBehaviour
         bool found = NavMesh.SamplePosition(targetPos, out nav_mesh_hit, maxDistance, NavMesh.AllAreas);
         return nav_mesh_hit.position;
     }
+    
     private void OnDrawGizmos()
     {
         if (!ChaseToTargetMode) return;
 
         Gizmos.color = Color.blue;
         Gizmos.DrawSphere(nav_mesh_hit.position, 1);
-
 
         Vector3 prepos = ChaseTargetPosition;
         Gizmos.color = Color.green;
@@ -195,6 +249,4 @@ public class FollowObjectByNav : NetworkBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawCube(nav_mesh_agent.nextPosition, new Vector3(1, 1, 1));
     }
-
-
 }

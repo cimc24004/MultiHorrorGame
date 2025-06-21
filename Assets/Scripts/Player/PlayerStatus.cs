@@ -173,22 +173,7 @@ public class PlayerStatus : NetworkBehaviour
             ulong enemyNetId = killed_enemy_status.NetworkObjectId;
             killed_enemy_flinch_controller = killed_enemy_status.enemy_flinch_controller;
             DeadPlayerClientRpc(enemyNetId, rpcParams);
-            anim.SetBool("AppearentDeath", true);
-            MoveX = 0;
-            MoveY = 0;
-            player_hide_object_action.HidingPermit.Value = true;
-            player_to_enemy_distance_controller.enabled = false;
-            this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
-            PlayerDeaded = true;
-            player_character_controller.enabled = false;
-            player_move_permit.Stop();
 
-            DOVirtual.DelayedCall(4, () =>
-            {
-                // SceneManager.LoadScene("GameOver");
-                PlayerDeaded = false;
-                // player_continue_controller.Continue();
-            });
 
             // var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
             // if (items.Count != 0)
@@ -204,7 +189,6 @@ public class PlayerStatus : NetworkBehaviour
             //     return;
             // }
 
-            player_hide_object_action.HidingPermit.Value = false;
         }
 
     }
@@ -236,6 +220,7 @@ public class PlayerStatus : NetworkBehaviour
             horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
             cameraExpander.FaceExpandingActive(this.gameObject);
             DOVirtual.DelayedCall(4, () => cameraExpander.FaceExpandingUnActive());
+            NotHaveItemForDeadPlayerRequestServerRpc();
         }
     }
 
@@ -249,7 +234,27 @@ public class PlayerStatus : NetworkBehaviour
         Destroy(g, item.StopEnemyTime);
         killed_enemy_flinch_controller.FlinchStart(item.StopEnemyTime);
     }
+    [ServerRpc]
+    private void NotHaveItemForDeadPlayerRequestServerRpc()
+    {
+        anim.SetBool("AppearentDeath", true);
+        MoveX = 0;
+        MoveY = 0;
+        player_hide_object_action.HidingPermit.Value = true;
+        player_to_enemy_distance_controller.enabled = false;
+        this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
+        PlayerDeaded = true;
+        player_character_controller.enabled = false;
+        player_move_permit.Stop();
 
+        DOVirtual.DelayedCall(4, () =>
+        {
+            // SceneManager.LoadScene("GameOver");
+            PlayerDeaded = false;
+            // player_continue_controller.Continue();
+        });
+        player_hide_object_action.HidingPermit.Value = false;
+    }
     public void CrouchStandCameraPosChange(bool _Crouch)
     {
         Transform tgt = _Crouch ? CrouchHeadPos : StandHeadPos;

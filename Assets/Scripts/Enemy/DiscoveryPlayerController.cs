@@ -312,13 +312,13 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         //敵が追いかけてる最中もしプレイヤーを見失った場合は元の位置に戻る
                         //今はデフォルト位置に戻る設定にしているが近くの徘徊ルートに行くという設定する予定。
                         //一番近くの徘徊ルートにいく。　つまりは固定の位置なのでSetDestinationOnceModeはtrue
-                        enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+                        // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                         follow_object_nav.ArrivedTarget = false;
                         enemy_routing_controller?.NearRouteSet();
                         DiscoveryPlayer(false);
 
                     }
-                    PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightOutPlayerTimeNow = 0;
+                    PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightOutPlayerTimeNow = 0;
                     //follow_object_nav.ChaseToTargetSet(true, DefaultPos, SpeedWhenDiscoveried);
 
 
@@ -375,19 +375,18 @@ public class DiscoveryPlayerController : NetworkBehaviour
         if (!_discovery) return;
         //敵に見つかったとき、または見つかってる状態をリセットしたい時に使う。
         //Trueならば見つかったときのイベント、Falseならば見つからなくなったときにリセットするための関数
-        if (_discovery)
-        {
-            if (!follow_object_nav.ArrivedTarget)
-            {
-                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
-            }
+        // ArrivedTarget が true なら必ず Stop に固定
+        // if (follow_object_nav.ArrivedTarget)
+        // {
+        //     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+        // }
+        // else
+        // {
+        //     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
+        // }
+        //敵を見つけたから走って追いかけます！
+        follow_object_nav.ChaseToTargetSet(true, FirstKeyOfDiscoveriedPlayers.transform.position, move_speed_controller.RunSpeed, FollowObjectByNav.MoveStyle.Run);
 
-            follow_object_nav.ChaseToTargetSet(true, FirstKeyOfDiscoveriedPlayers.transform.position, move_speed_controller.RunSpeed);
-        }
-        else
-        {
-
-        }
     }
 
 
@@ -428,7 +427,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 }
                 else
                 {
-
+                    FirstKeyOfDiscoveriedPlayers = null;
                 }
                 var sendParams = new ClientRpcSendParams
                 {
