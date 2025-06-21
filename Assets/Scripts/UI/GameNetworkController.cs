@@ -14,8 +14,7 @@ public class GameNetworkController : Singleton<GameNetworkController>
     [SerializeField] private Transform PlayerCreatePos;  // プレイヤー湧き位置
     [SerializeField] private NetworkObject m_playerPrefab;   // プレハブ
     [SerializeField] private TMP_InputField m_joinLobbyID;    // LobbyID入力
-    [SerializeField] public List<GameObject> SpawnedPlayers;
-    [SerializeField] public Dictionary<GameObject, PlayerStatus> SpawnedPlayersWithPlayerStatuses = new Dictionary<GameObject, PlayerStatus>();
+    
     void Start()
     {
         // NetworkManager.Singleton.NetworkConfig.ProtocolVersion = 1;
@@ -33,8 +32,6 @@ public class GameNetworkController : Singleton<GameNetworkController>
                 Vector3 pos = PlayerCreatePos ? PlayerCreatePos.position : Vector3.zero;
                 NetworkObject pObj = Instantiate(m_playerPrefab, pos, Quaternion.identity);
                 pObj.SpawnAsPlayerObject(clientId, true);
-                SpawnedPlayersWithPlayerStatuses.Add(pObj.gameObject,pObj.GetComponent<PlayerStatus>());
-                SpawnedPlayers.Add(pObj.gameObject);
             }
         }
 

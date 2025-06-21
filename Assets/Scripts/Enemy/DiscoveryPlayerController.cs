@@ -50,7 +50,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     [SerializeField] public List<GameObject> DiscoveriedPlayers = new List<GameObject>();
     [SerializeField] public GameObject FirstKeyOfDiscoveriedPlayers;
     private ToPlayersDistanceTracker to_players_distance_tracker;
-    private GameNetworkController game_network_controller;
+    private PlayerAllController player_all_controller;
     private CurseController curse_controller;
     [SerializeField, ShowInInspector] public Dictionary<GameObject, PlayerVisibilityMapStatus> PlayersVisibilityMapStatuesWithKey = new Dictionary<GameObject, PlayerVisibilityMapStatus>();
     public class PlayerVisibilityMapStatus
@@ -91,6 +91,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     {
         horror_director = HorrorDirector.instance;
         if (!IsServer) return;
+        player_all_controller = PlayerAllController.instance;
         to_players_distance_tracker = this.gameObject.GetComponent<ToPlayersDistanceTracker>();
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
         anim = this.gameObject.GetComponent<Animator>();
@@ -102,7 +103,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
         curse_controller = GameController.instance.gameObject.GetComponent<CurseController>();
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         discovery_player_status = original_discovery_player_status;
-        game_network_controller = GameNetworkController.instance;
 
         StartCoroutine(DisctionarySet());
     }
@@ -220,12 +220,11 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
 
 
-        Debug.Log("game_network_controller.SpawededPlayers.Count: " + game_network_controller.SpawnedPlayers.Count);
         // if (PlayersVisibilityMapStatuesWithKey.Count == 0) return;
-        for (int i = 0; i < game_network_controller.SpawnedPlayers.Count; i++)
+        for (int i = 0; i < player_all_controller.SpawnedPlayers.Count; i++)
         {
             Debug.Log("iStart------------: " + i + " : --------------------");
-            GameObject TargetPlayer = game_network_controller.SpawnedPlayers[i];
+            GameObject TargetPlayer = player_all_controller.SpawnedPlayers[i];
             bool InsidePlayer = false;
             if (to_players_distance_tracker.ToPlayerDistanceLists.Count != 0)
             {

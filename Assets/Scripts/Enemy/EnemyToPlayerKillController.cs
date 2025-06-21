@@ -11,9 +11,11 @@ public class EnemyToPlayerKillController : NetworkBehaviour
     private DiscoveryPlayerController discovery_player_controller;
     private Collider[] hitBuffer = new Collider[4];   // 最大ヒット数を決め打ちで確保
     private GameNetworkController game_network_controller;
+    private PlayerAllController player_all_controller;
     public override void OnNetworkSpawn()
     {
         game_network_controller = GameNetworkController.instance;
+        player_all_controller = PlayerAllController.instance;
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
     }
 
@@ -40,10 +42,10 @@ public class EnemyToPlayerKillController : NetworkBehaviour
             {
                 //プレイヤーに触れたら
                 GameObject player = hitBuffer[i].gameObject;
-                PlayerStatus playerStatus = game_network_controller.SpawnedPlayersWithPlayerStatuses[player];
+                PlayerStatus playerStatus = player_all_controller.SpawnedPlayersWithPlayerStatuses[player];
                 if (!playerStatus.Dead.Value || playerStatus.HidingNow.Value == true)
                 {
-                    game_network_controller.SpawnedPlayersWithPlayerStatuses[player].DeadEvent(this.gameObject);
+                    player_all_controller.SpawnedPlayersWithPlayerStatuses[player].DeadEvent(this.gameObject);
                 }
                 break;
             }
