@@ -46,6 +46,7 @@ public class EnemyToPlayerKillController : NetworkBehaviour
                 if (!playerStatus.Dead.Value || playerStatus.HidingNow.Value == true)
                 {
                     //éÄÇ…Ç‹Ç∑ÅB
+                    discovery_player_controller.PlayersVisibilityMapStatuesWithKey[player].DiscoveryPlayerNow = true;
                     discovery_player_controller.RemovePlayerOfDiscoveryPlayerLists(player);
                     player_all_controller.SpawnedPlayersWithPlayerStatuses[player].DeadEvent(this.gameObject);
                 }

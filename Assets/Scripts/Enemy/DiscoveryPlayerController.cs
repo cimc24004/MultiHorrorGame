@@ -63,7 +63,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         public float SightOutPlayerTimeNow;
         public UnityEvent<bool> DiscoveryPlayerFlagChanged = new UnityEvent<bool>();
         // バックアップ用フィールド
-        public bool _discoveryPlayerNow;
+        [SerializeField]private bool _discoveryPlayerNow;
         // プロパティ化
         public bool DiscoveryPlayerNow
         {
@@ -427,11 +427,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
             if (DiscoveriedPlayers.Contains(_Player))
             {
                 DiscoveriedPlayers.Remove(_Player);
-                var sendParams = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { _Player.GetComponent<NetworkObject>().OwnerClientId }
-                };
-                NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
                 if (DiscoveriedPlayers.Count != 0)
                 {
                     FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[0];
@@ -440,6 +435,11 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 {
 
                 }
+                var sendParams = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { _Player.GetComponent<NetworkObject>().OwnerClientId }
+                };
+                NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
             }
         }
 
@@ -465,10 +465,19 @@ public class DiscoveryPlayerController : NetworkBehaviour
         else
         {
             //0個なら確認なしに挿入する。
+            var sendParams = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { _Player.GetComponent<NetworkObject>().OwnerClientId }
+            };
+            // NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
+
+            DiscoveryPlayerClientRpc(new ClientRpcParams { Send = sendParams });
             DiscoveriedPlayers.Add(_Player);
         }
 
         FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[0];
+
+
     }
     public bool DiscoveryPlayerNowCheck()
     {

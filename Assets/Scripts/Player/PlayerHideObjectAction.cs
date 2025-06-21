@@ -219,6 +219,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
         if (!IsServer) return;
 
         Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
+        DiscoveryPlayerController discoveryPlayerController = enemy_anim.gameObject.GetComponent<DiscoveryPlayerController>();
         if (player_status.HidingNow.Value) // ‰B‚ê‚Ä‚¢‚éŽž‚Ì‚Ý
         {
             if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
@@ -233,7 +234,8 @@ public class PlayerHideObjectAction : NetworkBehaviour
             {
                 Debug.Log("Enemy found player hiding (Not FaceDown). Player unhides and dies.");
                 UnHideClientRpc(); // ‚Ü‚¸‰B‚ê‚é‚Ì‚ð‚â‚ß‚³‚¹‚é
-                enemy_anim.gameObject.GetComponent<DiscoveryPlayerController>().RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
+                discoveryPlayerController.PlayersVisibilityMapStatuesWithKey[player_status.gameObject].DiscoveryPlayerNow = false;
+                discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
                 player_status.DeadEvent(_SightningEnemy); // Ž€–SƒCƒxƒ“ƒg
             }
         }
