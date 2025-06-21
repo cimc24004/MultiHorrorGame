@@ -39,7 +39,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
     private EnemyStatus enemy_status;
     private EnemyRoutingController enemy_routing_controller;
     //private VisibleThroughTheWallController visible_through_the_wall_controller;
-    [SerializeField] private GameObject raycasted_obj;
     //プレイヤーが自分の視界から外れている間の時間Now
 
     private HorrorDirector horror_director;
@@ -229,15 +228,15 @@ public class DiscoveryPlayerController : NetworkBehaviour
             {
                 InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
             }
+            PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle;
+            PlayersVisibilityMapStatuesWithKey[TargetPlayer].InsidePlayer = InsidePlayer;
             if (InsidePlayer)
             {
                 Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
                 direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
 
 
-                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InsidePlayer = InsidePlayer;
                 Debug.Log($"ToDirection   DiscoveryPlayerAngle___{i}: " + Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)));
-                PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle;
 
                 if (PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle && InsidePlayer)
                 {
@@ -245,7 +244,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
                     //壁は関係ない。
                     if (Physics.Raycast(EyePosition.transform.position, direction, out raycast_hit, Mathf.Infinity, discovery_player_status.layerMask))
                     {
-                        raycasted_obj = raycast_hit.collider.gameObject;
                         //Raycastをプレイヤーにとりあえず飛ばす。
                         //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
                         if (raycast_hit.collider.gameObject.tag == "Player")

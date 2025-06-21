@@ -20,6 +20,7 @@ public class PlayerToEnemyDistanceController : NetworkBehaviour
     }
     public override void OnNetworkSpawn()
     {
+        if (!IsOwner) return;
         closest_enemy_controller = ClosestEnemyController.instance;
         horror_director = HorrorDirector.instance;
     }
