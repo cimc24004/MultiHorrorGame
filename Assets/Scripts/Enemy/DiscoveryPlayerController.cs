@@ -349,6 +349,12 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
                         {
                             //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
+                            if (DiscoveriedPlayers.Count > 2)
+                            {
+                                if(!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value){
+                                    FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[1];
+                                }
+                            }
                             follow_object_nav.StoppingDistance = 4;
                         }
                         else
