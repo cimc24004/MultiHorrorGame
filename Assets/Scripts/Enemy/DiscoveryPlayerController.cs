@@ -126,24 +126,23 @@ public class DiscoveryPlayerController : NetworkBehaviour
         {
             character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Chase);
             silhouette_change_controller?.SilhouetteChangeWithAutoReset(3);
-            var sendParams = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
-            };
+            // var sendParams = new ClientRpcSendParams
+            // {
+            //     TargetClientIds = new ulong[] { FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
+            // };
+            // DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
             curse_controller.CurseIncrease(10.0f);
-            DiscoveryPlayerClientRpc(new ClientRpcParams { Send = sendParams });
         }
         else
         {
             if (FirstKeyOfDiscoveriedPlayers != null)
             {
-                var sendParams = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
-                };
-                // DiscoveryPlayerClientRpc(new ClientRpcParams{Send = sendParams});
+                // var sendParams = new ClientRpcSendParams
+                // {
+                //     TargetClientIds = new ulong[] { FirstKeyOfDiscoveriedPlayers.GetComponent<NetworkObject>().OwnerClientId }
+                // };
 
-                NonDiscoveriedClientRpc(new ClientRpcParams { Send = sendParams });
+                // NonDiscoveriedClientRpc(new ClientRpcParams { Send = sendParams });
             }
             character_audio_controller.ChangeCharacterBehaviorState(CharacterAudioController.CharacterBehaviorState.Normal);
         }
@@ -428,6 +427,11 @@ public class DiscoveryPlayerController : NetworkBehaviour
             if (DiscoveriedPlayers.Contains(_Player))
             {
                 DiscoveriedPlayers.Remove(_Player);
+                var sendParams = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { _Player.GetComponent<NetworkObject>().OwnerClientId }
+                };
+                NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
                 if (DiscoveriedPlayers.Count != 0)
                 {
                     FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[0];
@@ -448,6 +452,13 @@ public class DiscoveryPlayerController : NetworkBehaviour
             //すでにプレイヤー追加されていないなら
             if (!DiscoveriedPlayers.Contains(_Player))
             {
+                var sendParams = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { _Player.GetComponent<NetworkObject>().OwnerClientId }
+                };
+                // NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
+
+                DiscoveryPlayerClientRpc(new ClientRpcParams { Send = sendParams });
                 DiscoveriedPlayers.Add(_Player);
             }
         }
