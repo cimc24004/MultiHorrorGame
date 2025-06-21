@@ -43,7 +43,8 @@ public class EnemyToPlayerKillController : NetworkBehaviour
                 //プレイヤーに触れたら
                 GameObject player = hitBuffer[i].gameObject;
                 PlayerStatus playerStatus = player_all_controller.SpawnedPlayersWithPlayerStatuses[player];
-                if (!playerStatus.Dead.Value || playerStatus.HidingNow.Value == true)
+                if (playerStatus.Dead.Value) continue;  // 既に死んでたらスキップ
+                if (!playerStatus.Dead.Value && playerStatus.HidingNow.Value == true)
                 {
                     //死にます。
                     discovery_player_controller.PlayersVisibilityMapStatuesWithKey[player].DiscoveryPlayerNow = false;

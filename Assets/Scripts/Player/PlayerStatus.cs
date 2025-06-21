@@ -203,7 +203,7 @@ public class PlayerStatus : NetworkBehaviour
             var item = items[0];
             item_belonging_controller.ItemUseFromBelonging(item);
             sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
-            // サーバーに投げ物生成依頼
+            // サーバーにお札生成依頼
             ItemUserForDeadPlayerRequestServerRpc(item.GlobalId);
         }
         else
@@ -231,6 +231,7 @@ public class PlayerStatus : NetworkBehaviour
         GameObject g = Instantiate(item.ItemThrowPrefab, killed_enemy_status.EyePosition.transform.position, Quaternion.identity, killed_enemy_status.EyePosition.transform);
         NetworkObject g_NetworkObject = g.GetComponent<NetworkObject>();
         g_NetworkObject.Spawn();
+        this.Dead.Value = true;
         Destroy(g, item.StopEnemyTime);
         killed_enemy_flinch_controller.FlinchStart(item.StopEnemyTime);
     }
