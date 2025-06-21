@@ -12,6 +12,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Autodesk.Fbx;
+using System.Linq;
 
 public class PlayerStatus : NetworkBehaviour
 {
@@ -169,9 +170,26 @@ public class PlayerStatus : NetworkBehaviour
         if (KilledMeEnemy.tag == "Enemy")
         {
             killed_enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
+            ulong enemyNetId = killed_enemy_status.NetworkObjectId;
             killed_enemy_flinch_controller = killed_enemy_status.enemy_flinch_controller;
-            DeadPlayerClientRpc(rpcParams);
-            
+            DeadPlayerClientRpc(enemyNetId, rpcParams);
+            anim.SetBool("AppearentDeath", true);
+            MoveX = 0;
+            MoveY = 0;
+            player_hide_object_action.HidingPermit.Value = true;
+            player_to_enemy_distance_controller.enabled = false;
+            this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
+            PlayerDeaded = true;
+            player_character_controller.enabled = false;
+            player_move_permit.Stop();
+
+            DOVirtual.DelayedCall(4, () =>
+            {
+                // SceneManager.LoadScene("GameOver");
+                PlayerDeaded = false;
+                // player_continue_controller.Continue();
+            });
+
             // var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
             // if (items.Count != 0)
             // {
@@ -191,37 +209,34 @@ public class PlayerStatus : NetworkBehaviour
 
     }
     [ClientRpc]
-    private void DeadPlayerClientRpc(ClientRpcParams clientRpcParams)
+    private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
+        Debug.Log("DeadPlayerClientRpc----: " + string.Join(",", clientRpcParams.Send.TargetClientIds.Select(n => n.ToString())));
+        // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
-        if (items.Count != 0)
+        if (items.Count > 0)
         {
             var item = items[0];
-            ItemUserForDeadPlayerRequestServerRpc(item.GlobalId);
             item_belonging_controller.ItemUseFromBelonging(item);
             sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
-            return;
+            // サーバーに投げ物生成依頼
+            ItemUserForDeadPlayerRequestServerRpc(item.GlobalId);
         }
-        ForNotItemUseRequestServerRpc();
-    }
-    [ClientRpc]
-    private void ForNotItemUseRequestClientRpc(ulong EnemyNetworkObjectId,ClientRpcParams clientRpcParams = default)
-    {
-        if (!IsOwner) return;
-        //死ぬプレイヤーだけに送信するCLientRpc
-        GameObject Enemy = NetworkManager.Singleton.SpawnManager.SpawnedObjects[EnemyNetworkObjectId].gameObject;
-        CameraEnemyFaceExpanding camera_enemy_face_expanding = Enemy.GetComponent<CameraEnemyFaceExpanding>();
-        flash_light_controller.Light.enabled = false;
-        item_menu_controller.enabled = false;
-        horror_director.nearEnemyCount = 0;
-        horror_director.discoveredEnemyCount = 0;
-        horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
-        camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
-        DOVirtual.DelayedCall(4, () =>
+        else
         {
-            camera_enemy_face_expanding.FaceExpandingUnActive();
-        });
+            // enemyNetworkObjectId を使ってクライアント側で演出
+            var enemyGO = NetworkManager.Singleton.SpawnManager
+                            .SpawnedObjects[enemyNetworkObjectId].gameObject;
+            var cameraExpander = enemyGO.GetComponent<CameraEnemyFaceExpanding>();
+            flash_light_controller.Light.enabled = false;
+            item_menu_controller.enabled = false;
+            horror_director.nearEnemyCount = 0;
+            horror_director.discoveredEnemyCount = 0;
+            horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
+            cameraExpander.FaceExpandingActive(this.gameObject);
+            DOVirtual.DelayedCall(4, () => cameraExpander.FaceExpandingUnActive());
+        }
     }
 
     [ServerRpc]
@@ -234,34 +249,7 @@ public class PlayerStatus : NetworkBehaviour
         Destroy(g, item.StopEnemyTime);
         killed_enemy_flinch_controller.FlinchStart(item.StopEnemyTime);
     }
-    [ServerRpc]
-    private void ForNotItemUseRequestServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        //緊急アイテムがなかった場合(使用されなかった場合)
-        var clientRpcParams = new ClientRpcParams {
-            Send = new ClientRpcSendParams {
-                // 死んだプレイヤーだけに送りたいなら OwnerClientId を指定
-                TargetClientIds = new ulong[]{ this.OwnerClientId }
-            }
-        };
-        ForNotItemUseRequestClientRpc(killed_enemy_status.NetworkObjectId,clientRpcParams);
-        anim.SetBool("AppearentDeath", true);
-        MoveX = 0;
-        MoveY = 0;
-        player_hide_object_action.HidingPermit.Value = true;
-        player_to_enemy_distance_controller.enabled = false;
-        this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
-        PlayerDeaded = true;
-        player_character_controller.enabled = false;
-        player_move_permit.Stop();
 
-        DOVirtual.DelayedCall(4, () =>
-        {
-            // SceneManager.LoadScene("GameOver");
-            PlayerDeaded = false;
-            // player_continue_controller.Continue();
-        });
-    }
     public void CrouchStandCameraPosChange(bool _Crouch)
     {
         Transform tgt = _Crouch ? CrouchHeadPos : StandHeadPos;
