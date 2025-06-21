@@ -148,19 +148,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
 
     }
-    void OnEnable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
-    }
-    void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
 
-    }
-    private void OnLocalPlayerSpawned(PlayerStatus _)
-    {
-
-    }
     // Update is called once per frame
     void Update()
     {
@@ -351,9 +339,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                             //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
                             if (DiscoveriedPlayers.Count > 2)
                             {
-                                if(!PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value){
-                                    FirstKeyOfDiscoveriedPlayers = DiscoveriedPlayers[1];
-                                }
+                                RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);   
                             }
                             follow_object_nav.StoppingDistance = 4;
                         }
