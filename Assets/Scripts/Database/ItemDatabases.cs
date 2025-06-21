@@ -39,14 +39,18 @@ public class ItemDatabases : Singleton<ItemDatabases>
     {
         return ForPutItems.Find((x) => x.item_type == item_type);
     }
+    public ItemStatus ItemFindByGlobalId(uint _item_globalId)
+    {
+        return ForPutItems.Find((x) => x.GlobalId == _item_globalId);
+    }
     public GameObject ItemCreate(ItemStatus item_status, Transform Parent, Vector3 Position)
     {
         GameObject item_obj = Instantiate(item_status.ItemPutObjectPrefab, Position, item_status.ItemPutObjectPrefab.transform.rotation);
         // 親を先に設定
-        
+
         // ローカル座標をゼロに設定（親の位置に配置）
         // item_obj.transform.localPosition = Vector3.zero;
-        
+
         // Rigidbodyの設定
         var rigidbody = item_obj.GetComponent<Rigidbody>();
         if (rigidbody != null)

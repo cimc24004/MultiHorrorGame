@@ -36,12 +36,8 @@ public class DiscoveryPlayerController : NetworkBehaviour
     //プレイヤーが見つけられる範囲以内にいるかどうか。
     [HideInInspector]
     public Vector3 direction;
-    private Vector3 DefaultPos;
     private EnemyStatus enemy_status;
-    private CameraEnemyFaceExpanding camera_enemy_face_expanding;
     private EnemyRoutingController enemy_routing_controller;
-    private TimeManager time_manager;
-    private MaterialChangeController material_change_controller;
     //private VisibleThroughTheWallController visible_through_the_wall_controller;
     [SerializeField] private GameObject raycasted_obj;
     //プレイヤーが自分の視界から外れている間の時間Now
@@ -49,7 +45,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
     private HorrorDirector horror_director;
 
     private bool DiscoveriedEventOnce;
-    private bool NonDiscoveriedEventOnce;
     private SilhouetteChangeController silhouette_change_controller;
     //発見したプレイヤーたち
     [SerializeField] public List<GameObject> DiscoveriedPlayers = new List<GameObject>();
@@ -98,17 +93,13 @@ public class DiscoveryPlayerController : NetworkBehaviour
         if (!IsServer) return;
         to_players_distance_tracker = this.gameObject.GetComponent<ToPlayersDistanceTracker>();
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
-        material_change_controller = this.gameObject.GetComponent<MaterialChangeController>();
         anim = this.gameObject.GetComponent<Animator>();
         silhouette_change_controller = this.gameObject.GetComponent<SilhouetteChangeController>();
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
-        DefaultPos = this.transform.position;
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        camera_enemy_face_expanding = this.gameObject.GetComponent<CameraEnemyFaceExpanding>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         character_audio_controller = enemy_status.character_audio_controller;
         curse_controller = GameController.instance.gameObject.GetComponent<CurseController>();
-        time_manager = TimeManager.instance;
         this.gameObject.TryGetComponent<EnemyRoutingController>(out enemy_routing_controller);
         discovery_player_status = original_discovery_player_status;
         game_network_controller = GameNetworkController.instance;
@@ -217,7 +208,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
             // }
             //見つかっている状態でプレイヤーの位置に到着したら
             // enemy_routing_controller?.PermitFunction(false);
-            NonDiscoveriedEventOnce = false;
         }
         else
         {

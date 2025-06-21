@@ -11,6 +11,7 @@ using Sirenix.OdinInspector;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Autodesk.Fbx;
 
 public class PlayerStatus : NetworkBehaviour
 {
@@ -79,7 +80,9 @@ public class PlayerStatus : NetworkBehaviour
     private HorrorDirector horror_director;
     private Tween crouchTween;
     private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
-
+    private EnemyStatus killed_enemy_status;
+    private ItemDatabases item_databases;
+    private EnemyFlinchController killed_enemy_flinch_controller;
     public override void OnNetworkDespawn()
     {
         if (IsOwner && LocalInstance == this)
@@ -89,6 +92,7 @@ public class PlayerStatus : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if (!IsServer && !IsOwner) return;
         virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
         player_stamina_controller = GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();
@@ -101,6 +105,7 @@ public class PlayerStatus : NetworkBehaviour
         horror_director = HorrorDirector.instance;
         player_to_enemy_distance_controller = GetComponent<PlayerToEnemyDistanceController>();
         player_move_script = GetComponent<PlayerMoveScript>();
+        item_databases = ItemDatabases.instance;
         InitPlayer = true;
         if (IsOwner)
         {
@@ -154,48 +159,108 @@ public class PlayerStatus : NetworkBehaviour
 
     public void DeadEvent(GameObject KilledMeEnemy)
     {
+        //サーバーから実行される。
         Debug.Log("あなたは死にました！");
+        var rpcParams = new ClientRpcParams {
+            Send = new ClientRpcSendParams {
+                TargetClientIds = new ulong[]{ this.OwnerClientId }
+            }
+        };
         if (KilledMeEnemy.tag == "Enemy")
         {
-            EnemyStatus enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
-            EnemyFlinchController flinch = enemy_status.enemy_flinch_controller;
-            var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
-            if (items.Count != 0)
-            {
-                var item = items[0];
-                GameObject g = Instantiate(item.ItemThrowPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
-                item_belonging_controller.ItemUseFromBelonging(item);
-                sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
-                Destroy(g, item.StopEnemyTime);
-                flinch.FlinchStart(item.StopEnemyTime);
-                return;
-            }
+            killed_enemy_status = KilledMeEnemy.GetComponent<EnemyStatus>();
+            killed_enemy_flinch_controller = killed_enemy_status.enemy_flinch_controller;
+            DeadPlayerClientRpc(rpcParams);
+            
+            // var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
+            // if (items.Count != 0)
+            // {
+            //     // var item = items[0];
+            //     // GameObject g = Instantiate(item.ItemThrowPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
+            //     // NetworkObject g_NetworkObject = g.GetComponent<NetworkObject>();
+            //     // g_NetworkObject.Spawn();
+            //     // item_belonging_controller.ItemUseFromBelonging(item);
+            //     // sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
+            //     // Destroy(g, item.StopEnemyTime);
+            //     // flinch.FlinchStart(item.StopEnemyTime);
+            //     return;
+            // }
+
             player_hide_object_action.HidingPermit.Value = false;
         }
+
+    }
+    [ClientRpc]
+    private void DeadPlayerClientRpc(ClientRpcParams clientRpcParams)
+    {
+        var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
+        if (items.Count != 0)
+        {
+            var item = items[0];
+            ItemUserForDeadPlayerRequestServerRpc(item.GlobalId);
+            item_belonging_controller.ItemUseFromBelonging(item);
+            sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
+            return;
+        }
+        ForNotItemUseRequestServerRpc();
+    }
+    [ClientRpc]
+    private void ForNotItemUseRequestClientRpc(ulong EnemyNetworkObjectId,ClientRpcParams clientRpcParams = default)
+    {
+
+        //死ぬプレイヤーだけに送信するCLientRpc
+        GameObject Enemy = NetworkManager.Singleton.SpawnManager.SpawnedObjects[EnemyNetworkObjectId].gameObject;
+        CameraEnemyFaceExpanding camera_enemy_face_expanding = Enemy.GetComponent<CameraEnemyFaceExpanding>();
+        flash_light_controller.Light.enabled = false;
+        item_menu_controller.enabled = false;
+        horror_director.nearEnemyCount = 0;
+        horror_director.discoveredEnemyCount = 0;
+        horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
+        camera_enemy_face_expanding.FaceExpandingActive(this.gameObject, this.OwnerClientId);
+        DOVirtual.DelayedCall(4, () =>
+        {
+            camera_enemy_face_expanding.FaceExpandingUnActive();
+        });
+    }
+
+    [ServerRpc]
+    private void ItemUserForDeadPlayerRequestServerRpc(uint _itemGlobalId)
+    {
+        ItemStatus item = item_databases.ItemFindByGlobalId(_itemGlobalId);
+        GameObject g = Instantiate(item.ItemThrowPrefab, killed_enemy_status.EyePosition.transform.position, Quaternion.identity, killed_enemy_status.EyePosition.transform);
+        NetworkObject g_NetworkObject = g.GetComponent<NetworkObject>();
+        g_NetworkObject.Spawn();
+        Destroy(g, item.StopEnemyTime);
+        killed_enemy_flinch_controller.FlinchStart(item.StopEnemyTime);
+    }
+    [ServerRpc]
+    private void ForNotItemUseRequestServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        //緊急アイテムがなかった場合(使用されなかった場合)
+        var clientRpcParams = new ClientRpcParams {
+            Send = new ClientRpcSendParams {
+                // 死んだプレイヤーだけに送りたいなら OwnerClientId を指定
+                TargetClientIds = new ulong[]{ this.OwnerClientId }
+            }
+        };
+        ForNotItemUseRequestClientRpc(killed_enemy_status.NetworkObjectId,clientRpcParams);
         anim.SetBool("AppearentDeath", true);
-        MoveX = MoveY = 0;
+        MoveX = 0;
+        MoveY = 0;
         player_hide_object_action.HidingPermit.Value = true;
         player_to_enemy_distance_controller.enabled = false;
-        horror_director.nearEnemyCount = horror_director.discoveredEnemyCount = 0;
-        horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
-        var expand = KilledMeEnemy.GetComponent<CameraEnemyFaceExpanding>();
-        expand.FaceExpandingActive(gameObject);
-        gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
+        this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
         PlayerDeaded = true;
         player_character_controller.enabled = false;
         player_move_permit.Stop();
-        flash_light_controller.Light.enabled = false;
-        item_menu_controller.enabled = false;
 
         DOVirtual.DelayedCall(4, () =>
         {
             // SceneManager.LoadScene("GameOver");
             PlayerDeaded = false;
-            expand.FaceExpandingUnActive();
             // player_continue_controller.Continue();
         });
     }
-
     public void CrouchStandCameraPosChange(bool _Crouch)
     {
         Transform tgt = _Crouch ? CrouchHeadPos : StandHeadPos;
