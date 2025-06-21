@@ -212,7 +212,7 @@ public class PlayerStatus : NetworkBehaviour
     private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-        Debug.Log("DeadPlayerClientRpc----: " + string.Join(",", clientRpcParams.Send.TargetClientIds.Select(n => n.ToString())));
+        Debug.Log("DeadPlayerClientRpc----: " + clientRpcParams.Send.TargetClientIds.Count);
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
         if (items.Count > 0)
@@ -226,6 +226,7 @@ public class PlayerStatus : NetworkBehaviour
         else
         {
             // enemyNetworkObjectId を使ってクライアント側で演出
+            Debug.Log("HorrorDirectorの演出がされるはず！ あなたのOwnerClientId: " + this.OwnerClientId);
             var enemyGO = NetworkManager.Singleton.SpawnManager
                             .SpawnedObjects[enemyNetworkObjectId].gameObject;
             var cameraExpander = enemyGO.GetComponent<CameraEnemyFaceExpanding>();
