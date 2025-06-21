@@ -193,6 +193,7 @@ public class PlayerStatus : NetworkBehaviour
     [ClientRpc]
     private void DeadPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
+        if (!IsOwner) return;
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
         if (items.Count != 0)
         {
@@ -207,7 +208,7 @@ public class PlayerStatus : NetworkBehaviour
     [ClientRpc]
     private void ForNotItemUseRequestClientRpc(ulong EnemyNetworkObjectId,ClientRpcParams clientRpcParams = default)
     {
-
+        if (!IsOwner) return;
         //死ぬプレイヤーだけに送信するCLientRpc
         GameObject Enemy = NetworkManager.Singleton.SpawnManager.SpawnedObjects[EnemyNetworkObjectId].gameObject;
         CameraEnemyFaceExpanding camera_enemy_face_expanding = Enemy.GetComponent<CameraEnemyFaceExpanding>();
@@ -216,7 +217,7 @@ public class PlayerStatus : NetworkBehaviour
         horror_director.nearEnemyCount = 0;
         horror_director.discoveredEnemyCount = 0;
         horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
-        camera_enemy_face_expanding.FaceExpandingActive(this.gameObject, this.OwnerClientId);
+        camera_enemy_face_expanding.FaceExpandingActive(this.gameObject);
         DOVirtual.DelayedCall(4, () =>
         {
             camera_enemy_face_expanding.FaceExpandingUnActive();

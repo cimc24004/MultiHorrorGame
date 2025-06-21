@@ -17,27 +17,18 @@ public class CameraEnemyFaceExpanding : NetworkBehaviour
     }
 
     [Button]
-    public void FaceExpandingActive(GameObject Player, ulong PlayerOwnerClientId)
+    public void FaceExpandingActive(GameObject Player)
     {
-        //サーバー側で実行される
+        //クライアント側で実行される
         //カメラをオンにする。 Priorityを決めているのでメインカメラよりこのカメラが必ず描画される。
         anim.SetBool("KillPlayer", true);
-        var rpcParams = new ClientRpcParams {
-            Send = new ClientRpcSendParams {
-                TargetClientIds = new ulong[]{ PlayerOwnerClientId }
-            }
-        };
-        FaceExpandingRequestClientRpc(rpcParams);
-    }
-    [ClientRpc]
-    private void FaceExpandingRequestClientRpc(ClientRpcParams client_rpc_params)
-    {
         FaceExpandingCameraObj.SetActive(true);
-    } 
+    }
+
     [Button]
     public void FaceExpandingUnActive()
     {
-        //サーバー側で実行される
+        //クライアント側で実行される
         //カメラオフにする。
         FaceExpandingCameraObj.SetActive(false);
         anim.SetBool("KillPlayer", false);
