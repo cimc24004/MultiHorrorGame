@@ -63,7 +63,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         public float SightOutPlayerTimeNow;
         public UnityEvent<bool> DiscoveryPlayerFlagChanged = new UnityEvent<bool>();
         // バックアップ用フィールド
-        private bool _discoveryPlayerNow;
+        public bool _discoveryPlayerNow;
         // プロパティ化
         public bool DiscoveryPlayerNow
         {
@@ -316,7 +316,8 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightOutPlayerTimeNow += Time.deltaTime;
                 if (PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightOutPlayerTimeNow > discovery_player_status.SightOutPlayerTime)
                 {
-                    if (TargetPlayer == FirstKeyOfDiscoveriedPlayers)
+                    RemovePlayerOfDiscoveryPlayerLists(TargetPlayer);
+                    if (DiscoveriedPlayers.Count == 0)
                     {
                         //敵に見つかっているかつプレイヤーが見えてなかったら
                         //時間を計り、ある程度の時間がたったら追いかけるのをやめる
@@ -328,7 +329,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         follow_object_nav.ArrivedTarget = false;
                         enemy_routing_controller?.NearRouteSet();
                         DiscoveryPlayer(false);
-                        RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);
 
                     }
                     PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightOutPlayerTimeNow = 0;
