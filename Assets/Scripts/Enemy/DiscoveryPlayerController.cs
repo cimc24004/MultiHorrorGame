@@ -228,12 +228,13 @@ public class DiscoveryPlayerController : NetworkBehaviour
             {
                 InsidePlayer = to_players_distance_tracker.ToPlayerDistanceLists[TargetPlayer] <= discovery_player_status.PlayerDiscoveryRange;
             }
+            Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
+            direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
+
             PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle = Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)) <= discovery_player_status.VisionFieldAngle;
             PlayersVisibilityMapStatuesWithKey[TargetPlayer].InsidePlayer = InsidePlayer;
             if (InsidePlayer)
             {
-                Transform PlayersHeadTransform = PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HeadPos;
-                direction = (PlayersHeadTransform.transform.position - EyePosition.transform.position).normalized;
 
 
                 Debug.Log($"ToDirection   DiscoveryPlayerAngle___{i}: " + Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)));
