@@ -233,6 +233,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
             {
                 Debug.Log("Enemy found player hiding (Not FaceDown). Player unhides and dies.");
                 UnHideClientRpc(); // ‚Ü‚¸‰B‚ê‚é‚Ì‚ð‚â‚ß‚³‚¹‚é
+                enemy_anim.gameObject.GetComponent<DiscoveryPlayerController>().RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
                 player_status.DeadEvent(_SightningEnemy); // Ž€–SƒCƒxƒ“ƒg
             }
         }
