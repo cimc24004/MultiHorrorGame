@@ -9,7 +9,7 @@ public class PlayerAllController : Singleton<PlayerAllController>
 {
     [SerializeField] public List<GameObject> SpawnedPlayers = new List<GameObject>();
     [SerializeField] public Dictionary<GameObject, PlayerStatus> SpawnedPlayersWithPlayerStatuses = new Dictionary<GameObject, PlayerStatus>();
-
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

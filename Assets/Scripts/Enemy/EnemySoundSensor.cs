@@ -12,6 +12,7 @@ public class EnemySoundSensor : NetworkBehaviour
     private MoveSpeedController move_speed_controller;
     private EnemyStatus enemy_status;
     public float ArriveSoundPlaceWaitTimeToReturnNow;
+    private float MoveToSoundObjectPlaceTimeNow;
     private Vector3 DefaultPosition;
     //プレイヤーとの距離
     private float ToPlayerDistance;
@@ -58,6 +59,11 @@ public class EnemySoundSensor : NetworkBehaviour
     private void Update()
     {
         if (!IsServer) return;
+        if (MoveToSoundPlaceNow)
+        {
+            //この処理はバグ対策。 ある程度の距離まで来たらもう到着したということにする。
+            if (follow_object_nav.ToTargetPosDistance <= follow_object_nav.StoppingDistance) follow_object_nav.ArrivedTarget = true;
+        }
         if (follow_object_nav.ArrivedTarget && MoveToSoundPlaceNow)
         {
             ArriveSoundPlaceWaitTimeToReturnNow += Time.deltaTime;
@@ -97,6 +103,10 @@ public class EnemySoundSensor : NetworkBehaviour
                     MoveToSoundPlaceNow = false;
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 }
+            }
+            else
+            {
+                
             }
         }
         else

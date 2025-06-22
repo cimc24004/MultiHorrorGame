@@ -99,7 +99,10 @@ public class EnemyRoutingController : NetworkBehaviour
 
             ArrivedNextRouteMode = false;
         }
-        follow_object_by_nav.ChaseToTargetSet(true, NextRouteObject.transform.position, RoutingWalkSpeed, FollowObjectByNav.MoveStyle.Walk);
+        if (!ArrivedTarget)
+        {
+            follow_object_by_nav.ChaseToTargetSet(true, NextRouteObject.transform.position, RoutingWalkSpeed, FollowObjectByNav.MoveStyle.Walk);
+        }
 
         if (!ArrivedNextRouteMode)
         {
@@ -115,7 +118,7 @@ public class EnemyRoutingController : NetworkBehaviour
             //ArrivedTarget変数を宣言しておいて、そこに収納しておく。。
             if (ArrivedTarget)
             {
-                // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+                enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //いま向かっているルートに到着したら少し待ってから次のルートにいく。
                 WaitToMoveNextPointTimeNow += Time.deltaTime;
                 if(WaitToMoveNextPointTimeNow > WaitToMoveNextPointTime)

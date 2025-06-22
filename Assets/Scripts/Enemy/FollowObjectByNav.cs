@@ -57,7 +57,7 @@ public class FollowObjectByNav : NetworkBehaviour
             NavmeshNextPos = nav_mesh_agent.path.corners[0];
         }
         //navmeshagentによる動きを停止。 動きはCharacterControllerで行いnavmeshagentは探索結果のみを用いる。
-        nav_mesh_agent.updatePosition = false;
+        nav_mesh_agent.updatePosition = true;
         nav_mesh_agent.updateRotation = false;
         
         // 初期化
@@ -98,9 +98,13 @@ public class FollowObjectByNav : NetworkBehaviour
                 wasArrived = false;
                 lastTargetPosition = ChaseTargetPosition;
             }
-            bool reached = !nav_mesh_agent.pathPending &&
-               nav_mesh_agent.remainingDistance <= StoppingDistance &&
-               ( !nav_mesh_agent.hasPath || nav_mesh_agent.velocity.sqrMagnitude < 0.01f );
+            // ===== Update() の reached 判定を差し替え =====
+            bool pathComplete   = nav_mesh_agent.pathStatus == NavMeshPathStatus.PathComplete;
+            bool closeEnough    =  ToTargetPosDistance <= StoppingDistance;
+            bool partialClose   = !pathComplete && ToTargetPosDistance <= StoppingDistance + 0.2f;
+
+            bool reached = !nav_mesh_agent.pathPending && (closeEnough || partialClose);
+
 
             // 到着判定（一度到着したら、新しいターゲットが設定されるまで維持）
             if (!wasArrived)
@@ -121,6 +125,7 @@ public class FollowObjectByNav : NetworkBehaviour
                 // ChaseToTargetModeのリセットは外部から制御する方が良い場合もある
                 // ChaseToTargetMode = false;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
+                ChaseToTargetMode = false;
             }
             else
             {
@@ -137,7 +142,9 @@ public class FollowObjectByNav : NetworkBehaviour
     private void FixedUpdate()
     {
         if (!IsServer) return;
-        if (!MovePermit) return;
+        if (!MovePermit || !ChaseToTargetMode) return;   // ← ここ追加
+        if (nav_mesh_agent.remainingDistance <= StoppingDistance) return; // ← ここも追加
+
         if (ChaseToTargetMode)
         {
             //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
