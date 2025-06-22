@@ -196,10 +196,12 @@ public class PlayerStatus : NetworkBehaviour
     private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
+
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
         if (items.Count > 0)
         {
+            Debug.Log("お札アイテムを使用するため、死ぬことはない！items.Count>0");
             var item = items[0];
             item_belonging_controller.ItemUseFromBelonging(item);
             sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
@@ -227,17 +229,19 @@ public class PlayerStatus : NetworkBehaviour
     [ServerRpc]
     private void ItemUserForDeadPlayerRequestServerRpc(uint _itemGlobalId)
     {
+        //アイテムを使うから死なない処理
         ItemStatus item = item_databases.ItemFindByGlobalId(_itemGlobalId);
         GameObject g = Instantiate(item.ItemThrowPrefab, killed_enemy_status.EyePosition.transform.position, Quaternion.identity, killed_enemy_status.EyePosition.transform);
         NetworkObject g_NetworkObject = g.GetComponent<NetworkObject>();
         g_NetworkObject.Spawn();
-        this.Dead.Value = true;
         Destroy(g, item.StopEnemyTime);
         killed_enemy_flinch_controller.FlinchStart(item.StopEnemyTime);
     }
     [ServerRpc]
     private void NotHaveItemForDeadPlayerRequestServerRpc()
     {
+        //普通に死ぬ処理
+        this.Dead.Value = true;
         anim.SetBool("AppearentDeath", true);
         MoveX = 0;
         MoveY = 0;
