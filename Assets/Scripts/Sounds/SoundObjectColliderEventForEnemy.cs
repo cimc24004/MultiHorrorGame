@@ -64,11 +64,12 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
         }
 
         // ── 以降は元のロジックそのまま ────────────────
-        bool now = sound_object_event_with_sensor.enemy_sound_sensor_mode.Value;
         if (InSoundRange)
         {
+            bool now = sound_object_event_with_sensor.enemy_sound_sensor_mode.Value;
             if (now && !before_enemy_sound_sensor_mode)
             {
+                Debug.Log("SoundSeonsor関数を呼びます。 mitti");
                 enemy_sound_sensor.SoundSeonsor(
                     sound_object_event_with_sensor.transform.position,
                     move_speed_controller.RunSpeed,
@@ -77,7 +78,7 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
 
                 enemy_sound_sensor.sound_by_obj = true;
             }
-            before_enemy_sound_sensor_mode = sound_object_event_with_sensor.enemy_sound_sensor_mode.Value;
+            before_enemy_sound_sensor_mode = now;
         }
     }
 
