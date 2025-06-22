@@ -161,7 +161,7 @@ public class PlayerStatus : NetworkBehaviour
     public void DeadEvent(GameObject KilledMeEnemy)
     {
         //サーバーから実行される。
-        Debug.Log("あなたは死にました！");
+        Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
         var rpcParams = new ClientRpcParams {
             Send = new ClientRpcSendParams {
                 TargetClientIds = new ulong[]{ this.OwnerClientId }
@@ -196,12 +196,12 @@ public class PlayerStatus : NetworkBehaviour
     private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-
+        Debug.Log("この関数はDeadPlayerClientRpcです。");
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
         if (items.Count > 0)
         {
-            Debug.Log("お札アイテムを使用するため、死ぬことはない！items.Count>0");
+            Debug.Log("お札アイテムを使用するため、死ぬことはない！items.Count>0 DeadPlayerClientRpc内です");
             var item = items[0];
             item_belonging_controller.ItemUseFromBelonging(item);
             sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
@@ -211,7 +211,7 @@ public class PlayerStatus : NetworkBehaviour
         else
         {
             // enemyNetworkObjectId を使ってクライアント側で演出
-            Debug.Log("HorrorDirectorの演出がされるはず！ あなたのOwnerClientId: " + this.OwnerClientId);
+            Debug.Log("HorrorDirectorの演出がされるはず！ あなたのOwnerClientId: " + this.OwnerClientId + "DeadPlayerClientRpc内です");
             var enemyGO = NetworkManager.Singleton.SpawnManager
                             .SpawnedObjects[enemyNetworkObjectId].gameObject;
             var cameraExpander = enemyGO.GetComponent<CameraEnemyFaceExpanding>();

@@ -225,9 +225,6 @@ public class DiscoveryPlayerController : NetworkBehaviour
             if (InsidePlayer)
             {
 
-
-                Debug.Log($"ToDirection   DiscoveryPlayerAngle___{i}: " + Vector3.Angle(new Vector3(direction.x, 0, direction.z), new Vector3(EyePosition.forward.x, 0, EyePosition.forward.z)));
-
                 if (PlayersVisibilityMapStatuesWithKey[TargetPlayer].InAngle && InsidePlayer)
                 {
                     //プレイヤーが敵の視界以内にいるかどうか && プレイヤーが範囲以内にいるかどうか。
