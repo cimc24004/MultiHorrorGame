@@ -115,17 +115,23 @@ public class HorizontalProjectile : NetworkBehaviour
             {
                 if (InstantiateOnEnemyHit)
                 {
-                    InstantiateObjWhenHitedEnemy = Instantiate(InstantiatePrefabWhenEnemyHit, this.transform.position, Quaternion.identity);
-                    ThrowedEnemyHitController throwed_enemy_hit_controller = InstantiateObjWhenHitedEnemy.GetComponent<ThrowedEnemyHitController>();
-                    Debug.Log("ThrowedEnemyHitController? " + throwed_enemy_hit_controller);
-                    throwed_enemy_hit_controller.HitedEnemy = hited_obj;
-                    throwed_enemy_hit_controller.item_status = item_object.item_status;
-                    throwed_enemy_hit_controller.EnemyThrowCollisionEvent();
+                    InstantiatePrefabWhenEnemyHitAllClientRpc();
                 }
             }
         }
 
     }
+    [ClientRpc]
+    private void InstantiatePrefabWhenEnemyHitAllClientRpc()
+    {
+        InstantiateObjWhenHitedEnemy = Instantiate(InstantiatePrefabWhenEnemyHit, this.transform.position, Quaternion.identity);
+        ThrowedEnemyHitController throwed_enemy_hit_controller = InstantiateObjWhenHitedEnemy.GetComponent<ThrowedEnemyHitController>();
+        Debug.Log("ThrowedEnemyHitController? " + throwed_enemy_hit_controller);
+        throwed_enemy_hit_controller.HitedEnemy = hited_obj;
+        throwed_enemy_hit_controller.item_status = item_object.item_status;
+        throwed_enemy_hit_controller.EnemyThrowCollisionEvent();
+
+    } 
     private void OnCollisionStay(Collision collision)
     {
         if (!IsServer) return;
