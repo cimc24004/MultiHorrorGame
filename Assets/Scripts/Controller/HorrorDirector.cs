@@ -108,7 +108,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
             EnemyNearToKillVolumeController.FadeTo(0f, 0.2f, fadeVal => EnemyNearToKillBGM.volume = fadeVal);
         }
 
-        if(player_status.PlayerDeaded){
+        if(player_status.PlayerKilledScene){
             discoveredEnemyCount = 0;
             nearEnemyCount = 0;
             ChangeHorrorState(HorrorState.PlayerKilled);

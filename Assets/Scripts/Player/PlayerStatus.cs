@@ -59,7 +59,7 @@ public class PlayerStatus : NetworkBehaviour
     public float CanMinStaminaRun = 30;
 
     public AudioDatas HideActionAudioDatas;
-    public bool PlayerDeaded;
+    public bool PlayerKilledScene;
 
     [SerializeField] private GameObject FlashLightBatteryUI;
     private float offsetY;
@@ -246,16 +246,16 @@ public class PlayerStatus : NetworkBehaviour
         MoveX = 0;
         MoveY = 0;
         player_hide_object_action.HidingPermit.Value = true;
-        player_to_enemy_distance_controller.enabled = false;
+        // player_to_enemy_distance_controller.enabled = false;
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
-        PlayerDeaded = true;
+        PlayerKilledScene = true;
         player_character_controller.enabled = false;
         player_move_permit.Stop();
 
         DOVirtual.DelayedCall(4, () =>
         {
             // SceneManager.LoadScene("GameOver");
-            PlayerDeaded = false;
+            PlayerKilledScene = false;
             // player_continue_controller.Continue();
         });
         player_hide_object_action.HidingPermit.Value = false;
