@@ -8,22 +8,15 @@ public class EnemySoundSensor : NetworkBehaviour
     //足音によって敵が寄ってくる機能。
     private DiscoveryPlayerController discovery_player_controller;
     private FollowObjectByNav follow_object_nav;
-    private GameObject Player;
-    private PlayerStatus player_status;
     private EnemyRoutingController enemy_routing_controller;
     private MoveSpeedController move_speed_controller;
     private EnemyStatus enemy_status;
-    private FootStepSoundController player_foot_step_sound_controller;
     public float ArriveSoundPlaceWaitTimeToReturnNow;
     private Vector3 DefaultPosition;
     //プレイヤーとの距離
     private float ToPlayerDistance;
-    private Animator enemy_anim;
-    private TimeManager time_manager;
     public bool sound_by_obj;
-    private double ToSoundPlaceDistance;
     //音が鳴った先の場所
-    private Vector3 SoundPlacePosition;
 
     private EnemyDatabases enemy_databases;
     private EnemyAllController enemy_all_controller;
@@ -40,10 +33,15 @@ public class EnemySoundSensor : NetworkBehaviour
     [SerializeField]
     //もともとのScriptableObject
     private SoundSensorStatus original_sound_sensor_status;
+    private PlayerAllController player_all_controller;
+    private ToPlayersDistanceTracker to_players_distance_tracker;
+
+    
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
+        player_all_controller = PlayerAllController.instance;
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         move_speed_controller = this.gameObject.GetComponent<MoveSpeedController>();
@@ -51,30 +49,12 @@ public class EnemySoundSensor : NetworkBehaviour
         sound_sensor_status = original_sound_sensor_status;
         enemy_all_controller = EnemyAllController.instance;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
-        enemy_anim = this.gameObject.GetComponent<Animator>();
         DefaultPosition = this.transform.position;
-        time_manager = TimeManager.instance;
+        to_players_distance_tracker = this.gameObject.GetComponent<ToPlayersDistanceTracker>();
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
     }
-    private void OnEnable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
-        if (PlayerStatus.LocalInstance != null)
-        {
-            InitWhenPlayerSpawned(PlayerStatus.LocalInstance);
-        }
-    }
-    private void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
-    }
-    private void InitWhenPlayerSpawned(PlayerStatus _playerStatus)
-    {
-        player_status = PlayerStatus.LocalInstance;
-        Player = player_status.gameObject;
-        player_foot_step_sound_controller = player_status.foot_step_sound_controller;
 
-    }
+
     private void Update()
     {
         if (!IsServer) return;
@@ -87,9 +67,6 @@ public class EnemySoundSensor : NetworkBehaviour
     void FixedUpdate()
     {
         if (!IsServer) return;
-        //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
-        ToPlayerDistance = Vector3.Distance(this.transform.position, Player.transform.position);
-        ToSoundPlaceDistance = follow_object_nav.ToTargetPosDistance;
         if (discovery_player_controller.DiscoveryPlayerNowCheck())
         {
             MoveToSoundPlaceNow = false;
@@ -100,7 +77,7 @@ public class EnemySoundSensor : NetworkBehaviour
             //今音がなっている場所に向かっている場合
 
 
-            if(follow_object_nav.ArrivedTarget)
+            if (follow_object_nav.ArrivedTarget)
             {
                 // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
                 //音が鳴った位置に到着し終えた場合 少し時間を待ってから元の位置に戻るようにする。
@@ -121,10 +98,6 @@ public class EnemySoundSensor : NetworkBehaviour
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 }
             }
-            else
-            {
-
-            }
         }
         else
         {
@@ -132,81 +105,77 @@ public class EnemySoundSensor : NetworkBehaviour
             ArriveSoundPlaceWaitTimeToReturnNow = 0;
         }
 
-        if (MoveToSoundPlaceNow)
+        //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
+        for (int i = 0; i < player_all_controller.SpawnedPlayers.Count; i++)
         {
-            if (!follow_object_nav.ArrivedTarget)
+            GameObject Player = player_all_controller.SpawnedPlayers[i];
+            PlayerStatus player_status = player_all_controller.SpawnedPlayersWithPlayerStatuses[Player];
+            FootStepSoundController player_foot_step_sound_controller = player_status.foot_step_sound_controller;
+            ToPlayerDistance = to_players_distance_tracker.ToPlayerDistanceLists[Player];
+
+
+            if (sound_by_obj == true || player_foot_step_sound_controller.FootStepSoundLevel == 0)
+                return;
+
+            //ここからはプレイヤーの足音がなったときの話。
+            if (player_status.MoveSpeed != 0)
             {
-                if (sound_by_obj)
+                if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Run)
                 {
-                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Run;
-                }
-                else
-                {
-                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-                }
-            }
-        }
-
-        if (sound_by_obj == true || player_foot_step_sound_controller.FootStepSoundLevel == 0)
-            return;
-
-        //ここからはプレイヤーの足音がなったときの話。
-        if (player_status.MoveSpeed != 0)
-        {
-            if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Run)
-            {
-                //プレイヤーが走っている場合
-                if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerRunDistance)
-                {
-                    Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
-                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
-                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-
-                    if (!MoveToSoundPlaceNow)
+                    //プレイヤーが走っている場合
+                    if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerRunDistance)
                     {
-                        MoveToSoundPlaceNow = true;
+                        Debug.Log("走っているので音が鳴って酔ってくるよ！11111111");
+                        SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
+                        // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
+
+                        if (!MoveToSoundPlaceNow)
+                        {
+                            MoveToSoundPlaceNow = true;
+                        }
+                        this.sound_by_obj = false;
                     }
-                    this.sound_by_obj = false;
                 }
-            }
-            else if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Walk)
-            {
-                //プレイヤーが歩いている場合
-                if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerWalkDistance)
+                else if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Walk)
                 {
-                    //プレイヤーとの距離が気づく範囲にいる場合
-                    Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
-                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
-                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-
-                    if (!MoveToSoundPlaceNow)
+                    //プレイヤーが歩いている場合
+                    if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerWalkDistance)
                     {
+                        //プレイヤーとの距離が気づく範囲にいる場合
+                        Debug.Log("歩いているので音が鳴って酔ってくるよ！2222222");
+                        SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
+                        // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
-                        MoveToSoundPlaceNow = true;
+                        if (!MoveToSoundPlaceNow)
+                        {
+
+                            MoveToSoundPlaceNow = true;
+                        }
+                        this.sound_by_obj = false;
+
                     }
-                    this.sound_by_obj = false;
-
                 }
-            }
-            else if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Crouch)
-            {
-                //プレイヤーがしゃがんでいる場合
-                if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerCrouchWalkDistance)
+                else if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Crouch)
                 {
-                    //プレイヤーとの距離が気づく範囲にいる場合
-                    Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
-                    SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
-                    // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-
-                    if (!MoveToSoundPlaceNow)
+                    //プレイヤーがしゃがんでいる場合
+                    if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerCrouchWalkDistance)
                     {
+                        //プレイヤーとの距離が気づく範囲にいる場合
+                        Debug.Log("歩いているので音が鳴って酔ってくるよ！33333");
+                        SoundSeonsor(Player.transform.position, move_speed_controller.WalkSpeed, false, FollowObjectByNav.MoveStyle.Walk);
+                        // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
 
-                        MoveToSoundPlaceNow = true;
+                        if (!MoveToSoundPlaceNow)
+                        {
+
+                            MoveToSoundPlaceNow = true;
+                        }
+                        this.sound_by_obj = false;
+
                     }
-                    this.sound_by_obj = false;
-
                 }
             }
+
         }
 
 
@@ -240,7 +209,6 @@ public class EnemySoundSensor : NetworkBehaviour
                 follow_object_nav.ChaseToTargetSet(true, NearPosition, _speed, move_style);
             }
             follow_object_nav.StoppingDistance = 1f;
-            SoundPlacePosition = TargetPos;
             MoveToSoundPlaceNow = true;
             MoveToSoundObjectPlace = _SoundObject;
         }
