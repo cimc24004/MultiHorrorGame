@@ -217,7 +217,7 @@ public class EnemySoundSensor : NetworkBehaviour
     {
         enemy_routing_controller.PermitFunction(false);
         //どこからか音鳴らすときこの関数を呼ぶ。 例(プレイヤーの足音や非常ベルの音をならす関数などで)
-        if (!discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
+        if (!discovery_player_controller.DiscoveryPlayerNowCheck())
         {
             //敵がプレイヤーを追いかけている最中じゃない時に実行するようにします。
             Debug.Log("SoundSensor実行!!");
