@@ -57,7 +57,7 @@ public class FollowObjectByNav : NetworkBehaviour
             NavmeshNextPos = nav_mesh_agent.path.corners[0];
         }
         //navmeshagentによる動きを停止。 動きはCharacterControllerで行いnavmeshagentは探索結果のみを用いる。
-        nav_mesh_agent.updatePosition = true;
+        nav_mesh_agent.updatePosition = false;
         nav_mesh_agent.updateRotation = false;
         
         // 初期化
@@ -98,11 +98,14 @@ public class FollowObjectByNav : NetworkBehaviour
                 wasArrived = false;
                 lastTargetPosition = ChaseTargetPosition;
             }
+            bool reached = !nav_mesh_agent.pathPending &&
+               nav_mesh_agent.remainingDistance <= StoppingDistance &&
+               ( !nav_mesh_agent.hasPath || nav_mesh_agent.velocity.sqrMagnitude < 0.01f );
 
             // 到着判定（一度到着したら、新しいターゲットが設定されるまで維持）
             if (!wasArrived)
             {
-                if (!(nav_mesh_agent.path.corners.Length > 2) && ToTargetPosDistance <= StoppingDistance)
+                if (reached)
                 {
                     //もしターゲットまでの最終ルートでかつ、到着したらArrivedTarget=Trueにする。
                     Debug.Log("!nav_mesh_agent.Length > 2 && ToTargetPosDIstance <= StoppingDIsntance");
