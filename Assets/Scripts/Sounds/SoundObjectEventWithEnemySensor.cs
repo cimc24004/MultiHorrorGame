@@ -18,7 +18,7 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
     private float soundTimer = 0f;
     private AudioSource audio_source;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
         audio_source = GetComponent<AudioSource>();
     }
