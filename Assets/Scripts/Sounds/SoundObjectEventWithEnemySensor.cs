@@ -37,7 +37,7 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
 
                 // クライアント全員に止めろって通知
                 SensorSoundStopClientRpc();
-
+                enemy_sound_sensor_mode.Value = false;
                 soundTimer = 0f;
             }
         }
@@ -69,17 +69,11 @@ public class SoundObjectEventWithEnemySensor : NetworkBehaviour
     [ClientRpc]
     private void SensorSoundStopClientRpc(ClientRpcParams rpcParams = default)
     {
-        // クライアントで音止める & イベント
+        // サーバー側フラグクリア
+        // クライアントで音止める & イベント]
         audio_source.Stop();
         SoundStopEvent.Invoke();
-        // サーバー側フラグクリア
-        if (IsOwner || IsServer)
-            EnemySoundSensorModeRequestServerRpc(false);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void EnemySoundSensorModeRequestServerRpc(bool value, ServerRpcParams rpcParams = default)
-    {
-        enemy_sound_sensor_mode.Value = value;
-    }
+
 }

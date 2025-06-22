@@ -13,9 +13,6 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
     [SerializeField] private SoundObjectEventWithEnemySensor before_sound_object_event_with_sensor;
 
     private EnemySoundSensor enemy_sound_sensor;
-    private EnemyStatus enemy_status;
-    private FollowObjectByNav follow_object_by_nav;
-    private bool once;
 
     private bool before_enemy_sound_sensor_mode = false;
     [SerializeField] private GameObject hited_collider;
@@ -31,8 +28,6 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
-        enemy_status       = GetComponent<EnemyStatus>();
-        follow_object_by_nav = GetComponent<FollowObjectByNav>();
         enemy_sound_sensor = GetComponent<EnemySoundSensor>();
         move_speed_controller = this.GetComponent<MoveSpeedController>();
     }
@@ -69,15 +64,16 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
         }
 
         // „Ÿ„Ÿ ˆÈ~‚ÍŒ³‚ÌƒƒWƒbƒN‚»‚Ì‚Ü‚Ü „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+        bool now = sound_object_event_with_sensor.enemy_sound_sensor_mode.Value;
         if (InSoundRange)
         {
-            if (sound_object_event_with_sensor.enemy_sound_sensor_mode.Value)
+            if (now && !before_enemy_sound_sensor_mode)
             {
                 enemy_sound_sensor.SoundSeonsor(
                     sound_object_event_with_sensor.transform.position,
                     move_speed_controller.RunSpeed,
                     true
-                    ,FollowObjectByNav.MoveStyle.Run);
+                    , FollowObjectByNav.MoveStyle.Run);
 
                 enemy_sound_sensor.sound_by_obj = true;
             }
