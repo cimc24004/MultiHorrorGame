@@ -22,8 +22,6 @@ public class EnemyToPlayerKillController : NetworkBehaviour
     void Update()
     {
         if(!IsServer) return;
-        if (!discovery_player_controller.DiscoveryPlayerNowCheck())
-            return;
 
         // Box の向きは敵の forward に合わせる
         Quaternion orientation = boxCenter.rotation;
@@ -44,7 +42,7 @@ public class EnemyToPlayerKillController : NetworkBehaviour
                 GameObject player = hitBuffer[i].gameObject;
                 PlayerStatus playerStatus = player_all_controller.SpawnedPlayersWithPlayerStatuses[player];
                 if (playerStatus.Dead.Value) continue;  // 既に死んでたらスキップ
-                if (!playerStatus.Dead.Value && playerStatus.HidingNow.Value == false)
+                if (!playerStatus.Dead.Value && playerStatus.HidingNow.Value == false && discovery_player_controller.PlayersVisibilityMapStatuesWithKey[player].DiscoveryPlayerNow)
                 {
                     //死にます。
                     discovery_player_controller.PlayersVisibilityMapStatuesWithKey[player].DiscoveryPlayerNow = false;

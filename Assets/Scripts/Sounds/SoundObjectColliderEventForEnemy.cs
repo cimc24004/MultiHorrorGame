@@ -30,6 +30,7 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         enemy_status       = GetComponent<EnemyStatus>();
         follow_object_by_nav = GetComponent<FollowObjectByNav>();
         enemy_sound_sensor = GetComponent<EnemySoundSensor>();

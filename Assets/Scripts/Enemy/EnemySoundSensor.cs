@@ -90,7 +90,7 @@ public class EnemySoundSensor : NetworkBehaviour
         //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
         ToPlayerDistance = Vector3.Distance(this.transform.position, Player.transform.position);
         ToSoundPlaceDistance = follow_object_nav.ToTargetPosDistance;
-        if (discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
+        if (discovery_player_controller.DiscoveryPlayerNowCheck())
         {
             MoveToSoundPlaceNow = false;
             return;
