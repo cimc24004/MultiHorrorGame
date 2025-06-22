@@ -36,7 +36,7 @@ public class EnemySoundSensor : NetworkBehaviour
     private PlayerAllController player_all_controller;
     private ToPlayersDistanceTracker to_players_distance_tracker;
 
-    
+
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
@@ -204,7 +204,7 @@ public class EnemySoundSensor : NetworkBehaviour
             {
                 //もし目標地点がNavMeshの青枠以外ならば、青枠内で最も目標地点に近い地点をピックアップ
                 //してそのピックアップされた地点を目標地点として設定する。
-
+                Debug.Log("目標地点がNavMeshの青枠以外です。 青枠内で最も目標地点に近い地点をピックアップ mitti");
                 Vector3 NearPosition = follow_object_nav.BlueRangeNearPositionGet(TargetPos, 3f);
                 follow_object_nav.ChaseToTargetSet(true, NearPosition, _speed, move_style);
             }
