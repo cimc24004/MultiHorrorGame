@@ -138,25 +138,34 @@ public class FollowObjectByNav : NetworkBehaviour
         nav_mesh_agent.velocity = character_controller.velocity;
         character_controller.Move(new Vector3(Vector3Move.x * Time.deltaTime, 0, Vector3Move.z * Time.deltaTime));
     }
-    
+
     private void FixedUpdate()
     {
         if (!IsServer) return;
         if (!MovePermit || !ChaseToTargetMode) return;   // ← ここ追加
         if (nav_mesh_agent.remainingDistance <= StoppingDistance) return; // ← ここも追加
 
-        if (ChaseToTargetMode)
-        {
-            //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
-            Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
-            direction = new Vector3(direction.x, 0, direction.z);
-            //Debug.Log("direction: " + direction);
+        // if (ChaseToTargetMode)
+        // {
+        //     //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
+        //     Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
+        //     direction = new Vector3(direction.x, 0, direction.z);
+        //     //Debug.Log("direction: " + direction);
 
-            if (direction != Vector3.zero)
-            {
-                Quaternion lookRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
-            }
+        //     if (direction != Vector3.zero)
+        //     {
+        //         Quaternion lookRotation = Quaternion.LookRotation(direction);
+        //         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
+        //     }
+        // }
+        if (ChaseToTargetMode && nav_mesh_agent.desiredVelocity.sqrMagnitude > 0.01f)
+        {
+            Vector3 dir = nav_mesh_agent.desiredVelocity.normalized;
+            Quaternion look = Quaternion.LookRotation(dir, Vector3.up);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                look,
+                10f * Time.fixedDeltaTime);   // 10 は好みで
         }
     }
     
