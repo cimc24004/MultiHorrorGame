@@ -120,7 +120,7 @@ public class EnemySoundSensor : NetworkBehaviour
             ToPlayerDistance = to_players_distance_tracker.ToPlayerDistanceLists[Player];
 
 
-            if (sound_by_obj == true || player_foot_step_sound_controller.FootStepSoundLevel == 0)
+            if (sound_by_obj == true || player_foot_step_sound_controller.FootStepSoundLevel.Value == 0)
                 continue;
 
             //ここからはプレイヤーの足音がなったときの話。

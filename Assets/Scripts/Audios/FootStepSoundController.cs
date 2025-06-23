@@ -18,7 +18,7 @@ public class FootStepSoundController : NetworkBehaviour
     }
 
     // 1 = Run 0.5 = Walk  Crouch/Stop = 0
-    public float FootStepSoundLevel = 0;
+    public NetworkVariable<float> FootStepSoundLevel = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public bool AutoFootStepSoundLevelChange = true;
 
     public AudioSource audio_source;
@@ -67,11 +67,11 @@ public class FootStepSoundController : NetworkBehaviour
             if (AutoFootStepSoundLevelChange)
             {
                 if (move_status.Value == MoveStatus.Run)
-                    FootStepSoundLevel = 1;
+                    FootStepSoundLevel.Value = 1;
                 else if (move_status.Value == MoveStatus.Walk)
-                    FootStepSoundLevel = 0.5f;
+                    FootStepSoundLevel.Value = 0.5f;
                 else // Crouch or Stop
-                    FootStepSoundLevel = 0;
+                    FootStepSoundLevel.Value = 0;
             }
             else
             {
@@ -103,7 +103,7 @@ public class FootStepSoundController : NetworkBehaviour
                 return;
             }
 
-            if (FootStepSoundLevel == 0) return;
+            if (FootStepSoundLevel.Value == 0) return;
 
             if (ground_check.OnGround)
             {
@@ -153,7 +153,7 @@ public class FootStepSoundController : NetworkBehaviour
 
     public void FootStepCant(float _time)
     {
-        FootStepSoundLevel = 0;
+        FootStepSoundLevel.Value = 0;
         AutoFootStepSoundLevelChange = false;
         FootStepCantTime = _time;
         FootStepCantTimeNow = 0;

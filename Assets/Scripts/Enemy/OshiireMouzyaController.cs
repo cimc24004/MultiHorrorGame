@@ -65,7 +65,7 @@ public class OshiireMouzyaController : MonoBehaviour
     {
         if (OshiireAttackRange.Collider && !BrokenOshiire)
         {
-            if(!(player_foot_step_sound_controller.FootStepSoundLevel == 0))
+            if(!(player_foot_step_sound_controller.FootStepSoundLevel.Value == 0))
             {
                 discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
                 OshiireAttackMode = true;
