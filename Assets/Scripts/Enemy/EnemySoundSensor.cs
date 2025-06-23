@@ -121,7 +121,7 @@ public class EnemySoundSensor : NetworkBehaviour
 
 
             if (sound_by_obj == true || player_foot_step_sound_controller.FootStepSoundLevel == 0)
-                return;
+                continue;
 
             //ここからはプレイヤーの足音がなったときの話。
             if (player_status.MoveSpeed != 0)
