@@ -18,7 +18,7 @@ public class FootStepSoundController : NetworkBehaviour
     }
 
     // 1 = Run 0.5 = Walk  Crouch/Stop = 0
-    public NetworkVariable<float> FootStepSoundLevel = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<float> FootStepSoundLevel = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public bool AutoFootStepSoundLevelChange = true;
 
     public AudioSource audio_source;
@@ -56,7 +56,15 @@ public class FootStepSoundController : NetworkBehaviour
 
     void Update()
     {
-
+        if (IsServer)
+        {
+            if (move_status.Value == MoveStatus.Run)
+                FootStepSoundLevel.Value = 1;
+            else if (move_status.Value == MoveStatus.Walk)
+                FootStepSoundLevel.Value = 0.5f;
+            else // Crouch or Stop
+                FootStepSoundLevel.Value = 0;
+        }
         // ★重要★ オーナーが状態を管理し、サーバーRPCで通知する
         if (IsOwner)
         {
@@ -66,12 +74,7 @@ public class FootStepSoundController : NetworkBehaviour
             // レベル自動切替
             if (AutoFootStepSoundLevelChange)
             {
-                if (move_status.Value == MoveStatus.Run)
-                    FootStepSoundLevel.Value = 1;
-                else if (move_status.Value == MoveStatus.Walk)
-                    FootStepSoundLevel.Value = 0.5f;
-                else // Crouch or Stop
-                    FootStepSoundLevel.Value = 0;
+
             }
             else
             {
@@ -153,12 +156,17 @@ public class FootStepSoundController : NetworkBehaviour
 
     public void FootStepCant(float _time)
     {
-        FootStepSoundLevel.Value = 0;
+        //クライアントから実行されるはず
+        FootStepSoundLevelRequestServerRpc();
         AutoFootStepSoundLevelChange = false;
         FootStepCantTime = _time;
         FootStepCantTimeNow = 0;
     }
-
+    [ServerRpc]
+    private void FootStepSoundLevelRequestServerRpc()
+    {
+        FootStepSoundLevel.Value = 0;
+    }
     // ローカル再生＋サーバー通知
     private void PlayLocalAndNotify(string moveMode, string tagName)
     {
