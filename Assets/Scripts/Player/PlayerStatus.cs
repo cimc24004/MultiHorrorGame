@@ -127,10 +127,15 @@ public class PlayerStatus : NetworkBehaviour
     void Update()
     {
         if (!InitPlayer) return;
-
+        if (IsOwner)
+        {
+            var newState = DetectMoveStateFromInput();
+            if (player_move_state_network.Value != newState)
+                player_move_state_network.Value = newState;
+            UpdateMoveStatusFromPlayerStatus();
+        }
         if (IsServer)
         {
-            UpdateMoveStatusFromPlayerStatus();
             // 自分以外のキャラのアニメだけ同期
             if (!IsOwner)
             {
@@ -160,9 +165,11 @@ public class PlayerStatus : NetworkBehaviour
     {
         //サーバーから実行される。
         Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
-        var rpcParams = new ClientRpcParams {
-            Send = new ClientRpcSendParams {
-                TargetClientIds = new ulong[]{ this.OwnerClientId }
+        var rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { this.OwnerClientId }
             }
         };
         if (KilledMeEnemy.tag == "Enemy")
@@ -289,5 +296,12 @@ public class PlayerStatus : NetworkBehaviour
                 foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Walk;
                 break;
         }
+    }
+    PlayerMoveState DetectMoveStateFromInput()
+    {
+        if (Crouch)                 return PlayerMoveState.Crouch;
+        if (MoveSpeed == 0)         return PlayerMoveState.Stop;
+        if (MoveSpeed > 2.9f)       return PlayerMoveState.Run;   // 目安
+        return PlayerMoveState.Walk;
     }
 }

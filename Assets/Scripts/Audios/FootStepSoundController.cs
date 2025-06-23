@@ -35,7 +35,7 @@ public class FootStepSoundController : NetworkBehaviour
     public FootStepControllerStatus foot_step_controller_status;
     public GroundCheck ground_check;
 
-    public NetworkVariable<MoveStatus> move_status = new NetworkVariable<MoveStatus>(MoveStatus.Stop, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<MoveStatus> move_status = new NetworkVariable<MoveStatus>(MoveStatus.Stop, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     [Header("Run,Walk‚ÌÄ¶‚·‚éŠÔ‚ÌŠÔ")]
     public float RunPlayDelay = 0.7f;
     public float WalkPlayDelay = 1f;
