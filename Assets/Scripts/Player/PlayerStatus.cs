@@ -127,12 +127,10 @@ public class PlayerStatus : NetworkBehaviour
     void Update()
     {
         if (!InitPlayer) return;
-        if (IsOwner)
-        {
-            UpdateMoveStatusFromPlayerStatus();
-        }
+
         if (IsServer)
         {
+            UpdateMoveStatusFromPlayerStatus();
             // 自分以外のキャラのアニメだけ同期
             if (!IsOwner)
             {
@@ -279,16 +277,16 @@ public class PlayerStatus : NetworkBehaviour
         switch (this.player_move_state_network.Value)
         {
             case PlayerStatus.PlayerMoveState.Run:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Run;
                 break;
             case PlayerStatus.PlayerMoveState.Crouch:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Crouch;
+                foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Crouch;
                 break;
             case PlayerStatus.PlayerMoveState.Stop:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
+                foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Stop;
                 break;
             default:
-                foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Walk;
                 break;
         }
     }

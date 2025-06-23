@@ -35,7 +35,7 @@ public class FootStepSoundController : NetworkBehaviour
     public FootStepControllerStatus foot_step_controller_status;
     public GroundCheck ground_check;
 
-    public MoveStatus move_status;
+    public NetworkVariable<MoveStatus> move_status = new NetworkVariable<MoveStatus>(MoveStatus.Stop, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [Header("Run,Walk‚ÌÄ¶‚·‚éŠÔ‚ÌŽžŠÔ")]
     public float RunPlayDelay = 0.7f;
     public float WalkPlayDelay = 1f;
@@ -66,9 +66,9 @@ public class FootStepSoundController : NetworkBehaviour
             // ƒŒƒxƒ‹Ž©“®Ø‘Ö
             if (AutoFootStepSoundLevelChange)
             {
-                if (move_status == MoveStatus.Run)
+                if (move_status.Value == MoveStatus.Run)
                     FootStepSoundLevel = 1;
-                else if (move_status == MoveStatus.Walk)
+                else if (move_status.Value == MoveStatus.Walk)
                     FootStepSoundLevel = 0.5f;
                 else // Crouch or Stop
                     FootStepSoundLevel = 0;
@@ -88,13 +88,13 @@ public class FootStepSoundController : NetworkBehaviour
             // ˆêŒÂ‚µ‚©‚È‚¢‘«‰¹
             if (OnlyOneFootStepSound)
             {
-                if ((move_status == MoveStatus.Run || move_status == MoveStatus.Walk)
+                if ((move_status.Value == MoveStatus.Run || move_status.Value == MoveStatus.Walk)
                     && !audio_source.isPlaying)
                 {
                     audio_source.Play();
                     NotifyFootStepServerRpc("Single", "");
                 }
-                else if ((move_status == MoveStatus.Stop || move_status == MoveStatus.Crouch)
+                else if ((move_status.Value == MoveStatus.Stop || move_status.Value == MoveStatus.Crouch)
                          && audio_source.isPlaying)
                 {
                     audio_source.Stop();
@@ -111,17 +111,17 @@ public class FootStepSoundController : NetworkBehaviour
                 if (ground_check.GroundedTagName != GroundedName)
                 {
                     GroundedName = ground_check.GroundedTagName;
-                    var mode = (move_status == MoveStatus.Run) ? "Run" : "Walk";
+                    var mode = (move_status.Value == MoveStatus.Run) ? "Run" : "Walk";
                     PlayLocalAndNotify(mode, GroundedName);
                 }
 
                 // ŠÔŠu‚²‚Æ
-                float delay = (move_status == MoveStatus.Run) ? RunPlayDelay : WalkPlayDelay;
+                float delay = (move_status.Value == MoveStatus.Run) ? RunPlayDelay : WalkPlayDelay;
                 PlaySoundDelayTimeNow += Time.deltaTime;
                 if (PlaySoundDelayTimeNow > delay)
                 {
                     PlaySoundDelayTimeNow = 0;
-                    var mode = (move_status == MoveStatus.Run) ? "Run" : "Walk";
+                    var mode = (move_status.Value == MoveStatus.Run) ? "Run" : "Walk";
                     PlayLocalAndNotify(mode, GroundedName);
                 }
             }

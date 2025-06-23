@@ -64,13 +64,13 @@ public class EnemyStatus : NetworkBehaviour
             switch (enemy_move_state)
             {
                 case EnemyMoveState.Walk:
-                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Walk;
+                    foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Walk;
                     break;
                 case EnemyMoveState.Run:
-                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Run;
+                    foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Run;
                     break;
                 default:
-                    foot_step_sound_controller.move_status = FootStepSoundController.MoveStatus.Stop;
+                    foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Stop;
                     break;
             }
         }

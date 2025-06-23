@@ -104,10 +104,6 @@ public class EnemySoundSensor : NetworkBehaviour
                     ArriveSoundPlaceWaitTimeToReturnNow = 0;
                 }
             }
-            else
-            {
-                
-            }
         }
         else
         {
@@ -130,7 +126,7 @@ public class EnemySoundSensor : NetworkBehaviour
             //ここからはプレイヤーの足音がなったときの話。
             if (player_status.MoveSpeed != 0)
             {
-                if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Run)
+                if (player_foot_step_sound_controller.move_status.Value == FootStepSoundController.MoveStatus.Run)
                 {
                     //プレイヤーが走っている場合
                     if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerRunDistance)
@@ -146,7 +142,7 @@ public class EnemySoundSensor : NetworkBehaviour
                         this.sound_by_obj = false;
                     }
                 }
-                else if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Walk)
+                else if (player_foot_step_sound_controller.move_status.Value == FootStepSoundController.MoveStatus.Walk)
                 {
                     //プレイヤーが歩いている場合
                     if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerWalkDistance)
@@ -165,7 +161,7 @@ public class EnemySoundSensor : NetworkBehaviour
 
                     }
                 }
-                else if (player_status.player_move_state_network.Value == PlayerStatus.PlayerMoveState.Crouch)
+                else if (player_foot_step_sound_controller.move_status.Value == FootStepSoundController.MoveStatus.Crouch)
                 {
                     //プレイヤーがしゃがんでいる場合
                     if (ToPlayerDistance <= sound_sensor_status.RealizeSoundPlayerCrouchWalkDistance)
