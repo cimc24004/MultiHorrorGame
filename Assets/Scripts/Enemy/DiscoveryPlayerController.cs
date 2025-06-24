@@ -424,12 +424,15 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 }
                 else
                 {
+                    //発見されているプレイヤーがゼロなら
+                    enemy_routing_controller?.NearRouteSet();
                     FirstKeyOfDiscoveriedPlayers = null;
                 }
                 var sendParams = new ClientRpcSendParams
                 {
                     TargetClientIds = new ulong[] { _Player.GetComponent<NetworkObject>().OwnerClientId }
                 };
+
                 NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
             }
         }
