@@ -75,6 +75,8 @@ public class EnemySoundSensor : NetworkBehaviour
         if (!IsServer) return;
         if (discovery_player_controller.DiscoveryPlayerNowCheck())
         {
+            //見つけて追いかけるなら　リセットする。
+            sound_by_obj        = false;
             MoveToSoundPlaceNow = false;
             return;
         }
@@ -110,7 +112,7 @@ public class EnemySoundSensor : NetworkBehaviour
             follow_object_nav.ArrivedTarget = false;
             ArriveSoundPlaceWaitTimeToReturnNow = 0;
         }
-
+        if (sound_by_obj == true) return;
         //プレイヤーの場合はこちらで制御します。 音を慣らすアイテムによって敵が酔ってくるシステムはアイテムそれぞれに作ります。
         for (int i = 0; i < player_all_controller.SpawnedPlayers.Count; i++)
         {
@@ -120,7 +122,7 @@ public class EnemySoundSensor : NetworkBehaviour
             ToPlayerDistance = to_players_distance_tracker.ToPlayerDistanceLists[Player];
 
 
-            if (sound_by_obj == true || player_foot_step_sound_controller.FootStepSoundLevel.Value == 0)
+            if (player_foot_step_sound_controller.FootStepSoundLevel.Value == 0)
                 continue;
 
             //ここからはプレイヤーの足音がなったときの話。

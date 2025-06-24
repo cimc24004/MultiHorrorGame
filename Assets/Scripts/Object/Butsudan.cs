@@ -46,6 +46,7 @@ public class Butsudan : MonoBehaviour
         });
         pray_controller.PrayCompletedEventForServer.AddListener(() =>
         {
+            pray_to_deliver_item_appear_place.OnPrayCompleted();
             enemy_all_controller.IncreaseEnemiesMoveSpeed();
         });
     }
@@ -55,7 +56,6 @@ public class Butsudan : MonoBehaviour
         //クライアントから実行される。 PrayController.OnCompletedEventとおなじタイミングなので
         Debug.Log("ButsudanPrayCompleted()を実行！");
         Debug.Log("deliver_item_apperance: " + pray_to_deliver_item_appear_place) ;
-        pray_to_deliver_item_appear_place.OnPrayCompleted();
         sub_noticed_ui_controller.Notice("仏壇にお祈りした");
         sub_noticed_ui_controller.Notice("敵の能力が向上した....。", 1);
     }

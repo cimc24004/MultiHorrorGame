@@ -29,8 +29,8 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
     [Button]
     public void OnPrayCompleted()
     {
-        //クライアントから実行されるはず
-        game_progress_controller.OnPrayedButsudanRequestServerRpc();
+        //サーバー側で実行されます
+        game_progress_controller.OnPrayedButsudan();
         //どこかの仏壇で祈りがコンプリートされたとき。
         if (game_progress_controller.NeedPrayCount <= game_progress_controller.PrayCountNow.Value)
         {
