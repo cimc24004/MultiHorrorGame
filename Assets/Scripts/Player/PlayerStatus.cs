@@ -195,13 +195,13 @@ public class PlayerStatus : NetworkBehaviour
     private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-        Debug.Log("この関数はDeadPlayerClientRpcです。");
+        Debug.Log("mitti この関数はDeadPlayerClientRpcです。");
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
-        Debug.Log($"DeadPlayerClientRpc--- items.Count == {items.Count}");
+        Debug.Log($"mitti DeadPlayerClientRpc--- items.Count == {items.Count}");
         if (items.Count > 0)
         {
-            Debug.Log("お札アイテムを使用するため、死ぬことはない！items.Count>0 DeadPlayerClientRpc内です");
+            Debug.Log("mitti お札アイテムを使用するため、死ぬことはない！items.Count>0 DeadPlayerClientRpc内です");
             var item = items[0];
             item_belonging_controller.ItemUseFromBelonging(item);
             sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");

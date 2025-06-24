@@ -144,29 +144,26 @@ public class FollowObjectByNav : NetworkBehaviour
         if (!IsServer) return;
         if (!MovePermit || !ChaseToTargetMode) return;   // ← ここ追加
         if (nav_mesh_agent.remainingDistance <= StoppingDistance) return; // ← ここも追加
-
-        // if (ChaseToTargetMode)
-        // {
-        //     //追いかけるモードがTrueならば中継地点との差を求め、PosGetByFinder関数を実行。
-        //     Vector3 direction = (nav_mesh_agent.steeringTarget - this.transform.position).normalized;
-        //     direction = new Vector3(direction.x, 0, direction.z);
-        //     //Debug.Log("direction: " + direction);
-
-        //     if (direction != Vector3.zero)
-        //     {
-        //         Quaternion lookRotation = Quaternion.LookRotation(direction);
-        //         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.1f);
-        //     }
-        // }
-        if (ChaseToTargetMode && nav_mesh_agent.desiredVelocity.sqrMagnitude > 0.01f)
+        // ── 回転ベクトルを決める ─────────────
+        Vector3 dir;
+        if (nav_mesh_agent.desiredVelocity.sqrMagnitude > 0.01f)
         {
-            Vector3 dir = nav_mesh_agent.desiredVelocity.normalized;
-            Quaternion look = Quaternion.LookRotation(dir, Vector3.up);
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                look,
-                10f * Time.fixedDeltaTime);   // 10 は好みで
+            dir = nav_mesh_agent.desiredVelocity;        // まだ遠いときはこれで OK
         }
+        else
+        {
+            // 近すぎて desiredVelocity が 0 になるときは
+            dir = ChaseTargetPosition - transform.position;
+        }
+
+        dir.y = 0f;                                      // 上下は無視
+        if (dir.sqrMagnitude > 0.0001f)
+        {
+            Quaternion look = Quaternion.LookRotation(dir);
+            float t = Mathf.Clamp01(10 * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, look, t);
+        }
+
     }
     
     public void ChaseToTargetSet(bool _mode, Vector3 _position, float _speed,MoveStyle style)
