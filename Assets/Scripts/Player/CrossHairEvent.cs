@@ -19,7 +19,7 @@ public class CrossHairEvent : NetworkBehaviour
     // クロスヘアのレイキャスト到達距離
     public float RaycastDistance = 3;
     //クリックイベント
-    public bool CrossHairEventRaycastPermit = true;
+    public NetworkVariable<bool> CrossHairEventRaycastPermit = new NetworkVariable<bool>(true);
     Camera MainCamera;
     private RaycastHit raycast_hit;
     public CrossHairStatus cross_hair_status;
@@ -106,7 +106,7 @@ public class CrossHairEvent : NetworkBehaviour
                 cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             }
 
-            if (!CrossHairEventRaycastPermit) return;
+            if (!CrossHairEventRaycastPermit.Value) return;
             if (player_input.actions["RaycastAction"].triggered)
             {
                 Debug.Log("RaycastAction---------------------Triggered!!!!!!!!!!!!!!!!!!!!!");

@@ -120,11 +120,14 @@ public class PlayerMoveScript : NetworkBehaviour
         }
 
         // ── サーバー権限で状態管理 ──
-        if (IsServer)
+        if (IsServer && playerStatus.Dead.Value == false)
         {
+            
             // ← 追加：しゃがみ解除直後の遷移検知
             var currentState = playerStatus.player_move_state_network.Value;
             var nowCrouch = playerStatus.Crouch;
+
+
             if (prevMoveState == PlayerStatus.PlayerMoveState.Crouch && !nowCrouch)
             {
                 // しゃがみ解除された瞬間だけ Walk に戻す
@@ -184,6 +187,16 @@ public class PlayerMoveScript : NetworkBehaviour
             // ← フレーム末に状態を更新
             prevMoveState = playerStatus.player_move_state_network.Value;
         }
+        if (IsServer)
+        {
+            if (playerStatus.Dead.Value == true)
+            {
+                //ダウン状態なら
+                playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Down;
+                NowSpeed = CrouchSpeed;
+                playerStatus.MoveSpeed = CrouchSpeed;
+            }       
+        }
 
         if (IsServer && MovePermit && characterController.enabled)
         {
@@ -201,6 +214,7 @@ public class PlayerMoveScript : NetworkBehaviour
 
     private void OnCrouchPerformed(InputAction.CallbackContext ctx)
     {
+        if (!playerStatus.CrouchPermit.Value) return;
         CrouchNow = !CrouchNow;
         playerStatus.CrouchStandCameraPosChange(CrouchNow);
         UpdateCrouchNetworkChangeServerRpc(CrouchNow);
@@ -230,6 +244,7 @@ public class PlayerMoveScript : NetworkBehaviour
     [ServerRpc]
     private void UpdateCrouchNetworkChangeServerRpc(bool newCrouch)
     {
+        if (!playerStatus.CrouchPermit.Value) return;
         anim.SetBool("Crouch", newCrouch);
         playerStatus.Crouch = newCrouch;
     }

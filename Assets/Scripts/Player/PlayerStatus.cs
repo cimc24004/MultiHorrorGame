@@ -36,8 +36,8 @@ public class PlayerStatus : NetworkBehaviour
     public Image GageImage;
     public NetworkVariable<bool> Dead = new NetworkVariable<bool>();
 
-    // プレイヤーの移動状態 (走る 歩く しゃがむ 停止)
-    public enum PlayerMoveState { Walk, Run, Crouch, Stop }
+    // プレイヤーの移動状態 (走る 歩く しゃがむ ダウン状態 停止)
+    public enum PlayerMoveState { Walk, Run, Crouch,Down, Stop }
 
     // サーバー書き込み・全員読取
     public NetworkVariable<PlayerMoveState> player_move_state_network = new NetworkVariable<PlayerMoveState>();
@@ -69,6 +69,7 @@ public class PlayerStatus : NetworkBehaviour
     private Animator anim;
     private bool InitPlayer;
     public bool Crouch;
+    public NetworkVariable<bool> CrouchPermit = new NetworkVariable<bool>(true);
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
     public FootStepSoundController foot_step_sound_controller;
@@ -77,7 +78,6 @@ public class PlayerStatus : NetworkBehaviour
 
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
-    private CharacterController player_character_controller;
     private HorrorDirector horror_director;
     private Tween crouchTween;
     private PlayerToEnemyDistanceController player_to_enemy_distance_controller;
@@ -98,7 +98,6 @@ public class PlayerStatus : NetworkBehaviour
         virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
         player_stamina_controller = GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();
-        player_character_controller = GetComponent<CharacterController>();
         player_move_permit = GetComponent<CharacterMovePermit>();
         anim = GetComponent<Animator>();
         player_hide_object_action = GetComponent<PlayerHideObjectAction>();
@@ -160,6 +159,7 @@ public class PlayerStatus : NetworkBehaviour
     public void DeadEvent(GameObject KilledMeEnemy)
     {
         //サーバーから実行される。
+        this.KillSequenceRunning.Value = true;
         Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
         var rpcParams = new ClientRpcParams {
             Send = new ClientRpcSendParams {
@@ -172,22 +172,6 @@ public class PlayerStatus : NetworkBehaviour
             ulong enemyNetId = killed_enemy_status.NetworkObjectId;
             killed_enemy_flinch_controller = killed_enemy_status.enemy_flinch_controller;
             DeadPlayerClientRpc(enemyNetId, rpcParams);
-
-
-            // var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
-            // if (items.Count != 0)
-            // {
-            //     // var item = items[0];
-            //     // GameObject g = Instantiate(item.ItemThrowPrefab, enemy_status.EyePosition.transform.position, Quaternion.identity, enemy_status.EyePosition.transform);
-            //     // NetworkObject g_NetworkObject = g.GetComponent<NetworkObject>();
-            //     // g_NetworkObject.Spawn();
-            //     // item_belonging_controller.ItemUseFromBelonging(item);
-            //     // sub_noticed_ui_controller.Notice($"{item.ItemName}を使用");
-            //     // Destroy(g, item.StopEnemyTime);
-            //     // flinch.FlinchStart(item.StopEnemyTime);
-            //     return;
-            // }
-
         }
 
     }
@@ -215,7 +199,7 @@ public class PlayerStatus : NetworkBehaviour
             var enemyGO = NetworkManager.Singleton.SpawnManager
                             .SpawnedObjects[enemyNetworkObjectId].gameObject;
             var cameraExpander = enemyGO.GetComponent<CameraEnemyFaceExpanding>();
-            flash_light_controller.Light.enabled = false;
+            // flash_light_controller.Light.enabled = false;
             item_menu_controller.enabled = false;
             horror_director.nearEnemyCount = 0;
             horror_director.discoveredEnemyCount = 0;
@@ -244,26 +228,24 @@ public class PlayerStatus : NetworkBehaviour
         //普通に死ぬ処理
         this.Dead.Value = true;
         anim.SetBool("AppearentDeath", true);
-        MoveX = 0;
-        MoveY = 0;
-        player_hide_object_action.HidingPermit.Value = true;
-        // player_to_enemy_distance_controller.enabled = false;
+
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
         PlayerKilledScene = true;
-        player_character_controller.enabled = false;
-        player_move_permit.Stop();
-
         DOVirtual.DelayedCall(4, () =>
         {
-            // SceneManager.LoadScene("GameOver");
             PlayerKilledScene = false;
+            horror_director.ChangeHorrorState(HorrorState.None);
             // player_continue_controller.Continue();
         });
         player_hide_object_action.HidingPermit.Value = false;
         KillSequenceRunning.Value = false;
+        this.CrouchPermit.Value = false;
+        cross_hair_event.CrossHairEventRaycastPermit.Value = false;
+        
     }
     public void CrouchStandCameraPosChange(bool _Crouch)
     {
+        if (!this.CrouchPermit.Value) return;
         Transform tgt = _Crouch ? CrouchHeadPos : StandHeadPos;
         crouchTween?.Kill();
         Vector3 src = CameraRoot.localPosition;
@@ -287,6 +269,9 @@ public class PlayerStatus : NetworkBehaviour
                 foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Crouch;
                 break;
             case PlayerStatus.PlayerMoveState.Stop:
+                foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Stop;
+                break;
+            case PlayerStatus.PlayerMoveState.Down:
                 foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Stop;
                 break;
             default:

@@ -275,6 +275,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
             if (target_hide_object.SomeoneHided.Value == false)
             {
                 // 誰も隠れていなければ隠れられる
+                player_status.cross_hair_event.CrossHairEventRaycastPermit.Value = false;
                 target_hide_object.HideRequestServerRpc(this.NetworkObject.NetworkObjectId); // 対象オブジェクトに「このプレイヤーが隠れた」と通知
                 HideClientRpc(typeOfHideObject); // クライアントに隠れる動作を指示 (正しいHideTypeを渡す)
                 // player_status.HidingNow.Value = true; // これはHideClientRpc -> HidingNowChangeServerRpcで行われる
@@ -293,6 +294,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
         {
             if (target_hide_object != null) // 隠れたオブジェクトの参照がサーバーにあれば
             {
+                player_status.cross_hair_event.CrossHairEventRaycastPermit.Value = true;
                 target_hide_object.UnHideRequestServerRpc(this.NetworkObject.NetworkObjectId);
                  // 出る処理が終わった後、サーバー側の target_hide_object の参照をクリアしても良いかもしれない
                  // target_hide_object = null;

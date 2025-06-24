@@ -76,17 +76,19 @@ public class TargetHideObject : NetworkBehaviour
             // _localPlayerSubNoticedUiController = localPlayerStatus.sub_noticed_ui_controller;
 
             // ローカルイベントのリスナー設定
-            LocalHideAddEvent.AddListener(() => {
-                Debug.Log($"LocalHideAddEvent invoked for object: {this.gameObject.name}");
-                if (_localPlayerCrossHairEvent != null) _localPlayerCrossHairEvent.CrossHairEventRaycastPermit = false;
-            });
-            LocalUnHideAddEvent.AddListener(() => {
-                Debug.Log($"LocalUnHideAddEvent invoked for object: {this.gameObject.name}");
-                if (_localPlayerCrossHairEvent != null) _localPlayerCrossHairEvent.CrossHairEventRaycastPermit = true;
-            });
+            // LocalHideAddEvent.AddListener(() =>
+            // {
+            //     Debug.Log($"LocalHideAddEvent invoked for object: {this.gameObject.name}");
+            //     _localPlayerCrossHairEvent.CrossHairEventRaycastPermit.Value = false;
+            // });
+            // LocalUnHideAddEvent.AddListener(() =>
+            // {
+            //     Debug.Log($"LocalUnHideAddEvent invoked for object: {this.gameObject.name}");
+            //     if (_localPlayerCrossHairEvent != null) _localPlayerCrossHairEvent.CrossHairEventRaycastPermit.Value = true;
+            // });
         }
     }
-    
+
     private void OnSomeoneHidedChanged(bool previousValue, bool newValue)
     {
         // このオブジェクトに誰か隠れた/出た場合に全クライアントで呼ばれる
@@ -120,9 +122,10 @@ public class TargetHideObject : NetworkBehaviour
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetId, out NetworkObject playerNetworkObj))
         {
             HideTargetOnServer(playerNetworkObj.gameObject); // サーバーでプレイヤーを移動、状態変更
-            
+
             // 隠れた本人（リクエスト元）にローカルな処理を実行させるためのClientRpc
-             ClientRpcParams clientRpcParams = new ClientRpcParams{
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
                 Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerNetworkObj.OwnerClientId } }
             };
             HidingPlayerLocalActionsClientRpc(clientRpcParams);
@@ -149,8 +152,9 @@ public class TargetHideObject : NetworkBehaviour
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetId, out NetworkObject playerNetworkObj))
         {
             UnHideTargetOnServer(playerNetworkObj.gameObject); // サーバーでプレイヤーを移動、状態変更
-            
-            ClientRpcParams clientRpcParams = new ClientRpcParams{
+
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
                 Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerNetworkObj.OwnerClientId } }
             };
             UnhidingPlayerLocalActionsClientRpc(clientRpcParams);
@@ -197,7 +201,7 @@ public class TargetHideObject : NetworkBehaviour
         }
         LocalHideAddEvent.Invoke(); // RaycastPermit = false など
     }
-    
+
     // ──────────────────────────────────
     // クライアント RPC：出た本人向けのローカル処理
     // ──────────────────────────────────
@@ -206,12 +210,13 @@ public class TargetHideObject : NetworkBehaviour
     {
         // このRPCは指定されたクライアント（出た本人）でのみ実行される
         Debug.Log($"[Client {NetworkManager.Singleton.LocalClientId}] UnhidingPlayerLocalActionsClientRpc for object {this.gameObject.name}");
-         if (_localPlayerHideActionAudioSource != null && !string.IsNullOrEmpty(AudioClipKey) &&
-            _localPlayerHideActionAudioDatas.audioClipDatasWithKey.ContainsKey(AudioClipKey))
+        if (_localPlayerHideActionAudioSource != null && !string.IsNullOrEmpty(AudioClipKey) &&
+           _localPlayerHideActionAudioDatas.audioClipDatasWithKey.ContainsKey(AudioClipKey))
         {
             _localPlayerHideActionAudioSource.PlayOneShot(
                 _localPlayerHideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
         }
         LocalUnHideAddEvent.Invoke(); // RaycastPermit = true など
     }
+
 }
