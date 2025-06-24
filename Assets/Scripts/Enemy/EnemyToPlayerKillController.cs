@@ -47,8 +47,9 @@ public class EnemyToPlayerKillController : NetworkBehaviour
                     //éÄÇ…Ç‹Ç∑ÅB
                     discovery_player_controller.PlayersVisibilityMapStatuesWithKey[player].DiscoveryPlayerNow = false;
                     discovery_player_controller.RemovePlayerOfDiscoveryPlayerLists(player);
-                    
+
                     player_all_controller.SpawnedPlayersWithPlayerStatuses[player].DeadEvent(this.gameObject);
+                    playerStatus.KillSequenceRunning.Value = true;
                 }
                 break;
             }

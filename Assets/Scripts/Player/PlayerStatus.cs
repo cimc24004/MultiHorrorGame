@@ -236,7 +236,7 @@ public class PlayerStatus : NetworkBehaviour
         g_NetworkObject.Spawn();
         Destroy(g, item.StopEnemyTime);
         killed_enemy_flinch_controller.FlinchStart(item.StopEnemyTime);
-        KillSequenceRunning.Value = true;
+        KillSequenceRunning.Value = false;
     }
     [ServerRpc]
     private void NotHaveItemForDeadPlayerRequestServerRpc()
@@ -260,7 +260,7 @@ public class PlayerStatus : NetworkBehaviour
             // player_continue_controller.Continue();
         });
         player_hide_object_action.HidingPermit.Value = false;
-        KillSequenceRunning.Value = true;
+        KillSequenceRunning.Value = false;
     }
     public void CrouchStandCameraPosChange(bool _Crouch)
     {
