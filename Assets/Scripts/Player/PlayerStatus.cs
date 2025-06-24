@@ -84,6 +84,7 @@ public class PlayerStatus : NetworkBehaviour
     private EnemyStatus killed_enemy_status;
     private ItemDatabases item_databases;
     private EnemyFlinchController killed_enemy_flinch_controller;
+    public NetworkVariable<bool> KillSequenceRunning = new(false);
     public override void OnNetworkDespawn()
     {
         if (IsOwner && LocalInstance == this)
@@ -197,6 +198,7 @@ public class PlayerStatus : NetworkBehaviour
         Debug.Log("この関数はDeadPlayerClientRpcです。");
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
+        Debug.Log($"DeadPlayerClientRpc--- items.Count == {items.Count}");
         if (items.Count > 0)
         {
             Debug.Log("お札アイテムを使用するため、死ぬことはない！items.Count>0 DeadPlayerClientRpc内です");
@@ -234,6 +236,7 @@ public class PlayerStatus : NetworkBehaviour
         g_NetworkObject.Spawn();
         Destroy(g, item.StopEnemyTime);
         killed_enemy_flinch_controller.FlinchStart(item.StopEnemyTime);
+        KillSequenceRunning.Value = true;
     }
     [ServerRpc]
     private void NotHaveItemForDeadPlayerRequestServerRpc()
@@ -257,6 +260,7 @@ public class PlayerStatus : NetworkBehaviour
             // player_continue_controller.Continue();
         });
         player_hide_object_action.HidingPermit.Value = false;
+        KillSequenceRunning.Value = true;
     }
     public void CrouchStandCameraPosChange(bool _Crouch)
     {
