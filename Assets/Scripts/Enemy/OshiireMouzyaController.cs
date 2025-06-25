@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class OshiireMouzyaController : MonoBehaviour
+public class OshiireMouzyaController : NetworkBehaviour
 {
     [SerializeField]
-    private Collidered OshiireAttackRange;
+    private CollideredForPlayers OshiireAttackRangeWithPlayers;
     [SerializeField]
     private DoorAttackedController door_attacked_controller;
     [SerializeField]
@@ -26,60 +27,70 @@ public class OshiireMouzyaController : MonoBehaviour
     private Animator m_Animator;
     private bool BrokenOshiire;
     private EnemyStatus enemy_status;
-    private PlayerStatus player_status;
-    private EnemyFlinchController enemy_flinch_controller;
     private EnemyDeathController enemy_death_controller;
     private EnemyToPlayerKillController enemy_to_player_kill_controller;
     [SerializeField] private GameObject AttackedDoorEffectPrefab;
 
     private FootStepSoundController player_foot_step_sound_controller;
     private EnemyActionForDoorController enemy_action_for_door_controller;
+    private PlayerAllController player_all_controller;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         m_Animator = this.gameObject.GetComponent<Animator>();
+        player_all_controller = PlayerAllController.instance;
         enemy_death_controller = this.gameObject.GetComponent<EnemyDeathController>();
         enemy_action_for_door_controller = this.gameObject.GetComponent<EnemyActionForDoorController>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
-        enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
-        player_status = PlayerStatus.LocalInstance;
-        player_foot_step_sound_controller = player_status.foot_step_sound_controller;
         player_near_sensor.IsNearToKillEffect = false;
 
         foreach (Transform door in door_attacked_controller.gameObject.transform)
         {
             Debug.Log("Door:r:r::" + door.gameObject.name);
-            if(door.tag == "HideActionObject")
+            if (door.tag == "HideActionObject")
             {
                 door.tag = "Untagged";
             }
         }
+        follow_object_by_nav.MovePermit = false;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (OshiireAttackRange.Collider && !BrokenOshiire)
+        if (!IsServer) return;
+        if (OshiireAttackRangeWithPlayers.CollideredObjes.Count != 0 && !BrokenOshiire)
         {
-            if(!(player_foot_step_sound_controller.FootStepSoundLevel.Value == 0))
+            for (int i = 0; i < OshiireAttackRangeWithPlayers.CollideredObjes.Count; i++)
             {
-                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
-                OshiireAttackMode = true;
-                if (!BrokenOshiire)
+                GameObject Player = OshiireAttackRangeWithPlayers.CollideredObjes[i];
+                Debug.Log("OshiireAttackRange-???Player: " + Player);
+                Debug.Log("player_all_controller: " + player_all_controller);
+                FootStepSoundController player_foot_step_sound_controller = player_all_controller.SpawnedPlayersWithPlayerStatuses[Player].foot_step_sound_controller;
+                if (!(player_foot_step_sound_controller.FootStepSoundLevel.Value == 0))
                 {
-                    follow_object_by_nav.MovePermit = false;
-                    enemy_action_for_door_controller.door_attacked_controller = this.door_attacked_controller;
-                    enemy_to_player_kill_controller.enabled = false;
+                    //足音聞こえていたら
+                    // discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
+                    discovery_player_controller.AddPlayerToDiscoveryPlayerLists(Player);
+                    OshiireAttackMode = true;
+                    if (!BrokenOshiire)
+                    {
+                        // follow_object_by_nav.MovePermit = false;
+                        enemy_action_for_door_controller.door_attacked_controller = this.door_attacked_controller;
+                        enemy_to_player_kill_controller.enabled = false;
+                    }
+                }
+                else
+                {
                 }
             }
 
-        }
-        else
-        {
+
         }
 
         if (OshiireAttackMode)

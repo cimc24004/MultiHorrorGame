@@ -291,7 +291,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1135963893148231120}
   - component: {fileID: 2951999240864204600}
-  - component: {fileID: 4025585364353337323}
+  - component: {fileID: 9099560200137384845}
   m_Layer: 0
   m_Name: OshiireAttackRange
   m_TagString: Untagged
@@ -335,7 +335,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.47932053, z: 1}
   m_Center: {x: 0, y: 0.26033974, z: 0}
---- !u!114 &4025585364353337323
+--- !u!114 &9099560200137384845
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -344,13 +344,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6384129304485551082}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb1a68dc43480f549807c7ea37067b9b, type: 3}
+  m_Script: {fileID: 11500000, guid: 3288e4a50d9d6f5478030648b28b88ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   TargetTags:
   - Player
-  Collider: 0
-  CollideredObj: {fileID: 0}
   OnTriggerEnterEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -360,6 +358,7 @@ MonoBehaviour:
   OnTriggerExitEvent:
     m_PersistentCalls:
       m_Calls: []
+  CollideredObjes: []
 --- !u!1 &8897745171868026069
 GameObject:
   m_ObjectHideFlags: 0
@@ -1538,15 +1537,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ea560b13fa772540aff7051251f8ff8,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1216715274120820990}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ea560b13fa772540aff7051251f8ff8,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 4157205402327196748}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ea560b13fa772540aff7051251f8ff8,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3726776348388475724}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ea560b13fa772540aff7051251f8ff8,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1216715274120820990}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8ea560b13fa772540aff7051251f8ff8,
         type: 3}
       insertIndex: -1
@@ -1741,43 +1740,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
---- !u!114 &4157205402327196748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8813186536376409743}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d9396169a22e0c48828b2c39df1961d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OshiireAttackRange: {fileID: 4025585364353337323}
-  door_attacked_controller: {fileID: 0}
-  player_near_sensor: {fileID: 8235445072045966103}
-  ToDeathWaitTimeFromBrokeOshiire: 10
-  OshiireAttackWaitTime: 1
-  OshiireAttackWaitTimeNow: 0
-  OshiireAttackMode: 0
-  AttackedDoorEffectPrefab: {fileID: 9106265002187385468, guid: e3bc59c5b786c904c8e4917940946e74,
-    type: 3}
---- !u!114 &3726776348388475724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8813186536376409743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fff0960ef4ea6e04eac66b4a7fd2189d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RigLayers:
-  - m_Rig: {fileID: 0}
-    m_Active: 1
-  m_Effectors: []
 --- !u!114 &1216715274120820990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1803,6 +1765,44 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &4157205402327196748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8813186536376409743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9396169a22e0c48828b2c39df1961d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  OshiireAttackRangeWithPlayers: {fileID: 9099560200137384845}
+  door_attacked_controller: {fileID: 0}
+  player_near_sensor: {fileID: 8235445072045966103}
+  ToDeathWaitTimeFromBrokeOshiire: 10
+  OshiireAttackWaitTime: 1
+  OshiireAttackWaitTimeNow: 0
+  OshiireAttackMode: 0
+  AttackedDoorEffectPrefab: {fileID: 9106265002187385468, guid: e3bc59c5b786c904c8e4917940946e74,
+    type: 3}
+--- !u!114 &3726776348388475724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8813186536376409743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff0960ef4ea6e04eac66b4a7fd2189d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RigLayers:
+  - m_Rig: {fileID: 0}
+    m_Active: 1
+  m_Effectors: []
 --- !u!114 &8757017040068428645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1810,13 +1810,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8813186536376409743}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cae649fc2659ef94b8e0edda69d3a37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  DiscoveryPlayerNow: 0
   DiscoveryPlayerBySightning: 0
   EyePosition: {fileID: 3698561623734633006}
   original_discovery_player_status: {fileID: 11400000, guid: 7b7bc4df6b27a604ba142c7cde0e0150,
@@ -1824,12 +1823,10 @@ MonoBehaviour:
   discovery_player_status: {fileID: 11400000, guid: 7b7bc4df6b27a604ba142c7cde0e0150,
     type: 2}
   IsAudioPlayOnChase: 0
-  SightningPlayer: 0
   SightningPlayerWhenHidePlayer: 0
-  InsidePlayer: 0
   direction: {x: 0, y: 0, z: 0}
-  raycasted_obj: {fileID: 0}
-  SightOutPlayerTimeNow: 0
+  DiscoveriedPlayers: []
+  FirstKeyOfDiscoveriedPlayers: {fileID: 0}
 --- !u!114 &2288443286056108060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1842,6 +1839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d120e34e6c9d034aaa2512000d58ac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   ChaseToTargetMode: 0
   speed: 0
   StoppingDistance: 1
@@ -1884,6 +1882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e242665cfecc294cb8c270b1c5e1368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   foot_step_sound_controller: {fileID: 4352935338236781230}
   FaceExpandingCamera: {fileID: 110790377113935860}
   EyePosition: {fileID: 3698561623734633006}
@@ -1906,15 +1905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f0d5a3c7b25934c84630448bc83b87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   FaceExpandingCameraObj: {fileID: 110790377113935860}
 --- !u!114 &7482111530804751077
 MonoBehaviour:
@@ -1923,11 +1914,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8813186536376409743}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   boxCenter: {fileID: 3471810470257500249}
   boxHalfExtents: {x: 0.2, y: 0.2, z: 0.2}
   layerMask:
@@ -1963,6 +1955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943dd1ad765af247928a156a38b5162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   FlinchNow: 0
   FlinchTime: 0
   FlinchTimeNow: 0
@@ -3068,15 +3061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f1cd1e3cf1b094181823f8e80b2d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   RaycastDistance: 1
   BrokeDoorPlusCount: 1
   door_open_close_controller: {fileID: 0}
@@ -3211,15 +3196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   SilhouetteNow: 0
   SilhouetteAutoHideInRange: 0
   CollideredForSilhouetteAutoHide: {fileID: 0}

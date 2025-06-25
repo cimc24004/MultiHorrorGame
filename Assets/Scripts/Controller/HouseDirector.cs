@@ -31,7 +31,7 @@ public class RandomSpawnPackage
     public float SpawnChance = 1f;   // 1 = 100%, 0.25 = 25%
 }
 
-public class HouseDirector : Singleton<HouseDirector>
+public class HouseDirector : MonoBehaviour
 {
 
     [ReadOnly]

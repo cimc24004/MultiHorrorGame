@@ -3215,6 +3215,37 @@ Transform:
   - {fileID: 3689522579885626181}
   m_Father: {fileID: 8127825435469669785}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3402039954845580301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6413414403203918201}
+  m_Layer: 0
+  m_Name: DownHeadPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6413414403203918201
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3402039954845580301}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.137, y: 0.509, z: 0.426}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 597350177767367547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3535070511870651896
 GameObject:
   m_ObjectHideFlags: 0
@@ -6371,6 +6402,7 @@ Transform:
   - {fileID: 3487103473476952581}
   - {fileID: 3717271372266253696}
   - {fileID: 5050057720297079474}
+  - {fileID: 6413414403203918201}
   - {fileID: 2555125989957557455}
   - {fileID: 4730444925870360574}
   - {fileID: 232217543605583228}
@@ -6484,6 +6516,7 @@ MonoBehaviour:
   HeadPos: {fileID: 5050057720297079474}
   CrouchHeadPos: {fileID: 5153810754235229518}
   StandHeadPos: {fileID: 6421989448975070222}
+  DownHeadPos: {fileID: 6413414403203918201}
   FaceDownHeadPos: {fileID: 1121756888554145600}
   cross_hair_event: {fileID: 3063867986630336566}
   player_hide_object_action: {fileID: 7228379173649806129}
@@ -6513,11 +6546,15 @@ MonoBehaviour:
   PlayerKilledScene: 0
   FlashLightBatteryUI: {fileID: 7163496881641711382}
   Crouch: 0
+  CrouchPermit:
+    m_InternalValue: 1
   virtual_camera: {fileID: 0}
   ItemController: {fileID: 8435485924296425593}
   foot_step_sound_controller: {fileID: 1050056454735755526}
   item_menu_controller: {fileID: 0}
   item_equip_controller: {fileID: 5139405668482142763}
+  KillSequenceRunning:
+    m_InternalValue: 0
 --- !u!114 &4640989651405648362
 MonoBehaviour:
   m_ObjectHideFlags: 0

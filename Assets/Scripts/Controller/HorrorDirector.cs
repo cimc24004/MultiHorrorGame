@@ -348,9 +348,12 @@ public class HorrorDirector : Singleton<HorrorDirector>
         Discoveried.SetActive(false);
         // 近い演出のオブジェクトをOFF
         ToEnemyNear.SetActive(false);
+        PlayerKill.SetActive(false);
         urp_fx_controller.CheapCameraChange(false);
         urp_fx_controller.VHSChange(false);
+        urp_fx_controller.HackedChange(false);
         urp_fx_controller.InteferecesChange(false);
+        urp_fx_controller.CorruptMemoryChange(false);
         // Main.SetActive(true);
 
         // MainBGMAudioFadeController.PlayWithFadeIn(1);

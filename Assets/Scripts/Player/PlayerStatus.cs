@@ -25,6 +25,7 @@ public class PlayerStatus : NetworkBehaviour
     public Transform HeadPos;
     public Transform CrouchHeadPos;
     public Transform StandHeadPos;
+    public Transform DownHeadPos;
     public Transform FaceDownHeadPos;
     public CrossHairEvent cross_hair_event;
     public PlayerHideObjectAction player_hide_object_action;
@@ -179,6 +180,15 @@ public class PlayerStatus : NetworkBehaviour
     private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
+        Vector3 src = CameraRoot.localPosition;
+        Transform tgt = DownHeadPos;
+        float tgtY = tgt.localPosition.y;
+        Tween DownTween = DOTween.To(
+            () => src.y,
+            y => CameraRoot.localPosition = new Vector3(src.x, y, src.z),
+            tgtY,
+            0.2f
+        ).SetEase(Ease.OutQuad);
         Debug.Log("mitti この関数はDeadPlayerClientRpcです。");
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
@@ -248,6 +258,7 @@ public class PlayerStatus : NetworkBehaviour
         if (!this.CrouchPermit.Value) return;
         Transform tgt = _Crouch ? CrouchHeadPos : StandHeadPos;
         crouchTween?.Kill();
+        this.HeadPos.position = tgt.position;
         Vector3 src = CameraRoot.localPosition;
         float tgtY = tgt.localPosition.y;
         crouchTween = DOTween.To(

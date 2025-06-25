@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using Sirenix.OdinInspector;
 public class EnemyStatus : NetworkBehaviour
 {
     public enum EnemyMoveState
@@ -13,7 +14,7 @@ public class EnemyStatus : NetworkBehaviour
     }
     public FootStepSoundController foot_step_sound_controller;
     private EnemyMoveState m_enemy_move_state;
-    public EnemyMoveState enemy_move_state
+    [SerializeField, ShowInInspector]public EnemyMoveState enemy_move_state
     {
         get { return m_enemy_move_state; }
         set {
@@ -74,7 +75,12 @@ public class EnemyStatus : NetworkBehaviour
                     break;
             }
         }
-
+        if (!follow_object_by_nav.MovePermit)
+        {
+            enemy_move_state = EnemyMoveState.Stop;
+            anim.SetFloat("MoveY", 0);
+            return;
+        }
 
         if (enemy_move_state == EnemyMoveState.Run)
         {
