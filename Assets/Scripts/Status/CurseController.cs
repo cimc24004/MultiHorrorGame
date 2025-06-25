@@ -98,13 +98,12 @@ public class CurseController : NetworkSingleton<CurseController>
         this.CurseMaxEventWhileTime = _CurseMaxEventWhileTime;
         this.CurseMaxEventWhileTimeNow = 0;
         // int i = UnityEngine.Random.Range(0, 3);
-        int i = 2;
+        int i = 0;
         //ƒ‰ƒ“ƒ_ƒ€‚Å‰½‚©‚ÌŠÖ”‚ğÀs‚·‚é‚Æ‚·‚é
         CurseMaxedEventNow = true;
         if (i == 0)
         {
             //‚¢‚Á‚½‚ñ‚Ä‚«‚Ì‚Ç‚¤‚«‚ğ‚µ‚Ä‚©‚ç‚±‚±‚Í‚¨‚±‚È‚¤B
-            return;
             MikoInstantiate();
 
         }

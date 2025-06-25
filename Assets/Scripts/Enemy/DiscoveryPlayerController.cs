@@ -251,23 +251,39 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         else
                         {
                             // SightningPlayer = false;
-                            PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
+                            if (!PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HidingNow.Value)
+                            {
+                                PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
+                            }
                         }
                     }
                     else
                     {
                         // SightningPlayer = false;
-                        PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
+                        if (!PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HidingNow.Value)
+                        {
+                            PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
+                        }
                     }
                 }
                 else
                 {
                     // SightningPlayer = false;
-                    PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
+                    if (!PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HidingNow.Value)
+                    {
+                        PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
+                    }
                 }
 
 
 
+            }
+            else
+            {
+                if (!PlayersVisibilityMapStatuesWithKey[TargetPlayer].player_status.HidingNow.Value)
+                {
+                    PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer = false;
+                }
             }
             if (DiscoveryPlayerNowCheck())
             {

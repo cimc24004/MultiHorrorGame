@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class LayLookDownAnimationStateEvent : StateMachineBehaviour
 {
-    PlayerStatus player_status;
-
+    private PlayerStatus player_status;
+    private DiscoveryPlayerController discovery_player_controller;
+    private GameObject FirstKeyOfDiscoveriedPlayers;
+    private FollowObjectByNav follow_object_by_nav;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player_status = PlayerStatus.LocalInstance;
-        animator.gameObject.transform.forward = (player_status.gameObject.transform.position - animator.gameObject.transform.position).normalized;
+        discovery_player_controller = animator.gameObject.GetComponent<DiscoveryPlayerController>();
+        follow_object_by_nav = animator.gameObject.GetComponent<FollowObjectByNav>();
+        FirstKeyOfDiscoveriedPlayers = discovery_player_controller.FirstKeyOfDiscoveriedPlayers;
+        player_status = FirstKeyOfDiscoveriedPlayers.GetComponent<PlayerStatus>();
+        follow_object_by_nav.MovePermit = false;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        // êÖïΩê¨ï™ÇæÇØéÊÇËèoÇ∑
+        Vector3 dir = player_status.transform.position - animator.transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.01f) return;    // ÇŸÇ⁄ìØÇ∂à íuÇ»ÇÁâÒÇ≥Ç»Ç¢
+
+        Quaternion targetRot = Quaternion.LookRotation(dir);
+        animator.transform.rotation =
+            Quaternion.Slerp(animator.transform.rotation, targetRot, Time.deltaTime * 10);
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -26,6 +39,7 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
         {
             player_status.player_hide_object_action.UnHideClientRpc();
         }
+        follow_object_by_nav.MovePermit = true;
         player_status.DeadEvent(animator.gameObject);
     }
 

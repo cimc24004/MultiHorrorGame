@@ -170,12 +170,15 @@ public class PlayerHideObjectAction : NetworkBehaviour
         if (_HidingNow)
         {
             charactor_move_permit.Stop();
+            player_status.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Stop;
+            player_status.foot_step_sound_controller.move_status.Value = FootStepSoundController.MoveStatus.Stop;
         }
         else
         {
             player_move_script.NowSpeed = player_move_script.WalkSpeed; // í èÌë¨ìxÇ…ñﬂÇ∑
             charactor_move_permit.Move();
         }
+
     }
 
     private void PerfomedHideRaycastAction(InputAction.CallbackContext ctx)
@@ -219,11 +222,11 @@ public class PlayerHideObjectAction : NetworkBehaviour
         if (!IsServer) return;
 
         Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
-        DiscoveryPlayerController discoveryPlayerController = enemy_anim.gameObject.GetComponent<DiscoveryPlayerController>();
+        // DiscoveryPlayerController discoveryPlayerController = enemy_anim.gameObject.GetComponent<DiscoveryPlayerController>();
         if (player_status.HidingNow.Value) // âBÇÍÇƒÇ¢ÇÈéûÇÃÇ›
         {
-            discoveryPlayerController.PlayersVisibilityMapStatuesWithKey[player_status.gameObject].DiscoveryPlayerNow = false;
-            discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
+            // discoveryPlayerController.PlayersVisibilityMapStatuesWithKey[player_status.gameObject].DiscoveryPlayerNow = false;
+            // discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
             if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
             {
                 Debug.Log("Enemy found player hiding (FaceDown). Triggering enemy animation.");
