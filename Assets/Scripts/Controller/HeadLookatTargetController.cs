@@ -5,7 +5,8 @@ using Sirenix.OdinInspector;
 using UnityEngine.Animations.Rigging;
 using DG.Tweening;
 using static UnityEngine.Rendering.DebugUI;
-public class HeadLookatTargetController : SerializedMonoBehaviour
+using Unity.Netcode;
+public class HeadLookatTargetController : NetworkBehaviour
 {
     private enum Target
     {
@@ -23,11 +24,12 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
     private RigBuilder rig_builder;
 
     private GameObject CameraRoot;
-    private GameObject Player;
+    public GameObject Player;
     private PlayerStatus player_status;
     [SerializeField]
-    private Collidered m_collidered;
-
+    private CollideredForPlayers m_collidered_for_players;
+    private PlayerAllController playerAllController;
+    private DiscoveryPlayerController discoveryPlayerController;
     private float rig_weights;
     private bool m_NearNow = false;
 
@@ -46,6 +48,7 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
                     DOTween.To(() => rig_weights, x => rig_weights = x, 1f, 0.5f)
                     .SetEase(Ease.Linear) // イージングを変更可能（Ease.OutQuad, Ease.InOutSine など）
                     .OnUpdate(() => {
+                        Debug.Log("OnUpdagte---------- m_NearNowwww");
                         rig.weight = rig_weights;
                     }).OnComplete(() => {
                         LookAtTargetNow = true;
@@ -74,38 +77,67 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
             return this.m_NearNow;
         }
     }
-    void OnEnable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += OnPlayerSpawnInit;
-    }
-    void OnDisable()
-    {
-        PlayerStatus.OnLocalPlayerSpawned -= OnPlayerSpawnInit;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-    void OnPlayerSpawnInit(PlayerStatus _player_status){
-        player_status = _player_status;
-        Player = player_status.gameObject;
-        CameraRoot = player_status.CameraRoot.gameObject;
+    public override void OnNetworkSpawn(){
+        if (!IsServer) return;
         rig_builder = this.gameObject.GetComponent<RigBuilder>();
+        discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
+        playerAllController = PlayerAllController.instance;
+        // 1回だけ初期化
         WeightedTransformArray sources = new WeightedTransformArray();
-        sources.Add(new WeightedTransform(CameraRoot.transform, 1f));
+        // 最初は空のソースをセットしておく
         multi_aim_constraint.data.sourceObjects = sources;
-
+        rig_builder = GetComponent<RigBuilder>();
         rig_builder.Build();
+        m_collidered_for_players.OnCollideredAddedObjectEvent.AddListener((collider_obj) =>
+        {
+            if (m_collidered_for_players.CollideredObjes.Count == 0)
+            {
+                Debug.Log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ m_collidered_for_players_check");
+                Player = collider_obj;
+                player_status = playerAllController.SpawnedPlayersWithPlayerStatuses[Player];
+                CameraRoot = player_status.CameraRoot.gameObject;
+                sources.Add(new WeightedTransform(CameraRoot.transform, 1f));
+                multi_aim_constraint.data.sourceObjects = sources;
+                rig_builder.Build();
+            }
+
+
+        });
+        m_collidered_for_players.OnCollideredRemovedObjectEvent.AddListener((exit_collider_obj) =>
+        {
+            if (m_collidered_for_players.CollideredObjes.Count == 1)
+            {
+                Player = null;
+                sources.Clear();
+                multi_aim_constraint.data.sourceObjects = sources;
+                rig_builder.Build();
+
+            }
+        });
     }
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("m_Collidered.collider: " + m_collidered.Collider);
-        if (m_collidered.Collider)
+        if (!IsServer) return;
+        if (m_collidered_for_players.CollideredObjes.Count != 0)
         {
-            NearNow = true;
-
+            PlayerStatus collidered_playerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[m_collidered_for_players.CollideredObjes[0]];
+            if (Physics.Raycast(this.transform.position, (collidered_playerStatus.HeadPos.transform.position - this.transform.position).normalized, out RaycastHit hit, Mathf.Infinity, discoveryPlayerController.original_discovery_player_status.layerMask))
+            {
+                if (hit.collider.gameObject.tag == "Player")
+                {
+                    NearNow = true;
+                }
+                else
+                {
+                    NearNow = false;
+                }
+            }
+            else
+            {
+                NearNow = false;
+            }
         }
         else
         {
@@ -113,15 +145,4 @@ public class HeadLookatTargetController : SerializedMonoBehaviour
         }
     }
 
-    private GameObject TargetCheck()
-    {
-        if(m_target == Target.CameraRoot)
-        {
-            return CameraRoot;
-        }
-        else
-        {
-            return target_obj;
-        }
-    }
 }

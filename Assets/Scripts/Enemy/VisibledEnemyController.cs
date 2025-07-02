@@ -1,119 +1,152 @@
+// VisibledEnemyController.cs
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class VisibledEnemyController : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(NavMeshAgent))]
+public class VisibledEnemyController : NetworkBehaviour
 {
+    /* ========= å‚ç…§ ========= */
     private FollowObjectByNav follow_object_by_nav;
     private DiscoveryPlayerController discovery_player_controller;
     private EnemyToPlayerKillController enemy_to_player_kill_controller;
-    private CharacterController character_controller;
-    private PlayerStatus player_status;
-    private Camera PlayerCamera;
-    private Vector3 PlayerHeadPos;
-    private EnemyStatus enemy_status;
-    private Transform EyeTransform;
-    private Animator m_Animator;
-    private RaycastHit hit;
     private EnemyFlinchController enemy_flinch_controller;
+    private EnemyStatus enemy_status;
+    private CharacterController character_controller;
     private NavMeshAgent nav_mesh_agent;
-    private float NavMeshSpeed;
-    private bool isVisible;
+    private Animator animator;
 
-    private Vector3 Move = new Vector3(0, 1, 0);
-    // Start is called before the first frame update
-    void Start()
-    {
-        player_status = PlayerStatus.LocalInstance;
-        enemy_status = this.gameObject.GetComponent<EnemyStatus>();
-        m_Animator = this.gameObject.GetComponent<Animator>();
-        PlayerHeadPos = player_status.HeadPos.position;
-        EyeTransform = enemy_status.EyePosition;
-        PlayerCamera = Camera.main;
-        follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        character_controller = this.gameObject.GetComponent<CharacterController>();
-        enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
-        character_controller = this.gameObject.GetComponent<CharacterController>();
-        discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
-        enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
-        nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
-        NavMeshSpeed = this.nav_mesh_agent.speed;
-    }
-
-    [Header("Õ•Á•¨‚Æ‚µ‚Ä”»’è‚·‚éƒŒƒCƒ„[")]
+    /* ========= å¯è¦–åˆ¤å®šç”¨ ========= */
+    [Header("é®è”½ç‰©ã¨ã—ã¦åˆ¤å®šã™ã‚‹ãƒ¬ã‚¤ãƒ¤ãƒ¼")] 
     [SerializeField] private LayerMask obstacleMask;
 
-    void Update()
+    private Camera cam;               // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå´ã§ã®ã¿ä½¿ã†
+    [SerializeField, ShowInInspector]private bool  lastVisible;        // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå´ã®å‰ãƒ•ãƒ¬çŠ¶æ…‹
+
+    /* ========= ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç† ========= */
+    [SerializeField, ShowInInspector]private readonly HashSet<ulong> viewers = new();  // ä»Šè¦‹ã¦ã„ã‚‹ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆID
+
+    
+    [SerializeField, ShowInInspector]private bool isVisible;                           // 1äººã§ã‚‚è¦‹ã¦ã„ã‚Œã° true
+    private float defaultNavSpeed;
+    private PlayerStatus playerStatus;
+    /* ========= Unity LifeCycle ========= */
+    public override void OnNetworkSpawn()
     {
-        if (IsVisibleFromPlayerCamera())
+        if (IsServer)
         {
-            // ƒJƒƒ‰‚©‚çŒ©‚¦‚Ä‚¢‚é‚Ì‚ÅˆÚ“®‚ğ’â~
-            isVisible = true;
-
+            // å…±é€šåˆæœŸåŒ–
+            enemy_status = GetComponent<EnemyStatus>();
+            follow_object_by_nav = GetComponent<FollowObjectByNav>();
+            discovery_player_controller = GetComponent<DiscoveryPlayerController>();
+            enemy_to_player_kill_controller = GetComponent<EnemyToPlayerKillController>();
+            enemy_flinch_controller = GetComponent<EnemyFlinchController>();
+            character_controller = GetComponent<CharacterController>();
+            nav_mesh_agent = GetComponent<NavMeshAgent>();
+            animator = GetComponent<Animator>();
+            defaultNavSpeed = nav_mesh_agent.speed;
         }
-        else
+        playerStatus = PlayerStatus.LocalInstance;
+
+        // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ (ãƒ›ã‚¹ãƒˆå«ã‚€) ã ã‘ã‚«ãƒ¡ãƒ©å–å¾—
+        cam = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        Debug.Log("MainCamera: " + GameObject.FindWithTag("MainCamera"));
+    }
+
+    void LateUpdate()   // ã‚«ãƒ¡ãƒ©ãŒå‹•ã„ãŸå¾Œã«åˆ¤å®š
+    {
+        /* ---------- ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå´: å¯è¦–åˆ¤å®šã—ã¦ã‚µãƒ¼ãƒãƒ¼ã¸ ---------- */
+        Debug.Log("IsClient: " + IsClient);
+        if (cam == null) { Debug.Log("Camera == null"); }          // é€”ä¸­ã§ã‚«ãƒ¡ãƒ©ãŒåˆ‡ã‚Šæ›¿ã‚ã‚‹å¯¾ç­–
+        if (cam != null)
         {
-            // Œ©‚¦‚Ä‚¢‚È‚¢‚Ì‚ÅˆÚ“®‚ğÄŠJ
-            isVisible = false;
+            Debug.Log("IsClient And Cam != NULL");
+            bool nowVisible = IsVisibleFromCamera();
+            if (nowVisible != lastVisible)
+            {
+                SetVisibleStateServerRpc(nowVisible);
+            }
+            lastVisible = nowVisible;
+        }
 
+        /* ---------- ã‚µãƒ¼ãƒãƒ¼å´: å¯è¦–çŠ¶æ…‹ã«å¿œã˜ã¦æŒ™å‹•æ›´æ–° ---------- */
+        if (IsServer && enemy_flinch_controller != null && !enemy_flinch_controller.FlinchNow)
+        {
+            // å¿…è¦ãªã‚‰æ¯ãƒ•ãƒ¬ Apply ã—ã¦ã‚‚è»½ã„ã®ã§ã“ã“ã§
+            ApplyVisibleState();
         }
-        if(enemy_flinch_controller.FlinchNow){
-            m_Animator.speed = 1;
-            return;
+    }
+
+    /* =========================================================================
+       åˆ¤å®šå‡¦ç†  (ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®ã¿å‘¼ã°ã‚Œã‚‹)
+       =========================================================================*/
+    private bool IsVisibleFromCamera()
+    {
+        Vector3 viewPos = cam.WorldToViewportPoint(transform.position);
+
+        // ç”»é¢å¤– or èƒŒé¢
+        if (viewPos.z < 0f ||
+            viewPos.x < 0f || viewPos.x > 1f ||
+            viewPos.y < -0.8f || viewPos.y > 0.95f)
+            return false;
+
+        // é®è”½ç‰©ãƒã‚§ãƒƒã‚¯
+        Vector3 dir = transform.position - cam.transform.position;
+        float   dist = dir.magnitude;
+
+        if (Physics.Raycast(cam.transform.position, dir.normalized, out RaycastHit hit, dist, obstacleMask))
+        {
+            // è‡ªåˆ†ä»¥å¤–ã«å½“ãŸã£ãŸã‚‰è¦‹ãˆã¦ãªã„
+            if (hit.collider.gameObject != gameObject) return false;
         }
+        return true;
+    }
+
+    /* =========================================================================
+       ã‚µãƒ¼ãƒãƒ¼ RPC  (ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆâ†’ã‚µãƒ¼ãƒãƒ¼, æ‰€æœ‰æ¨©ä¸è¦)
+       =========================================================================*/
+    [ServerRpc(RequireOwnership = false)]
+    private void SetVisibleStateServerRpc(bool visible, ServerRpcParams rpc = default)
+    {
+        ulong sender = rpc.Receive.SenderClientId;
+
+        if (visible) viewers.Add(sender);
+        else         viewers.Remove(sender);
+
+        bool newVisible = viewers.Count > 0;
+        if (newVisible != isVisible)
+        {
+            isVisible = newVisible;
+            ApplyVisibleState();      // çŠ¶æ…‹å¤‰åŒ–æ™‚ã¯å³åæ˜ 
+        }
+    }
+
+    /* =========================================================================
+       ã‚µãƒ¼ãƒãƒ¼å´: æ•µã®æŒ™å‹•ã‚’åˆ‡ã‚Šæ›¿ãˆ
+       =========================================================================*/
+    private void ApplyVisibleState()
+    {
+        if (enemy_flinch_controller != null && enemy_flinch_controller.FlinchNow) return;
+
         if (isVisible)
         {
-            
-            follow_object_by_nav.MovePermit = false;
-            character_controller.Move(Move * character_controller.velocity.y);
+            nav_mesh_agent.isStopped = true;
+            nav_mesh_agent.speed     = 0;
+            animator.speed           = 0;
             enemy_to_player_kill_controller.enabled = false;
-            m_Animator.speed = 0;
-            nav_mesh_agent.speed = 0;
+            follow_object_by_nav.MovePermit         = false;
         }
         else
         {
+            nav_mesh_agent.isStopped = false;
+            nav_mesh_agent.speed     = defaultNavSpeed;
+            animator.speed           = 1;
             enemy_to_player_kill_controller.enabled = true;
-            m_Animator.speed = 1;
-            nav_mesh_agent.speed = NavMeshSpeed;
-            follow_object_by_nav.MovePermit = true;
+            follow_object_by_nav.MovePermit         = true;
         }
     }
-
-    /// <summary>
-    /// ƒvƒŒƒCƒ„[‚ÌƒJƒƒ‰‚©‚ç©•ªi“Gj‚ª‹”F‚Å‚«‚é‚©‚Ç‚¤‚©‚ğ”»’è
-    /// </summary>
-    /// <returns>Œ©‚¦‚Ä‚¢‚éê‡trueAŒ©‚¦‚Ä‚¢‚È‚¢ê‡false</returns>
-    private bool IsVisibleFromPlayerCamera()
-    {
-        // ƒJƒƒ‰‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î”»’è•s”\
-        if (PlayerCamera == null) return false;
-
-        // 1. ƒJƒƒ‰‚Ì‹–ìƒtƒ‰ƒXƒ^ƒ€“à‚É‚¢‚é‚©‚Ç‚¤‚©
-        Vector3 viewPos = PlayerCamera.WorldToViewportPoint(transform.position);
-        // ƒJƒƒ‰‚ÌŒã•û(z<0)‚É‚¢‚é or ‰æ–ÊŠO(x,y‚ª[0,1]”ÍˆÍŠO)‚È‚ç•s‰Â‹‚Æ”»’f
-        if (viewPos.z < 0f) return false;
-        if (viewPos.x < 0f || viewPos.x > 1f || viewPos.y < -0.8f || viewPos.y > 0.95f)
-        {
-            return false;
-        }
-
-        // 2. ƒŒƒCƒLƒƒƒXƒg‚ÅÕ•Á•¨‚Ì—L–³‚ğƒ`ƒFƒbƒN
-        Vector3 direction = PlayerCamera.transform.position - EyeTransform.position;
-        Debug.DrawRay(EyeTransform.position, direction * 10000, Color.red);
-        // ƒJƒƒ‰ˆÊ’u‚©‚ç“G(©•ª)‚ÉŒü‚¯‚ÄRay‚ğ”ò‚Î‚µAƒqƒbƒgî•ñ‚ğæ“¾
-        if (Physics.Raycast(EyeTransform.position, direction, out RaycastHit hit, Mathf.Infinity, obstacleMask))
-        {
-            // Raycast”ò‚Î‚µ‚Äplayer‚Å‚ ‚ê‚Îtrue‚ğ•Ô‚· ‚»‚êˆÈŠO‚È‚çfalse‚ğ•Ï‚¦‚·
-            Debug.Log("hited----!?!?: " + hit.collider.gameObject);
-            if (hit.collider.gameObject.tag == "Player")
-            {
-                return true;
-            }
-        }
-
-        // ƒtƒ‰ƒXƒ^ƒ€“à‚©‚ÂÕ•Á•¨‚È‚µ ¨ Œ©‚¦‚Ä‚¢‚é‚Æ”»’f
-        return false;
-    }
-
 }

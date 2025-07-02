@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7765599810547895302}
   - component: {fileID: 1328092877705048637}
+  - component: {fileID: 2254365975483585366}
   - component: {fileID: 1995342765221307558}
   - component: {fileID: 2345158238862288550}
   - component: {fileID: 354142594618017943}
@@ -49,6 +50,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b95566146dab3a48993edb7a75cd583, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  collideredForPlayers: {fileID: 9026330519856019367}
+  GamePlayNow: 0
+  VoiceStartFromVoiceEndTime: 3
+  VoiceStartFromVoiceEndTimeNow: 0
+  VoiceStart: 0
+  VoiceEnd: 1
+  DarumasanParent: {fileID: 0}
+  DefaultLookAtTransform: {fileID: 6712952391040462276}
+  character_move_permit: {fileID: 0}
+--- !u!114 &2254365975483585366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2439053143237953184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c5122e61876e044a1042ed7c6a6ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -86,7 +109,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 4
-      Data: 7
+      Data: 6.5
     - Name: 
       Entry: 8
       Data: 
@@ -98,7 +121,7 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 4
-      Data: 4.3
+      Data: 3.5
     - Name: 
       Entry: 8
       Data: 
@@ -110,7 +133,7 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 4
-      Data: 2
+      Data: 1.5
     - Name: 
       Entry: 8
       Data: 
@@ -122,7 +145,7 @@ MonoBehaviour:
       Data: 3
     - Name: $v
       Entry: 4
-      Data: 5
+      Data: 4.5
     - Name: 
       Entry: 8
       Data: 
@@ -134,7 +157,7 @@ MonoBehaviour:
       Data: 4
     - Name: $v
       Entry: 4
-      Data: 4
+      Data: 3.5
     - Name: 
       Entry: 8
       Data: 
@@ -146,7 +169,7 @@ MonoBehaviour:
       Data: 5
     - Name: $v
       Entry: 4
-      Data: 4
+      Data: 3.5
     - Name: 
       Entry: 8
       Data: 
@@ -156,16 +179,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  GameRangeCollidered: {fileID: 6983201743840946077}
-  GamePlayNow: 0
-  TimePassedNowFromVoiceStart: 0
-  VoiceStartFromVoiceEndTime: 3
-  VoiceStartFromVoiceEndTimeNow: 0
-  VoiceStart: 0
-  VoiceEnd: 1
-  DarumasanParent: {fileID: 0}
-  DefaultLookAtTransform: {fileID: 6712952391040462276}
-  character_move_permit: {fileID: 0}
 --- !u!82 &1995342765221307558
 AudioSource:
   m_ObjectHideFlags: 0
@@ -178,6 +191,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 6ee7c1a2796d5dc409bc038a9dd05eae,
     type: 2}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -297,9 +311,9 @@ GameObject:
   m_Component:
   - component: {fileID: 943984859868410551}
   - component: {fileID: 6421743834957237552}
-  - component: {fileID: 6983201743840946077}
   - component: {fileID: 6749730743368921906}
   - component: {fileID: 3590980657480097124}
+  - component: {fileID: 9026330519856019367}
   m_Layer: 0
   m_Name: GameRange
   m_TagString: Untagged
@@ -343,22 +357,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 0.4908096}
   m_Center: {x: 0, y: 0, z: -0.21363433}
---- !u!114 &6983201743840946077
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4632774620895992441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb1a68dc43480f549807c7ea37067b9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TargetTags:
-  - Player
-  Collider: 0
-  CollideredObj: {fileID: 0}
 --- !u!114 &6749730743368921906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,6 +381,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f65f33e4029f048b4aa3d86a8c5078, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9026330519856019367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4632774620895992441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3288e4a50d9d6f5478030648b28b88ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetTags:
+  - Player
+  OnTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  CollideredObjes: []
+  OnCollideredAddedObjectEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollideredRemovedObjectEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8442698438357571638
 GameObject:
   m_ObjectHideFlags: 0

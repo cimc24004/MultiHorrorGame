@@ -16,7 +16,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     public Transform EyePosition;
 
     [SerializeField]
-    private DiscoveryPlayerStatus original_discovery_player_status;
+    public DiscoveryPlayerStatus original_discovery_player_status;
     private MoveSpeedController move_speed_controller;
     [SerializeField]
     private DiscoveryPlayerStatus discovery_player_status;
@@ -233,6 +233,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                     {
                         //Raycastをプレイヤーにとりあえず飛ばす。
                         //プレイヤーにRaycastが当たっているが、まずその前に障害物が存在する場合は見つからなかった判定にしておく。
+                        Debug.Log($"{this.gameObject.name}さんについて 見つけられそう！ タグにぶつかってるのは: " + raycast_hit.collider.gameObject);
                         if (raycast_hit.collider.gameObject.tag == "Player")
                         {
                             Debug.Log("Playerが敵に見つかりました！");
@@ -309,7 +310,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
 
 
 
-            Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.green);
+            Debug.DrawRay(EyePosition.transform.position, direction * 1000, Color.orangeRed);
             if (PlayersVisibilityMapStatuesWithKey.Count == 0) return;
             if (PlayersVisibilityMapStatuesWithKey[TargetPlayer].DiscoveryPlayerNow && !PlayersVisibilityMapStatuesWithKey[TargetPlayer].SightningPlayer)
             {

@@ -76,7 +76,7 @@ public class PlayerStatus : NetworkBehaviour
     public FootStepSoundController foot_step_sound_controller;
     public ItemMenuController item_menu_controller;
     public ItemEquipController item_equip_controller;
-
+    public CharacterController playerCharacterController;
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
     private HorrorDirector horror_director;
@@ -208,12 +208,14 @@ public class PlayerStatus : NetworkBehaviour
             Debug.Log("HorrorDirectorの演出がされるはず！ あなたのOwnerClientId: " + this.OwnerClientId + "DeadPlayerClientRpc内です");
             var enemyGO = NetworkManager.Singleton.SpawnManager
                             .SpawnedObjects[enemyNetworkObjectId].gameObject;
+            Debug.Log("enemyGO: " + enemyGO);
             var cameraExpander = enemyGO.GetComponent<CameraEnemyFaceExpanding>();
             // flash_light_controller.Light.enabled = false;
             item_menu_controller.enabled = false;
             horror_director.nearEnemyCount = 0;
             horror_director.discoveredEnemyCount = 0;
             horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
+            Debug.Log("cameraExpander: " + cameraExpander);
             cameraExpander.FaceExpandingActive(this.gameObject);
             DOVirtual.DelayedCall(4, () => cameraExpander.FaceExpandingUnActive());
             NotHaveItemForDeadPlayerRequestServerRpc();

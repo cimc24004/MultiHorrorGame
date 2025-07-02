@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class SisenAsobiDousiController : MonoBehaviour
+public class SisenAsobiDousiController : NetworkBehaviour
 {
     private DiscoveryPlayerController discovery_player_controller;
     private FollowObjectByNav follow_object_by_nav;
@@ -42,9 +43,11 @@ public class SisenAsobiDousiController : MonoBehaviour
 
     private EnemySoundSensor enemy_sound_sensor;
     private Material BeforeHumanKaradaMaterial;
+    private GameObject HeadLookAtTargetControllerPlayer;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         head_look_at_target_controller = this.gameObject.GetComponent<HeadLookatTargetController>();
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
@@ -62,7 +65,7 @@ public class SisenAsobiDousiController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!IsServer) return;
         if (!previousFlinchNow && enemy_flinch_controller.FlinchNow)
         {
             ResetValue();
@@ -78,12 +81,12 @@ public class SisenAsobiDousiController : MonoBehaviour
         previousFlinchNow = enemy_flinch_controller.FlinchNow;
 
 
-        if (discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow && !MouthOpenNow)
+        if (discovery_player_controller.DiscoveryPlayerNowCheck() && !MouthOpenNow)
         {
 
             HumanKaradaMeshRenderer.SetBlendShapeWeight(0, 200);
         }
-        if(MouthOpenNow || discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow){
+        if(MouthOpenNow || discovery_player_controller.DiscoveryPlayerNowCheck()){
             if(BeforeHumanKaradaMaterial != ChasePlayerBodyMaterial){
                 HumanKaradaMeshRenderer.material = ChasePlayerBodyMaterial;
             }
@@ -98,15 +101,16 @@ public class SisenAsobiDousiController : MonoBehaviour
         {
             return;
         }
-        if (!discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
+        if (!discovery_player_controller.DiscoveryPlayerNowCheck())
         {
             player_near_sensor.IsNearToKillEffect = false;
             if (!MouthOpenNow)
             {
-                if (head_look_at_target_controller.LookAtTargetNow && discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
+                if (head_look_at_target_controller.LookAtTargetNow)
                 {
                     //‹ß‚­‚É“G‚ª‚¢‚é‚È‚ç ‚Æ‚¢‚¤”»’è‚Íhead_look_at_target_controller‚ªtarget‚ðŒ©‚Ä‚é‚©‚Ç‚¤‚©‚Å”»’è‚·‚éB
                     //follow_object_by_nav.ChaseToTargetSet(true, BeforePosition, 0);
+                    HeadLookAtTargetControllerPlayer = head_look_at_target_controller.Player;
                     enemy_routing_controller.PermitFunction(false);
                     LookNowTimeNow += Time.deltaTime;
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
@@ -144,6 +148,7 @@ public class SisenAsobiDousiController : MonoBehaviour
         //Œû‚ªŠJ‚¢‚Ä‚¢‚étrue‚È‚ç ‰½•b‚©Œo‚Á‚½Œã‚ÉP‚Á‚Ä‚­‚éB
         if (MouthOpenNow)
         {
+            
             MouthOpenTimeNow += Time.deltaTime;
             if(MouthOpenTimeNow > 1)
             {
@@ -151,7 +156,7 @@ public class SisenAsobiDousiController : MonoBehaviour
                 enemy_to_player_kill_controller.enabled = true;
                 follow_object_by_nav.MovePermit = true;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
+                discovery_player_controller.AddPlayerToDiscoveryPlayerLists(HeadLookAtTargetControllerPlayer);
                 urp_fx_controller.InteferecesChange(false);
                 player_near_sensor.IsNearToKillEffect = true;
                 MouthOpenNow = false;
