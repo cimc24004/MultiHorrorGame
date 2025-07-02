@@ -5,6 +5,16 @@ using UnityEngine;
 
 public class SisenAsobiDousiController : NetworkBehaviour
 {
+    // ────────────────────────────────────────────────────────────────────
+    // ★ 追加：ビジュアル同期用の列挙体
+    private enum BodyState : byte { Normal = 0, Chase = 1 }
+
+    // ★ 追加：直近に同期した値を保存しておく変数
+    private byte  _syncedState      = 255;   // 255 = 未同期
+    private float _syncedBlendWeight = -1f;
+    private bool  _syncedScream      = false;
+    // ────────────────────────────────────────────────────────────────────
+
     private DiscoveryPlayerController discovery_player_controller;
     private FollowObjectByNav follow_object_by_nav;
     private EnemyRoutingController enemy_routing_controller;
@@ -47,6 +57,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        urp_fx_controller = GameControllerOnAllScene.instance.gameObject.GetComponent<URPFxController>();
         if (!IsServer) return;
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         head_look_at_target_controller = this.gameObject.GetComponent<HeadLookatTargetController>();
@@ -57,7 +68,6 @@ public class SisenAsobiDousiController : NetworkBehaviour
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        urp_fx_controller = GameControllerOnAllScene.instance.gameObject.GetComponent<URPFxController>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         player_near_sensor.IsNearToKillEffect = false;
     }
@@ -99,6 +109,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
         }
         if (!PermitMouthOpen)
         {
+            TrySyncAppearance();   // ★ 追加：同期チェック
             return;
         }
         if (!discovery_player_controller.DiscoveryPlayerNowCheck())
@@ -169,7 +180,62 @@ public class SisenAsobiDousiController : NetworkBehaviour
             }
 
         }
+
+        // ────────────────────────────────────────────────────────────
+        // ★ 追加：毎フレーム最後に「見た目が変わったか」チェックして
+        //          変わっていれば各クライアントへ RPC を送る
+        TrySyncAppearance();
+        // ────────────────────────────────────────────────────────────
     }
+
+    // ────────────────────────────────────────────────────────────────
+    // ★ 追加：状態変化を検出して同期するメソッド
+    private void TrySyncAppearance()
+    {
+        // 現在の状態を取得
+        byte  nowState      = (HumanKaradaMeshRenderer.material == ChasePlayerBodyMaterial) ? (byte)BodyState.Chase : (byte)BodyState.Normal;
+        float nowBlend      = HumanKaradaMeshRenderer.GetBlendShapeWeight(0);
+        bool  nowScreamPlay = ScreamAudioSource.isPlaying;
+
+        // 何か変わっていたら RPC 送信
+        if (nowState      != _syncedState ||
+            Mathf.Abs(nowBlend - _syncedBlendWeight) > 0.1f ||
+            nowScreamPlay != _syncedScream)
+        {
+            _syncedState       = nowState;
+            _syncedBlendWeight = nowBlend;
+            _syncedScream      = nowScreamPlay;
+
+            SyncAppearanceClientRpc(nowState, nowBlend, nowScreamPlay);
+        }
+    }
+
+    // ★ 追加：クライアントへ送る RPC
+    [ClientRpc]
+    private void SyncAppearanceClientRpc(byte state, float blendWeight, bool playScream)
+    {
+        // マテリアル
+        if (state == (byte)BodyState.Chase)
+        {
+            if (HumanKaradaMeshRenderer.material != ChasePlayerBodyMaterial)
+                HumanKaradaMeshRenderer.material = ChasePlayerBodyMaterial;
+        }
+        else
+        {
+            if (HumanKaradaMeshRenderer.material != NormalBodyMaterial)
+                HumanKaradaMeshRenderer.material = NormalBodyMaterial;
+        }
+
+        // ブレンドシェイプ
+        HumanKaradaMeshRenderer.SetBlendShapeWeight(0, blendWeight);
+
+        // 悲鳴
+        if (playScream && !ScreamAudioSource.isPlaying)
+        {
+            ScreamAudioSource.Play();
+        }
+    }
+    // ────────────────────────────────────────────────────────────────
 
     private void ResetValue()
     {
