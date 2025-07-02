@@ -188,7 +188,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                         TargetClientIds = targetIds
                     }
                 };
-                InteferencesChangeRequestForLookClientRpc(false);
+                InteferencesChangeRequestForLookClientRpc(false, rpcParams);
                 player_near_sensor.IsNearToKillEffect = true;
                 MouthOpenNow = false;
                 MouthOpenTimeNow = 0;
@@ -206,7 +206,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                         TargetClientIds = targetIds
                     }
                 };
-                InteferencesChangeRequestForLookClientRpc(true);
+                InteferencesChangeRequestForLookClientRpc(true, rpcParams);
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             }
 
@@ -276,7 +276,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                 TargetClientIds = targetIds
             }
         };
-        InteferencesChangeRequestForLookClientRpc(false);
+        InteferencesChangeRequestForLookClientRpc(false, rpcParams);
         // head_look_at_target_controller.LookAtTargetNow = false;
         enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
         LookNowTimeNow = 0;
