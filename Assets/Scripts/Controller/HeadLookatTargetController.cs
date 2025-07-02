@@ -17,7 +17,7 @@ public class HeadLookatTargetController : NetworkBehaviour
     private Target m_target;
 
     [ShowIf("m_target", Target.Others)]
-    
+
     [SerializeField] private GameObject target_obj;
     [SerializeField] private Rig rig;
     [SerializeField] private MultiAimConstraint multi_aim_constraint;
@@ -38,35 +38,10 @@ public class HeadLookatTargetController : NetworkBehaviour
     {
         set
         {
-            if(this.m_NearNow != value)
+            if (this.m_NearNow != value && IsServer)
             {
                 //true falseに変わったときの処理
-                if(value == true)
-                {
-                    //Trueに切り替わるときはWeightを徐々に増やす。
-                    rig_weights = 0;
-                    DOTween.To(() => rig_weights, x => rig_weights = x, 1f, 0.5f)
-                    .SetEase(Ease.Linear) // イージングを変更可能（Ease.OutQuad, Ease.InOutSine など）
-                    .OnUpdate(() => {
-                        Debug.Log("OnUpdagte---------- m_NearNowwww");
-                        rig.weight = rig_weights;
-                    }).OnComplete(() => {
-                        LookAtTargetNow = true;
-                    });
-                }
-                else
-                {
-                    //Falseに切り替わるときはWeightを徐々に減らす。
-                    Debug.Log("Falseに切り替わりました！！！");
-                    rig_weights = 1;
-                    DOTween.To(() => rig_weights, x => rig_weights = x, 0f, 0.5f)
-                    .SetEase(Ease.Linear) // イージングを変更可能（Ease.OutQuad, Ease.InOutSine など）
-                    .OnUpdate(() => {
-                        rig.weight = rig_weights;
-                        LookAtTargetNow = false;
-                    });
-                }
-
+                RigWeightChangeClientRpc(value);
 
                 this.m_NearNow = value;
             }
@@ -78,7 +53,8 @@ public class HeadLookatTargetController : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkSpawn(){
+    public override void OnNetworkSpawn()
+    {
         if (!IsServer) return;
         rig_builder = this.gameObject.GetComponent<RigBuilder>();
         discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
@@ -145,4 +121,36 @@ public class HeadLookatTargetController : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    private void RigWeightChangeClientRpc(bool _NearNow)
+    {
+        if (_NearNow)
+        {
+            //Trueに切り替わるときはWeightを徐々に増やす。
+            rig_weights = 0;
+            DOTween.To(() => rig_weights, x => rig_weights = x, 1f, 0.5f)
+            .SetEase(Ease.Linear) // イージングを変更可能（Ease.OutQuad, Ease.InOutSine など）
+            .OnUpdate(() =>
+            {
+                Debug.Log("OnUpdagte---------- m_NearNowwww");
+                rig.weight = rig_weights;
+            }).OnComplete(() =>
+            {
+                LookAtTargetNow = true;
+            });
+        }
+        else
+        {
+            //Falseに切り替わるときはWeightを徐々に減らす。
+            Debug.Log("Falseに切り替わりました！！！");
+            rig_weights = 1;
+            DOTween.To(() => rig_weights, x => rig_weights = x, 0f, 0.5f)
+            .SetEase(Ease.Linear) // イージングを変更可能（Ease.OutQuad, Ease.InOutSine など）
+            .OnUpdate(() =>
+            {
+                rig.weight = rig_weights;
+                LookAtTargetNow = false;
+            });
+        }
+    }
 }

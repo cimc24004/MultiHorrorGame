@@ -84,13 +84,13 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                             if (playerAllController.SpawnedPlayersWithPlayerStatuses[player].playerCharacterController.velocity.magnitude > 0)
                             {
                                 Debug.Log("ボイス あなたは動きましたね？？");
-                                DarumasanParent.transform.SetParent(null);
                                 character_move_permit.Move();
                                 DOVirtual.DelayedCall(0.1f, () =>
                                 {
                                     discovery_player_controller.AddPlayerToDiscoveryPlayerLists(player);
                                 });
-                                this.gameObject.SetActive(false);
+                                MoveKorondaClientRpc();
+                                this.NetworkObject.Despawn(true);
                                 KorondaVoiceReset();
                             }
                         }
@@ -109,7 +109,6 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                     //こっちを振り返っているのが終わったら
                     DefaultLookTween = DarumasanParent.transform.DODynamicLookAt(DefaultLookAtTransform.position, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
                     Debug.Log("ボイス こっちを見ているのが終わった！");
-
                     KorondaVoiceStart();
                     VoiceStartFromVoiceEndTimeNow = 0;
                 }
@@ -153,12 +152,22 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     private void KorondaVoiceStart()
     {
         int i = Random.Range(0, darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Count);
-        audio_source.clip = darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Keys.ToList()[i];
-
-        audio_source.Play();
+        KorondaVoiceClientRpc(i);
         VoiceStart = true;
         VoiceEnd = false;
 
+    }
+    [ClientRpc]
+    private void KorondaVoiceClientRpc(int i)
+    {
+        audio_source.clip = darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Keys.ToList()[i];
+        audio_source.Play();
+
+    }
+    [ClientRpc]
+    private void MoveKorondaClientRpc()
+    {
+        DarumasanParent.transform.SetParent(null);
     }
     private void KorondaVoiceEnd()
     {
@@ -169,7 +178,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
             .SetLink(this.gameObject);    // オブジェクト破棄時に自動kill
 
         // 各プレイヤーを順番に見つめる
-        foreach(var idx in collideredForPlayers.CollideredObjes)
+        foreach (var idx in collideredForPlayers.CollideredObjes)
         {
             // カメラ位置取得
             var targetPos = playerAllController
@@ -187,9 +196,10 @@ public class DarumasanKorondaGameController : NetworkBehaviour
             seq.AppendInterval(0.3f);
         }
         // ループ後にフラグ操作
-        seq.OnComplete(() => {
+        seq.OnComplete(() =>
+        {
             VoiceStart = false;
-            VoiceEnd   = true;
+            VoiceEnd = true;
         });
 
     }
