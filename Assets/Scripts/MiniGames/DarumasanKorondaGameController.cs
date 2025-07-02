@@ -89,7 +89,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                                 {
                                     discovery_player_controller.AddPlayerToDiscoveryPlayerLists(player);
                                 });
-                                MoveKorondaClientRpc();
+                                DarumasanParent.transform.SetParent(null);
                                 this.NetworkObject.Despawn(true);
                                 KorondaVoiceReset();
                             }
@@ -167,7 +167,6 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     [ClientRpc]
     private void MoveKorondaClientRpc()
     {
-        DarumasanParent.transform.SetParent(null);
     }
     private void KorondaVoiceEnd()
     {

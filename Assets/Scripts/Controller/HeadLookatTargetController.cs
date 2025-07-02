@@ -55,16 +55,15 @@ public class HeadLookatTargetController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsServer) return;
+        // 1回だけ初期化
+        // 最初は空のソースをセットしておく
         rig_builder = this.gameObject.GetComponent<RigBuilder>();
+        WeightedTransformArray sources = new WeightedTransformArray();
+        multi_aim_constraint.data.sourceObjects = sources;
+        rig_builder.Build();
+        if (!IsServer) return;
         discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
         playerAllController = PlayerAllController.instance;
-        // 1回だけ初期化
-        WeightedTransformArray sources = new WeightedTransformArray();
-        // 最初は空のソースをセットしておく
-        multi_aim_constraint.data.sourceObjects = sources;
-        rig_builder = GetComponent<RigBuilder>();
-        rig_builder.Build();
         m_collidered_for_players.OnCollideredAddedObjectEvent.AddListener(AddTarget);
         m_collidered_for_players.OnCollideredRemovedObjectEvent.AddListener(RemoveTarget);
 
