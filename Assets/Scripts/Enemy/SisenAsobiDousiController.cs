@@ -10,9 +10,9 @@ public class SisenAsobiDousiController : NetworkBehaviour
     private enum BodyState : byte { Normal = 0, Chase = 1 }
 
     // ★ 追加：直近に同期した値を保存しておく変数
-    private byte  _syncedState      = 255;   // 255 = 未同期
+    private byte _syncedState = 255;   // 255 = 未同期
     private float _syncedBlendWeight = -1f;
-    private bool  _syncedScream      = false;
+    private bool _syncedScream = false;
     // ────────────────────────────────────────────────────────────────────
 
     private DiscoveryPlayerController discovery_player_controller;
@@ -54,6 +54,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
     private EnemySoundSensor enemy_sound_sensor;
     private Material BeforeHumanKaradaMaterial;
     private GameObject HeadLookAtTargetControllerPlayer;
+    private PlayerAllController playerAllController;
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
@@ -66,6 +67,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
         enemy_sound_sensor = this.gameObject.GetComponent<EnemySoundSensor>();
         enemy_to_player_kill_controller = this.gameObject.GetComponent<EnemyToPlayerKillController>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
+        playerAllController = PlayerAllController.instance;
         character_controller = this.gameObject.GetComponent<CharacterController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
@@ -81,7 +83,8 @@ public class SisenAsobiDousiController : NetworkBehaviour
             ResetValue();
             PermitMouthOpen = false;
             head_look_at_target_controller.enabled = false;
-        }else if(previousFlinchNow && !enemy_flinch_controller.FlinchNow)
+        }
+        else if (previousFlinchNow && !enemy_flinch_controller.FlinchNow)
         {
             PermitMouthOpen = true;
             enemy_routing_controller.PermitFunction(true);
@@ -96,13 +99,18 @@ public class SisenAsobiDousiController : NetworkBehaviour
 
             HumanKaradaMeshRenderer.SetBlendShapeWeight(0, 200);
         }
-        if(MouthOpenNow || discovery_player_controller.DiscoveryPlayerNowCheck()){
-            if(BeforeHumanKaradaMaterial != ChasePlayerBodyMaterial){
+        if (MouthOpenNow || discovery_player_controller.DiscoveryPlayerNowCheck())
+        {
+            if (BeforeHumanKaradaMaterial != ChasePlayerBodyMaterial)
+            {
                 HumanKaradaMeshRenderer.material = ChasePlayerBodyMaterial;
             }
             BeforeHumanKaradaMaterial = ChasePlayerBodyMaterial;
-        }else{
-            if(!BeforeHumanKaradaMaterial != NormalBodyMaterial){
+        }
+        else
+        {
+            if (!BeforeHumanKaradaMaterial != NormalBodyMaterial)
+            {
                 HumanKaradaMeshRenderer.material = NormalBodyMaterial;
             }
             BeforeHumanKaradaMaterial = NormalBodyMaterial;
@@ -152,30 +160,53 @@ public class SisenAsobiDousiController : NetworkBehaviour
 
                 }
             }
-        }else{
+        }
+        else
+        {
         }
 
 
         //口が開いているtrueなら 何秒か経った後に襲ってくる。
         if (MouthOpenNow)
         {
-            
+
             MouthOpenTimeNow += Time.deltaTime;
-            if(MouthOpenTimeNow > 1)
+            if (MouthOpenTimeNow > 1)
             {
                 enemy_routing_controller.PermitFunction(true);
                 enemy_to_player_kill_controller.enabled = true;
                 follow_object_by_nav.MovePermit = true;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                 discovery_player_controller.AddPlayerToDiscoveryPlayerLists(HeadLookAtTargetControllerPlayer);
-                urp_fx_controller.InteferecesChange(false);
+                // 送りたいクライアント ID を並べる（ulong で書くこと）
+                ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例
+
+                var rpcParams = new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams
+                    {
+                        TargetClientIds = targetIds
+                    }
+                };
+                InteferencesChangeRequestForLookClientRpc(false);
                 player_near_sensor.IsNearToKillEffect = true;
                 MouthOpenNow = false;
                 MouthOpenTimeNow = 0;
-            }else
+            }
+            else
             {
                 follow_object_by_nav.MovePermit = false;
-                urp_fx_controller.InteferecesChange(true);
+                // 送りたいクライアント ID を並べる（ulong で書くこと）
+                ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例
+
+                var rpcParams = new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams
+                    {
+                        TargetClientIds = targetIds
+                    }
+                };
+                InteferencesChangeRequestForLookClientRpc(true);
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
             }
 
@@ -193,21 +224,21 @@ public class SisenAsobiDousiController : NetworkBehaviour
     private void TrySyncAppearance()
     {
         // ★ renderer.sharedMaterial で正しく一致判定
-        byte  nowState      = (HumanKaradaMeshRenderer.sharedMaterial == ChasePlayerBodyMaterial)
+        byte nowState = (HumanKaradaMeshRenderer.sharedMaterial == ChasePlayerBodyMaterial)
                               ? (byte)BodyState.Chase
                               : (byte)BodyState.Normal;
 
-        float nowBlend      = HumanKaradaMeshRenderer.GetBlendShapeWeight(0);
-        bool  nowScreamPlay = ScreamAudioSource.isPlaying;
+        float nowBlend = HumanKaradaMeshRenderer.GetBlendShapeWeight(0);
+        bool nowScreamPlay = ScreamAudioSource.isPlaying;
 
         // 何か変わっていたら RPC 送信
-        if (nowState      != _syncedState ||
+        if (nowState != _syncedState ||
             Mathf.Abs(nowBlend - _syncedBlendWeight) > 0.1f ||
             nowScreamPlay != _syncedScream)
         {
-            _syncedState       = nowState;
+            _syncedState = nowState;
             _syncedBlendWeight = nowBlend;
-            _syncedScream      = nowScreamPlay;
+            _syncedScream = nowScreamPlay;
 
             SyncAppearanceClientRpc(nowState, nowBlend, nowScreamPlay);
         }
@@ -235,11 +266,30 @@ public class SisenAsobiDousiController : NetworkBehaviour
     private void ResetValue()
     {
         MouthOpenNow = false;
-        urp_fx_controller.InteferecesChange(false);
-       // head_look_at_target_controller.LookAtTargetNow = false;
+        // 送りたいクライアント ID を並べる（ulong で書くこと）
+        ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例
+
+        var rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = targetIds
+            }
+        };
+        InteferencesChangeRequestForLookClientRpc(false);
+        // head_look_at_target_controller.LookAtTargetNow = false;
         enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
         LookNowTimeNow = 0;
 
         MouthOpenTimeNow = 0;
+    }
+    [ClientRpc]
+    private void InteferencesChangeRequestForLookClientRpc
+    (
+        bool _change,
+        ClientRpcParams rpcParams = default   // ← 追加
+    )
+    {
+        urp_fx_controller.InteferecesChange(_change);
     }
 }
