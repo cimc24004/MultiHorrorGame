@@ -109,6 +109,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   CollideredObjes: []
+  OnCollideredAddedObjectEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollideredRemovedObjectEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6571612201674062013
 GameObject:
   m_ObjectHideFlags: 0
@@ -1773,11 +1779,11 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 677693ba8613d1640ae98fdd4b30f31c,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7869319642556456260}
+      addedObject: {fileID: 1748851627635594798}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 677693ba8613d1640ae98fdd4b30f31c,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1748851627635594798}
+      addedObject: {fileID: 7869319642556456260}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 677693ba8613d1640ae98fdd4b30f31c,
         type: 3}
       insertIndex: -1
@@ -1854,6 +1860,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2044181541429710430}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 677693ba8613d1640ae98fdd4b30f31c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6966713881562300412}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 677693ba8613d1640ae98fdd4b30f31c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2217449935826704257}
   m_SourcePrefab: {fileID: 100100000, guid: 677693ba8613d1640ae98fdd4b30f31c, type: 3}
 --- !u!4 &55933948651699110 stripped
 Transform:
@@ -1894,6 +1908,12 @@ Transform:
 --- !u!4 &829119082955509169 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5863115670873292192, guid: 677693ba8613d1640ae98fdd4b30f31c,
+    type: 3}
+  m_PrefabInstance: {fileID: 6547222078647578641}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &844128488479952256 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 677693ba8613d1640ae98fdd4b30f31c,
     type: 3}
   m_PrefabInstance: {fileID: 6547222078647578641}
   m_PrefabAsset: {fileID: 0}
@@ -2196,34 +2216,6 @@ MonoBehaviour:
   - m_Rig: {fileID: 8730662993317403283}
     m_Active: 1
   m_Effectors: []
---- !u!114 &7869319642556456260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6205131372113104192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6a8a8f82f677dc4b9a4c6d1f53b49f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  m_target: 0
-  target_obj: {fileID: 0}
-  rig: {fileID: 8730662993317403283}
-  multi_aim_constraint: {fileID: 6795439113166374650}
-  Player: {fileID: 0}
-  m_collidered_for_players: {fileID: 1194596487373563957}
-  LookAtTargetNow: 0
 --- !u!114 &1748851627635594798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2249,6 +2241,26 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &7869319642556456260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6205131372113104192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a8a8f82f677dc4b9a4c6d1f53b49f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_target: 0
+  target_obj: {fileID: 0}
+  rig: {fileID: 8730662993317403283}
+  multi_aim_constraint: {fileID: 6795439113166374650}
+  Player: {fileID: 0}
+  m_collidered_for_players: {fileID: 1194596487373563957}
+  LookAtTargetNow: 0
 --- !u!114 &3869502469993094818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3690,6 +3702,67 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &6966713881562300412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6205131372113104192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 844128488479952256}
+--- !u!114 &2217449935826704257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6205131372113104192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 0
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
 --- !u!4 &6325383318467854718 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8280957153756876433, guid: 677693ba8613d1640ae98fdd4b30f31c,
