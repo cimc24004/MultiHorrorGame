@@ -65,32 +65,9 @@ public class HeadLookatTargetController : NetworkBehaviour
         multi_aim_constraint.data.sourceObjects = sources;
         rig_builder = GetComponent<RigBuilder>();
         rig_builder.Build();
-        m_collidered_for_players.OnCollideredAddedObjectEvent.AddListener((collider_obj) =>
-        {
-            if (m_collidered_for_players.CollideredObjes.Count == 0)
-            {
-                Debug.Log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ m_collidered_for_players_check");
-                Player = collider_obj;
-                player_status = playerAllController.SpawnedPlayersWithPlayerStatuses[Player];
-                CameraRoot = player_status.CameraRoot.gameObject;
-                sources.Add(new WeightedTransform(CameraRoot.transform, 1f));
-                multi_aim_constraint.data.sourceObjects = sources;
-                rig_builder.Build();
-            }
+        m_collidered_for_players.OnCollideredAddedObjectEvent.AddListener(AddTarget);
+        m_collidered_for_players.OnCollideredRemovedObjectEvent.AddListener(RemoveTarget);
 
-
-        });
-        m_collidered_for_players.OnCollideredRemovedObjectEvent.AddListener((exit_collider_obj) =>
-        {
-            if (m_collidered_for_players.CollideredObjes.Count == 1)
-            {
-                Player = null;
-                sources.Clear();
-                multi_aim_constraint.data.sourceObjects = sources;
-                rig_builder.Build();
-
-            }
-        });
     }
     // Update is called once per frame
     void Update()
@@ -152,5 +129,38 @@ public class HeadLookatTargetController : NetworkBehaviour
                 LookAtTargetNow = false;
             });
         }
+    }
+    void AddTarget(GameObject collider_obj)
+    {
+        if (m_collidered_for_players.CollideredObjes.Count != 0) return;
+        this.Player = collider_obj;
+        ulong targetId = collider_obj.GetComponent<NetworkObject>().NetworkObjectId;
+        SetLookTargetClientRpc(targetId);   // 全クライアントに通知
+    }
+
+    void RemoveTarget(GameObject _)
+    {
+        if (m_collidered_for_players.CollideredObjes.Count != 1) return;
+        this.Player = null;
+        ClearLookTargetClientRpc();
+    }
+    [ClientRpc]
+    void SetLookTargetClientRpc(ulong playerNetId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetId, out var obj)) return;
+
+        var camRoot = obj.GetComponent<PlayerStatus>().CameraRoot.transform;
+
+        var src = new WeightedTransformArray();
+        src.Add(new WeightedTransform(camRoot, 1f));
+        multi_aim_constraint.data.sourceObjects = src;
+        rig_builder.Build();              // ← クライアント側でも Build
+    }
+
+    [ClientRpc]
+    void ClearLookTargetClientRpc()
+    {
+        multi_aim_constraint.data.sourceObjects = new WeightedTransformArray();
+        rig_builder.Build();
     }
 }
