@@ -41,11 +41,11 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        audio_source = this.gameObject.GetComponent<AudioSource>();
+        darumasan_koronda_game_data = this.gameObject.GetComponent<DarumasanKorondaGameData>();
         if (!IsServer) return;
         playerAllController = PlayerAllController.instance;
-        audio_source = this.gameObject.GetComponent<AudioSource>();
         discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
-        darumasan_koronda_game_data = this.gameObject.GetComponent<DarumasanKorondaGameData>();
     }
 
     // Update is called once per frame
