@@ -192,8 +192,11 @@ public class SisenAsobiDousiController : NetworkBehaviour
     // ★ 追加：状態変化を検出して同期するメソッド
     private void TrySyncAppearance()
     {
-        // 現在の状態を取得
-        byte  nowState      = (HumanKaradaMeshRenderer.material == ChasePlayerBodyMaterial) ? (byte)BodyState.Chase : (byte)BodyState.Normal;
+        // ★ renderer.sharedMaterial で正しく一致判定
+        byte  nowState      = (HumanKaradaMeshRenderer.sharedMaterial == ChasePlayerBodyMaterial)
+                              ? (byte)BodyState.Chase
+                              : (byte)BodyState.Normal;
+
         float nowBlend      = HumanKaradaMeshRenderer.GetBlendShapeWeight(0);
         bool  nowScreamPlay = ScreamAudioSource.isPlaying;
 
@@ -214,17 +217,9 @@ public class SisenAsobiDousiController : NetworkBehaviour
     [ClientRpc]
     private void SyncAppearanceClientRpc(byte state, float blendWeight, bool playScream)
     {
-        // マテリアル
-        if (state == (byte)BodyState.Chase)
-        {
-            if (HumanKaradaMeshRenderer.material != ChasePlayerBodyMaterial)
-                HumanKaradaMeshRenderer.material = ChasePlayerBodyMaterial;
-        }
-        else
-        {
-            if (HumanKaradaMeshRenderer.material != NormalBodyMaterial)
-                HumanKaradaMeshRenderer.material = NormalBodyMaterial;
-        }
+        // ★ 無条件に material をセット（1 行で確実に反映させる）
+        HumanKaradaMeshRenderer.material =
+            (state == (byte)BodyState.Chase) ? ChasePlayerBodyMaterial : NormalBodyMaterial;
 
         // ブレンドシェイプ
         HumanKaradaMeshRenderer.SetBlendShapeWeight(0, blendWeight);
