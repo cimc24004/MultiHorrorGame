@@ -32,7 +32,7 @@ public class HeadLookatTargetController : NetworkBehaviour
     private DiscoveryPlayerController discoveryPlayerController;
     private float rig_weights;
     private bool m_NearNow = false;
-
+    private EnemyStatus enemyStatus;
     public bool LookAtTargetNow;
     private bool NearNow
     {
@@ -62,6 +62,7 @@ public class HeadLookatTargetController : NetworkBehaviour
         multi_aim_constraint.data.sourceObjects = sources;
         rig_builder.Build();
         if (!IsServer) return;
+        enemyStatus = this.gameObject.GetComponent<EnemyStatus>();
         discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
         playerAllController = PlayerAllController.instance;
         m_collidered_for_players.OnCollideredAddedObjectEvent.AddListener(AddTarget);
@@ -75,8 +76,9 @@ public class HeadLookatTargetController : NetworkBehaviour
         if (m_collidered_for_players.CollideredObjes.Count != 0)
         {
             PlayerStatus collidered_playerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[m_collidered_for_players.CollideredObjes[0]];
-            if (Physics.Raycast(this.transform.position, (collidered_playerStatus.HeadPos.transform.position - this.transform.position).normalized, out RaycastHit hit, Mathf.Infinity, discoveryPlayerController.original_discovery_player_status.layerMask))
+            if (Physics.Raycast(enemyStatus.EyePosition.transform.position, (collidered_playerStatus.CrouchHeadPos.transform.position - enemyStatus.EyePosition.transform.position).normalized, out RaycastHit hit, Mathf.Infinity, discoveryPlayerController.original_discovery_player_status.layerMask))
             {
+                Debug.Log("Hitしているオブジェクト: " + hit.collider.gameObject);
                 if (hit.collider.gameObject.tag == "Player")
                 {
                     NearNow = true;

@@ -245,6 +245,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                                 //即見つかる判定ではある。
                                 if (DiscoveryPlayerBySightning)
                                 {
+                                    Debug.Log("DiscoveryPlayerBySightning=trueなのでAddPlayerToDiscoveryPlayerListsを実行する");
                                     AddPlayerToDiscoveryPlayerLists(TargetPlayer);
                                 }
                             }

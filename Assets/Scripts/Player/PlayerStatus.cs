@@ -185,15 +185,7 @@ public class PlayerStatus : NetworkBehaviour
         if (!IsOwner) return;
         // collider.enabled = false;
         // collider.enabled = true;
-        Vector3 src = CameraRoot.localPosition;
-        Transform tgt = DownHeadPos;
-        float tgtY = tgt.localPosition.y;
-        Tween DownTween = DOTween.To(
-            () => src.y,
-            y => CameraRoot.localPosition = new Vector3(src.x, y, src.z),
-            tgtY,
-            0.2f
-        ).SetEase(Ease.OutQuad);
+
         Debug.Log("mitti この関数はDeadPlayerClientRpcです。");
         // アイテム所持チェック
         var items = item_belonging_controller.ItemFindByItemType(ItemStatus.ItemType.EmergencyAttack);
@@ -213,6 +205,15 @@ public class PlayerStatus : NetworkBehaviour
             Debug.Log("HorrorDirectorの演出がされるはず！ あなたのOwnerClientId: " + this.OwnerClientId + "DeadPlayerClientRpc内です");
             var enemyGO = NetworkManager.Singleton.SpawnManager
                             .SpawnedObjects[enemyNetworkObjectId].gameObject;
+            Vector3 src = CameraRoot.localPosition;
+            Transform tgt = DownHeadPos;
+            float tgtY = tgt.localPosition.y;
+            Tween DownTween = DOTween.To(
+                () => src.y,
+                y => CameraRoot.localPosition = new Vector3(src.x, y, src.z),
+                tgtY,
+                0.2f
+            ).SetEase(Ease.OutQuad);
             Debug.Log("enemyGO: " + enemyGO);
             var cameraExpander = enemyGO.GetComponent<CameraEnemyFaceExpanding>();
             // flash_light_controller.Light.enabled = false;

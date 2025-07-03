@@ -54,7 +54,7 @@ public class EnemyFlinchController : NetworkBehaviour
                 discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].SightningPlayer = false;
             }
             discovery_player_controller.SightningPlayerWhenHidePlayer = false;
-            discovery_player_controller.DiscoveryPlayerBySightning = false;
+            // discovery_player_controller.DiscoveryPlayerBySightning = false;
             nav_mesh_agent.speed = 0;
             if (ChangeApplyMotionWhenFlinch)
             {
@@ -85,7 +85,7 @@ public class EnemyFlinchController : NetworkBehaviour
         nav_mesh_agent.speed = DefaultNavMeshSpeed;
         enemy_to_player_kill_controller.enabled = true;
         follow_object_by_nav.MovePermit = true;
-        discovery_player_controller.DiscoveryPlayerBySightning = true;
+        // discovery_player_controller.DiscoveryPlayerBySightning = true;
         // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
         FlinchNow = false;
     }
