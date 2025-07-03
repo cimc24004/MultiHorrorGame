@@ -73,8 +73,12 @@ public class SisenAsobiDousiController : NetworkBehaviour
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         player_near_sensor.IsNearToKillEffect = false;
-        enemy_to_player_kill_controller.KillPlayerEvent.AddListener(() =>
+        enemy_to_player_kill_controller.KillPlayerEvent.AddListener((GameObject _player) =>
         {
+            if (_player == head_look_at_target_controller.Player)
+            {
+                head_look_at_target_controller.Player = null;
+            }
             this.ResetValue();
         });
 
