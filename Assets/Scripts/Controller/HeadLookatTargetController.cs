@@ -133,8 +133,8 @@ public class HeadLookatTargetController : NetworkBehaviour
     }
     void AddTarget(GameObject collider_obj)
     {
-        if (m_collidered_for_players.CollideredObjes.Count != 0) return;
         this.Player = collider_obj;
+        if (m_collidered_for_players.CollideredObjes.Count != 0) return;
         ulong targetId = collider_obj.GetComponent<NetworkObject>().NetworkObjectId;
         SetLookTargetClientRpc(targetId);   // 全クライアントに通知
     }
