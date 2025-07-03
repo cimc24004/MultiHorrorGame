@@ -72,7 +72,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
         character_controller = this.gameObject.GetComponent<CharacterController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
-        player_near_sensor.IsNearToKillEffect = false;
+        // player_near_sensor.IsNearToKillEffect = false;
         enemy_to_player_kill_controller.KillPlayerEvent.AddListener((GameObject _player) =>
         {
             if (_player == head_look_at_target_controller.Player)
@@ -132,7 +132,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
         }
         if (!discovery_player_controller.DiscoveryPlayerNowCheck())
         {
-            player_near_sensor.IsNearToKillEffect = false;
+            // player_near_sensor.IsNearToKillEffect = false;
             if (!MouthOpenNow)
             {
                 if (head_look_at_target_controller.LookAtTargetNow)
@@ -200,7 +200,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                     }
                 };
                 InteferencesChangeRequestForLookClientRpc(false, rpcParams);
-                player_near_sensor.IsNearToKillEffect = true;
+                // player_near_sensor.IsNearToKillEffect = true;
                 MouthOpenNow = false;
                 MouthOpenTimeNow = 0;
             }
