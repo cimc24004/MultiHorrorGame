@@ -16,6 +16,11 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
         discovery_player_controller = animator.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_by_nav = animator.gameObject.GetComponent<FollowObjectByNav>();
         FirstKeyOfDiscoveriedPlayers = discovery_player_controller.FirstKeyOfDiscoveriedPlayers;
+        if (FirstKeyOfDiscoveriedPlayers == null)
+        {
+            animator.Play("Idle", layerIndex, 0f);      // ‚Ü‚½‚Í CrossFadeInFixedTime("Idle", 0f)
+            return;
+        }
         player_status = FirstKeyOfDiscoveriedPlayers.GetComponent<PlayerStatus>();
         follow_object_by_nav.MovePermit = false;
     }
@@ -43,7 +48,9 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
         {
             player_status.player_hide_object_action.UnHideClientRpc();
         }
+        player_status.player_hide_object_action.layLookDownTriggered = false;
         follow_object_by_nav.MovePermit = true;
+        discovery_player_controller.RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
         player_status.DeadEvent(animator.gameObject);
     }
 

@@ -161,6 +161,7 @@ public class PlayerStatus : NetworkBehaviour
 
     public void DeadEvent(GameObject KilledMeEnemy)
     {
+        if (this.Dead.Value) return;
         //サーバーから実行される。
         this.KillSequenceRunning.Value = true;
         DeathEvent.Invoke();

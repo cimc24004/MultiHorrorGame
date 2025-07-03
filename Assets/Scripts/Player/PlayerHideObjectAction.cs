@@ -19,6 +19,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     private CrossHairEvent cross_hair_event; // CrossHairEvent を使う場合
 
     public NetworkVariable<bool> HidingPermit = new NetworkVariable<bool>(true);
+    public bool layLookDownTriggered = false;
 
     public override void OnNetworkSpawn()
     {
@@ -223,7 +224,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
 
         Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
         // DiscoveryPlayerController discoveryPlayerController = enemy_anim.gameObject.GetComponent<DiscoveryPlayerController>();
-        if (player_status.HidingNow.Value) // 隠れている時のみ
+        if (player_status.HidingNow.Value && !player_status.Dead.Value && !layLookDownTriggered) // 隠れている時のみ
         {
             // discoveryPlayerController.PlayersVisibilityMapStatuesWithKey[player_status.gameObject].DiscoveryPlayerNow = false;
             // discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
@@ -234,6 +235,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
                 // ここでアニメーション終了後にプレイヤーを死亡させるイベントを呼ぶなどの処理が必要
                 // 例: StartCoroutine(PlayerDeathAfterAnimation(_SightningEnemy, enemy_anim));
                 // HidingPermit.Value = false; // など
+                layLookDownTriggered = true;
             }
             else
             {

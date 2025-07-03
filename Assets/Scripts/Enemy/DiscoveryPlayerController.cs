@@ -442,7 +442,8 @@ public class DiscoveryPlayerController : NetworkBehaviour
                 }
                 else
                 {
-                    //発見されているプレイヤーがゼロなら
+                    //削除した後 発見されているプレイヤーがゼロなら
+                    SightningPlayerWhenHidePlayer = false;
                     enemy_routing_controller?.NearRouteSet();
                     FirstKeyOfDiscoveriedPlayers = null;
                 }
