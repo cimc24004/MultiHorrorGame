@@ -140,7 +140,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     }
     private void KorondaVoiceReset()
     {
-        audio_source.Stop();
+        KorondaVoiceStopClientRpc();
         VoiceEnd = true;
         VoiceStart = false;
         VoiceStartFromVoiceEndTimeNow = VoiceStartFromVoiceEndTime;
@@ -148,6 +148,11 @@ public class DarumasanKorondaGameController : NetworkBehaviour
         DefaultLookTween.Kill();
         TimePassedNowFromVoiceStart = 0;
         //DarumasanParent.transform.DODynamicLookAt(DefaultLookAtTransform.position, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
+    }
+    [ClientRpc]
+    private void KorondaVoiceStopClientRpc()
+    {
+        audio_source.Stop();
     }
     private void KorondaVoiceStart()
     {
@@ -164,10 +169,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
         audio_source.Play();
 
     }
-    [ClientRpc]
-    private void MoveKorondaClientRpc()
-    {
-    }
+
     private void KorondaVoiceEnd()
     {
         Debug.Log("ボイス終了した");

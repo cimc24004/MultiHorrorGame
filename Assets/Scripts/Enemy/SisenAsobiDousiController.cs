@@ -53,6 +53,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
 
     private EnemySoundSensor enemy_sound_sensor;
     private Material BeforeHumanKaradaMaterial;
+    [SerializeField]
     private GameObject HeadLookAtTargetControllerPlayer;
     private PlayerAllController playerAllController;
     // Start is called before the first frame update
@@ -72,6 +73,11 @@ public class SisenAsobiDousiController : NetworkBehaviour
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         player_near_sensor.IsNearToKillEffect = false;
+        enemy_to_player_kill_controller.KillPlayerEvent.AddListener(() =>
+        {
+            this.ResetValue();
+        });
+
     }
 
     // Update is called once per frame
@@ -267,16 +273,20 @@ public class SisenAsobiDousiController : NetworkBehaviour
     {
         MouthOpenNow = false;
         // 送りたいクライアント ID を並べる（ulong で書くこと）
-        ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例
-
-        var rpcParams = new ClientRpcParams
+        if (HeadLookAtTargetControllerPlayer != null)
         {
-            Send = new ClientRpcSendParams
+            ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例
+
+            var rpcParams = new ClientRpcParams
             {
-                TargetClientIds = targetIds
-            }
-        };
-        InteferencesChangeRequestForLookClientRpc(false, rpcParams);
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = targetIds
+                }
+            };
+            InteferencesChangeRequestForLookClientRpc(false, rpcParams);
+        }
+
         // head_look_at_target_controller.LookAtTargetNow = false;
         enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
         LookNowTimeNow = 0;

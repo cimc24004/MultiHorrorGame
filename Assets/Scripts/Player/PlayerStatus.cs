@@ -13,6 +13,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Autodesk.Fbx;
 using System.Linq;
+using System.Security.Cryptography;
 
 public class PlayerStatus : NetworkBehaviour
 {
@@ -86,6 +87,7 @@ public class PlayerStatus : NetworkBehaviour
     private ItemDatabases item_databases;
     private EnemyFlinchController killed_enemy_flinch_controller;
     public NetworkVariable<bool> KillSequenceRunning = new(false);
+    public UnityEvent DeathEvent;
     public override void OnNetworkDespawn()
     {
         if (IsOwner && LocalInstance == this)
@@ -161,6 +163,7 @@ public class PlayerStatus : NetworkBehaviour
     {
         //サーバーから実行される。
         this.KillSequenceRunning.Value = true;
+        DeathEvent.Invoke();
         Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
         var rpcParams = new ClientRpcParams {
             Send = new ClientRpcSendParams {
@@ -180,6 +183,8 @@ public class PlayerStatus : NetworkBehaviour
     private void DeadPlayerClientRpc(ulong enemyNetworkObjectId, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
+        // collider.enabled = false;
+        // collider.enabled = true;
         Vector3 src = CameraRoot.localPosition;
         Transform tgt = DownHeadPos;
         float tgtY = tgt.localPosition.y;

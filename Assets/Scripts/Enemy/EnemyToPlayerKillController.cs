@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.Events;
 public class EnemyToPlayerKillController : NetworkBehaviour
 {
     public Transform boxCenter;                  // 範囲の中心（敵の目の前に置く）
@@ -12,6 +13,7 @@ public class EnemyToPlayerKillController : NetworkBehaviour
     private Collider[] hitBuffer = new Collider[4];   // 最大ヒット数を決め打ちで確保
     private GameNetworkController game_network_controller;
     private PlayerAllController player_all_controller;
+    public UnityEvent KillPlayerEvent;
     public override void OnNetworkSpawn()
     {
         game_network_controller = GameNetworkController.instance;
@@ -44,11 +46,9 @@ public class EnemyToPlayerKillController : NetworkBehaviour
                 if (playerStatus.Dead.Value || playerStatus.KillSequenceRunning.Value) continue;  // 既に死んでたらスキップ
                 if (!playerStatus.Dead.Value && playerStatus.HidingNow.Value == false && discovery_player_controller.PlayersVisibilityMapStatuesWithKey[player].DiscoveryPlayerNow)
                 {
+                    KillPlayerEvent.Invoke();
                     //死にます。
-                    discovery_player_controller.PlayersVisibilityMapStatuesWithKey[player].DiscoveryPlayerNow = false;
-                    // discovery_player_controller.FirstKeyOfDiscoveriedPlayers = 
                     discovery_player_controller.RemovePlayerOfDiscoveryPlayerLists(player);
-
                     player_all_controller.SpawnedPlayersWithPlayerStatuses[player].DeadEvent(this.gameObject);
                 }
                 break;
