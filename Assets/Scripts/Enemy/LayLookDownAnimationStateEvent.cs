@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class LayLookDownAnimationStateEvent : StateMachineBehaviour
@@ -11,6 +12,7 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (!NetworkManager.Singleton.IsServer) return;
         discovery_player_controller = animator.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_by_nav = animator.gameObject.GetComponent<FollowObjectByNav>();
         FirstKeyOfDiscoveriedPlayers = discovery_player_controller.FirstKeyOfDiscoveriedPlayers;
@@ -22,6 +24,7 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         // 水平成分だけ取り出す
+        if (!NetworkManager.Singleton.IsServer) return;
         Vector3 dir = player_status.transform.position - animator.transform.position;
         dir.y = 0f;
         if (dir.sqrMagnitude < 0.01f) return;    // ほぼ同じ位置なら回さない
@@ -35,6 +38,7 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //机に隠れてるの見つけたーアニメーションが終わったらプレイヤーを殺す。
+        if (!NetworkManager.Singleton.IsServer) return;
         if (player_status.HidingNow.Value)
         {
             player_status.player_hide_object_action.UnHideClientRpc();
