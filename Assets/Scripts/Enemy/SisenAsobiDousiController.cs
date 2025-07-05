@@ -188,7 +188,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                 enemy_to_player_kill_controller.enabled = true;
                 follow_object_by_nav.MovePermit = true;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-                Debug.Log("");
+                Debug.Log("AddPlayerToDiscoveryPlayerListsする前のHeadLookAtTargetControllerPlayer: " + HeadLookAtTargetControllerPlayer.GetComponent<NetworkObject>().OwnerClientId);
                 discovery_player_controller.AddPlayerToDiscoveryPlayerLists(HeadLookAtTargetControllerPlayer);
                 // 送りたいクライアント ID を並べる（ulong で書くこと）
                 ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例
