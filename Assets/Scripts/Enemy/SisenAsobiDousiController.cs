@@ -204,7 +204,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                         TargetClientIds = targetIds
                     }
                 };
-                InteferencesChangeRequestForLookClientRpc(false, rpcParams);
+                InteferencesChangeRequestForLookClientRpc(false);
                 // player_near_sensor.IsNearToKillEffect = true;
                 MouthOpenNow = false;
                 MouthOpenTimeNow = 0;
@@ -294,7 +294,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                     TargetClientIds = targetIds
                 }
             };
-            InteferencesChangeRequestForLookClientRpc(false, rpcParams);
+            InteferencesChangeRequestForLookClientRpc(false);
         }
 
         // head_look_at_target_controller.LookAtTargetNow = false;
