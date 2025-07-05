@@ -81,7 +81,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
         });
         head_look_at_target_controller.AddTargetHeadLookPlayerUnityEvent.AddListener(() =>
         {
-            HeadLookAtTargetControllerPlayer = head_look_at_target_controller.LastPlayerKey;
+            HeadLookAtTargetControllerPlayer = head_look_at_target_controller.FirstPlayerKey;
         });
     }
 
@@ -188,7 +188,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
                 enemy_to_player_kill_controller.enabled = true;
                 follow_object_by_nav.MovePermit = true;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
-                Debug.Log("AddPlayerToDiscoveryPlayerLists from SisenAsobiDoushi");
+                Debug.Log("");
                 discovery_player_controller.AddPlayerToDiscoveryPlayerLists(HeadLookAtTargetControllerPlayer);
                 // 送りたいクライアント ID を並べる（ulong で書くこと）
                 ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例

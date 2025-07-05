@@ -27,7 +27,7 @@ public class HeadLookatTargetController : NetworkBehaviour
 
     private GameObject CameraRoot;
     public List<GameObject> lookPlayers;
-    public GameObject LastPlayerKey;
+    public GameObject FirstPlayerKey;
     private PlayerStatus player_status;
     [SerializeField]
     private CollideredForPlayers m_collidered_for_players;
@@ -139,9 +139,9 @@ public class HeadLookatTargetController : NetworkBehaviour
     void AddTarget(GameObject collider_obj)
     {
         lookPlayers.Add(collider_obj);
-        this.LastPlayerKey = lookPlayers.Last();
+        this.FirstPlayerKey = lookPlayers.First();
         this.AddTargetHeadLookPlayerUnityEvent.Invoke();
-        ulong targetId = LastPlayerKey.GetComponent<NetworkObject>().NetworkObjectId;
+        ulong targetId = FirstPlayerKey.GetComponent<NetworkObject>().NetworkObjectId;
         Debug.Log("AddTarget---: " + targetId);
         SetLookTargetClientRpc(targetId);   // 全クライアントに通知
     }
@@ -151,7 +151,7 @@ public class HeadLookatTargetController : NetworkBehaviour
         this.lookPlayers.Remove(collider_obj);
         if (this.lookPlayers.Count != 0)
         {
-            this.LastPlayerKey = this.lookPlayers.Last();
+            this.FirstPlayerKey = this.lookPlayers.Last();
         }
         if (m_collidered_for_players.CollideredObjes.Count == 1)
         {
