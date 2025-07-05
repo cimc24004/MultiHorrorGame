@@ -6,6 +6,7 @@ using UnityEngine.Animations.Rigging;
 using DG.Tweening;
 using static UnityEngine.Rendering.DebugUI;
 using Unity.Netcode;
+using UnityEngine.Events;
 public class HeadLookatTargetController : NetworkBehaviour
 {
     private enum Target
@@ -33,6 +34,7 @@ public class HeadLookatTargetController : NetworkBehaviour
     private float rig_weights;
     private bool m_NearNow = false;
     private EnemyStatus enemyStatus;
+    public UnityEvent AddTargetHeadLookPlayerUnityEvent;
     public bool LookAtTargetNow;
     private bool NearNow
     {
@@ -61,6 +63,7 @@ public class HeadLookatTargetController : NetworkBehaviour
         WeightedTransformArray sources = new WeightedTransformArray();
         multi_aim_constraint.data.sourceObjects = sources;
         rig_builder.Build();
+
         if (!IsServer) return;
         enemyStatus = this.gameObject.GetComponent<EnemyStatus>();
         discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
@@ -134,6 +137,7 @@ public class HeadLookatTargetController : NetworkBehaviour
     void AddTarget(GameObject collider_obj)
     {
         this.Player = collider_obj;
+        AddTargetHeadLookPlayerUnityEvent.Invoke();
         if (m_collidered_for_players.CollideredObjes.Count != 0) return;
         ulong targetId = collider_obj.GetComponent<NetworkObject>().NetworkObjectId;
         SetLookTargetClientRpc(targetId);   // 全クライアントに通知

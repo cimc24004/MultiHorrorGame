@@ -81,7 +81,10 @@ public class SisenAsobiDousiController : NetworkBehaviour
             }
             this.ResetValue();
         });
-
+        head_look_at_target_controller.AddTargetHeadLookPlayerUnityEvent.AddListener(() =>
+        {
+            HeadLookAtTargetControllerPlayer = head_look_at_target_controller.Player;
+        });
     }
 
     // Update is called once per frame
@@ -139,7 +142,6 @@ public class SisenAsobiDousiController : NetworkBehaviour
                 {
                     //‹ß‚­‚É“G‚ª‚¢‚é‚È‚ç ‚Æ‚¢‚¤”»’è‚Íhead_look_at_target_controller‚ªtarget‚ğŒ©‚Ä‚é‚©‚Ç‚¤‚©‚Å”»’è‚·‚éB
                     //follow_object_by_nav.ChaseToTargetSet(true, BeforePosition, 0);
-                    HeadLookAtTargetControllerPlayer = head_look_at_target_controller.Player;
                     enemy_routing_controller.PermitFunction(false);
                     LookNowTimeNow += Time.deltaTime;
                     enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;

@@ -496,6 +496,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     }
     public bool DiscoveryPlayerNowCheck()
     {
+        if (this.PlayersVisibilityMapStatuesWithKey.Count == 0) return false;
         if (FirstKeyOfDiscoveriedPlayers != null)
         {
             if (this.PlayersVisibilityMapStatuesWithKey[this.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow)
