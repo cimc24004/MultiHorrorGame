@@ -192,6 +192,8 @@ public class SisenAsobiDousiController : NetworkBehaviour
                 if (head_look_at_target_controller.FirstPlayerKey != null)
                 {
                     HeadLookAtTargetControllerPlayer = head_look_at_target_controller.FirstPlayerKey;
+
+                    head_look_at_target_controller.SetLookTargetClientRpc(playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId);
                 }
                 discovery_player_controller.AddPlayerToDiscoveryPlayerLists(HeadLookAtTargetControllerPlayer);
                 // 送りたいクライアント ID を並べる（ulong で書くこと）

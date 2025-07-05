@@ -160,7 +160,7 @@ public class HeadLookatTargetController : NetworkBehaviour
         Debug.Log("RemoveTarget-----: " + collider_obj.GetComponent<NetworkObject>().OwnerClientId);
     }
     [ClientRpc]
-    void SetLookTargetClientRpc(ulong playerNetId)
+    public void SetLookTargetClientRpc(ulong playerNetId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetId, out var obj)) return;
 
@@ -173,7 +173,7 @@ public class HeadLookatTargetController : NetworkBehaviour
     }
 
     [ClientRpc]
-    void ClearLookTargetClientRpc()
+    public void ClearLookTargetClientRpc()
     {
         multi_aim_constraint.data.sourceObjects = new WeightedTransformArray();
         rig_builder.Build();
