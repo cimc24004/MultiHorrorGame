@@ -138,6 +138,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
             {
                 if (head_look_at_target_controller.LookAtTargetNow)
                 {
+                    Debug.Log("head_look_at_target_controller.LookAtTargetNow HeadLookAtTargetController: " + HeadLookAtTargetControllerPlayer);
                     //‹ß‚­‚É“G‚ª‚¢‚é‚È‚ç ‚Æ‚¢‚¤”»’è‚Íhead_look_at_target_controller‚ªtarget‚ğŒ©‚Ä‚é‚©‚Ç‚¤‚©‚Å”»’è‚·‚éB
                     //follow_object_by_nav.ChaseToTargetSet(true, BeforePosition, 0);
                     enemy_routing_controller.PermitFunction(false);
