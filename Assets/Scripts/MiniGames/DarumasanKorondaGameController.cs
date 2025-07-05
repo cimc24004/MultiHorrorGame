@@ -6,6 +6,7 @@ using DG.Tweening;
 using UnityEngine.InputSystem;
 using System.Linq;
 using Unity.Netcode;
+
 public class DarumasanKorondaGameController : NetworkBehaviour
 {
     [SerializeField]
@@ -38,23 +39,48 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     private Tween LookAtPlayerTween;
     private DiscoveryPlayerController discovery_player_controller;
     private PlayerAllController playerAllController;
-    // Start is called before the first frame update
+    
+    // 同期用の変数
+    private NetworkVariable<float> syncedVoiceStartTime = new NetworkVariable<float>();
+    private NetworkVariable<int> currentClipIndex = new NetworkVariable<int>(-1);
+    private NetworkVariable<bool> isLookingAtPlayers = new NetworkVariable<bool>();
+    private NetworkVariable<int> currentLookTargetIndex = new NetworkVariable<int>(-1);
+    private Sequence lookSequence;
+
     public override void OnNetworkSpawn()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
         darumasan_koronda_game_data = this.gameObject.GetComponent<DarumasanKorondaGameData>();
-        if (!IsServer) return;
+        
+        if (!IsServer) 
+        {
+            // クライアント側での同期監視
+            syncedVoiceStartTime.OnValueChanged += OnVoiceStartTimeChanged;
+            currentClipIndex.OnValueChanged += OnClipIndexChanged;
+            isLookingAtPlayers.OnValueChanged += OnLookingStateChanged;
+            currentLookTargetIndex.OnValueChanged += OnLookTargetChanged;
+            return;
+        }
+        
         playerAllController = PlayerAllController.instance;
         discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (!IsServer) return;
+        if (!IsServer) 
+        {
+            HandleClientSideSync();
+            return;
+        }
+        
+        HandleServerSideLogic();
+    }
+
+    private void HandleServerSideLogic()
+    {
         if (collideredForPlayers.CollideredObjes.Count != 0)
         {
-            //ゲーム範囲内になったら。
             if (!GamePlayNow)
             {
                 GamePlayNow = true;
@@ -62,146 +88,227 @@ public class DarumasanKorondaGameController : NetworkBehaviour
         }
         else
         {
-            //ゲーム範囲外になったら
             GamePlayNow = false;
         }
 
-
         if (GamePlayNow)
         {
-            for (int i = 0; i < collideredForPlayers.CollideredObjes.Count; i++)
-            {
-                if (VoiceStartFromVoiceEndTime > VoiceStartFromVoiceEndTimeNow)
-                {
-                    //Voiceしている最中
-                    //こっちを振り返っている間。
-                    //プレイヤーが動いたらこっちも動作し始める。
-                    if (LookAtPlayerTween != null)
-                    {
-                        if (!LookAtPlayerTween.IsPlaying())
-                        {
-                            GameObject player = collideredForPlayers.CollideredObjes[i].gameObject;
-                            if (playerAllController.SpawnedPlayersWithPlayerStatuses[player].playerCharacterController.velocity.magnitude > 0)
-                            {
-                                Debug.Log("ボイス あなたは動きましたね？？");
-                                character_move_permit.Move();
-                                DOVirtual.DelayedCall(0.1f, () =>
-                                {
-                                    discovery_player_controller.AddPlayerToDiscoveryPlayerLists(player);
-                                });
-                                DarumasanParent.transform.SetParent(null);
-                                this.NetworkObject.Despawn(true);
-                                KorondaVoiceReset();
-                            }
-                        }
-                    }
-
-                }
-
-            }
-            if (VoiceEnd && !VoiceStart)
-            {
-                VoiceStartFromVoiceEndTimeNow += Time.deltaTime;
-                Debug.Log("ボイス VoiceEnd && !VoiceStart");
-                Debug.Log("ボイス VoiceStartFromVoiceEndTimeNow: " + VoiceStartFromVoiceEndTimeNow);
-                if (VoiceStartFromVoiceEndTime <= VoiceStartFromVoiceEndTimeNow)
-                {
-                    //こっちを振り返っているのが終わったら
-                    DefaultLookTween = DarumasanParent.transform.DODynamicLookAt(DefaultLookAtTransform.position, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
-                    Debug.Log("ボイス こっちを見ているのが終わった！");
-                    KorondaVoiceStart();
-                    VoiceStartFromVoiceEndTimeNow = 0;
-                }
-                else
-                {
-
-                    // Debug.Log("player_character_controllerのMagnitude!?!?:  : " + player_character_controller.velocity.magnitude);
-
-                }
-            }
-
-            if (VoiceStart)
-            {
-                TimePassedNowFromVoiceStart += Time.deltaTime;
-                if(TimePassedNowFromVoiceStart > darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time[audio_source.clip])
-                {
-                    //ボイス発言が終了したら
-                    KorondaVoiceEnd();
-                    TimePassedNowFromVoiceStart = 0;
-                }
-            }
-
+            CheckPlayerMovement();
+            HandleVoiceTimers();
         }
         else
         {
-            //ゲームプレイ中でなければ再生をストップ
             KorondaVoiceReset();
         }
     }
+
+    private void HandleClientSideSync()
+    {
+        // クライアント側での同期処理
+        if (currentClipIndex.Value >= 0 && VoiceStart)
+        {
+            float elapsedTime = Time.time - syncedVoiceStartTime.Value;
+            var clipsList = darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Keys.ToList();
+            
+            if (elapsedTime > darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time[clipsList[currentClipIndex.Value]])
+            {
+                // 音声終了をサーバーに通知
+                RequestVoiceEndServerRpc();
+            }
+        }
+    }
+
+    private void CheckPlayerMovement()
+    {
+        for (int i = 0; i < collideredForPlayers.CollideredObjes.Count; i++)
+        {
+            if (VoiceStartFromVoiceEndTime > VoiceStartFromVoiceEndTimeNow)
+            {
+                if (isLookingAtPlayers.Value)
+                {
+                    GameObject player = collideredForPlayers.CollideredObjes[i].gameObject;
+                    if (playerAllController.SpawnedPlayersWithPlayerStatuses[player].playerCharacterController.velocity.magnitude > 0)
+                    {
+                        Debug.Log("ボイス あなたは動きましたね？？");
+                        character_move_permit.Move();
+                        DOVirtual.DelayedCall(0.1f, () =>
+                        {
+                            discovery_player_controller.AddPlayerToDiscoveryPlayerLists(player);
+                        });
+                        DarumasanParent.transform.SetParent(null);
+                        this.NetworkObject.Despawn(true);
+                        KorondaVoiceReset();
+                    }
+                }
+            }
+        }
+    }
+
+    private void HandleVoiceTimers()
+    {
+        if (VoiceEnd && !VoiceStart)
+        {
+            VoiceStartFromVoiceEndTimeNow += Time.deltaTime;
+            
+            if (VoiceStartFromVoiceEndTime <= VoiceStartFromVoiceEndTimeNow)
+            {
+                StartDefaultLookAnimation();
+                KorondaVoiceStart();
+                VoiceStartFromVoiceEndTimeNow = 0;
+            }
+        }
+
+        if (VoiceStart)
+        {
+            TimePassedNowFromVoiceStart += Time.deltaTime;
+            var clipsList = darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Keys.ToList();
+            
+            if (TimePassedNowFromVoiceStart > darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time[clipsList[currentClipIndex.Value]])
+            {
+                KorondaVoiceEnd();
+                TimePassedNowFromVoiceStart = 0;
+            }
+        }
+    }
+
+    private void StartDefaultLookAnimation()
+    {
+        StartDefaultLookClientRpc();
+    }
+
+    [ClientRpc]
+    private void StartDefaultLookClientRpc()
+    {
+        DefaultLookTween = DarumasanParent.transform.DODynamicLookAt(DefaultLookAtTransform.position, 0.3f)
+            .SetEase(Ease.Linear)
+            .SetLink(this.gameObject);
+    }
+
     private void KorondaVoiceReset()
     {
         KorondaVoiceStopClientRpc();
         VoiceEnd = true;
         VoiceStart = false;
         VoiceStartFromVoiceEndTimeNow = VoiceStartFromVoiceEndTime;
-        LookAtPlayerTween.Kill();
-        DefaultLookTween.Kill();
         TimePassedNowFromVoiceStart = 0;
-        //DarumasanParent.transform.DODynamicLookAt(DefaultLookAtTransform.position, 0.3f).SetEase(Ease.Linear).SetLink(this.gameObject);
+        
+        // NetworkVariableをリセット
+        syncedVoiceStartTime.Value = 0;
+        currentClipIndex.Value = -1;
+        isLookingAtPlayers.Value = false;
+        currentLookTargetIndex.Value = -1;
+        
+        StopAllTweensClientRpc();
     }
+
     [ClientRpc]
     private void KorondaVoiceStopClientRpc()
     {
         audio_source.Stop();
     }
+
+    [ClientRpc]
+    private void StopAllTweensClientRpc()
+    {
+        LookAtPlayerTween?.Kill();
+        DefaultLookTween?.Kill();
+        lookSequence?.Kill();
+    }
+
     private void KorondaVoiceStart()
     {
         int i = Random.Range(0, darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Count);
+        
+        // 同期用の値を設定
+        syncedVoiceStartTime.Value = Time.time;
+        currentClipIndex.Value = i;
+        
         KorondaVoiceClientRpc(i);
         VoiceStart = true;
         VoiceEnd = false;
-
     }
+
     [ClientRpc]
     private void KorondaVoiceClientRpc(int i)
     {
-        audio_source.clip = darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Keys.ToList()[i];
+        var clipsList = darumasan_koronda_game_data.darumasangakoronda_clips_with_play_time.Keys.ToList();
+        audio_source.clip = clipsList[i];
         audio_source.Play();
-
     }
 
     private void KorondaVoiceEnd()
     {
         Debug.Log("ボイス終了した");
-        int i = 0;
-        // Sequence を作成
-        var seq = DOTween.Sequence()
-            .SetLink(this.gameObject);    // オブジェクト破棄時に自動kill
+        isLookingAtPlayers.Value = true;
+        StartLookSequenceClientRpc();
+    }
 
-        // 各プレイヤーを順番に見つめる
-        foreach (var idx in collideredForPlayers.CollideredObjes)
+    [ClientRpc]
+    private void StartLookSequenceClientRpc()
+    {
+        StartCoroutine(LookAtPlayersSequence());
+    }
+
+    private IEnumerator LookAtPlayersSequence()
+    {
+        lookSequence = DOTween.Sequence().SetLink(this.gameObject);
+        
+        for (int i = 0; i < collideredForPlayers.CollideredObjes.Count; i++)
         {
-            // カメラ位置取得
+            if (IsServer)
+            {
+                currentLookTargetIndex.Value = i;
+            }
+            
             var targetPos = playerAllController
-                .SpawnedPlayersWithPlayerStatuses[idx]
+                .SpawnedPlayersWithPlayerStatuses[collideredForPlayers.CollideredObjes[i]]
                 .CameraRoot.transform.position;
 
-            // 0.3秒でそのプレイヤーを見つめる tween を追加
-            seq.Append(
-                LookAtPlayerTween = DarumasanParent.transform
-                    .DODynamicLookAt(targetPos, 0.3f)
-                    .SetEase(Ease.Linear)
-            );
-
-            // 好きな秒数だけ待機（ここでは例として2秒）
-            seq.AppendInterval(0.3f);
+            LookAtPlayerTween = DarumasanParent.transform
+                .DODynamicLookAt(targetPos, 0.3f)
+                .SetEase(Ease.Linear);
+            
+            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.3f);
         }
-        // ループ後にフラグ操作
-        seq.OnComplete(() =>
+        
+        if (IsServer)
         {
             VoiceStart = false;
             VoiceEnd = true;
-        });
+            isLookingAtPlayers.Value = false;
+            currentLookTargetIndex.Value = -1;
+        }
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestVoiceEndServerRpc()
+    {
+        if (VoiceStart)
+        {
+            KorondaVoiceEnd();
+            TimePassedNowFromVoiceStart = 0;
+        }
+    }
+
+    // NetworkVariable変更時のコールバック
+    private void OnVoiceStartTimeChanged(float oldValue, float newValue)
+    {
+        // 必要に応じて処理
+    }
+
+    private void OnClipIndexChanged(int oldValue, int newValue)
+    {
+        // 必要に応じて処理
+    }
+
+    private void OnLookingStateChanged(bool oldValue, bool newValue)
+    {
+        // 必要に応じて処理
+    }
+
+    private void OnLookTargetChanged(int oldValue, int newValue)
+    {
+        // 必要に応じて処理
     }
 }
