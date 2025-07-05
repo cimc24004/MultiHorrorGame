@@ -46,7 +46,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     private NetworkVariable<bool> isLookingAtPlayers = new NetworkVariable<bool>();
     private NetworkVariable<int> currentLookTargetIndex = new NetworkVariable<int>(-1);
     private Sequence lookSequence;
-
+    private HorrorDirector horrorDirector;
     public override void OnNetworkSpawn()
     {
         audio_source = this.gameObject.GetComponent<AudioSource>();
@@ -59,10 +59,38 @@ public class DarumasanKorondaGameController : NetworkBehaviour
             currentClipIndex.OnValueChanged += OnClipIndexChanged;
             isLookingAtPlayers.OnValueChanged += OnLookingStateChanged;
             currentLookTargetIndex.OnValueChanged += OnLookTargetChanged;
+            
             return;
         }
-        
         playerAllController = PlayerAllController.instance;
+        collideredForPlayers.OnCollideredAddedObjectEvent.AddListener((t) =>
+        {
+            PlayerStatus playerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[t];
+            ulong[] targets = new ulong[] { playerStatus.NetworkObject.OwnerClientId }; // 1,5,9 は送りたいクライアントID
+
+            // ClientRpcParams を組み立てる
+            var rpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = targets
+                }
+            };
+            OnColliderEventClientRpc(true, rpcParams);
+            KorondaVolumeVoiceClientRpc(1f, rpcParams);
+        });
+        collideredForPlayers.OnCollideredRemovedObjectEvent.AddListener((t) =>
+        {
+            PlayerStatus playerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[t];
+            ulong[] targets = new ulong[] { playerStatus.NetworkObject.OwnerClientId }; // 1,5,9 は送りたいクライアントID
+            var rpcParams = new ClientRpcParams {
+                Send = new ClientRpcSendParams {
+                    TargetClientIds = targets
+                }
+            };
+            OnColliderEventClientRpc(false,rpcParams);
+            KorondaVolumeVoiceClientRpc(0f, rpcParams);
+        });
         discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
     }
 
@@ -135,6 +163,10 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                         {
                             discovery_player_controller.AddPlayerToDiscoveryPlayerLists(player);
                         });
+                        foreach (GameObject g in collideredForPlayers.CollideredObjes)
+                        {
+                            collideredForPlayers.OnCollideredRemovedObjectEvent.Invoke(g);
+                        }
                         DarumasanParent.transform.SetParent(null);
                         this.NetworkObject.Despawn(true);
                         KorondaVoiceReset();
@@ -235,7 +267,12 @@ public class DarumasanKorondaGameController : NetworkBehaviour
         audio_source.clip = clipsList[i];
         audio_source.Play();
     }
-
+    [ClientRpc]
+    private void KorondaVolumeVoiceClientRpc(float _volume, ClientRpcParams clientRpcParams)
+    {
+        audio_source.volume = _volume;
+        
+    }
     private void KorondaVoiceEnd()
     {
         Debug.Log("ボイス終了した");
@@ -248,7 +285,21 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     {
         StartCoroutine(LookAtPlayersSequence());
     }
-
+    [ClientRpc]
+    private void OnColliderEventClientRpc(bool _collider, ClientRpcParams clientRpcParams)
+    {
+        // ulong clientId = clientRpcParams.Send.TargetClientIds[0];
+        // GameObject Player = NetworkManager.Singleton.SpawnManager.SpawnedObjects[playerNetworkObjectId].gameObject;
+        horrorDirector = HorrorDirector.instance;
+        if (_collider)
+        {
+            horrorDirector.DarumasanGame(true);
+        }
+        else
+        {
+            horrorDirector.DarumasanGame(false);
+        }
+    }
     private IEnumerator LookAtPlayersSequence()
     {
         lookSequence = DOTween.Sequence().SetLink(this.gameObject);
@@ -290,7 +341,6 @@ public class DarumasanKorondaGameController : NetworkBehaviour
             TimePassedNowFromVoiceStart = 0;
         }
     }
-
     // NetworkVariable変更時のコールバック
     private void OnVoiceStartTimeChanged(float oldValue, float newValue)
     {

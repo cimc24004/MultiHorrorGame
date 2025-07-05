@@ -9,7 +9,7 @@ using FronkonGames.Glitches.Interferences;
 using FronkonGames.Glitches.CorruptMemory;
 
 using Sirenix.OdinInspector;
-public class URPFxController : SerializedMonoBehaviour
+public class URPFxController : Singleton<URPFxController>
 {
     private CorruptMemory.Settings corrupt_memory_settings;
     private Hacked.Settings hacked_settings;
@@ -19,17 +19,13 @@ public class URPFxController : SerializedMonoBehaviour
     [SerializeField]
     private Dictionary<string, float> intesity_settings_saved;
     // Start is called before the first frame update
-    private void Awake()
+    void Start()
     {
         corrupt_memory_settings = CorruptMemory.GetSettings();
         hacked_settings = Hacked.GetSettings();
         interferences_settings = Interferences.GetSettings();
         vhs_settings = VHS.GetSettings();
         cheap_camera_settings = CheapCamera.GetSettings();
-
-    }
-    void Start()
-    {
         CheapCameraChange(false);
         CorruptMemoryChange(false);
         HackedChange(false);

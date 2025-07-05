@@ -330,7 +330,18 @@ public class HorrorDirector : Singleton<HorrorDirector>
             urp_fx_controller.HackedChange(false);
         });
     }
-
+    public void DarumasanGame(bool GameNow)
+    {
+        //だるまさんゲームが進行している間のエフェクト
+        if (GameNow)
+        {
+            urp_fx_controller.InteferecesChange(true);
+        }
+        else
+        {
+            urp_fx_controller.InteferecesChange(false);
+        }
+    }
     /// <summary>
     /// 全部リセットして None 状態に戻す
     /// </summary>
