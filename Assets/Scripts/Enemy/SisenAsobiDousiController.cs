@@ -189,6 +189,10 @@ public class SisenAsobiDousiController : NetworkBehaviour
                 follow_object_by_nav.MovePermit = true;
                 enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Walk;
                 Debug.Log("AddPlayerToDiscoveryPlayerListsする前のHeadLookAtTargetControllerPlayer: " + HeadLookAtTargetControllerPlayer.GetComponent<NetworkObject>().OwnerClientId);
+                if (head_look_at_target_controller.FirstPlayerKey != null)
+                {
+                    HeadLookAtTargetControllerPlayer = head_look_at_target_controller.FirstPlayerKey;
+                }
                 discovery_player_controller.AddPlayerToDiscoveryPlayerLists(HeadLookAtTargetControllerPlayer);
                 // 送りたいクライアント ID を並べる（ulong で書くこと）
                 ulong[] targetIds = {playerAllController.SpawnedPlayersWithPlayerStatuses[HeadLookAtTargetControllerPlayer].NetworkObject.OwnerClientId};   // 例
