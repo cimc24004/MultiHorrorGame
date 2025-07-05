@@ -148,12 +148,12 @@ public class HeadLookatTargetController : NetworkBehaviour
 
     public void RemoveTarget(GameObject collider_obj)
     {
-        if (m_collidered_for_players.CollideredObjes.Count != 1) return;
         this.lookPlayers.Remove(collider_obj);
         if (this.lookPlayers.Count != 0)
         {
             this.LastPlayerKey = this.lookPlayers.Last();
         }
+        if (m_collidered_for_players.CollideredObjes.Count != 1) return;
         ClearLookTargetClientRpc();
     }
     [ClientRpc]
