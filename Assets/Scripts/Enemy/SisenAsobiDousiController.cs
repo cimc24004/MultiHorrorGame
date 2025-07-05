@@ -75,10 +75,7 @@ public class SisenAsobiDousiController : NetworkBehaviour
         // player_near_sensor.IsNearToKillEffect = false;
         enemy_to_player_kill_controller.KillPlayerEvent.AddListener((GameObject _player) =>
         {
-            if (_player == head_look_at_target_controller.LastPlayerKey)
-            {
-                head_look_at_target_controller.RemoveTarget(_player);
-            }
+            head_look_at_target_controller.RemoveTarget(_player);
             this.ResetValue();
         });
         head_look_at_target_controller.AddTargetHeadLookPlayerUnityEvent.AddListener(() =>
