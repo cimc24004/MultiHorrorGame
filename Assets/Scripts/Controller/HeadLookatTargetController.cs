@@ -141,8 +141,7 @@ public class HeadLookatTargetController : NetworkBehaviour
         lookPlayers.Add(collider_obj);
         this.LastPlayerKey = collider_obj;
         this.AddTargetHeadLookPlayerUnityEvent.Invoke();
-        if (m_collidered_for_players.CollideredObjes.Count != 0) return;
-        ulong targetId = collider_obj.GetComponent<NetworkObject>().NetworkObjectId;
+        ulong targetId = LastPlayerKey.GetComponent<NetworkObject>().NetworkObjectId;
         SetLookTargetClientRpc(targetId);   // 全クライアントに通知
     }
 
@@ -153,8 +152,10 @@ public class HeadLookatTargetController : NetworkBehaviour
         {
             this.LastPlayerKey = this.lookPlayers.Last();
         }
-        if (m_collidered_for_players.CollideredObjes.Count != 1) return;
-        ClearLookTargetClientRpc();
+        if (m_collidered_for_players.CollideredObjes.Count == 1)
+        {
+            ClearLookTargetClientRpc();
+        }
     }
     [ClientRpc]
     void SetLookTargetClientRpc(ulong playerNetId)
