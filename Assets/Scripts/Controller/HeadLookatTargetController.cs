@@ -7,6 +7,7 @@ using DG.Tweening;
 using static UnityEngine.Rendering.DebugUI;
 using Unity.Netcode;
 using UnityEngine.Events;
+using System.Linq;
 public class HeadLookatTargetController : NetworkBehaviour
 {
     private enum Target
@@ -25,7 +26,8 @@ public class HeadLookatTargetController : NetworkBehaviour
     private RigBuilder rig_builder;
 
     private GameObject CameraRoot;
-    public GameObject Player;
+    public List<GameObject> lookPlayers;
+    public GameObject LastPlayerKey;
     private PlayerStatus player_status;
     [SerializeField]
     private CollideredForPlayers m_collidered_for_players;
@@ -136,17 +138,22 @@ public class HeadLookatTargetController : NetworkBehaviour
     }
     void AddTarget(GameObject collider_obj)
     {
-        this.Player = collider_obj;
-        AddTargetHeadLookPlayerUnityEvent.Invoke();
+        lookPlayers.Add(collider_obj);
+        this.LastPlayerKey = collider_obj;
+        this.AddTargetHeadLookPlayerUnityEvent.Invoke();
         if (m_collidered_for_players.CollideredObjes.Count != 0) return;
         ulong targetId = collider_obj.GetComponent<NetworkObject>().NetworkObjectId;
         SetLookTargetClientRpc(targetId);   // 全クライアントに通知
     }
 
-    void RemoveTarget(GameObject _)
+    public void RemoveTarget(GameObject collider_obj)
     {
         if (m_collidered_for_players.CollideredObjes.Count != 1) return;
-        this.Player = null;
+        this.lookPlayers.Remove(collider_obj);
+        if (this.lookPlayers.Count != 0)
+        {
+            this.LastPlayerKey = this.lookPlayers.Last();
+        }
         ClearLookTargetClientRpc();
     }
     [ClientRpc]
