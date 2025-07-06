@@ -78,28 +78,33 @@ public class FootStepSoundController : NetworkBehaviour
             }
 
         }
+        Debug.Log($"FootStep{this.gameObject.transform.parent.gameObject}のIsOwnerId: {this.OwnerClientId}");
         // ★重要★ オーナーが状態を管理し、サーバーRPCで通知する
         if (IsOwner)
         {
+            Debug.Log("IsOwnerFootStep: " + this.gameObject.transform.parent.gameObject);
             // PlayerStatusから移動状態を取得（オーナーが最新状態を持っている）
             // UpdateMoveStatusFromPlayerStatus();
 
             // レベル自動切替
 
             if (!FootStepPlayFromUpdate) return;
-
+            Debug.Log("IsFootStepPlayerFromUpdate=true : " + this.gameObject.transform.parent.gameObject);
             // 一個しかない足音
             if (OnlyOneFootStepSound)
             {
+                Debug.Log("OnlyOneFootStepSound");
                 if ((move_status.Value == MoveStatus.Run || move_status.Value == MoveStatus.Walk)
                     && !audio_source.isPlaying)
                 {
+                    Debug.Log("OnlyOneFootStepSound=trueかつmove_status.Value == MoveStatus.Run || move_status.Value == MoveStatus.Walk)&& !audio_source.isPlaying");
                     audio_source.Play();
                     NotifyFootStepServerRpc("Single", "");
                 }
                 else if ((move_status.Value == MoveStatus.Stop || move_status.Value == MoveStatus.Crouch)
                          && audio_source.isPlaying)
                 {
+                    Debug.Log("OnlyOneFootStepSound=trueかつaudioSource.Stop()");
                     audio_source.Stop();
                     NotifyFootStepServerRpc("StopSingle", "");
                 }

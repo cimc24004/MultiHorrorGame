@@ -43,8 +43,8 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     // 同期用の変数
     private NetworkVariable<float> syncedVoiceStartTime = new NetworkVariable<float>();
     private NetworkVariable<int> currentClipIndex = new NetworkVariable<int>(-1);
-    private NetworkVariable<bool> isLookingAtPlayers = new NetworkVariable<bool>();
-    private NetworkVariable<int> currentLookTargetIndex = new NetworkVariable<int>(-1);
+    [SerializeField]private NetworkVariable<bool> isLookingAtPlayers = new NetworkVariable<bool>();
+    [SerializeField]private NetworkVariable<int> currentLookTargetIndex = new NetworkVariable<int>(-1);
     private Sequence lookSequence;
     private HorrorDirector horrorDirector;
     public override void OnNetworkSpawn()
@@ -77,7 +77,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                 }
             };
             OnColliderEventClientRpc(true, rpcParams);
-            KorondaVolumeVoiceClientRpc(1f, rpcParams);
+            // KorondaVolumeVoiceClientRpc(1f, rpcParams);
         });
         collideredForPlayers.OnCollideredRemovedObjectEvent.AddListener((t) =>
         {
@@ -89,7 +89,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                 }
             };
             OnColliderEventClientRpc(false,rpcParams);
-            KorondaVolumeVoiceClientRpc(0f, rpcParams);
+            // KorondaVolumeVoiceClientRpc(0f, rpcParams);
         });
         discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
     }
@@ -206,6 +206,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     private void StartDefaultLookAnimation()
     {
         StartDefaultLookClientRpc();
+        isLookingAtPlayers.Value = false;
     }
 
     [ClientRpc]
@@ -267,16 +268,10 @@ public class DarumasanKorondaGameController : NetworkBehaviour
         audio_source.clip = clipsList[i];
         audio_source.Play();
     }
-    [ClientRpc]
-    private void KorondaVolumeVoiceClientRpc(float _volume, ClientRpcParams clientRpcParams)
-    {
-        audio_source.volume = _volume;
-        
-    }
+
     private void KorondaVoiceEnd()
     {
         Debug.Log("ボイス終了した");
-        isLookingAtPlayers.Value = true;
         StartLookSequenceClientRpc();
     }
 
@@ -293,24 +288,24 @@ public class DarumasanKorondaGameController : NetworkBehaviour
         horrorDirector = HorrorDirector.instance;
         if (_collider)
         {
-            horrorDirector.DarumasanGame(true);
+            horrorDirector.DarumasanGameEffect(true);
         }
         else
         {
-            horrorDirector.DarumasanGame(false);
+            horrorDirector.DarumasanGameEffect(false);
         }
     }
     private IEnumerator LookAtPlayersSequence()
     {
         lookSequence = DOTween.Sequence().SetLink(this.gameObject);
-        
+
         for (int i = 0; i < collideredForPlayers.CollideredObjes.Count; i++)
         {
             if (IsServer)
             {
                 currentLookTargetIndex.Value = i;
             }
-            
+
             var targetPos = playerAllController
                 .SpawnedPlayersWithPlayerStatuses[collideredForPlayers.CollideredObjes[i]]
                 .CameraRoot.transform.position;
@@ -318,16 +313,22 @@ public class DarumasanKorondaGameController : NetworkBehaviour
             LookAtPlayerTween = DarumasanParent.transform
                 .DODynamicLookAt(targetPos, 0.3f)
                 .SetEase(Ease.Linear);
-            
+
             yield return new WaitForSeconds(0.3f);
             yield return new WaitForSeconds(0.3f);
+            if (IsServer)
+            {
+                if (i == 0)
+                {
+                    isLookingAtPlayers.Value = true;
+                }
+            }
         }
         
         if (IsServer)
         {
             VoiceStart = false;
             VoiceEnd = true;
-            isLookingAtPlayers.Value = false;
             currentLookTargetIndex.Value = -1;
         }
     }

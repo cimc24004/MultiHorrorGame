@@ -51,7 +51,11 @@ public class HorrorDirector : Singleton<HorrorDirector>
     private URPFxController urp_fx_controller;
     private PlayerStatus player_status;
     private CurseController curse_controller;
+    private CameraShakeController cameraShakeController;
     private ClosestEnemyController closest_enemy_controller;
+    [Title("だるまさんがころんだゲーム演出")]
+    [SerializeField]
+    private GameObject DarumasanGame;
     [Header("For Debug")]
     [SerializeField]
     // 現在の状態
@@ -74,6 +78,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         player_status = _playerStatus;
+        cameraShakeController = CameraShakeController.instance;
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         urp_fx_controller = game_controller_on_all_scene.GetComponent<URPFxController>();
         closest_enemy_controller = ClosestEnemyController.instance;
@@ -311,7 +316,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
 
         DiscoveriedSound.SetActive(false);
         DiscoveriedSound.SetActive(true);
-
+        cameraShakeController.ShakeCamera(1f);
         urp_fx_controller.CheapCameraChange(false);
         urp_fx_controller.VHSChange(false);
         urp_fx_controller.InteferecesChange(true);
@@ -330,16 +335,19 @@ public class HorrorDirector : Singleton<HorrorDirector>
             urp_fx_controller.HackedChange(false);
         });
     }
-    public void DarumasanGame(bool GameNow)
+    public void DarumasanGameEffect(bool GameNow)
     {
         //だるまさんゲームが進行している間のエフェクト
         if (GameNow)
         {
-            urp_fx_controller.InteferecesChange(true);
+            DarumasanGame.SetActive(true);
+            urp_fx_controller.VHSChange(true);
+
         }
         else
         {
-            urp_fx_controller.InteferecesChange(false);
+            DarumasanGame.SetActive(false);
+            urp_fx_controller.VHSChange(false);
         }
     }
     /// <summary>

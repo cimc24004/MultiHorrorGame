@@ -3,23 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Sirenix.OdinInspector;
-public class CameraShakeController : SerializedMonoBehaviour
+public class CameraShakeController : Singleton<CameraShakeController>
 {
-    private CinemachineImpulseSource cinemachine_impulse_source;
-    // Start is called before the first frame update
+    [SerializeField] private CinemachineImpulseSource impulseSource;
+
     void Start()
     {
+        // コンポーネントがアタッチされていない場合は取得
+        if (impulseSource == null)
+            impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
-    // Update is called once per frame
-    void Update()
+    // この関数を呼び出すとカメラが揺れる
+    public void ShakeCamera()
     {
-        
+        impulseSource.GenerateImpulse();
     }
-    [Button]
-    public void Shake(){
-        Debug.Log("Shaked-------------------------------Impusle!");
-        cinemachine_impulse_source = this.gameObject.GetComponent<CinemachineImpulseSource>();
-        cinemachine_impulse_source.GenerateImpulse();
+
+    // 強度を指定して揺らす
+    public void ShakeCamera(float intensity)
+    {
+        impulseSource.GenerateImpulse(intensity);
     }
+
+    // 方向と強度を指定して揺らす
+    public void ShakeCamera(Vector3 velocity)
+    {
+        impulseSource.GenerateImpulse(velocity);
+    }
+    // [Button]
+    // public void ShakeCameraWithDuration(float duration, float intensity)
+    // {
+    //     // 地震用の長い揺れ
+    //     StartCoroutine(ContinuousShake(duration, intensity));
+    // }
+    
+    // private IEnumerator ContinuousShake(float duration, float interval)
+    // {
+    //     float elapsed = 0f;
+    //     while (elapsed < duration)
+    //     {
+    //         impulseSource.GenerateImpulse();
+    //         yield return new WaitForSeconds(interval);
+    //         elapsed += interval;
+    //     }
+    // }
 }
