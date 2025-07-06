@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
+using Unity.Entities.UniversalDelegates;
 public class EnemyActionForDoorController : NetworkBehaviour
 {
     // 扉を攻撃したり開閉したりする処理
@@ -33,12 +34,17 @@ public class EnemyActionForDoorController : NetworkBehaviour
     private NetworkObject networkObject;
     private EnemySoundSensor enemy_sound_sensor;
     private CharacterController character_controller;
-
+    private CameraShakeController cameraShakeController;
+    private ToPlayersDistanceTracker toPlayersDistanceTracker;
+    private PlayerAllController playerAllController;
     [SerializeField] private GameObject AttackedDoorEffectPrefab;
     // Start は最初のフレーム前に呼ばれる
     public override void OnNetworkSpawn()
     {
+        cameraShakeController = CameraShakeController.instance;
         if (!IsServer) return;
+        playerAllController = PlayerAllController.instance;
+        toPlayersDistanceTracker = this.gameObject.GetComponent<ToPlayersDistanceTracker>();
         networkObject = this.gameObject.GetComponent<NetworkObject>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
@@ -140,6 +146,24 @@ public class EnemyActionForDoorController : NetworkBehaviour
             follow_object_by_nav.StoppingDistance = follow_object_by_nav.DefaultStoppingDistance;
         }
         DoorAttackForAllClientRpc(DoorBroken);
+
+        List<ulong> targetClientIds = new List<ulong>();
+        foreach (KeyValuePair<GameObject, float> distanceWithPlayer in toPlayersDistanceTracker.ToPlayerDistanceLists)
+        {
+            GameObject player = distanceWithPlayer.Key;
+            float distance = distanceWithPlayer.Value;
+            if (distance <= 6)
+            {
+                //ある程度プレイヤーとの距離が近かったらそのプレイヤーに対してDoorAttackのカメラの揺れを送信する
+                targetClientIds.Add(playerAllController.SpawnedPlayersWithPlayerStatuses[player].OwnerClientId);
+            }
+        }
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = targetClientIds }
+        };
+        DoorAttackForNearClientRpc(DoorBroken, clientRpcParams);
+
     }
 
     [ClientRpc]
@@ -147,12 +171,28 @@ public class EnemyActionForDoorController : NetworkBehaviour
     {
         if (_doorBroken)
         {
+            //ドアを破壊した
             DoorAttackSource.PlayOneShot(DoorBrokenClip);
             DoorAttackSource.PlayOneShot(DoorAttackClip);
         }
         else
         {
+            //ドアを攻撃中
             DoorAttackSource.PlayOneShot(DoorAttackClip);
+        }
+    }
+    [ClientRpc]
+    private void DoorAttackForNearClientRpc(bool _doorBroken, ClientRpcParams clientRpcParams)
+    {
+        //この敵の近くのプレイヤーに対して送信する
+        //ドアの破壊による揺れエフェクト
+        if (_doorBroken)
+        {
+            cameraShakeController.ShakeCamera(0.2f, CameraShakeController.CameraImpulseSourceType.DoorAttack);
+        }
+        else
+        {
+            cameraShakeController.ShakeCamera(0.1f, CameraShakeController.CameraImpulseSourceType.DoorAttack);
         }
     }
 }

@@ -316,7 +316,7 @@ public class HorrorDirector : Singleton<HorrorDirector>
 
         DiscoveriedSound.SetActive(false);
         DiscoveriedSound.SetActive(true);
-        cameraShakeController.ShakeCamera(1f);
+        cameraShakeController.ShakeCamera(1f, CameraShakeController.CameraImpulseSourceType.Discoveried);
         urp_fx_controller.CheapCameraChange(false);
         urp_fx_controller.VHSChange(false);
         urp_fx_controller.InteferecesChange(true);

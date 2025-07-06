@@ -5,47 +5,32 @@ using Cinemachine;
 using Sirenix.OdinInspector;
 public class CameraShakeController : Singleton<CameraShakeController>
 {
-    [SerializeField] private CinemachineImpulseSource impulseSource;
-
+    [SerializeField] private CinemachineImpulseSource DiscoveriedImpulseSource;
+    [SerializeField] private CinemachineImpulseSource DoorAttackImpulseSource;
+    public enum CameraImpulseSourceType
+    {
+        Discoveried,
+        DoorAttack
+    }
+    public CameraImpulseSourceType cameraImpulseSourceType;
     void Start()
     {
         // コンポーネントがアタッチされていない場合は取得
-        if (impulseSource == null)
-            impulseSource = GetComponent<CinemachineImpulseSource>();
+        if (DiscoveriedImpulseSource == null)
+            DiscoveriedImpulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     // この関数を呼び出すとカメラが揺れる
-    public void ShakeCamera()
+    public void ShakeCamera(float intensity,CameraImpulseSourceType _cameraImpulseSourceType)
     {
-        impulseSource.GenerateImpulse();
+        if (_cameraImpulseSourceType == CameraImpulseSourceType.Discoveried)
+        {
+            DiscoveriedImpulseSource.GenerateImpulse(intensity);
+        }
+        else if (_cameraImpulseSourceType == CameraImpulseSourceType.DoorAttack)
+        {
+            DoorAttackImpulseSource.GenerateImpulse(intensity);
+        }
     }
 
-    // 強度を指定して揺らす
-    public void ShakeCamera(float intensity)
-    {
-        impulseSource.GenerateImpulse(intensity);
-    }
-
-    // 方向と強度を指定して揺らす
-    public void ShakeCamera(Vector3 velocity)
-    {
-        impulseSource.GenerateImpulse(velocity);
-    }
-    // [Button]
-    // public void ShakeCameraWithDuration(float duration, float intensity)
-    // {
-    //     // 地震用の長い揺れ
-    //     StartCoroutine(ContinuousShake(duration, intensity));
-    // }
-    
-    // private IEnumerator ContinuousShake(float duration, float interval)
-    // {
-    //     float elapsed = 0f;
-    //     while (elapsed < duration)
-    //     {
-    //         impulseSource.GenerateImpulse();
-    //         yield return new WaitForSeconds(interval);
-    //         elapsed += interval;
-    //     }
-    // }
 }
