@@ -43,7 +43,6 @@ public class PlayerMoveScript : NetworkBehaviour
     private float moveSpeedUpTimer  = 0f;
 
     private Vector2 moveInput;
-    private bool CrouchNow;
 
     // ← 追加：前フレームの MoveState を覚えておく
     private PlayerStatus.PlayerMoveState prevMoveState;
@@ -128,7 +127,7 @@ public class PlayerMoveScript : NetworkBehaviour
             var nowCrouch = playerStatus.Crouch;
 
 
-            if (prevMoveState == PlayerStatus.PlayerMoveState.Crouch && !nowCrouch)
+            if (prevMoveState == PlayerStatus.PlayerMoveState.Crouch && !nowCrouch.Value)
             {
                 // しゃがみ解除された瞬間だけ Walk に戻す
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
@@ -137,7 +136,7 @@ public class PlayerMoveScript : NetworkBehaviour
             }
 
             // しゃがみ中はまず CrouchSpeed を優先
-            if (playerStatus.Crouch)
+            if (playerStatus.Crouch.Value)
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Crouch;
                 NowSpeed = CrouchSpeed;
@@ -207,17 +206,17 @@ public class PlayerMoveScript : NetworkBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        // 空
-    }
+    // void FixedUpdate()
+    // {
+    //     // 空
+    // }
 
     private void OnCrouchPerformed(InputAction.CallbackContext ctx)
     {
         if (!playerStatus.CrouchPermit.Value) return;
-        CrouchNow = !CrouchNow;
-        playerStatus.CrouchStandCameraPosChange(CrouchNow);
-        UpdateCrouchNetworkChangeServerRpc(CrouchNow);
+        playerStatus.Crouch.Value = !playerStatus.Crouch.Value;
+        playerStatus.CrouchStandCameraPosChange(playerStatus.Crouch.Value);
+        UpdateCrouchNetworkChangeServerRpc(playerStatus.Crouch.Value);
     }
     private void OnRunChangePerformed(InputAction.CallbackContext ctx) {
         bool isRunPressed = ctx.ReadValue<float>() > 0f;
@@ -246,7 +245,7 @@ public class PlayerMoveScript : NetworkBehaviour
     {
         if (!playerStatus.CrouchPermit.Value) return;
         anim.SetBool("Crouch", newCrouch);
-        playerStatus.Crouch = newCrouch;
+        playerStatus.Crouch.Value = newCrouch;
     }
     [ServerRpc]
     private void UpdateRunStateServerRpc(bool isRun)

@@ -146,7 +146,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     {
         // サーバー側でhide_type_target_object.Value（TargetHideObjectSetで設定済み）に基づいてアニメーションを更新
         // この値は全クライアントに同期される
-        player_status.Crouch = false; // しゃがみ状態を一旦リセット
+        player_status.Crouch.Value = false; // しゃがみ状態を一旦リセット
         if (hide_type_target_object.Value == TargetHideObject.HideType.Crouch)
         {
             player_anim.SetBool("Crouch", true);
@@ -168,6 +168,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     private void HidingNowChangeServerRpc(bool _HidingNow)
     {
         player_status.HidingNow.Value = _HidingNow; // NetworkVariableの更新
+        player_status.CrouchPermit.Value = !_HidingNow;        
         if (_HidingNow)
         {
             charactor_move_permit.Stop();
@@ -240,12 +241,18 @@ public class PlayerHideObjectAction : NetworkBehaviour
             else
             {
                 Debug.Log("Enemy found player hiding (Not FaceDown). Player unhides and dies.");
+                target_hide_object.UnHideRequestServerRpc(this.NetworkObjectId);
                 UnHideClientRpc(); // まず隠れるのをやめさせる
                 player_status.DeadEvent(_SightningEnemy); // 死亡イベント
             }
         }
     }
-
+    public void LayLookDownAnimationEndDeathOnServer()
+    {
+        //敵がLayLookDownした後のイベント サーバー側で実行
+        target_hide_object.UnHideRequestServerRpc(this.NetworkObjectId);
+        player_status.player_hide_object_action.UnHideClientRpc();
+    }
     [ServerRpc]
     public void HideUnHideRayCastActionPerformedRequestServerRpc(ulong _TargetNetworkObjectId, ServerRpcParams rpcParams = default)
     {

@@ -9,7 +9,6 @@ public class CameraPOVSensitivity : MonoBehaviour
     [SerializeField] private float maxSensitivity = 2.0f;
 
     private ConfigController config_controller;
-    private ConfigController.ConfigStatus mouse_sens_config_status;
 
     private Slider2 sensitivitySlider;
     private CinemachinePOV povComponent;
@@ -17,8 +16,6 @@ public class CameraPOVSensitivity : MonoBehaviour
     void Start()
     {
         config_controller = ConfigController.instance;
-        mouse_sens_config_status = config_controller.MouseSensivityStatus;
-        sensitivitySlider = mouse_sens_config_status.UI.gameObject.GetComponent<Slider2>();
         if (virtualCamera == null)
         {
             Debug.LogError("CinemachineVirtualCameraがアタッチされていません。");
@@ -47,7 +44,7 @@ public class CameraPOVSensitivity : MonoBehaviour
     }
     private void Update()
     {
-        UpdateSensitivity(mouse_sens_config_status.value);
+        // UpdateSensitivity(mouse_sens_config_status.value);
     }
     private void UpdateSensitivity(float sensitivity)
     {

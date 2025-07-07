@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-public class GameStateController : MonoBehaviour
+public class GameStateController : Singleton<GameStateController>
 {
     public enum GameState
     {

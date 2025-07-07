@@ -46,7 +46,7 @@ public class LayLookDownAnimationStateEvent : StateMachineBehaviour
         if (!NetworkManager.Singleton.IsServer) return;
         if (player_status.HidingNow.Value)
         {
-            player_status.player_hide_object_action.UnHideClientRpc();
+            player_status.player_hide_object_action.LayLookDownAnimationEndDeathOnServer();
         }
         player_status.player_hide_object_action.layLookDownTriggered = false;
         follow_object_by_nav.MovePermit = true;

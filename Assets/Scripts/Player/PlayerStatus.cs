@@ -70,7 +70,7 @@ public class PlayerStatus : NetworkBehaviour
     private PlayerMoveScript player_move_script;
     private Animator anim;
     private bool InitPlayer;
-    public bool Crouch;
+    public NetworkVariable<bool> Crouch = new NetworkVariable<bool>();
     public NetworkVariable<bool> CrouchPermit = new NetworkVariable<bool>(true);
     public CinemachineVirtualCamera virtual_camera;
     public GameObject ItemController;
@@ -249,17 +249,19 @@ public class PlayerStatus : NetworkBehaviour
         anim.SetBool("AppearentDeath", true);
 
         this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
+        this.gameObject.tag = "DeadPlayer";
         PlayerKilledScene = true;
         DOVirtual.DelayedCall(4, () =>
         {
             PlayerKilledScene = false;
             horror_director.ChangeHorrorState(HorrorState.None);
+            this.gameObject.layer = LayerMask.NameToLayer("Player");
             // player_continue_controller.Continue();
         });
         player_hide_object_action.HidingPermit.Value = false;
         KillSequenceRunning.Value = false;
         this.CrouchPermit.Value = false;
-        cross_hair_event.CrossHairEventRaycastPermit.Value = false;
+        cross_hair_event.CrossHairEventPermitForDeath.Value = false;
         
     }
     public void CrouchStandCameraPosChange(bool _Crouch)

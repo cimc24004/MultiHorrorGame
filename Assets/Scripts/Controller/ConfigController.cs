@@ -6,83 +6,58 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
+using System.IO;
 public class ConfigController : SingleTonDontDestory<ConfigController>
 {
-    [Serializable]
-    public class ConfigStatus
-    {
 
-        public string config_name;
-        public float value;
-
-        public GameObject UI;
-
-        public ConfigStatus(string name, float _value)
-        {
-            this.config_name = name;
-            this.value = _value;
-        }
-
-    }
-    
-
-    [SerializeField] private PlayerInput player_input;
-
-    public GameObject ConfigCanvas;
-
-    public ConfigStatus MouseSensivityStatus = new ConfigStatus("MouseSensivity", 0);
-
-    private StageController stage_controller;
 
     public GameControllerOnAllScene game_controller_all_scene;
-    
-    private GameStateController game_state_controller;
-
-    public InputActionReference CommonActionESC;
-    //
-    [SerializeField]private bool Opended = false;
-    private void Start()
+    public ConfigData config;
+    private string configPath;
+    private ConfigUI configUI;
+    void Start()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        stage_controller = StageController.instance;
-        game_state_controller = game_controller_all_scene.gameObject.GetComponent<GameStateController>();
-    }
-
-    private void Update()
-    {
-        if (CommonActionESC.action.triggered)
+        configUI = ConfigUI.instance;
+        configUI.CloseConfigMenuButton.onClick.AddListener(() =>
         {
-            if (!Opended)
-            {
-                //ひらいた
-                game_state_controller.MenuOnGamePlayMode(true);
-                ConfigCanvas.gameObject.SetActive(true);
-                Opended = true;
-            }
-            else
-            {
+            CloseConfigMenu();
+        });
+    }
+    public void OpenConfigMenu()
+    {
+        configUI.configPanel.gameObject.SetActive(true);
+    }
+    public void CloseConfigMenu()
+    {
+        configUI.configPanel.gameObject.SetActive(false);
+    }
+    [SerializeField] private bool Opended = false;
 
-                //とじた
-                game_state_controller.GameplayMode();
-                ConfigCanvas.gameObject.SetActive(false);
-                Opended = false;
-            }
-
-        }
+    public void SaveConfig()
+    {
+        string json = JsonUtility.ToJson(config, true);
+        File.WriteAllText(configPath, json);
     }
 
-    public void OnChangeSliderMouseSens(float _sens, GameObject me)
+    public void LoadConfig()
     {
-        if(MouseSensivityStatus.UI == null)
+        if (File.Exists(configPath))
         {
-            MouseSensivityStatus.UI = me;
+            string json = File.ReadAllText(configPath);
+            config = JsonUtility.FromJson<ConfigData>(json);
         }
-        MouseSensivityStatus.value = _sens;
+        else
+        {
+            config = new ConfigData();
+        }
+        ApplyConfig();
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void ApplyConfig()
     {
-        stage_controller = StageController.instance;
-        Debug.Log("StageController: " + stage_controller);
+        // 設定を実際に適用
+        Screen.SetResolution(config.screenWidth, config.screenHeight, config.fullscreen);
+        QualitySettings.SetQualityLevel(config.qualityLevel);
+        // 他の設定も適用...
     }
 }
