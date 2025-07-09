@@ -15,32 +15,55 @@ public class Collidered : MonoBehaviour
     [SerializeField]
     public UnityEvent OnTriggerExitEvent;
 
+    void Start()
+    {
+        PlayerStatus.OnLocalPlayerDeaded += OnlocalPlayerDeaded;
+    }
+    private void OnlocalPlayerDeaded(PlayerStatus playerStatus)
+    {
+        if (CollideredObj == playerStatus.gameObject)
+        {
+            TriggerExitEvent(playerStatus.gameObject);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (TargetTags.Contains(other.gameObject.tag))
         {
-            OnTriggerEnterEvent.Invoke();
-            CollideredObj = other.gameObject;
-            Collider = true;
+            TriggerEnterEvent(other.gameObject);
         }
     }
     private void OnTriggerStay(Collider other)
     {
         if (TargetTags.Contains(other.gameObject.tag))
         {
-            OnTriggerStayEvent.Invoke();
-            CollideredObj = other.gameObject;
-            Collider = true;
+            TriggerStayEvent(other.gameObject);
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (TargetTags.Contains(other.gameObject.tag))
         {
-            OnTriggerExitEvent.Invoke();
-            CollideredObj = null;
-            Collider = false;
+            TriggerExitEvent(other.gameObject);
         }
+    }
+    private void TriggerEnterEvent(GameObject obj)
+    {
+        OnTriggerEnterEvent.Invoke();
+        CollideredObj = obj;
+        Collider = true;
+    }
+    private void TriggerStayEvent(GameObject obj)
+    {
+        OnTriggerStayEvent.Invoke();
+        CollideredObj = obj;
+        Collider = true;
+    }
+    private void TriggerExitEvent(GameObject obj)
+    {
+        OnTriggerExitEvent.Invoke();
+        CollideredObj = null;
+        Collider = false;
     }
 }

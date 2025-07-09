@@ -37,7 +37,7 @@ public class PrayController : NetworkBehaviour
 
     // ���[�J���p
     private bool Inited;
-    private NetworkVariable<bool> PrayNow = new NetworkVariable<bool>();
+    [SerializeField]private NetworkVariable<bool> PrayNow = new NetworkVariable<bool>();
     private bool PrayForStartOnce;
     private bool NotPrayForStartOnce;
     private PlayerStatus player_status;
@@ -46,7 +46,7 @@ public class PrayController : NetworkBehaviour
     private Image GageImageUI;
     private MainNoticedUIController main_noticed_ui_controller;
     //?????????????
-    private bool PushingAction = false;
+    [SerializeField]private bool PushingAction = false;
     private bool once;
     void OnEnable() => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;

@@ -82,19 +82,6 @@ public class SoundEnemyObjectColliderForEvent : NetworkBehaviour
         }
     }
 
-    // OnTrigger 系は不要になったのでコメントアウト
-    /*
-    private void OnTriggerEnter(Collider other) { }
-    
-    private void OnTriggerExit(Collider other) { }
-    */
-    // private void OnTriggerStay(Collider other)
-    // {
-    //     if(!triggeries.Contains(other.gameObject)){
-    //         triggeries.Add(other.gameObject);
-    //     }
-    // }
-
     // デバッグ用: シーンビューで検知範囲を表示
     private void OnDrawGizmosSelected()
     {

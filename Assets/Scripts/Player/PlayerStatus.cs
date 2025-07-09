@@ -20,6 +20,7 @@ public class PlayerStatus : NetworkBehaviour
     // ローカルの人を取得するためのinstance
     public static PlayerStatus LocalInstance { get; private set; }
     public static event Action<PlayerStatus> OnLocalPlayerSpawned;
+    public static event Action<PlayerStatus> OnLocalPlayerDeaded;
 
     // 値の受け渡しやスタミナなどの管理。プレイヤーの状態などを保存
     public Transform CameraRoot;
@@ -88,7 +89,6 @@ public class PlayerStatus : NetworkBehaviour
     private ItemDatabases item_databases;
     private EnemyFlinchController killed_enemy_flinch_controller;
     public NetworkVariable<bool> KillSequenceRunning = new(false);
-    public UnityEvent DeathEvent;
     public override void OnNetworkDespawn()
     {
         if (IsOwner && LocalInstance == this)
@@ -195,7 +195,6 @@ public class PlayerStatus : NetworkBehaviour
         if (this.Dead.Value) return;
         //サーバーから実行される。
         this.KillSequenceRunning.Value = true;
-        DeathEvent.Invoke();
         Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
         var rpcParams = new ClientRpcParams
         {
@@ -280,15 +279,15 @@ public class PlayerStatus : NetworkBehaviour
         //普通に死ぬ処理
         this.Dead.Value = true;
         anim.SetBool("AppearentDeath", true);
-
-        this.gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
         this.gameObject.tag = "DeadPlayer";
+        OnLocalPlayerDeaded.Invoke(this);
         PlayerKilledScene = true;
         DOVirtual.DelayedCall(4, () =>
         {
             PlayerKilledScene = false;
             horror_director.ChangeHorrorState(HorrorState.None);
-            this.gameObject.layer = LayerMask.NameToLayer("Player");
+            // this.gameObject.layer = LayerMask.NameToLayer("Player");
+
             // player_continue_controller.Continue();
         });
         player_hide_object_action.HidingPermit.Value = false;

@@ -22,6 +22,20 @@ public class CollideredForPlayers : MonoBehaviour
     // {
 
     // }
+    void Start()
+    {
+        PlayerStatus.OnLocalPlayerDeaded += OnlocalPlayerDeaded;
+    }
+    private void OnlocalPlayerDeaded(PlayerStatus playerStatus) {
+        if (CollideredObjes.Count != 0)
+        {
+            if (CollideredObjes.Contains(playerStatus.gameObject))
+            {
+                TriggerExitEvent(playerStatus.gameObject);
+            }
+        }
+
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!NetworkManager.Singleton.IsServer) return;
@@ -29,8 +43,7 @@ public class CollideredForPlayers : MonoBehaviour
         {
             if (!CollideredObjes.Contains(other.gameObject))
             {
-                CollideredObjesAdd(other.gameObject);
-                OnTriggerEnterEvent.Invoke();
+                TriggerEnterEvent(other.gameObject);
             }
         }
     }
@@ -39,10 +52,10 @@ public class CollideredForPlayers : MonoBehaviour
         if (!NetworkManager.Singleton.IsServer) return;
         if (TargetTags.Contains(other.gameObject.tag))
         {
-            OnTriggerStayEvent.Invoke();
-
+            TriggerStayEvent();
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (!NetworkManager.Singleton.IsServer) return;
@@ -50,8 +63,7 @@ public class CollideredForPlayers : MonoBehaviour
         {
             if (CollideredObjes.Contains(other.gameObject))
             {
-                CollideredObjesRemove(other.gameObject);
-                OnTriggerExitEvent.Invoke();
+                TriggerExitEvent(other.gameObject);
             }
         }
     }
@@ -64,5 +76,20 @@ public class CollideredForPlayers : MonoBehaviour
     {
         OnCollideredRemovedObjectEvent.Invoke(_obj);
         CollideredObjes.Remove(_obj);
+    }
+
+    public void TriggerEnterEvent(GameObject obj)
+    {
+        CollideredObjesAdd(obj.gameObject);
+        OnTriggerEnterEvent.Invoke();
+    }
+    public void TriggerStayEvent()
+    {
+        OnTriggerStayEvent.Invoke();
+    }
+    public void TriggerExitEvent(GameObject obj)
+    {
+        CollideredObjesRemove(obj);
+        OnTriggerExitEvent.Invoke();
     }
 }
