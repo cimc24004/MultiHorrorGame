@@ -9,12 +9,14 @@ public class ItemDatabases : Singleton<ItemDatabases>
 {
     [Header("ワールドにランダム生成されるアイテムたち")]
     public List<ItemStatus> ForPutItems;
-    
+
+    [Header("すべてのアイテム")]
+    public List<ItemStatus> AllItems;
     [Header("桜の木の下に納めるアイテムたち")]
     public ItemStatus ForDeliverItem;
 #if UNITY_EDITOR
-    [Button("すべてのアイテムを登録")]
-        public void ItemsDBMigrateReset()
+    [Button("すべてのPutアイテムを登録")]
+        public void PutItemsDBMigrateReset()
         {
             ForPutItems.Clear();
             //UtenStatys[] all = AssetDatabase.LoadAssetAtPath<Itemstatus>("")
@@ -26,6 +28,25 @@ public class ItemDatabases : Singleton<ItemDatabases>
                     Debug.Log(file);
                     ItemStatus ItemStatus = (ItemStatus)AssetDatabase.LoadAssetAtPath<ItemStatus>(file) as ItemStatus;
                     ForPutItems.Add(ItemStatus);
+                }
+                //AssetDatabase.LoadAssetAtPath(file);
+            }
+        }
+#endif
+#if UNITY_EDITOR
+    [Button("すべてのアイテムを登録")]
+        public void ItemsDBMigrateReset()
+        {
+            AllItems.Clear();
+            //UtenStatys[] all = AssetDatabase.LoadAssetAtPath<Itemstatus>("")
+            string[] files = Directory.GetFiles("Assets/ScriptTable/Items");
+            foreach(string file in files)
+            {
+                if (!file.Contains(".meta"))
+                {
+                    Debug.Log(file);
+                    ItemStatus ItemStatus = (ItemStatus)AssetDatabase.LoadAssetAtPath<ItemStatus>(file) as ItemStatus;
+                    AllItems.Add(ItemStatus);
                 }
                 //AssetDatabase.LoadAssetAtPath(file);
             }

@@ -6,5 +6,7 @@ public class ConfigUI : Singleton<ConfigUI>
 {
     public GameObject configPanel;
     public Button CloseConfigMenuButton;
+    public Button SaveConfigButton;
     public bool OpenNow;
+
 }

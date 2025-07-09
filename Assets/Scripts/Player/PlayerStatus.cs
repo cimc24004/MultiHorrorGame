@@ -78,6 +78,7 @@ public class PlayerStatus : NetworkBehaviour
     public ItemMenuController item_menu_controller;
     public ItemEquipController item_equip_controller;
     public CharacterController playerCharacterController;
+    public FirstAidKitController firstAidKitController;
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
     private HorrorDirector horror_director;
@@ -158,7 +159,37 @@ public class PlayerStatus : NetworkBehaviour
         MoveY = 0;
         MoveSpeed = 0;
     }
-
+    public void Revival()
+    {
+        Dead.Value = false;
+        anim.SetBool("AppearentDeath", false);
+        player_hide_object_action.HidingPermit.Value = true;
+        this.CrouchPermit.Value = true;
+        cross_hair_event.CrossHairEventPermitForDeath.Value = true;
+        var rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { this.OwnerClientId }
+            }
+        };
+        //Client
+        RevivalClientRpc(rpcParams);
+    }
+    [ClientRpc]
+    private void RevivalClientRpc(ClientRpcParams rpcParams)
+    {
+        item_menu_controller.enabled = true;
+        Vector3 src = CameraRoot.localPosition;
+        Transform tgt = HeadPos;
+        float tgtY = tgt.localPosition.y;
+        Tween StandTween = DOTween.To(
+            () => src.y,
+            y => CameraRoot.localPosition = new Vector3(src.x, y, src.z),
+            tgtY,
+            0.2f
+        ).SetEase(Ease.OutQuad);
+    }
     public void DeadEvent(GameObject KilledMeEnemy)
     {
         if (this.Dead.Value) return;
@@ -166,9 +197,11 @@ public class PlayerStatus : NetworkBehaviour
         this.KillSequenceRunning.Value = true;
         DeathEvent.Invoke();
         Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
-        var rpcParams = new ClientRpcParams {
-            Send = new ClientRpcSendParams {
-                TargetClientIds = new ulong[]{ this.OwnerClientId }
+        var rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { this.OwnerClientId }
             }
         };
         if (KilledMeEnemy.tag == "Enemy")

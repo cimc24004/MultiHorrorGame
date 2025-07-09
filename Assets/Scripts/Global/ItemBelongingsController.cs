@@ -226,6 +226,7 @@ public class ItemBelongingsController : NetworkBehaviour
     [ServerRpc]
     private void ItemDumpSpawnServerRpc(uint itemGlobalId, Vector3 position)
     {
+        Debug.Log("ItemDumpSpawnServerRpc^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         ItemStatus status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
         if (status == null) return;
         GameObject obj = Instantiate(status.ItemPutObjectPrefab, position, Quaternion.identity);

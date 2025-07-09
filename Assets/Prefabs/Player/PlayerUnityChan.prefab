@@ -634,6 +634,112 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &563637330651970733
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4187275497350354172}
+  - component: {fileID: 2345434772001350999}
+  - component: {fileID: 5169522218118614318}
+  - component: {fileID: 6409433804350278574}
+  m_Layer: 3
+  m_Name: PrayControllerFirstAid
+  m_TagString: Pray
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4187275497350354172
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563637330651970733}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.52, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 597350177767367547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2345434772001350999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563637330651970733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d3a684997e8d904683d9fc468ccc3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  NoticeMessage: "\u8607\u751F\u3059\u308B"
+  NeedToPrayTime: 7
+  PrayTimeNow:
+    m_InternalValue: 0
+  PrayPermit:
+    m_InternalValue: 1
+  AlreadyPrayCompleted:
+    m_InternalValue: 0
+  PrayCompletedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PrayCompletedEventForServer:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Arguments: []
+        m_CallState: 2
+        m_Target: {fileID: 6936642782527425598}
+        m_MethodName: Revival
+        m_Modes: 01000000
+  PrayStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &5169522218118614318
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563637330651970733}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.5062053, z: 1}
+  m_Center: {x: 0, y: 0.25310266, z: 0}
+--- !u!114 &6409433804350278574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563637330651970733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edea426372526bd42ae21a708f03bb18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  FirstAidKitItemStatus: {fileID: 11400000, guid: 34bfbd0c698e8644f95e24a357e1c62f,
+    type: 2}
+  ResuscitationMaxValue: 0
 --- !u!1 &615471102250499405
 GameObject:
   m_ObjectHideFlags: 0
@@ -6419,6 +6525,7 @@ Transform:
   - {fileID: 4439345042802829076}
   - {fileID: 8147272574995282323}
   - {fileID: 1785173690184655202}
+  - {fileID: 4187275497350354172}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &3709143509871936015
@@ -6545,7 +6652,8 @@ MonoBehaviour:
   HideActionAudioDatas: {fileID: 2952609976867138473}
   PlayerKilledScene: 0
   FlashLightBatteryUI: {fileID: 7163496881641711382}
-  Crouch: 0
+  Crouch:
+    m_InternalValue: 0
   CrouchPermit:
     m_InternalValue: 1
   virtual_camera: {fileID: 0}
@@ -6554,8 +6662,12 @@ MonoBehaviour:
   item_menu_controller: {fileID: 0}
   item_equip_controller: {fileID: 5139405668482142763}
   playerCharacterController: {fileID: 2751979431404878738}
+  firstAidKitController: {fileID: 0}
   KillSequenceRunning:
     m_InternalValue: 0
+  DeathEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4640989651405648362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6593,6 +6705,7 @@ MonoBehaviour:
     m_InternalValue: 0
   HidingPermit:
     m_InternalValue: 1
+  layLookDownTriggered: 0
 --- !u!114 &364072651999732485
 MonoBehaviour:
   m_ObjectHideFlags: 0
