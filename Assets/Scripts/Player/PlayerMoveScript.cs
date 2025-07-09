@@ -214,9 +214,8 @@ public class PlayerMoveScript : NetworkBehaviour
     private void OnCrouchPerformed(InputAction.CallbackContext ctx)
     {
         if (!playerStatus.CrouchPermit.Value) return;
-        playerStatus.Crouch.Value = !playerStatus.Crouch.Value;
         playerStatus.CrouchStandCameraPosChange(playerStatus.Crouch.Value);
-        UpdateCrouchNetworkChangeServerRpc(playerStatus.Crouch.Value);
+        UpdateCrouchNetworkChangeServerRpc(!playerStatus.Crouch.Value);
     }
     private void OnRunChangePerformed(InputAction.CallbackContext ctx) {
         bool isRunPressed = ctx.ReadValue<float>() > 0f;
