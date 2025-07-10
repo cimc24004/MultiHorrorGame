@@ -32,6 +32,7 @@ public class FirstAidKitForPlayer : MonoBehaviour
     {
         itemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
 
+        
     }
     // Update is called once per frame
     void Update()

@@ -36,7 +36,7 @@ public class PrayController : NetworkBehaviour
     [SerializeField] private UnityEvent2 PrayStartEvent;
 
     // ���[�J���p
-    private bool Inited;
+    [SerializeField]private bool Inited;
     [SerializeField]private NetworkVariable<bool> PrayNow = new NetworkVariable<bool>();
     private bool PrayForStartOnce;
     private bool NotPrayForStartOnce;
@@ -48,7 +48,14 @@ public class PrayController : NetworkBehaviour
     //?????????????
     [SerializeField]private bool PushingAction = false;
     private bool once;
-    void OnEnable() => PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+    void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitOnPlayerSpawn(PlayerStatus.LocalInstance);
+        }
+    }
     void OnDisable() => PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
@@ -86,10 +93,13 @@ public class PrayController : NetworkBehaviour
         {
             Debug.Log("------------------Start-----------------------------");
             Debug.Log($"---------PlayerIS {this.gameObject.transform.parent.gameObject}---------");
-
+            Debug.Log($"---------LocalPlayerNetworkObjectId: {PlayerStatus.LocalInstance.NetworkObjectId}---------");
+            Debug.Log($"---------this.gameObject.transform.parentNetworkObjectId: {this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>().NetworkObjectId}---------");
             Debug.Log("cross_hair_status.HitedTag: " + cross_hair_status.HitedTag);
             Debug.Log("cross_hair_status.RaycastHitedExistsByCrossHairEvent: " + cross_hair_status.RaycastHitedExistsByCrossHairEvent);
             Debug.Log("cross_hair_status.hitedObj: " + cross_hair_status.HitedObj);
+            Debug.Log("this.gameObject == " + this.gameObject);
+            Debug.Log("------------------END-----------------------------");
         }
 
         if (cross_hair_status.HitedTag == "Pray" &&
