@@ -8,13 +8,21 @@ public class FirstAidKitForPlayer : MonoBehaviour
     public ItemStatus FirstAidKitItemStatus;
     private ItemBelongingsController itemBelongingsController;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
-    }
+    // void Start()
+    // {
+    //     PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
+    //     if (PlayerStatus.LocalInstance != null)
+    //     {
+    //         InItOnPlayerSpawn(PlayerStatus.LocalInstance);
+    //     }
+    // }
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InItOnPlayerSpawn(PlayerStatus.LocalInstance);
+        }
     }
     void OnDisable()
     {
