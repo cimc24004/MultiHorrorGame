@@ -256,7 +256,11 @@ public class PlayerStatus : NetworkBehaviour
             horror_director.ChangeHorrorState(HorrorState.PlayerKilled);
             Debug.Log("cameraExpander: " + cameraExpander);
             cameraExpander.FaceExpandingActive(this.gameObject);
-            DOVirtual.DelayedCall(4, () => cameraExpander.FaceExpandingUnActive());
+            DOVirtual.DelayedCall(4, () =>
+            {
+                cameraExpander.FaceExpandingUnActive();
+                horror_director.ChangeHorrorState(HorrorState.None);
+            });
             NotHaveItemForDeadPlayerRequestServerRpc();
         }
     }
@@ -286,10 +290,6 @@ public class PlayerStatus : NetworkBehaviour
         DOVirtual.DelayedCall(4, () =>
         {
             PlayerKilledScene = false;
-            horror_director.ChangeHorrorState(HorrorState.None);
-            // this.gameObject.layer = LayerMask.NameToLayer("Player");
-
-            // player_continue_controller.Continue();
         });
         player_hide_object_action.HidingPermit.Value = false;
         KillSequenceRunning.Value = false;
