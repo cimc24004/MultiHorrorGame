@@ -43,7 +43,6 @@ public class TargetHideObject : NetworkBehaviour
     // 各クライアントが自身のプレイヤーの参照を持つ必要がある
     private AudioSource _localPlayerHideActionAudioSource;
     private AudioDatas _localPlayerHideActionAudioDatas;
-    private CrossHairEvent _localPlayerCrossHairEvent;
     // private SubNoticedUIController _localPlayerSubNoticedUiController; // これはPlayerStatusが持つべき
 
     void OnEnable()
@@ -72,20 +71,6 @@ public class TargetHideObject : NetworkBehaviour
             {
                 _localPlayerHideActionAudioSource = _localPlayerHideActionAudioDatas.audioSource;
             }
-            _localPlayerCrossHairEvent = localPlayerStatus.cross_hair_event;
-            // _localPlayerSubNoticedUiController = localPlayerStatus.sub_noticed_ui_controller;
-
-            // ローカルイベントのリスナー設定
-            // LocalHideAddEvent.AddListener(() =>
-            // {
-            //     Debug.Log($"LocalHideAddEvent invoked for object: {this.gameObject.name}");
-            //     _localPlayerCrossHairEvent.CrossHairEventRaycastPermit.Value = false;
-            // });
-            // LocalUnHideAddEvent.AddListener(() =>
-            // {
-            //     Debug.Log($"LocalUnHideAddEvent invoked for object: {this.gameObject.name}");
-            //     if (_localPlayerCrossHairEvent != null) _localPlayerCrossHairEvent.CrossHairEventRaycastPermit.Value = true;
-            // });
         }
     }
 
