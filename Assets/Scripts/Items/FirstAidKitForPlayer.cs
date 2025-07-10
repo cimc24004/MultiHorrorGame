@@ -3,12 +3,15 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FirstAidKitForPlayer : NetworkBehaviour
+public class FirstAidKitForPlayer : MonoBehaviour
 {
     public ItemStatus FirstAidKitItemStatus;
     private ItemBelongingsController itemBelongingsController;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-
+    void Start()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
+    }
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
