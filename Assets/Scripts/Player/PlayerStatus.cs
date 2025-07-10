@@ -159,6 +159,7 @@ public class PlayerStatus : NetworkBehaviour
         MoveY = 0;
         MoveSpeed = 0;
     }
+    [Button]
     public void Revival()
     {
         Dead.Value = false;
@@ -174,6 +175,7 @@ public class PlayerStatus : NetworkBehaviour
             }
         };
         //Client
+        this.gameObject.tag = "Player";
         RevivalClientRpc(rpcParams);
     }
     [ClientRpc]
