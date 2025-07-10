@@ -9,7 +9,7 @@ using Cinemachine;
 public class PrayController : NetworkBehaviour
 {
     [Header("Prayするときに表示するメッセージ")]
-    [SerializeField] private string NoticeMessage;
+    [SerializeField] public string NoticeMessage;
     [Header("祈るのに必要な時間")]
     public float NeedToPrayTime;
 

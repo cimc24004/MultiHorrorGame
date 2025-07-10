@@ -645,9 +645,9 @@ GameObject:
   - component: {fileID: 4187275497350354172}
   - component: {fileID: 2345434772001350999}
   - component: {fileID: 5169522218118614318}
-  - component: {fileID: 6409433804350278574}
-  m_Layer: 17
-  m_Name: PrayControllerFirstAid
+  - component: {fileID: 6057120900089425916}
+  m_Layer: 3
+  m_Name: FirstAidForPlayer
   m_TagString: Pray
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -703,6 +703,9 @@ MonoBehaviour:
   PrayStartEvent:
     m_PersistentCalls:
       m_Calls: []
+  PrayNow:
+    m_InternalValue: 0
+  PushingAction: 0
 --- !u!65 &5169522218118614318
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -724,7 +727,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.5062053, z: 1}
   m_Center: {x: 0, y: 0.25310266, z: 0}
---- !u!114 &6409433804350278574
+--- !u!114 &6057120900089425916
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -733,13 +736,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 563637330651970733}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edea426372526bd42ae21a708f03bb18, type: 3}
+  m_Script: {fileID: 11500000, guid: 44a417a2583086d4b8ed019c5879c5e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   FirstAidKitItemStatus: {fileID: 11400000, guid: 34bfbd0c698e8644f95e24a357e1c62f,
     type: 2}
-  ResuscitationMaxValue: 0
 --- !u!1 &615471102250499405
 GameObject:
   m_ObjectHideFlags: 0
@@ -6662,12 +6664,9 @@ MonoBehaviour:
   item_menu_controller: {fileID: 0}
   item_equip_controller: {fileID: 5139405668482142763}
   playerCharacterController: {fileID: 2751979431404878738}
-  firstAidKitController: {fileID: 0}
+  firstAidKitForPlayer: {fileID: 0}
   KillSequenceRunning:
     m_InternalValue: 0
-  DeathEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &4640989651405648362
 MonoBehaviour:
   m_ObjectHideFlags: 0

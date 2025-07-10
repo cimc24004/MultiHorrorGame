@@ -37,6 +37,7 @@ public class CrossHairEvent : NetworkBehaviour
     private MainNoticedUIController main_noticed_ui_controller;
     private NetworkObject PlayerNetworkObject;
     private PrayController pushing_raycasted_pray_controller;
+    private PlayerAllController playerAllController;
     // Start は最初のフレーム前に呼ばれる
     void Start()
     {
@@ -51,6 +52,7 @@ public class CrossHairEvent : NetworkBehaviour
     }
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
+        playerAllController = PlayerAllController.instance;
         player_status = _playerStatus;
         player_input = player_status.player_input;
         main_noticed_ui_controller = player_status.main_noticed_ui_controller;
@@ -89,6 +91,7 @@ public class CrossHairEvent : NetworkBehaviour
                     // pray_controller.OnTouchOn();
                 }
             }
+
             if (CrossHairEventPermitForDeath.Value)
             {
                 if (raycast_hit.collider.gameObject.tag == "HideActionObject")

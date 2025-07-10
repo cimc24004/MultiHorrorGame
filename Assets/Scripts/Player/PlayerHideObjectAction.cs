@@ -146,7 +146,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     {
         // サーバー側でhide_type_target_object.Value（TargetHideObjectSetで設定済み）に基づいてアニメーションを更新
         // この値は全クライアントに同期される
-        player_status.Crouch.Value = false; // しゃがみ状態を一旦リセット
+        player_move_script.UpdateCrouchNetworkChangeServerRpc(false);
         if (hide_type_target_object.Value == TargetHideObject.HideType.Crouch)
         {
             player_anim.SetBool("Crouch", true);

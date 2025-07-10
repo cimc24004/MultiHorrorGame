@@ -240,7 +240,7 @@ public class PlayerMoveScript : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void UpdateCrouchNetworkChangeServerRpc(bool newCrouch)
+    public void UpdateCrouchNetworkChangeServerRpc(bool newCrouch)
     {
         if (!playerStatus.CrouchPermit.Value) return;
         anim.SetBool("Crouch", newCrouch);

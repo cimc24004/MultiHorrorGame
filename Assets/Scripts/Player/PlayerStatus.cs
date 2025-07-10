@@ -79,7 +79,7 @@ public class PlayerStatus : NetworkBehaviour
     public ItemMenuController item_menu_controller;
     public ItemEquipController item_equip_controller;
     public CharacterController playerCharacterController;
-    public FirstAidKitController firstAidKitController;
+    public FirstAidKitForPlayer firstAidKitForPlayer;
     private ItemBelongingsController item_belonging_controller;
     private PlayerContinueController player_continue_controller;
     private HorrorDirector horror_director;
@@ -278,6 +278,7 @@ public class PlayerStatus : NetworkBehaviour
     {
         //普通に死ぬ処理
         this.Dead.Value = true;
+        player_move_script.UpdateCrouchNetworkChangeServerRpc(false);
         anim.SetBool("AppearentDeath", true);
         this.gameObject.tag = "DeadPlayer";
         OnLocalPlayerDeaded.Invoke(this);
