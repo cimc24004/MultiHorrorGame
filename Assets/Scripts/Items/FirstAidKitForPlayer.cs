@@ -6,13 +6,21 @@ using UnityEngine.UI;
 public class FirstAidKitForPlayer : NetworkBehaviour
 {
     public ItemStatus FirstAidKitItemStatus;
-    private PlayerStatus playerStatus;
     private ItemBelongingsController itemBelongingsController;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public override void OnNetworkSpawn()
+
+    void OnEnable()
     {
-        playerStatus = PlayerStatus.LocalInstance;
-        itemBelongingsController = playerStatus.item_menu_controller.item_belongings_controller;
+        PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
+    }
+    void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InItOnPlayerSpawn;
+    }
+    private void InItOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
+        itemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
+
     }
     // Update is called once per frame
     void Update()
