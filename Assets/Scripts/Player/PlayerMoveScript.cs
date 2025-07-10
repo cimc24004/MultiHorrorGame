@@ -239,7 +239,7 @@ public class PlayerMoveScript : NetworkBehaviour
         moveSpeedUpTimer = 0f;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership=false)]
     public void UpdateCrouchNetworkChangeServerRpc(bool newCrouch)
     {
         if (!playerStatus.CrouchPermit.Value) return;
