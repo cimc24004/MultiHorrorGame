@@ -49,6 +49,10 @@ public class FirstAidKitForPlayer : MonoBehaviour
                 this.gameObject.tag = "Untagged";
             }
         }
+        else
+        {
+            this.gameObject.tag = "Untagged";
+        }
 
     }
     private bool CheckItem()
