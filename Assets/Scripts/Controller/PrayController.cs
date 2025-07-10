@@ -82,6 +82,16 @@ public class PrayController : NetworkBehaviour
             GageCanvas.SetActive(false);
             once = true;
         }
+        if (this.gameObject.name == "FirstAidKitForPlayer")
+        {
+            Debug.Log("------------------Start-----------------------------");
+            Debug.Log($"---------PlayerIS {this.gameObject.transform.parent.gameObject}---------");
+
+            Debug.Log("cross_hair_status.HitedTag: " + cross_hair_status.HitedTag);
+            Debug.Log("cross_hair_status.RaycastHitedExistsByCrossHairEvent: " + cross_hair_status.RaycastHitedExistsByCrossHairEvent);
+            Debug.Log("cross_hair_status.hitedObj: " + cross_hair_status.HitedObj);
+        }
+
         if (cross_hair_status.HitedTag == "Pray" &&
             cross_hair_status.RaycastHitedExistsByCrossHairEvent &&
             cross_hair_status.HitedObj == this.gameObject)
