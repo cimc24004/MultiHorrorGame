@@ -179,7 +179,6 @@ public class PlayerStatus : NetworkBehaviour
     [ClientRpc]
     private void RevivalClientRpc(ClientRpcParams rpcParams)
     {
-        item_menu_controller.enabled = true;
         Vector3 src = CameraRoot.localPosition;
         Transform tgt = HeadPos;
         float tgtY = tgt.localPosition.y;
@@ -250,7 +249,6 @@ public class PlayerStatus : NetworkBehaviour
             Debug.Log("enemyGO: " + enemyGO);
             var cameraExpander = enemyGO.GetComponent<CameraEnemyFaceExpanding>();
             // flash_light_controller.Light.enabled = false;
-            item_menu_controller.enabled = false;
             horror_director.nearEnemyCount = 0;
             horror_director.discoveredEnemyCount = 0;
             horror_director.ChangeHorrorState(HorrorState.PlayerKilled);

@@ -32,7 +32,14 @@ public class FirstAidKitForPlayer : MonoBehaviour
         prayController = this.gameObject.GetComponent<PrayController>();
         prayController.PrayCompletedEvent.AddListener(() =>
         {
-            MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
+            if (parentPlayerStatus.Dead.Value)
+            {
+                if (_playerStatus == parentPlayerStatus)
+                {
+                    MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
+                }
+            }
+
         });
     }
     // Update is called once per frame
