@@ -6,16 +6,14 @@ using UnityEngine.UI;
 public class FirstAidKitForPlayer : MonoBehaviour
 {
     public ItemStatus FirstAidKitItemStatus;
-    private ItemBelongingsController itemBelongingsController;
+    private ItemBelongingsController MyitemBelongingsController;
+    private PrayController prayController;
+    private PlayerStatus parentPlayerStatus;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    // void Start()
-    // {
-    //     PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
-    //     if (PlayerStatus.LocalInstance != null)
-    //     {
-    //         InItOnPlayerSpawn(PlayerStatus.LocalInstance);
-    //     }
-    // }
+    void Start()
+    {
+        parentPlayerStatus = this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>();   
+    }
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
@@ -30,27 +28,34 @@ public class FirstAidKitForPlayer : MonoBehaviour
     }
     private void InItOnPlayerSpawn(PlayerStatus _playerStatus)
     {
-        itemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
-
-        
+        MyitemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
+        prayController = this.gameObject.GetComponent<PrayController>();
+        prayController.PrayCompletedEvent.AddListener(() =>
+        {
+            MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
+        });
     }
     // Update is called once per frame
     void Update()
     {
-        if (CheckItem())
+        if (parentPlayerStatus.Dead.Value)
         {
-            this.gameObject.tag = "Pray";
+            if (CheckItem())
+            {
+                this.gameObject.tag = "Pray";
+            }
+            else
+            {
+                this.gameObject.tag = "Untagged";
+            }
         }
-        else
-        {
-            this.gameObject.tag = "Untagged";
-        }
+
     }
     private bool CheckItem()
     {
-        if (itemBelongingsController.belonging_items.Count != 0)
+        if (MyitemBelongingsController.belonging_items.Count != 0)
         {
-            if (itemBelongingsController.belonging_items.ContainsKey(FirstAidKitItemStatus))
+            if (MyitemBelongingsController.belonging_items.ContainsKey(FirstAidKitItemStatus))
             {
                 return true;
             }
