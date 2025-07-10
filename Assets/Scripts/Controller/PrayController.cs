@@ -87,6 +87,7 @@ public class PrayController : NetworkBehaviour
             cross_hair_status.HitedObj == this.gameObject)
         {
             //Pray?????????????
+            Debug.Log("cross_hair_status-----------------------------GUGIII");
             GageImageUI.fillAmount = PrayTimeNow.Value / NeedToPrayTime;
             GageCanvas.SetActive(true);
             main_noticed_ui_controller.Notice(NoticeMessage, 1);
