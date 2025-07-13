@@ -24,13 +24,12 @@ public class EnemySoundSensor : NetworkBehaviour
     //音が鳴った場所に移動しているNow
     public bool MoveToSoundPlaceNow;
 
-    //オブジェクトが鳴らしている音に向かっているのかどうか
-    public bool MoveToSoundObjectPlace;
+
 
     //音が聞くことができないならtrue
 
     public SoundSensorStatus sound_sensor_status;
-
+    private float StuckTimeNow;
     [SerializeField]
     //もともとのScriptableObject
     private SoundSensorStatus original_sound_sensor_status;
@@ -80,10 +79,12 @@ public class EnemySoundSensor : NetworkBehaviour
             MoveToSoundPlaceNow = false;
             return;
         }
+        
         if (MoveToSoundPlaceNow)
         {
             //今音がなっている場所に向かっている場合
-
+            
+                enemy_routing_controller.NearRouteSet();
 
             if (follow_object_nav.ArrivedTarget)
             {
@@ -218,7 +219,6 @@ public class EnemySoundSensor : NetworkBehaviour
             }
             follow_object_nav.StoppingDistance = 1f;
             MoveToSoundPlaceNow = true;
-            MoveToSoundObjectPlace = _SoundObject;
         }
         else
         {

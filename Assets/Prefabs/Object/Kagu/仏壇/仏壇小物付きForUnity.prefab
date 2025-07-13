@@ -1302,9 +1302,16 @@ MonoBehaviour:
         m_Target: {fileID: 4965203584996440758}
         m_MethodName: set_tag
         m_Modes: 0d000000
+  PrayCompletedEventForServer:
+    m_PersistentCalls:
+      m_Calls: []
   PrayStartEvent:
     m_PersistentCalls:
       m_Calls: []
+  Inited: 0
+  PrayNow:
+    m_InternalValue: 0
+  PushingAction: 0
 --- !u!82 &698541933277051531
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4228,6 +4235,7 @@ MonoBehaviour:
   - {fileID: 422597809778586196}
   - {fileID: 7434576947746881522}
   - {fileID: 8437063687483551214}
+  SilhouetteLayerName: WhiteSilhouette
   ResetLayerName: Default
   ToResetSilhouetteTime: 0
   ToResetSilhouetteTimeNow: 0

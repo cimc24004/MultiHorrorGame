@@ -11,76 +11,91 @@ using System.IO;
 public class ConfigController : SingleTonDontDestory<ConfigController>
 {
     public GameControllerOnAllScene game_controller_all_scene;
-    public ConfigData config;
+    public ConfigData currentConfig;
     public ConfigData defaultConfig;
     [SerializeField] private string configPath;
     private ConfigUI configUI;
-
-    [SerializeField] private Slider MasterVolumeSlider;
-    [SerializeField] private Slider BgmVolumeSlider;
-    [SerializeField] private Slider SfxVolumeSlider;
-
+    private CMFPSController cMFPSController;
     protected override void Awake()
     {
         base.Awake();
         // 設定ファイルのパスを初期化
         configPath = Path.Combine(Application.persistentDataPath, "config.json");
         Debug.Log("configPath: " + configPath);
-        // 設定をロード
+        // 最初は設定をロード
+    }
+    private void OnEnable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
+    }
+    private void OnDisable()
+    {
+        PlayerStatus.OnLocalPlayerSpawned -= InitWhenPlayerSpawned;
+    }
+    private void InitWhenPlayerSpawned(PlayerStatus _player_status)
+    {
+        cMFPSController = CMFPSController.instance;
         LoadConfig();
     }
-
     void Start()
     {
         configUI = ConfigUI.instance;
-        MasterVolumeSlider.value = config.masterVolume;
-        SfxVolumeSlider.value = config.sfxVolume;
-        BgmVolumeSlider.value = config.masterVolume;
         configUI.CloseConfigMenuButton.onClick.AddListener(() =>
         {
             CloseConfigMenu();
         });
-        configUI.SaveConfigButton.onClick.AddListener(() =>
+        configUI.ApplyConfigButton.onClick.AddListener(() =>
         {
             SaveConfig();
+            LoadConfig();
         });
-        MasterVolumeSlider.onValueChanged.AddListener((value) =>
+        configUI.MasterVolumeSlider.onValueChanged.AddListener((value) =>
         {
-            config.masterVolume = value;
+            currentConfig.masterVolume = value;
         });
-        SfxVolumeSlider.onValueChanged.AddListener((value) =>
+        configUI.SfxVolumeSlider.onValueChanged.AddListener((value) =>
         {
-            config.sfxVolume = value;
+            currentConfig.sfxVolume = value;
 
         });
-        BgmVolumeSlider.onValueChanged.AddListener((value) =>
+        configUI.BgmVolumeSlider.onValueChanged.AddListener((value) =>
         {
-            config.bgmVolume = value;
+            currentConfig.bgmVolume = value;
         });
+        configUI.MouseSensitivitySlider.onValueChanged.AddListener((value) =>
+        {
+            currentConfig.MouseSensitivity = value;
+        });
+        configUI.ResetConfigButton.onClick.AddListener(() =>
+        {
+            ResetToDefaultConfig();
+        });
+        ValueSetFromConfigData(currentConfig);
     }
-    private void ValueUISet(ConfigData _configData)
+    private void ValueSetFromConfigData(ConfigData _configData)
     {
-        MasterVolumeSlider.value = _configData.masterVolume;
-        BgmVolumeSlider.value = _configData.bgmVolume;
-        SfxVolumeSlider.value = _configData.sfxVolume;
+        configUI.MasterVolumeSlider.value = _configData.masterVolume;
+        configUI.BgmVolumeSlider.value = _configData.bgmVolume;
+        configUI.SfxVolumeSlider.value = _configData.sfxVolume;
+        configUI.MouseSensitivitySlider.value = _configData.MouseSensitivity;
     }
     public void OpenConfigMenu()
     {
         configUI.configPanel.gameObject.SetActive(true);
     }
-    
+
     public void CloseConfigMenu()
     {
         configUI.configPanel.gameObject.SetActive(false);
     }
-    
+
     [SerializeField] private bool Opended = false;
 
     public void SaveConfig()
     {
         try
         {
-            string json = JsonUtility.ToJson(config, true);
+            string json = JsonUtility.ToJson(currentConfig, true);
             File.WriteAllText(configPath, json);
             Debug.Log($"設定を保存しました: {configPath}");
         }
@@ -97,12 +112,12 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
             if (File.Exists(configPath))
             {
                 string json = File.ReadAllText(configPath);
-                config = JsonUtility.FromJson<ConfigData>(json);
+                currentConfig = JsonUtility.FromJson<ConfigData>(json);
                 Debug.Log($"設定をロードしました: {configPath}");
             }
             else
             {
-                config = new ConfigData();
+                currentConfig = new ConfigData();
                 Debug.Log("設定ファイルが見つからないため、デフォルト設定を使用します");
             }
             ApplyConfig();
@@ -110,14 +125,23 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
         catch (System.Exception e)
         {
             Debug.LogError($"設定の読み込みに失敗しました: {e.Message}");
-            config = new ConfigData();
+            currentConfig = new ConfigData();
             ApplyConfig();
         }
     }
 
     private void ApplyConfig()
     {
-        Screen.SetResolution(config.screenWidth, config.screenHeight, config.fullscreen);
-        QualitySettings.SetQualityLevel(config.qualityLevel);
+        Debug.Log("ApplyConfig-----------------------");
+        Screen.SetResolution(currentConfig.screenWidth, currentConfig.screenHeight, currentConfig.fullscreen);
+        QualitySettings.SetQualityLevel(currentConfig.qualityLevel);
+        cMFPSController.MouseSensivityChange(currentConfig.MouseSensitivity);
+    }
+    private void ResetToDefaultConfig()
+    {
+        currentConfig = defaultConfig;
+        ValueSetFromConfigData(currentConfig);
+        ApplyConfig();
+        
     }
 }

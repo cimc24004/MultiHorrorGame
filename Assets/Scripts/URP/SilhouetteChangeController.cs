@@ -14,6 +14,9 @@ public class SilhouetteChangeController : NetworkBehaviour
     [SerializeField] private Collidered CollideredForSilhouetteAutoHide;
     [SerializeField]
     private List<GameObject> TargetChangeSilhouetteObjs;
+    [Header("シルエット表示用LayerName")]
+    [SerializeField]
+    private string SilhouetteLayerName = "RedSilhouette";
     [Header("シルエット表示を辞めて、初期化するときのレイヤーネーム")]
     [SerializeField]
     private string ResetLayerName = "Default";
@@ -75,7 +78,7 @@ public class SilhouetteChangeController : NetworkBehaviour
         {
             foreach (GameObject target in TargetChangeSilhouetteObjs)
             {
-                target.gameObject.layer = LayerMask.NameToLayer("NoSilhouette");
+                target.gameObject.layer = LayerMask.NameToLayer(SilhouetteLayerName);
             }
         }
         else
