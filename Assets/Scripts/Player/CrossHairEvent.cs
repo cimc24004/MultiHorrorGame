@@ -93,15 +93,12 @@ public class CrossHairEvent : NetworkBehaviour
             }
             if (CrossHairEventPermitForDeath.Value)
             {
-                if (raycast_hit.collider.gameObject.tag == "DeadPlayer")
+                if (raycast_hit.collider.gameObject.tag == "CantFirstAidKit")
                 {
-                    if (RaycasstedObj != raycast_hit.collider.gameObject)
+                    PlayerStatus targetPlayerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[raycast_hit.collider.gameObject];
+                    if (targetPlayerStatus.Dead.Value && !player_status.firstAidKitForPlayer.CanFirstAid)
                     {
-                        PlayerStatus targetPlayerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[raycast_hit.collider.gameObject];
-                        if (targetPlayerStatus.Dead.Value && !targetPlayerStatus.firstAidKitForPlayer.CanFirstAid)
-                        {
-                            main_noticed_ui_controller.Notice("救急箱が必要だ");
-                        }
+                        main_noticed_ui_controller.Notice("救急箱が必要だ");
                     }
                 }
             }
