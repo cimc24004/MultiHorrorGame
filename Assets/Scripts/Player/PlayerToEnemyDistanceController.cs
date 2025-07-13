@@ -9,7 +9,7 @@ using UnityEngine.Animations.Rigging;
 public class PlayerToEnemyDistanceController : NetworkBehaviour
 {
     // ”ÍˆÍ“à‚Ì“G‚ğ’ÇÕ‚·‚éƒŠƒXƒg
-    [SerializeField]
+    [SerializeField, ShowInInspector]
     public Dictionary<GameObject, PlayerNearSensor> EnemiesWithPlayerNearSensors = new Dictionary<GameObject, PlayerNearSensor>(); 
     public bool NearEnemy;
 
