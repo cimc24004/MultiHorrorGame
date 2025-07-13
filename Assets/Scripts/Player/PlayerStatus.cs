@@ -102,10 +102,13 @@ public class PlayerStatus : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         SteamUserName.OnValueChanged += SteamUserNameOnValueChanged;
-        if (!IsServer && !IsOwner) return;
-        FixedString64Bytes personaName = SteamFriends.GetPersonaName();
-        PlayerNameSetRequestServerRpc(personaName.ToString());
-        virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
+        if (IsOwner)
+        {
+            FixedString64Bytes personaName = SteamFriends.GetPersonaName();
+            PlayerNameSetRequestServerRpc(personaName.ToString());  
+            virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
+        }
+
         player_stamina_controller = GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();
         player_move_permit = GetComponent<CharacterMovePermit>();
@@ -118,6 +121,7 @@ public class PlayerStatus : NetworkBehaviour
         player_move_script = GetComponent<PlayerMoveScript>();
         item_databases = ItemDatabases.instance;
         InitPlayer = true;
+
         if (IsOwner)
         {
             LocalInstance = this;
