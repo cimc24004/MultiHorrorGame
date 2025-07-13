@@ -56,13 +56,13 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             }
             else
             {
-                this.gameObject.tag = "Untagged";
+                this.gameObject.tag = "DeadPlayer";
                 CanFirstAid = false;
             }
         }
         else
         {
-            this.gameObject.tag = "Untagged";
+            this.gameObject.tag = "DeadPlayer";
             CanFirstAid = false;
         }
 
