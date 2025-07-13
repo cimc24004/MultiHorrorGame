@@ -37,12 +37,13 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             {
                 if (_playerStatus == parentPlayerStatus)
                 {
-
+                    OnCompletedPrayRequestServerRpc();
                     MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
                 }
             }
 
         });
+
     }
     // Update is called once per frame
     void Update()
@@ -83,5 +84,10 @@ public class FirstAidKitForPlayer : NetworkBehaviour
     private void FirstAidUsedClientRpc()
     {
         myPlayerStatus.sub_noticed_ui_controller.Notice($"{parentPlayerStatus.SteamUserName}");
+    }
+    [ServerRpc]
+    private void OnCompletedPrayRequestServerRpc()
+    {
+        prayController.PrayReset();
     }
 }

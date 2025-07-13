@@ -154,6 +154,15 @@ public class PrayController : NetworkBehaviour
             PushingAction = false;
         }
     }
+    public void PrayReset()
+    {
+        PushingAction = false;
+        PrayForStartOnce = false;
+        NotPrayForStartOnce = false;
+        PrayTimeNow.Value = 0;
+        AlreadyPrayCompleted.Value = false;
+        PrayPermit.Value = true;
+    }
     public void Pushing()
     {
         PushingAction = true;
