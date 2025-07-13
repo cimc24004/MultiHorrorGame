@@ -101,11 +101,11 @@ public class PlayerStatus : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        SteamUserName.OnValueChanged += SteamUserNameOnValueChanged;
+    
         if (IsOwner)
         {
             FixedString64Bytes personaName = SteamFriends.GetPersonaName();
-            PlayerNameSetRequestServerRpc(personaName.ToString());  
+            PlayerNameSetRequestServerRpc(personaName.ToString());
             virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
         }
 
@@ -137,9 +137,7 @@ public class PlayerStatus : NetworkBehaviour
             cross_hair_event.gameObject.SetActive(false);
         }
     }
-    private void SteamUserNameOnValueChanged(FixedString64Bytes newValue, FixedString64Bytes _) {
-        steamUserNameTextUI.SetText(newValue.ToString());
-    }
+
     void Update()
     {
         if (!InitPlayer) return;
@@ -175,6 +173,12 @@ public class PlayerStatus : NetworkBehaviour
     private void PlayerNameSetRequestServerRpc(string _SteamUserName)
     {
         SteamUserName.Value = _SteamUserName;
+        PlayerNameTextUISetClientRpc(_SteamUserName);
+    }
+    [ClientRpc]
+    private void PlayerNameTextUISetClientRpc(string _SteamUserName)
+    {
+        steamUserNameTextUI.SetText(_SteamUserName);
     }
     [Button]
     public void Revival()
