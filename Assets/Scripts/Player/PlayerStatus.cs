@@ -104,7 +104,7 @@ public class PlayerStatus : NetworkBehaviour
         SteamUserName.OnValueChanged += SteamUserNameOnValueChanged;
         if (!IsServer && !IsOwner) return;
         FixedString64Bytes personaName = SteamFriends.GetPersonaName();
-        PlayerNameSetRequestServer(personaName.ToString());
+        PlayerNameSetRequestServerRpc(personaName.ToString());
         virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
         player_stamina_controller = GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();
@@ -168,7 +168,7 @@ public class PlayerStatus : NetworkBehaviour
         MoveSpeed = 0;
     }
     [ServerRpc]
-    private void PlayerNameSetRequestServer(string _SteamUserName)
+    private void PlayerNameSetRequestServerRpc(string _SteamUserName)
     {
         SteamUserName.Value = _SteamUserName;
     }
