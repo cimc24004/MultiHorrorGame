@@ -95,7 +95,11 @@ public class CrossHairEvent : NetworkBehaviour
             {
                 if (raycast_hit.collider.gameObject.tag == "CantFirstAidKit")
                 {
-                    PlayerStatus targetPlayerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[raycast_hit.collider.gameObject.transform.parent.gameObject];
+                    PlayerStatus targetPlayerStatus = null;
+                    if (RaycasstedObj != raycast_hit.collider.gameObject)
+                    {
+                        targetPlayerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[raycast_hit.collider.gameObject.transform.parent.gameObject];
+                    }
                     if (targetPlayerStatus.Dead.Value && !player_status.firstAidKitForPlayer.CanFirstAid)
                     {
                         main_noticed_ui_controller.Notice("救急箱が必要だ");
