@@ -39,7 +39,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
     private Tween LookAtPlayerTween;
     private DiscoveryPlayerController discovery_player_controller;
     private PlayerAllController playerAllController;
-    
+    [SerializeField]private PlayerNearSensor darumasanPlayerNearSensor;
     // 同期用の変数
     private NetworkVariable<float> syncedVoiceStartTime = new NetworkVariable<float>();
     private NetworkVariable<int> currentClipIndex = new NetworkVariable<int>(-1);
@@ -159,6 +159,7 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                     {
                         Debug.Log("ボイス あなたは動きましたね？？");
                         character_move_permit.Move();
+                        KorondaMoveClientRpc();
                         DOVirtual.DelayedCall(0.1f, () =>
                         {
                             discovery_player_controller.AddPlayerToDiscoveryPlayerLists(player);
@@ -216,7 +217,11 @@ public class DarumasanKorondaGameController : NetworkBehaviour
             .SetEase(Ease.Linear)
             .SetLink(this.gameObject);
     }
-
+    [ClientRpc]
+    private void KorondaMoveClientRpc()
+    {
+        darumasanPlayerNearSensor.IsNearEffect = true;
+    }
     private void KorondaVoiceReset()
     {
         KorondaVoiceStopClientRpc();
@@ -224,13 +229,13 @@ public class DarumasanKorondaGameController : NetworkBehaviour
         VoiceStart = false;
         VoiceStartFromVoiceEndTimeNow = VoiceStartFromVoiceEndTime;
         TimePassedNowFromVoiceStart = 0;
-        
+
         // NetworkVariableをリセット
         syncedVoiceStartTime.Value = 0;
         currentClipIndex.Value = -1;
         isLookingAtPlayers.Value = false;
         currentLookTargetIndex.Value = -1;
-        
+
         StopAllTweensClientRpc();
     }
 
