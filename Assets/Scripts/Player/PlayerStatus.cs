@@ -101,14 +101,14 @@ public class PlayerStatus : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-    
+
         if (IsOwner)
         {
             FixedString64Bytes personaName = SteamFriends.GetPersonaName();
             PlayerNameSetRequestServerRpc(personaName.ToString());
             virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
+            steamUserNameTextUI.enabled = false;
         }
-
         player_stamina_controller = GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();
         player_move_permit = GetComponent<CharacterMovePermit>();
