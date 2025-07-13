@@ -12,7 +12,6 @@ public class FirstAidKitForPlayer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        parentPlayerStatus = this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>();   
     }
     void OnEnable()
     {
@@ -28,6 +27,7 @@ public class FirstAidKitForPlayer : MonoBehaviour
     }
     private void InItOnPlayerSpawn(PlayerStatus _playerStatus)
     {
+        parentPlayerStatus = this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>();   
         MyitemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
         prayController = this.gameObject.GetComponent<PrayController>();
         prayController.PrayCompletedEvent.AddListener(() =>

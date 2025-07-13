@@ -7589,11 +7589,6 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 2958070019411481534, guid: c5e9bd3a435560a48ab8913f055d5cde,
         type: 3}
-      propertyPath: silhouette_change_controller
-      value: 
-      objectReference: {fileID: 6617217731426425765}
-    - target: {fileID: 2958070019411481534, guid: c5e9bd3a435560a48ab8913f055d5cde,
-        type: 3}
       propertyPath: Groups.Array.data[0].Butsudan
       value: 
       objectReference: {fileID: 8924593433100450488}
@@ -19612,10 +19607,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7589282617861379540}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c09681c11bca88645b48466b8d705025,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6617217731426425765}
     - targetCorrespondingSourceObject: {fileID: -1312799064967749022, guid: c09681c11bca88645b48466b8d705025,
         type: 3}
       insertIndex: -1
@@ -20034,35 +20025,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 8236692747219619953}
   m_Enabled: 1
---- !u!1 &8129787688071565323 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c09681c11bca88645b48466b8d705025,
-    type: 3}
-  m_PrefabInstance: {fileID: 8940673328580177242}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6617217731426425765
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8129787688071565323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbc58b716acd56c4798614eb515a00f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  SilhouetteNow: 0
-  SilhouetteAutoHideInRange: 0
-  CollideredForSilhouetteAutoHide: {fileID: 0}
-  TargetChangeSilhouetteObjs:
-  - {fileID: 1286805949552873272}
-  - {fileID: 8129903036905920975}
-  - {fileID: 7844906945665720613}
-  ResetLayerName: ObjectForOnlyRay
-  ToResetSilhouetteTime: 0
-  ToResetSilhouetteTimeNow: 0
 --- !u!1 &8129903036905920975 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 918893448897049749, guid: c09681c11bca88645b48466b8d705025,
