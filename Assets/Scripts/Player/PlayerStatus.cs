@@ -14,14 +14,17 @@ using UnityEngine.SceneManagement;
 using Autodesk.Fbx;
 using System.Linq;
 using System.Security.Cryptography;
-
+using Steamworks;
+using Unity.Collections;
+using TMPro;
 public class PlayerStatus : NetworkBehaviour
 {
+    public NetworkVariable<FixedString64Bytes> SteamUserName = new NetworkVariable<FixedString64Bytes>();
     // ローカルの人を取得するためのinstance
     public static PlayerStatus LocalInstance { get; private set; }
     public static event Action<PlayerStatus> OnLocalPlayerSpawned;
     public static event Action<PlayerStatus> OnLocalPlayerDeaded;
-
+    [SerializeField] private TextMeshProUGUI steamUserNameTextUI;
     // 値の受け渡しやスタミナなどの管理。プレイヤーの状態などを保存
     public Transform CameraRoot;
     public Transform HeadPos;
@@ -99,6 +102,9 @@ public class PlayerStatus : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (!IsServer && !IsOwner) return;
+        FixedString64Bytes personaName = SteamFriends.GetPersonaName();
+        SteamUserName.Value = personaName;
+        steamUserNameTextUI.SetText(SteamUserName.Value.ToString());
         virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
         player_stamina_controller = GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();

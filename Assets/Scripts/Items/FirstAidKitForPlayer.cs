@@ -3,17 +3,16 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FirstAidKitForPlayer : MonoBehaviour
+public class FirstAidKitForPlayer : NetworkBehaviour
 {
     public ItemStatus FirstAidKitItemStatus;
     private ItemBelongingsController MyitemBelongingsController;
     private PrayController prayController;
     private PlayerStatus parentPlayerStatus;
     public bool CanFirstAid;
+    private PlayerStatus myPlayerStatus;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
@@ -28,15 +27,17 @@ public class FirstAidKitForPlayer : MonoBehaviour
     }
     private void InItOnPlayerSpawn(PlayerStatus _playerStatus)
     {
-        parentPlayerStatus = this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>();   
+        parentPlayerStatus = this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>();
         MyitemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
         prayController = this.gameObject.GetComponent<PrayController>();
+        myPlayerStatus = _playerStatus;
         prayController.PrayCompletedEvent.AddListener(() =>
         {
             if (parentPlayerStatus.Dead.Value)
             {
                 if (_playerStatus == parentPlayerStatus)
                 {
+
                     MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
                 }
             }
@@ -76,5 +77,11 @@ public class FirstAidKitForPlayer : MonoBehaviour
             }
         }
         return false;
+    }
+
+    [ClientRpc]
+    private void FirstAidUsedClientRpc()
+    {
+        myPlayerStatus.sub_noticed_ui_controller.Notice($"{parentPlayerStatus.SteamUserName}");
     }
 }
