@@ -9,6 +9,7 @@ public class FirstAidKitForPlayer : MonoBehaviour
     private ItemBelongingsController MyitemBelongingsController;
     private PrayController prayController;
     private PlayerStatus parentPlayerStatus;
+    public bool CanFirstAid;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -50,15 +51,18 @@ public class FirstAidKitForPlayer : MonoBehaviour
             if (CheckItem())
             {
                 this.gameObject.tag = "Pray";
+                CanFirstAid = true;
             }
             else
             {
                 this.gameObject.tag = "Untagged";
+                CanFirstAid = false;
             }
         }
         else
         {
             this.gameObject.tag = "Untagged";
+            CanFirstAid = false;
         }
 
     }

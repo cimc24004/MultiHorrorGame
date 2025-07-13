@@ -91,7 +91,20 @@ public class CrossHairEvent : NetworkBehaviour
                     // pray_controller.OnTouchOn();
                 }
             }
-
+            if (CrossHairEventPermitForDeath.Value)
+            {
+                if (raycast_hit.collider.gameObject.tag == "DeadPlayer")
+                {
+                    if (RaycasstedObj != raycast_hit.collider.gameObject)
+                    {
+                        PlayerStatus targetPlayerStatus = playerAllController.SpawnedPlayersWithPlayerStatuses[raycast_hit.collider.gameObject];
+                        if (targetPlayerStatus.Dead.Value && !targetPlayerStatus.firstAidKitForPlayer.CanFirstAid)
+                        {
+                            main_noticed_ui_controller.Notice("救急箱が必要だ");
+                        }
+                    }
+                }
+            }
             if (CrossHairEventPermitForDeath.Value)
             {
                 if (raycast_hit.collider.gameObject.tag == "HideActionObject")
