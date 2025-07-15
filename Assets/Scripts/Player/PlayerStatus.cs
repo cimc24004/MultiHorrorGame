@@ -66,7 +66,7 @@ public class PlayerStatus : NetworkBehaviour
 
     public AudioDatas HideActionAudioDatas;
     public bool PlayerKilledScene;
-
+    public UnityEvent RevivalPlayerEvent;
     [SerializeField] private GameObject FlashLightBatteryUI;
     private float offsetY;
     private CharacterMovePermit player_move_permit;
@@ -184,6 +184,7 @@ public class PlayerStatus : NetworkBehaviour
     public void Revival()
     {
         Dead.Value = false;
+        RevivalPlayerEvent.Invoke();
         anim.SetBool("AppearentDeath", false);
         player_hide_object_action.HidingPermit.Value = true;
         this.CrouchPermit.Value = true;

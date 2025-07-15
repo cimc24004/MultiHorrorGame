@@ -3014,7 +3014,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f75222236447bde46aa99bf0ee6a1faf,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2245763283206795647}
+      addedObject: {fileID: 7073136202299889343}
     - targetCorrespondingSourceObject: {fileID: -3756473180518285571, guid: f75222236447bde46aa99bf0ee6a1faf,
         type: 3}
       insertIndex: -1
@@ -3288,7 +3288,6 @@ MonoBehaviour:
   ArriveSoundPlaceWaitTimeToReturnNow: 0
   sound_by_obj: 0
   MoveToSoundPlaceNow: 0
-  MoveToSoundObjectPlace: 0
   sound_sensor_status: {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9,
     type: 2}
   original_sound_sensor_status: {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9,
@@ -3392,6 +3391,9 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 463433
+  KillPlayerEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1467862732476631638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4614,6 +4616,7 @@ MonoBehaviour:
   - {fileID: 4513851889366408034}
   - {fileID: 1687792173748700370}
   - {fileID: 7813616270128805608}
+  SilhouetteLayerName: RedSilhouette
   ResetLayerName: Default
   ToResetSilhouetteTime: 0
   ToResetSilhouetteTimeNow: 0
@@ -4706,7 +4709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &2245763283206795647
+--- !u!114 &7073136202299889343
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4715,9 +4718,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 7435145462289832796}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 778acc6e41a4bfa46b6d336f293ed751, type: 3}
+  m_Script: {fileID: 11500000, guid: 1347f2bc59afa3d419972c4e8e1ee19e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  stuckDetectionTime: 5
+  minMoveDistance: 0.5
+  checkInterval: 0.5
+  useAlternativeRoute: 1
+  alternativeRouteRadius: 10
+  maxAlternativeAttempts: 3
+  waypointReachDistance: 2
+  showDebugInfo: 1
+  currentStuckTime: 0
+  distanceMoved: 0
+  isCurrentlyStuck: 0
+  isUsingAltRoute: 0
+  currentWaypoint: 0
 --- !u!4 &7725863711636871808 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -9162484748627739507, guid: f75222236447bde46aa99bf0ee6a1faf,

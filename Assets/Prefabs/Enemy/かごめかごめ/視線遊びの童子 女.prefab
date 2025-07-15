@@ -1868,6 +1868,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2217449935826704257}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 677693ba8613d1640ae98fdd4b30f31c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8953596482800395478}
   m_SourcePrefab: {fileID: 100100000, guid: 677693ba8613d1640ae98fdd4b30f31c, type: 3}
 --- !u!4 &55933948651699110 stripped
 Transform:
@@ -2258,8 +2262,12 @@ MonoBehaviour:
   target_obj: {fileID: 0}
   rig: {fileID: 8730662993317403283}
   multi_aim_constraint: {fileID: 6795439113166374650}
-  Player: {fileID: 0}
+  lookPlayers: []
+  FirstPlayerKey: {fileID: 0}
   m_collidered_for_players: {fileID: 1194596487373563957}
+  AddTargetHeadLookPlayerUnityEvent:
+    m_PersistentCalls:
+      m_Calls: []
   LookAtTargetNow: 0
 --- !u!114 &3869502469993094818
 MonoBehaviour:
@@ -2322,7 +2330,6 @@ MonoBehaviour:
   ArriveSoundPlaceWaitTimeToReturnNow: 0
   sound_by_obj: 0
   MoveToSoundPlaceNow: 0
-  MoveToSoundObjectPlace: 0
   sound_sensor_status: {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9,
     type: 2}
   original_sound_sensor_status: {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9,
@@ -2426,6 +2433,9 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 463437
+  KillPlayerEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6282340536338927406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3650,6 +3660,7 @@ MonoBehaviour:
   MouthOpenTimeNow: 0
   previousFlinchNow: 0
   PermitMouthOpen: 1
+  HeadLookAtTargetControllerPlayer: {fileID: 0}
 --- !u!114 &2704400072654419393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3671,6 +3682,7 @@ MonoBehaviour:
   - {fileID: 8552973255050193227}
   - {fileID: 4783660879092674194}
   - {fileID: 6087089170839960194}
+  SilhouetteLayerName: RedSilhouette
   ResetLayerName: Default
   ToResetSilhouetteTime: 0
   ToResetSilhouetteTimeNow: 0
@@ -3763,6 +3775,36 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &8953596482800395478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6205131372113104192}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1347f2bc59afa3d419972c4e8e1ee19e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  stuckDetectionTime: 5
+  minMoveDistance: 0.5
+  checkInterval: 0.5
+  useAlternativeRoute: 1
+  alternativeRouteRadius: 10
+  maxAlternativeAttempts: 3
+  waypointReachDistance: 2
+  useTeleportOnStuck: 0
+  teleportRadius: 8
+  maxTeleportAttempts: 5
+  minTeleportDistance: 3
+  showDebugInfo: 1
+  currentStuckTime: 0
+  distanceMoved: 0
+  isCurrentlyStuck: 0
+  isUsingAltRoute: 0
+  currentWaypoint: 0
 --- !u!4 &6325383318467854718 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8280957153756876433, guid: 677693ba8613d1640ae98fdd4b30f31c,

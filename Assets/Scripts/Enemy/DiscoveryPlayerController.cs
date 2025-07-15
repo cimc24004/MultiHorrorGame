@@ -18,6 +18,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     [SerializeField]
     public DiscoveryPlayerStatus original_discovery_player_status;
     private MoveSpeedController move_speed_controller;
+    private bool DictionarySetted;
     [SerializeField]
     private DiscoveryPlayerStatus discovery_player_status;
 
@@ -55,6 +56,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     [SerializeField, ShowInInspector] public Dictionary<GameObject, PlayerVisibilityMapStatus> PlayersVisibilityMapStatuesWithKey = new Dictionary<GameObject, PlayerVisibilityMapStatus>();
     public class PlayerVisibilityMapStatus
     {
+        private bool DictionarySeted;
         public Vector3 ToPlayerDirection;
         public bool InsidePlayer;
         public bool InAngle;
@@ -119,6 +121,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
             PlayersVisibilityMapStatuesWithKey.Add(PlayerNetworkObject.gameObject, player_visibility_map_status);
             PlayersVisibilityMapStatuesWithKey[PlayerNetworkObject.gameObject].DiscoveryPlayerFlagChanged.AddListener(OnChangedDiscoveryPlayerNow);
         }
+        DictionarySetted = true;
     }
     private void OnChangedDiscoveryPlayerNow(bool _discoveryPlayerNow) {
         //切り替わった瞬間だけ実行される。
@@ -153,6 +156,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!DictionarySetted) return;
         if (!IsServer) return;
         // if (IsServer)
         // {

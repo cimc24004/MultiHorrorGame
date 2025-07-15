@@ -84,8 +84,6 @@ public class EnemySoundSensor : NetworkBehaviour
         {
             //¡‰¹‚ª‚È‚Á‚Ä‚¢‚éêŠ‚ÉŒü‚©‚Á‚Ä‚¢‚éê‡
             
-                enemy_routing_controller.NearRouteSet();
-
             if (follow_object_nav.ArrivedTarget)
             {
                 // enemy_status.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;

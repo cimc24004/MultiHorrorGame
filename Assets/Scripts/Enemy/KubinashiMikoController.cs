@@ -12,27 +12,41 @@ public class KubinashiMikoController : NetworkBehaviour
     private PlayerStatus player_status;
     private EnemyStatus enemy_status;
     private DiscoveryPlayerController discovery_player_controller;
-    private CharacterController character_controller;
-    private NavMeshAgent nav_mesh_agent;
-    private HorrorDirector horror_director;
-    private EnemyActionForDoorController enemy_action_for_door_controller;
-    private bool no_discovery_player_once = false;
     private PlayerAllController player_all_controller;
+    private EnemyToPlayerKillController enemyToPlayerKillController;
     [SerializeField] private float DiscoveryPlayerTimeNow;
+
+    [SerializeField] private List<GameObject> TargetPlayers;
+    [SerializeField] private GameObject ChaseTargetPlayer;
+    private MoveSpeedController moveSpeedController;
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
         player_status = PlayerStatus.LocalInstance;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
+        moveSpeedController = this.gameObject.GetComponent<MoveSpeedController>();
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
-        character_controller = this.gameObject.GetComponent<CharacterController>();
-        nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
-        horror_director = HorrorDirector.instance;
         player_all_controller = PlayerAllController.instance;
-        enemy_action_for_door_controller = this.gameObject.GetComponent<EnemyActionForDoorController>();
-        discovery_player_controller.FirstKeyOfDiscoveriedPlayers = player_all_controller.SpawnedPlayers[Random.Range(0, player_all_controller.SpawnedPlayers.Count)];
+        TargetPlayers = player_all_controller.SpawnedPlayers;
+        ChaseTargetPlayer = TargetPlayers[Random.Range(0, TargetPlayers.Count)];
+        enemyToPlayerKillController = this.gameObject.GetComponent<EnemyToPlayerKillController>();
+        enemyToPlayerKillController.KillPlayerEvent.AddListener((_player) =>
+        {
+            TargetPlayers.Remove(_player);
+            ChaseTargetPlayer = TargetPlayers[Random.Range(0, TargetPlayers.Count)];
+        });
+        foreach (GameObject targetPlayer in TargetPlayers)
+        {
+            PlayerStatus killedPlayerStatus = player_all_controller.SpawnedPlayersWithPlayerStatuses[targetPlayer];
+            //RevivalPlayerEventにAddListenerする。つまり 復活した場合はその復活したやつもターゲットに
+            killedPlayerStatus.RevivalPlayerEvent.AddListener(() =>
+            {
+                //プレイヤーが
+                TargetPlayers.Add(targetPlayer);
+            });
+        }
     }
 
     // Update is called once per frame
@@ -41,23 +55,23 @@ public class KubinashiMikoController : NetworkBehaviour
         if (!IsServer) return;
         if (!discovery_player_controller.DiscoveryPlayerNowCheck())
         {
-            // 
-            // discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].SightningPlayer = true;
-            // discovery_player_controller.AddPlayerToDiscoveryPlayerLists(discovery_player_controller.FirstKeyOfDiscoveriedPlayers);
-            follow_object_by_nav.ChaseToTargetSet(true,discovery_player_controller.FirstKeyOfDiscoveriedPlayers.transform.position,1f, FollowObjectByNav.MoveStyle.Run);
-            no_discovery_player_once = false;
+            if (ChaseTargetPlayer != null)
+            {
+                follow_object_by_nav.ChaseToTargetSet(true,ChaseTargetPlayer.transform.position,moveSpeedController.WalkSpeed, FollowObjectByNav.MoveStyle.Run);
+            }
+            // no_discovery_player_once = false;
 
         }
         else
         {
-            if (!no_discovery_player_once)
-            {
-                DOVirtual.DelayedCall(3, () =>
-                {
-                    horror_director.EnemyLostPlayer();
-                });
-                no_discovery_player_once = true;
-            }
+            // if (!no_discovery_player_once)
+            // {
+            //     DOVirtual.DelayedCall(3, () =>
+            //     {
+            //         horror_director.EnemyLostPlayer();
+            //     });
+            //     no_discovery_player_once = true;
+            // }
 
         }
 

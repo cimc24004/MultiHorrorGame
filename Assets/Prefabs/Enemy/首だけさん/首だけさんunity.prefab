@@ -1033,6 +1033,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2131673674383301548}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: beaed61b383920a4186a5f2c183e73bd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7161190200012461319}
   m_SourcePrefab: {fileID: 100100000, guid: beaed61b383920a4186a5f2c183e73bd, type: 3}
 --- !u!4 &14252536498941331 stripped
 Transform:
@@ -1228,7 +1232,6 @@ MonoBehaviour:
   ArriveSoundPlaceWaitTimeToReturnNow: 0
   sound_by_obj: 0
   MoveToSoundPlaceNow: 0
-  MoveToSoundObjectPlace: 0
   sound_sensor_status: {fileID: 11400000, guid: 4831f51813601be4c95788a4176e17a9,
     type: 2}
   original_sound_sensor_status: {fileID: 11400000, guid: 37f7cd7c4a174384caee30c5e7b646e8,
@@ -1332,6 +1335,9 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 463433
+  KillPlayerEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4383937671889774609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2646,6 +2652,7 @@ MonoBehaviour:
   CollideredForSilhouetteAutoHide: {fileID: 0}
   TargetChangeSilhouetteObjs:
   - {fileID: 375325662105413179}
+  SilhouetteLayerName: RedSilhouette
   ResetLayerName: Default
   ToResetSilhouetteTime: 0
   ToResetSilhouetteTimeNow: 0
@@ -2835,6 +2842,32 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &7161190200012461319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570580655815950056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1347f2bc59afa3d419972c4e8e1ee19e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  stuckDetectionTime: 5
+  minMoveDistance: 0.5
+  checkInterval: 0.5
+  useAlternativeRoute: 1
+  alternativeRouteRadius: 10
+  maxAlternativeAttempts: 3
+  waypointReachDistance: 2
+  showDebugInfo: 1
+  currentStuckTime: 0
+  distanceMoved: 0
+  isCurrentlyStuck: 0
+  isUsingAltRoute: 0
+  currentWaypoint: 0
 --- !u!4 &1574799333831347403 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 923366284622909298, guid: beaed61b383920a4186a5f2c183e73bd,
