@@ -390,7 +390,7 @@ GameObject:
   - component: {fileID: 4826449020938677621}
   m_Layer: 3
   m_Name: Gate
-  m_TagString: Untagged
+  m_TagString: Gate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -661,9 +661,10 @@ GameObject:
   - component: {fileID: 4926391139901886266}
   - component: {fileID: 581519939391514917}
   - component: {fileID: 4133734876243950366}
+  - component: {fileID: 3355414509385983848}
   m_Layer: 3
   m_Name: Gate
-  m_TagString: Pray
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -729,7 +730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2137674929
+  GlobalObjectIdHash: 2220561699
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -766,9 +767,16 @@ MonoBehaviour:
   PrayCompletedEvent:
     m_PersistentCalls:
       m_Calls: []
+  PrayCompletedEventForServer:
+    m_PersistentCalls:
+      m_Calls: []
   PrayStartEvent:
     m_PersistentCalls:
       m_Calls: []
+  Inited: 0
+  PrayNow:
+    m_InternalValue: 0
+  PushingAction: 0
 --- !u!114 &581519939391514917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -781,15 +789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 263306965b106bf41ad3c7b2b39e4e3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   ThroughPreventCollider: {fileID: 8173775814424716334}
   OnCompleteDoorOpen: 0
   OpenAudioSource: {fileID: 6156434923696450683}
@@ -817,6 +817,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3355414509385983848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658227044283306235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 4133734876243950366}
 --- !u!1 &4246837854028753159
 GameObject:
   m_ObjectHideFlags: 0

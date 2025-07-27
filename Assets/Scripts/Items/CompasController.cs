@@ -25,9 +25,13 @@ public class CompasController : NetworkBehaviour
     private DeliverMemoryPlace deliver_memory_place;
     private PrayToDeliverItemAppearPlace pray_to_deliver_item_appear_place;
     private ExitGateController exit_gate_controller;
-    void OnEnable()
+     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            InitOnPlayerSpawn(PlayerStatus.LocalInstance);
+        }
     }
     void OnDisable()
     {
@@ -47,12 +51,12 @@ public class CompasController : NetworkBehaviour
         player_status = _playerStatus;
         Player = player_status.gameObject;
         MainCamera = player_status.virtual_camera.gameObject;
-        pray_to_deliver_item_appear_place = PrayToDeliverItemAppearPlace.instance;
         deliver_memory_place = DeliverMemoryPlace.instance;
-        exit_gate_controller = ExitGateController.Instance;
-        BlueTargetDirectionTransform = pray_to_deliver_item_appear_place.gameObject.transform;
+        BlueTargetDirectionTransform = GameObject.FindWithTag("PrayToDeliverItemAppearPlace").gameObject.transform;
         RedTargetDirectionTransform = deliver_memory_place.gameObject.transform;
-        GreenTargetDirectionTransform = exit_gate_controller.gameObject.transform;
+        GreenTargetDirectionTransform = GameObject.FindWithTag("Gate").gameObject.transform;
+        Debug.Log("BlueTargetDirectionTransform: " + BlueTargetDirectionTransform);
+        Debug.Log("pray_to_deliver_item_appear_place: " + pray_to_deliver_item_appear_place);
     }
     void Update()
     {

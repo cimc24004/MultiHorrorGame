@@ -107,8 +107,8 @@ public class ItemBelongingsController : NetworkBehaviour
 
         // ── 2) UI 用辞書を更新 or 生成 ──
         // イベントアイテムは UI を持たないので処理を抜ける
-        if (_item_status.item_type == ItemStatus.ItemType.Event)
-            return;
+        // if (_item_status.item_type == ItemStatus.ItemType.Event)
+        //     return;
 
         if (belonging_item_uis.TryGetValue(_item_status, out var uiEntry))
         {

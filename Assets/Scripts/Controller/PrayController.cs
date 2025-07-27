@@ -138,8 +138,10 @@ public class PrayController : NetworkBehaviour
                 PrayStartEvent.Invoke();
                 PrayForStartOnce = true;
             }
-
-            PrayTimeNow.Value += Time.deltaTime;
+            if (PushingAction)
+            {
+                PrayTimeNow.Value += Time.deltaTime;
+            }
 
             if (PrayTimeNow.Value >= NeedToPrayTime)
             {

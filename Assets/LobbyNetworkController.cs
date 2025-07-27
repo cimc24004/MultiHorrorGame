@@ -11,6 +11,7 @@ public class LobbyNetworkController : NetworkBehaviour
     [SerializeField] Button GameStartButton;
     [SerializeField] GameObject PlayerClientContents;
     [SerializeField] GameObject PlayerClientsAll;
+    [SerializeField] Button MapStartButton;
     private NetworkList<ulong> connectedMembers = new NetworkList<ulong>();
     [SerializeField] private TMP_InputField m_joinLobbyID_Field;    // LobbyID入力
 

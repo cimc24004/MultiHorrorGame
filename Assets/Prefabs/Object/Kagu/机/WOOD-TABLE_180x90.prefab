@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5921961734381437771
 Transform:
   m_ObjectHideFlags: 0
@@ -46,7 +46,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8968015102745434022
 Transform:
   m_ObjectHideFlags: 0
@@ -78,7 +78,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2874681399048655049
 Transform:
   m_ObjectHideFlags: 0
@@ -196,7 +196,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7182ab8d42cb8984e9db12bcdc19ddb0,
         type: 3}
       propertyPath: m_TagString
-      value: HideActionObject
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -248,8 +248,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.8, y: 0.8999999, z: 0.7158263}
-  m_Center: {x: 0, y: 1.5258968e-11, z: 0.3579145}
+  m_Size: {x: 1.8, y: 0.8999999, z: 1.6442869}
+  m_Center: {x: -0, y: 4.0651555e-11, z: 0.8221458}
 --- !u!114 &5605613568019923004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,16 +262,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fc53e34e78623f4dac3fba626555570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   HideBeyondPos: {fileID: 5921961734381437771}
   UnHideBeyondPos: {fileID: 8968015102745434022}
-  SomeoneHided: 0
+  SomeoneHided:
+    m_InternalValue: 0
   hide_type: 2
-  TargetObjectOfAngle: {x: 0, y: 0, z: 0}
   AudioClipKey: Tukue
   HideAddEvent:
     m_PersistentCalls:
       m_Calls: []
   UnHideAddEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  LocalHideAddEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  LocalUnHideAddEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &4499351075101193747 stripped

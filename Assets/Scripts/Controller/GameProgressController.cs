@@ -18,7 +18,7 @@ public class GameProgressController : NetworkBehaviour
     public bool DeliverItemGeted;
     
     public bool DeliveredToSakura;
-
+    public bool CanEscape = false;
     private GameProgressUIData game_progress_ui_data;
     // Start is called before the first frame update
 
@@ -61,24 +61,38 @@ public class GameProgressController : NetworkBehaviour
     }
     public void OnItemGeted()
     {
+        OnItemGetedUIChangeAllClientRpc();
+        //サーバー側で実行
         DeliverItemGeted = true;
+    }
+    [ClientRpc]
+    private void OnItemGetedUIChangeAllClientRpc()
+    {
         FadeOutTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoTextUI);
         FadeInTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoTextUI);
         DOVirtual.DelayedCall(1, () => {
             game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnItemGeted"].TodoBox.gameObject.SetActive(false);
         });
-    }
 
-    public void OnDeliverSakura(){
+    }
+    public void OnDeliverSakura()
+    {
+        CanEscape = true;
         DeliveredToSakura = true;
+        OnDeliverSakuraUIChangeAllClientRpc();
+    }
+    [ClientRpc]
+    private void OnDeliverSakuraUIChangeAllClientRpc()
+    {
         FadeOutTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoTextUI);
         FadeInTextUI(game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["Escape"].TodoTextUI);
-        DOVirtual.DelayedCall(1, () => {
+        DOVirtual.DelayedCall(1, () =>
+        {
             game_progress_ui_data.TodoName_with_game_todo_list_ui_datas["OnDeliverSakura"].TodoBox.gameObject.SetActive(false);
         });
     }
-
-    private void FadeInTextUI(TextMeshProUGUI _text_ui){
+    private void FadeInTextUI(TextMeshProUGUI _text_ui)
+    {
         _text_ui.DOFade(1, 0.5f).SetLink(this.gameObject);
     }
     private void FadeOutTextUI(TextMeshProUGUI _text_ui){

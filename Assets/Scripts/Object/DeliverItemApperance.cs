@@ -3,20 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPlace>
+using Unity.Netcode;
+public class PrayToDeliverItemAppearPlace : NetworkBehaviour
 {
     public Transform DeliverItemApperancePlace;
-
-
-    [Header("アイテムを取得したときのイベント")]
-    public UnityEvent2 ItemGetedEvent;
-
-    [Header("どちらでもいいのでドアをセット")]
-    public DoorOpenCloseController door_open_close_controller;
     private ItemDatabases item_databases;
     private AudioSource audio_source;
 
     private GameProgressController game_progress_controller;
+    public static PrayToDeliverItemAppearPlace instance { get; private set; }
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +21,25 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
         game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
     }
 
+    private void Awake()
+    {
+        // Note: ここで Instance を設定しても NetworkObject がまだ生きてない可能性がある
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        instance = this;
+    }
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
     [Button]
     public void OnPrayCompleted()
     {
@@ -44,15 +58,26 @@ public class PrayToDeliverItemAppearPlace : Singleton<PrayToDeliverItemAppearPla
         //int r = Random.Range(0, item_databases.ForDeliverItem.Count);
 
         GameObject item = Instantiate(item_databases.ForDeliverItem.ItemPutObjectPrefab, DeliverItemApperancePlace.transform.position, Quaternion.identity);
-        ItemObject item_object_script = item.GetComponent<ItemObject>();
+        NetworkObject itemNetworkObject = item.GetComponent<NetworkObject>();
+        itemNetworkObject.Spawn();
         //アイテムを取得したときのイベント。
-        item_object_script.ItemGetAddEvent.AddListener(() => {
-            game_progress_controller.OnItemGeted();
-            ItemGetedEvent.Invoke();
-        });
-        door_open_close_controller.OpenCompleted.AddListener(() => {
-            Debug.Log("aaaaaaaaaaaaaaaaaaaaDoorOpenClosepedtd!!");
-        });
+        ItemGetedClientRpc(itemNetworkObject.NetworkObjectId);
+
         audio_source.Play();
+    }
+
+    [ClientRpc]
+    private void ItemGetedClientRpc(ulong itemNetworkObjectId)
+    {
+        ItemObject item_object_script = NetworkManager.Singleton.SpawnManager.SpawnedObjects[itemNetworkObjectId].GetComponent<ItemObject>();
+        item_object_script.ItemGetAddEvent.AddListener(() =>
+        {
+            GameProgressOnItemGetedRequestServerRpc();
+        });
+    }
+    [ServerRpc]
+    private void GameProgressOnItemGetedRequestServerRpc()
+    {
+        game_progress_controller.OnItemGeted();
     }
 }

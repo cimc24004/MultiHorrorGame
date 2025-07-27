@@ -30,7 +30,7 @@ public class ItemObject : NetworkBehaviour
                             .GetComponent<ItemBelongingsController>();
 
         int diffCount = inv.belonging_items
-            .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
+            .Where(kvp => kvp.Key != item_status)
             .Count();
         bool overMax = diffCount >= inv.maxCarryableItems;
         bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt)
@@ -63,7 +63,7 @@ public class ItemObject : NetworkBehaviour
 
         // サーバー側チェック
         int diffCount = inv.belonging_items
-            .Where(kvp => kvp.Key != item_status && kvp.Key.item_type != ItemStatus.ItemType.Event)
+            .Where(kvp => kvp.Key != item_status)
             .Count();
         bool overMax = diffCount >= inv.maxCarryableItems;
         bool overSame = inv.belonging_items.TryGetValue(item_status, out var cnt)
