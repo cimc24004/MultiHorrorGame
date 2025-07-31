@@ -16,6 +16,7 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
     [SerializeField] private string configPath;
     private ConfigUI configUI;
     private CMFPSController cMFPSController;
+    private PauseMenuUI pauseMenuUI;
     protected override void Awake()
     {
         base.Awake();
@@ -40,8 +41,10 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
     void Start()
     {
         configUI = ConfigUI.instance;
+        pauseMenuUI = PauseMenuUI.instance;
         configUI.CloseConfigMenuButton.onClick.AddListener(() =>
         {
+
             CloseConfigMenu();
         });
         configUI.ApplyConfigButton.onClick.AddListener(() =>
@@ -86,6 +89,7 @@ public class ConfigController : SingleTonDontDestory<ConfigController>
 
     public void CloseConfigMenu()
     {
+        pauseMenuUI.PausePanel.gameObject.SetActive(true);
         configUI.configPanel.gameObject.SetActive(false);
     }
 

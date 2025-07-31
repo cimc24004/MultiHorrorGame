@@ -9,6 +9,8 @@ using FronkonGames.Glitches.Interferences;
 using FronkonGames.Glitches.CorruptMemory;
 
 using Sirenix.OdinInspector;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 public class URPFxController : Singleton<URPFxController>
 {
     private CorruptMemory.Settings corrupt_memory_settings;
@@ -18,6 +20,9 @@ public class URPFxController : Singleton<URPFxController>
     private CheapCamera.Settings cheap_camera_settings;
     [SerializeField]
     private Dictionary<string, float> intesity_settings_saved;
+
+    [SerializeField]
+    private Volume GlobalVolume;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +36,7 @@ public class URPFxController : Singleton<URPFxController>
         HackedChange(false);
         InteferecesChange(false);
         VHSChange(false);
+        GlobalVolume = GameObject.FindWithTag("GlobalVolume").GetComponent<Volume>();
     }
 
     // Update is called once per frame
@@ -85,6 +91,14 @@ public class URPFxController : Singleton<URPFxController>
             corrupt_memory_settings.intensity = 0;
         }
     }
+    [Button]
+    public void CameraMosaic(bool _Active) {
+        if (GlobalVolume.profile.TryGet<DepthOfField>(out var depthOfField))
+        {
+            depthOfField.active = _Active; // トグル
+        }    
+    }
+
     [Button]
     public void HackedChange(bool enable)
     {

@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class ReadEventController : MonoBehaviour
+using Sirenix.OdinInspector;
+using System.Linq;
+public class ReadEventController : SerializedMonoBehaviour
 {
-    private GameControllerOnAllScene game_controller_on_all_scene;
-    private ReadEventUIController read_event_ui_controller;
+    private GameController gameController;
+    private ReadEventUIController readEventUIController;
 
-    [TextArea]
-    public List<string> Sentence;  // 1ページごとに表示する文章
-
+    public List<int> ReadEventSentenceIds;  // 1ページごとに表示する文章
+    private ReadEventSentenceDatabase readEventSentenceDatabase;
     void Start()
     {
-        game_controller_on_all_scene = GameControllerOnAllScene.instance;
-        read_event_ui_controller = game_controller_on_all_scene.read_event_ui_controller;
+        gameController = GameController.instance;
+        readEventSentenceDatabase = ReadEventSentenceDatabase.instance;
+        readEventUIController = gameController.readEventUIController;
     }
 
     // 本を読み始めるときに呼ばれる
@@ -21,6 +22,10 @@ public class ReadEventController : MonoBehaviour
     {
         // UIコントローラーに「全ページ文章リスト」を渡す
         // 以降UIで文章ページの制御が可能になる
-        read_event_ui_controller.StartReading(Sentence);
+        // List<ReadEventSentenceData> reading_sentences;
+        List<string> reading_sentences = ReadEventSentenceIds
+                              .Select(id => readEventSentenceDatabase.readEventSentenceDatas[id].Sentence)
+                              .ToList();
+        readEventUIController.StartReading(reading_sentences);
     }
 }

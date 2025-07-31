@@ -5,6 +5,5 @@ using UnityEngine.InputSystem;
 
 public class GameControllerOnAllScene : SingleTonDontDestory<GameControllerOnAllScene>
 {
-    public ReadEventUIController read_event_ui_controller;
 
 }

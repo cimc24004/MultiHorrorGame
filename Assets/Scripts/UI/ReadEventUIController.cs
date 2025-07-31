@@ -43,6 +43,8 @@ public class ReadEventUIController : MonoBehaviour
     private TextMeshProUGUI PageNowCountTextUI;
     [SerializeField]
     private TextMeshProUGUI MaxPageCountTextUI;
+    private URPFxController urpFxController;
+    private CMFPSController cMFPSController;
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
@@ -53,6 +55,8 @@ public class ReadEventUIController : MonoBehaviour
     }
     void Start()
     {
+        cMFPSController = CMFPSController.instance;
+        urpFxController = URPFxController.instance;
         audio_source = this.gameObject.GetComponent<AudioSource>();
         game_controller_on_all_scene = GameControllerOnAllScene.instance;
         game_state_controller = game_controller_on_all_scene.GetComponent<GameStateController>();
@@ -102,14 +106,13 @@ public class ReadEventUIController : MonoBehaviour
     public void StartReading(List<string> _sentences)
     {
         if (_sentences == null || _sentences.Count == 0) return;
-
+        cMFPSController.InputProviderEnable(false);
         // 本文リストをセット
         sentences = _sentences;
-
+        urpFxController.CameraMosaic(true);
         // 1ページ目を表示する処理
         Page = 1;
         MaxPage = sentences.Count;
-
         // 画面表示の更新
         game_state_controller.ReadEventMode(true);
         CanvasUI.SetActive(true);
@@ -164,6 +167,8 @@ public class ReadEventUIController : MonoBehaviour
         game_state_controller.GameplayMode();
         CanvasUI.SetActive(false);
         sentenceUI.SetText("");
+        urpFxController.CameraMosaic(false);
+        cMFPSController.InputProviderEnable(true);
     }
 
     // 次のページ、前のページへの表示をチェックしている

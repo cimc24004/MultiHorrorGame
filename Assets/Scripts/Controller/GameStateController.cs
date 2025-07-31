@@ -15,16 +15,24 @@ public class GameStateController : Singleton<GameStateController>
     [Header("現在のゲームの状態 メニュー画面だったり、スタート画面ならUIが選択")]
     public GameState game_state;
     private PlayerInput player_input;
-
+    void Start()
+    {
+        
+    }
     void OnEnable()
     {
         PlayerStatus.OnLocalPlayerSpawned += OnPlayerSpawnInit;
+        if (PlayerStatus.LocalInstance != null)
+        {
+            OnPlayerSpawnInit(PlayerStatus.LocalInstance);
+        }
     }
     void OnDisable()
     {
         PlayerStatus.OnLocalPlayerSpawned -= OnPlayerSpawnInit;
     }
-    private void OnPlayerSpawnInit(PlayerStatus _playerStatus){
+    private void OnPlayerSpawnInit(PlayerStatus _playerStatus)
+    {
         this.player_input = _playerStatus.player_input;
     }
     public void ActionByModeSelect(GameState game_state, bool cursor_display)
@@ -74,6 +82,7 @@ public class GameStateController : Singleton<GameStateController>
         player_input.actions.FindActionMap("Player").Disable();
         player_input.actions.FindActionMap("MenuOnGamePlay").Disable();
         player_input.actions.FindActionMap("ReadEvent").Enable();
+        
         player_input.actions.FindActionMap("GamePlayAndMenuCommon").Disable();
         if (visibleCursor)
         {
@@ -82,7 +91,6 @@ public class GameStateController : Singleton<GameStateController>
             Cursor.visible = true;
         }
         EventSystem.current.sendNavigationEvents = false;
-
     }
     public void StartClearOverMode()
     {

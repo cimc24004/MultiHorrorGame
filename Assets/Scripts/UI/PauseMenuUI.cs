@@ -23,6 +23,7 @@ public class PauseMenuUI : Singleton<PauseMenuUI>
         });
         SettingOpenButton.onClick.AddListener(() =>
         {
+            PausePanel.gameObject.SetActive(false);
             configController.OpenConfigMenu();
         });
         ReturnToMainMenuButton.onClick.AddListener(() =>
