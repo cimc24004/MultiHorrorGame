@@ -11,6 +11,7 @@ using FronkonGames.Glitches.CorruptMemory;
 using Sirenix.OdinInspector;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 public class URPFxController : Singleton<URPFxController>
 {
     private CorruptMemory.Settings corrupt_memory_settings;
@@ -36,7 +37,10 @@ public class URPFxController : Singleton<URPFxController>
         HackedChange(false);
         InteferecesChange(false);
         VHSChange(false);
-        GlobalVolume = GameObject.FindWithTag("GlobalVolume").GetComponent<Volume>();
+        if (SceneManager.GetActiveScene().name == "Main")
+        {
+            GlobalVolume = GameObject.FindWithTag("GlobalVolume").GetComponent<Volume>();
+        }
     }
 
     // Update is called once per frame
