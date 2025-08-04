@@ -37,10 +37,6 @@ public class URPFxController : Singleton<URPFxController>
         HackedChange(false);
         InteferecesChange(false);
         VHSChange(false);
-        if (SceneManager.GetActiveScene().name == "Main")
-        {
-            GlobalVolume = GameObject.FindWithTag("GlobalVolume").GetComponent<Volume>();
-        }
     }
 
     // Update is called once per frame
@@ -97,6 +93,10 @@ public class URPFxController : Singleton<URPFxController>
     }
     [Button]
     public void CameraMosaic(bool _Active) {
+        if (GlobalVolume == null)
+        {
+            GlobalVolume = GameObject.FindWithTag("GlobalVolume").GetComponent<Volume>();
+        }
         if (GlobalVolume.profile.TryGet<DepthOfField>(out var depthOfField))
         {
             depthOfField.active = _Active; // トグル
