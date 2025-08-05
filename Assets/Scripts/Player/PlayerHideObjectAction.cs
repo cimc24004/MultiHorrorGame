@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
@@ -229,7 +230,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
         {
             // discoveryPlayerController.PlayersVisibilityMapStatuesWithKey[player_status.gameObject].DiscoveryPlayerNow = false;
             // discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
-            if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
+            if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown && enemy_anim.parameters.Any(p => p.name == "LayLookDown"))
             {
                 Debug.Log("Enemy found player hiding (FaceDown). Triggering enemy animation.");
                 enemy_anim.SetTrigger("LayLookDown"); // 敵のアニメーション
