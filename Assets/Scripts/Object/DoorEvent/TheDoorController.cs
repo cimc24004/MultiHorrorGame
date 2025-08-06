@@ -30,7 +30,6 @@ public class TheDoorController : NetworkBehaviour
     public bool OpenedClosedCompletedAnimation = true;
     public bool OpenedClosedCompleted = true;
     private PlayerStatus player_status;
-    private TimeManager time_manager;
     private float CompletedWaitTimeNow;
     private NeedKeysController need_keys_controller;
     // [ShowIf("NeededKey")]
@@ -49,7 +48,6 @@ public class TheDoorController : NetworkBehaviour
     }
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
         player_status = _playerStatus;
-        time_manager = TimeManager.instance;
         need_keys_controller = NeedKeysController.instance;
     }
 

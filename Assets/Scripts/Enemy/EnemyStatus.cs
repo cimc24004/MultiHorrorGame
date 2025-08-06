@@ -34,7 +34,6 @@ public class EnemyStatus : NetworkBehaviour
     private DiscoveryPlayerController discovery_player_controller;
     private Animator anim;
     private CharacterMovePermit character_move_permit;
-    private TimeManager time_manager;
     private EnemyRoutingController enemy_routing_controller;
     [HideInInspector]public EnemyFlinchController enemy_flinch_controller;
     public bool StopEnemyByPlayerNow;
@@ -53,7 +52,6 @@ public class EnemyStatus : NetworkBehaviour
         enemy_routing_controller = this.gameObject.GetComponent<EnemyRoutingController>();
         enemy_flinch_controller = this.gameObject.GetComponent<EnemyFlinchController>();
         anim = this.gameObject.GetComponent<Animator>();
-        time_manager = TimeManager.instance;
     }
     
 

@@ -30,7 +30,6 @@ public class FollowObjectByNav : NetworkBehaviour
     [HideInInspector]
     public float DefaultStoppingDistance;
     private Vector3 NavmeshNextPos;
-    private TimeManager time_manager;
     private CharacterController character_controller;
     private Vector3 Vector3Move;
     private NavMeshHit nav_mesh_hit;
@@ -48,7 +47,6 @@ public class FollowObjectByNav : NetworkBehaviour
         nav_mesh_agent = this.gameObject.GetComponent<NavMeshAgent>();
         //rigid = this.gameObject.GetComponent<Rigidbody>();
         character_controller = this.gameObject.GetComponent<CharacterController>();
-        time_manager = TimeManager.instance;
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
         this.DefaultStoppingDistance = StoppingDistance;
         //デフォルトでは探索結果の0番目を指定する

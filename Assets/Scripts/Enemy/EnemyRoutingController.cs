@@ -10,7 +10,6 @@ public class EnemyRoutingController : NetworkBehaviour
     private FollowObjectByNav follow_object_by_nav;
     private EnemyStatus enemy_status;
     private float WaitToMoveNextPointTimeNow;
-    private TimeManager time_manager;
 
     public float ToNextRouteDistance;
     [Header("Ÿ‚Ìƒ|ƒCƒ“ƒg‚Ü‚ÅˆÚ“®‚·‚é‚Ü‚Å­‚µ‘Ò‚Â‚»‚ÌŠÔ")]
@@ -44,7 +43,6 @@ public class EnemyRoutingController : NetworkBehaviour
         stage_routings = StageController.instance.gameObject.GetComponent<StageRoutings>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
         enemy_status = this.gameObject.GetComponent<EnemyStatus>();
-        time_manager = TimeManager.instance;
 
         if (!OriginalRouting)
         {

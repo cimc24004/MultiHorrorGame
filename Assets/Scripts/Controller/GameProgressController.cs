@@ -7,6 +7,7 @@ using DG.Tweening;
 using Unity.Netcode;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using System;
 public class GameProgressController : NetworkBehaviour
 {
     [Header("お祈りが必要な数")]
@@ -20,13 +21,19 @@ public class GameProgressController : NetworkBehaviour
     public bool DeliveredToSakura;
     public bool CanEscape = false;
     private GameProgressUIData game_progress_ui_data;
+    private ScoreTimeManager scoreTimeManager;
     // Start is called before the first frame update
 
     public override void OnNetworkSpawn()
     {
         int index = 0;
+        scoreTimeManager = ScoreTimeManager.Instance;
         game_progress_ui_data = this.gameObject.GetComponent<GameProgressUIData>();
         game_progress_ui_data.ButsudanCountNowTextUI.text = $"{PrayCountNow.Value}/{NeedPrayCount}";
+        game_progress_ui_data.ProgressButtonAfterGameClear.onClick.AddListener(() =>
+        {
+            ProgressAfterGameClear();
+        });
         foreach (GameProgressUIData.GameToDoListUIData game_to_do_list_ui_data in game_progress_ui_data.TodoName_with_game_todo_list_ui_datas.Values)
         {
             if (index != 0)
@@ -36,6 +43,10 @@ public class GameProgressController : NetworkBehaviour
             index++;
         }
         this.PrayCountNow.OnValueChanged += PrayCountNowOnValueChanged;
+    }
+    public void GameStart()
+    {
+        scoreTimeManager.MeasureTimeStart();
     }
     public void OnPrayedButsudan()
     {
@@ -80,6 +91,27 @@ public class GameProgressController : NetworkBehaviour
         CanEscape = true;
         DeliveredToSakura = true;
         OnDeliverSakuraUIChangeAllClientRpc();
+    }
+
+    public void GameClear()
+    {
+        GameClearUI();
+    }
+    public void ProgressAfterGameClear()
+    {
+        //ゲームをクリアした後次に進むを押した後のイベント。
+        NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
+    private void GameClearUI()
+    {
+        TimeSpan time = TimeSpan.FromSeconds(scoreTimeManager.ScoreTimeNow.Value);
+
+        // "分:秒:ミリ秒" のフォーマットで文字列に変換
+        // "mm"は2桁の分、"ss"は2桁の秒、"ff"はミリ秒の上位2桁
+        string timeText = time.ToString(@"mm\:ss\:ff");
+        
+        game_progress_ui_data.scoreTimeTextUI.SetText($"{timeText}");
+        game_progress_ui_data.GameClearPanel.SetActive(true);
     }
     [ClientRpc]
     private void OnDeliverSakuraUIChangeAllClientRpc()
