@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1080127721275556409}
+  - component: {fileID: -79240561536096387}
   m_Layer: 0
   m_Name: "\u3075\u3064\u3046\u306E\u7A93"
   m_TagString: Untagged
@@ -33,6 +34,31 @@ Transform:
   - {fileID: 114149177671758606}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &-79240561536096387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411713074049767555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2637990453
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &3465649589111148383
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,7 +90,7 @@ Transform:
   m_GameObject: {fileID: 3465649589111148383}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071062, z: 0, w: 0.7071074}
-  m_LocalPosition: {x: 0.566602, y: 1.7590911, z: -10.120124}
+  m_LocalPosition: {x: 0.39897376, y: 1.7590914, z: -10.120133}
   m_LocalScale: {x: 0.7050632, y: 0.5512877, z: 0.41907233}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -77,7 +103,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3465649589111148383}
-  m_Mesh: {fileID: 5450171285732412222, guid: 3120381ad0432314db7ff61bc87e341d, type: 3}
+  m_Mesh: {fileID: 4300000, guid: db42d5e835e8f974e8a2658c91421ed0, type: 2}
 --- !u!23 &8669246019357374012
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -95,6 +121,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -142,7 +171,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.050659567, y: 0.9663608, z: 1.9105613}
-  m_Center: {x: 0.0015140616, y: -0.04061961, z: -0.41392785}
+  m_Center: {x: 0.0015063476, y: -0.040620044, z: -0.013929549}
 --- !u!82 &2051983267155045803
 AudioSource:
   m_ObjectHideFlags: 0
@@ -154,6 +183,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -251,19 +281,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   door_open_close_controllers:
   - {fileID: 3529778759474073330}
-  door_status: 0
-  NeededKey: 0
+  door_status_network:
+    m_InternalValue: 0
+  NeededKey:
+    m_InternalValue: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
@@ -280,21 +304,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   TriggerChangeModeOpenClose: 1
   open_type: 0
   ToOpenTransform: {fileID: 1179395566541834707}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 256413365130823871}
-  duration: 0.7
+  Duration: 0.5
+  OpenStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -338,7 +357,7 @@ Transform:
   m_GameObject: {fileID: 7068510313723935997}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.70710653, z: 0, w: 0.70710707}
-  m_LocalPosition: {x: -0.61083186, y: 1.7590911, z: -10.155381}
+  m_LocalPosition: {x: -0.41156918, y: 1.7590914, z: -10.155385}
   m_LocalScale: {x: 0.7050632, y: 0.5512877, z: 0.44280648}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -351,7 +370,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7068510313723935997}
-  m_Mesh: {fileID: -7635995906475304143, guid: 3120381ad0432314db7ff61bc87e341d, type: 3}
+  m_Mesh: {fileID: 4300000, guid: ab277efea385f204a9b2bfb288008088, type: 2}
 --- !u!23 &3989936882940618606
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -369,6 +388,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -416,7 +438,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.050659567, y: 0.9663608, z: 1.9033494}
-  m_Center: {x: 0.0015104183, y: -0.04061961, z: -0.41032144}
+  m_Center: {x: 0.0015129121, y: -0.040620044, z: 0.03967908}
 --- !u!82 &2433182165657371351
 AudioSource:
   m_ObjectHideFlags: 0
@@ -428,6 +450,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -525,19 +548,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   door_open_close_controllers:
   - {fileID: 7615654758420920859}
-  door_status: 0
-  NeededKey: 0
+  door_status_network:
+    m_InternalValue: 0
+  NeededKey:
+    m_InternalValue: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
   open_permit_by_key_controller: {fileID: 0}
@@ -554,21 +571,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   TriggerChangeModeOpenClose: 1
   open_type: 0
   ToOpenTransform: {fileID: 114149177671758606}
   TargetRotateVector: {x: 0, y: 0, z: 0}
   the_door_controller: {fileID: 938473570907538100}
-  duration: 0.7
+  Duration: 0.5
+  OpenStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
   OpenCompleted:
     m_PersistentCalls:
       m_Calls: []

@@ -1,49 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events; // UnityEvent‚Ì‚½‚ß
+using UnityEngine.Events; // UnityEventã®ãŸã‚
 using Unity.Netcode;
-// using Mono.Cecil.Cil; // ‚à‚µ–¢g—p‚Å‚ ‚ê‚Îíœ‚ğŒŸ“¢
+// using Mono.Cecil.Cil; // ã‚‚ã—æœªä½¿ç”¨ã§ã‚ã‚Œã°å‰Šé™¤ã‚’æ¤œè¨
 
-// UnityEvent2 ‚ªƒJƒXƒ^ƒ€ƒNƒ‰ƒX‚È‚çA‚»‚Ì using ‚à•K—v
-// public class UnityEvent2 : UnityEvent {} // —á: ‚à‚µ’Pƒ‚ÈUnityEvent‚ÌƒGƒCƒŠƒAƒX‚È‚ç
+// UnityEvent2 ãŒã‚«ã‚¹ã‚¿ãƒ ã‚¯ãƒ©ã‚¹ãªã‚‰ã€ãã® using ã‚‚å¿…è¦
+// public class UnityEvent2 : UnityEvent {} // ä¾‹: ã‚‚ã—å˜ç´”ãªUnityEventã®ã‚¨ã‚¤ãƒªã‚¢ã‚¹ãªã‚‰
 
 public class TargetHideObject : NetworkBehaviour
 {
-    //‚Ç‚±‚É‰B‚·‚©êŠ‚ğw’èI
+    //ã©ã“ã«éš ã™ã‹å ´æ‰€ã‚’æŒ‡å®šï¼
     public Transform HideBeyondPos;
-    //‰B‚ê‚½Œã‚»‚ÌêŠ‚©‚ço‚é‚Æ‚«‚É‚Ç‚±‚Éo‚é‚©B
+    //éš ã‚ŒãŸå¾Œãã®å ´æ‰€ã‹ã‚‰å‡ºã‚‹ã¨ãã«ã©ã“ã«å‡ºã‚‹ã‹ã€‚
     public Transform UnHideBeyondPos;
 
-    //’N‚©‚ª‰B‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©B
+    //èª°ã‹ãŒéš ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹ã€‚
     public NetworkVariable<bool> SomeoneHided = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    //‰B‚ê‚éƒ^ƒCƒv‚Í‰½‚È‚Ì‚©B
+    //éš ã‚Œã‚‹ã‚¿ã‚¤ãƒ—ã¯ä½•ãªã®ã‹ã€‚
     public enum HideType
     {
         Stand,
         Crouch,
         FaceDown
     };
-    [Header("‰B‚ê‚éƒ^ƒCƒv")]
-    [Tooltip("Stand: —§‚Á‚½ó‘Ô \n Crouch: À‚Á‚½ó‘Ô \n FaceDown: ‚¤‚Â•š‚¹ó‘Ô")]
-    public HideType hide_type; // ‚±‚ÌHideObject‚Ì‰B‚ê•ûƒ^ƒCƒv (Inspector‚Åİ’è)
+    [Header("éš ã‚Œã‚‹ã‚¿ã‚¤ãƒ—")]
+    [Tooltip("Stand: ç«‹ã£ãŸçŠ¶æ…‹ \n Crouch: åº§ã£ãŸçŠ¶æ…‹ \n FaceDown: ã†ã¤ä¼ã›çŠ¶æ…‹")]
+    public HideType hide_type; // ã“ã®HideObjectã®éš ã‚Œæ–¹ã‚¿ã‚¤ãƒ— (Inspectorã§è¨­å®š)
 
-    // public Vector3 TargetObjectOfAngle; // g—p‰ÓŠ•s–¾‚Ì‚½‚ßƒRƒƒ“ƒgƒAƒEƒg‚àŒŸ“¢
+    // public Vector3 TargetObjectOfAngle; // ä½¿ç”¨ç®‡æ‰€ä¸æ˜ã®ãŸã‚ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚‚æ¤œè¨
 
-    [Header("Player‚ÌqƒIƒuƒWƒFƒNƒg‚É‚ ‚éAudioDatas‚Éİ’è‚³‚ê‚Ä‚éaudioClip‚ÌKey‚ğw’èB")]
+    [Header("Playerã®å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã‚ã‚‹AudioDatasã«è¨­å®šã•ã‚Œã¦ã‚‹audioClipã®Keyã‚’æŒ‡å®šã€‚")]
     [SerializeField] private string AudioClipKey;
 
-    [SerializeField] private UnityEvent2 HideAddEvent; // UnityEvent2 ‚©‚ç UnityEvent ‚É•ÏXi•W€‹@”\j
+    [SerializeField] private UnityEvent2 HideAddEvent; // UnityEvent2 ã‹ã‚‰ UnityEvent ã«å¤‰æ›´ï¼ˆæ¨™æº–æ©Ÿèƒ½ï¼‰
     [SerializeField] private UnityEvent2 UnHideAddEvent;
     [SerializeField] private UnityEvent LocalHideAddEvent;
     [SerializeField] private UnityEvent LocalUnHideAddEvent;
 
-    // ‚±‚ê‚ç‚ÌQÆ‚Íƒ[ƒJƒ‹ƒvƒŒƒCƒ„[‚ÉˆË‘¶‚·‚é‚½‚ßAˆµ‚¢‚ª“ï‚µ‚¢
-    // ŠeƒNƒ‰ƒCƒAƒ“ƒg‚ª©g‚ÌƒvƒŒƒCƒ„[‚ÌQÆ‚ğ‚Â•K—v‚ª‚ ‚é
+    // ã“ã‚Œã‚‰ã®å‚ç…§ã¯ãƒ­ãƒ¼ã‚«ãƒ«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ä¾å­˜ã™ã‚‹ãŸã‚ã€æ‰±ã„ãŒé›£ã—ã„
+    // å„ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãŒè‡ªèº«ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‚ç…§ã‚’æŒã¤å¿…è¦ãŒã‚ã‚‹
     private AudioSource _localPlayerHideActionAudioSource;
     private AudioDatas _localPlayerHideActionAudioDatas;
-    // private SubNoticedUIController _localPlayerSubNoticedUiController; // ‚±‚ê‚ÍPlayerStatus‚ª‚Â‚×‚«
+    // private SubNoticedUIController _localPlayerSubNoticedUiController; // ã“ã‚Œã¯PlayerStatusãŒæŒã¤ã¹ã
 
     void OnEnable()
     {
@@ -62,8 +62,8 @@ public class TargetHideObject : NetworkBehaviour
 
     private void InitOnLocalPlayerSpawn(PlayerStatus localPlayerStatus)
     {
-        // ƒ[ƒJƒ‹ƒvƒŒƒCƒ„[‚ªƒXƒ|[ƒ“‚µ‚½‚Æ‚«‚ÉA‚»‚ÌƒvƒŒƒCƒ„[‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ğQÆ‚·‚é
-        // ‚±‚ê‚É‚æ‚èAŒø‰Ê‰¹‚È‚Ç‚ªƒ[ƒJƒ‹ƒvƒŒƒCƒ„[‚É‘Î‚µ‚Ä³‚µ‚­“®ì‚·‚é‚æ‚¤‚É‚È‚é
+        // ãƒ­ãƒ¼ã‚«ãƒ«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã‚¹ãƒãƒ¼ãƒ³ã—ãŸã¨ãã«ã€ãã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å‚ç…§ã™ã‚‹
+        // ã“ã‚Œã«ã‚ˆã‚Šã€åŠ¹æœéŸ³ãªã©ãŒãƒ­ãƒ¼ã‚«ãƒ«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å¯¾ã—ã¦æ­£ã—ãå‹•ä½œã™ã‚‹ã‚ˆã†ã«ãªã‚‹
         if (localPlayerStatus != null)
         {
             _localPlayerHideActionAudioDatas = localPlayerStatus.HideActionAudioDatas;
@@ -76,39 +76,39 @@ public class TargetHideObject : NetworkBehaviour
 
     private void OnSomeoneHidedChanged(bool previousValue, bool newValue)
     {
-        // ‚±‚ÌƒIƒuƒWƒFƒNƒg‚É’N‚©‰B‚ê‚½/o‚½ê‡‚É‘SƒNƒ‰ƒCƒAƒ“ƒg‚ÅŒÄ‚Î‚ê‚é
-        // —á‚¦‚ÎAƒIƒuƒWƒFƒNƒg‚ÌŒ©‚½–Ú‚ğ•ÏX‚·‚éi”à‚ª•Â‚Ü‚é‚È‚Çjˆ—‚ğ‚±‚±‚Ås‚¦‚é
+        // ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«èª°ã‹éš ã‚ŒãŸ/å‡ºãŸå ´åˆã«å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã§å‘¼ã°ã‚Œã‚‹
+        // ä¾‹ãˆã°ã€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¦‹ãŸç›®ã‚’å¤‰æ›´ã™ã‚‹ï¼ˆæ‰‰ãŒé–‰ã¾ã‚‹ãªã©ï¼‰å‡¦ç†ã‚’ã“ã“ã§è¡Œãˆã‚‹
         Debug.Log($"TargetHideObject '{this.gameObject.name}' SomeoneHided changed from {previousValue} to {newValue}");
-        if (newValue) // ’N‚©‚ª‰B‚ê‚½
+        if (newValue) // èª°ã‹ãŒéš ã‚ŒãŸ
         {
-            HideAddEvent.Invoke(); // ‘SƒNƒ‰ƒCƒAƒ“ƒg‚ÅÀs‚³‚ê‚éƒCƒxƒ“ƒg
+            HideAddEvent.Invoke(); // å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã§å®Ÿè¡Œã•ã‚Œã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
         }
-        else // ’N‚à‰B‚ê‚Ä‚¢‚È‚¢
+        else // èª°ã‚‚éš ã‚Œã¦ã„ãªã„
         {
-            UnHideAddEvent.Invoke(); // ‘SƒNƒ‰ƒCƒAƒ“ƒg‚ÅÀs‚³‚ê‚éƒCƒxƒ“ƒg
+            UnHideAddEvent.Invoke(); // å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã§å®Ÿè¡Œã•ã‚Œã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
         }
     }
 
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒT[ƒo[ RPCFƒvƒŒƒCƒ„[‚ª‚±‚ÌƒIƒuƒWƒFƒNƒg‚É‰B‚ê‚é‚±‚Æ‚ğ—v‹
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    [ServerRpc(RequireOwnership = false)] // ‚Ç‚ÌƒNƒ‰ƒCƒAƒ“ƒg‚©‚ç‚Å‚àŒÄ‚Ño‚¹‚é
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚µãƒ¼ãƒãƒ¼ RPCï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«éš ã‚Œã‚‹ã“ã¨ã‚’è¦æ±‚
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    [ServerRpc(RequireOwnership = false)] // ã©ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‹ã‚‰ã§ã‚‚å‘¼ã³å‡ºã›ã‚‹
     public void HideRequestServerRpc(ulong playerNetId, ServerRpcParams rpcParams = default)
     {
         Debug.Log($"[Server] HideRequestServerRpc for object {this.gameObject.name} from playerNetId {playerNetId}");
         if (SomeoneHided.Value)
         {
             Debug.LogWarning($"[Server] Player {playerNetId} tried to hide in {this.gameObject.name}, but it's already occupied.");
-            // ‚±‚±‚ÅƒŠƒNƒGƒXƒgŒ³ƒNƒ‰ƒCƒAƒ“ƒg‚ÉuŠù‚Ég‚í‚ê‚Ä‚¢‚év‚Æ’Ê’m‚·‚é‚±‚Æ‚à‰Â”\
+            // ã“ã“ã§ãƒªã‚¯ã‚¨ã‚¹ãƒˆå…ƒã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«ã€Œæ—¢ã«ä½¿ã‚ã‚Œã¦ã„ã‚‹ã€ã¨é€šçŸ¥ã™ã‚‹ã“ã¨ã‚‚å¯èƒ½
             return;
         }
 
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetId, out NetworkObject playerNetworkObj))
         {
-            HideTargetOnServer(playerNetworkObj.gameObject); // ƒT[ƒo[‚ÅƒvƒŒƒCƒ„[‚ğˆÚ“®Aó‘Ô•ÏX
+            HideTargetOnServer(playerNetworkObj.gameObject); // ã‚µãƒ¼ãƒãƒ¼ã§ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç§»å‹•ã€çŠ¶æ…‹å¤‰æ›´
 
-            // ‰B‚ê‚½–{liƒŠƒNƒGƒXƒgŒ³j‚Éƒ[ƒJƒ‹‚Èˆ—‚ğÀs‚³‚¹‚é‚½‚ß‚ÌClientRpc
+            // éš ã‚ŒãŸæœ¬äººï¼ˆãƒªã‚¯ã‚¨ã‚¹ãƒˆå…ƒï¼‰ã«ãƒ­ãƒ¼ã‚«ãƒ«ãªå‡¦ç†ã‚’å®Ÿè¡Œã•ã›ã‚‹ãŸã‚ã®ClientRpc
             ClientRpcParams clientRpcParams = new ClientRpcParams
             {
                 Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerNetworkObj.OwnerClientId } }
@@ -121,9 +121,9 @@ public class TargetHideObject : NetworkBehaviour
         }
     }
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒT[ƒo[ RPCFƒvƒŒƒCƒ„[‚ª‚±‚ÌƒIƒuƒWƒFƒNƒg‚©‚ço‚é‚±‚Æ‚ğ—v‹
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚µãƒ¼ãƒãƒ¼ RPCï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‹ã‚‰å‡ºã‚‹ã“ã¨ã‚’è¦æ±‚
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     [ServerRpc(RequireOwnership = false)]
     public void UnHideRequestServerRpc(ulong playerNetId, ServerRpcParams rpcParams = default)
     {
@@ -131,12 +131,12 @@ public class TargetHideObject : NetworkBehaviour
         if (!SomeoneHided.Value)
         {
             Debug.LogWarning($"[Server] Player {playerNetId} tried to unhide from {this.gameObject.name}, but it's not occupied.");
-            // ó‘Ô‚ª‚¨‚©‚µ‚¢ê‡‚Ìˆ—
+            // çŠ¶æ…‹ãŒãŠã‹ã—ã„å ´åˆã®å‡¦ç†
         }
 
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerNetId, out NetworkObject playerNetworkObj))
         {
-            UnHideTargetOnServer(playerNetworkObj.gameObject); // ƒT[ƒo[‚ÅƒvƒŒƒCƒ„[‚ğˆÚ“®Aó‘Ô•ÏX
+            UnHideTargetOnServer(playerNetworkObj.gameObject); // ã‚µãƒ¼ãƒãƒ¼ã§ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç§»å‹•ã€çŠ¶æ…‹å¤‰æ›´
 
             ClientRpcParams clientRpcParams = new ClientRpcParams
             {
@@ -150,33 +150,33 @@ public class TargetHideObject : NetworkBehaviour
         }
     }
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒT[ƒo[‚Å‚Ì‚İÀs: ƒvƒŒƒCƒ„[‚ğ‰B‚·ˆ—
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚µãƒ¼ãƒãƒ¼ã§ã®ã¿å®Ÿè¡Œ: ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’éš ã™å‡¦ç†
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private void HideTargetOnServer(GameObject playerObject)
     {
         playerObject.transform.position = HideBeyondPos.position;
-        // •K—v‚È‚çƒvƒŒƒCƒ„[‚ÌŒü‚«‚àİ’è
-        // playerObject.transform.rotation = HideBeyondPos.rotation; // Quaternion.Euler(TargetObjectOfAngle) ‚È‚Ç
-        SomeoneHided.Value = true; // NetworkVariable‚ğXV -> ‘SƒNƒ‰ƒCƒAƒ“ƒg‚É“¯Šú
+        // å¿…è¦ãªã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ãã‚‚è¨­å®š
+        // playerObject.transform.rotation = HideBeyondPos.rotation; // Quaternion.Euler(TargetObjectOfAngle) ãªã©
+        SomeoneHided.Value = true; // NetworkVariableã‚’æ›´æ–° -> å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«åŒæœŸ
     }
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒT[ƒo[‚Å‚Ì‚İÀs: ƒvƒŒƒCƒ„[‚ğo‚·ˆ—
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚µãƒ¼ãƒãƒ¼ã§ã®ã¿å®Ÿè¡Œ: ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å‡ºã™å‡¦ç†
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private void UnHideTargetOnServer(GameObject playerObject)
     {
         playerObject.transform.position = UnHideBeyondPos.position;
-        SomeoneHided.Value = false; // NetworkVariable‚ğXV -> ‘SƒNƒ‰ƒCƒAƒ“ƒg‚É“¯Šú
+        SomeoneHided.Value = false; // NetworkVariableã‚’æ›´æ–° -> å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«åŒæœŸ
     }
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒNƒ‰ƒCƒAƒ“ƒg RPCF‰B‚ê‚½–{lŒü‚¯‚Ìƒ[ƒJƒ‹ˆ—
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ RPCï¼šéš ã‚ŒãŸæœ¬äººå‘ã‘ã®ãƒ­ãƒ¼ã‚«ãƒ«å‡¦ç†
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     [ClientRpc]
     private void HidingPlayerLocalActionsClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        // ‚±‚ÌRPC‚Íw’è‚³‚ê‚½ƒNƒ‰ƒCƒAƒ“ƒgi‰B‚ê‚½–{lj‚Å‚Ì‚İÀs‚³‚ê‚é
+        // ã“ã®RPCã¯æŒ‡å®šã•ã‚ŒãŸã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆï¼ˆéš ã‚ŒãŸæœ¬äººï¼‰ã§ã®ã¿å®Ÿè¡Œã•ã‚Œã‚‹
         Debug.Log($"[Client {NetworkManager.Singleton.LocalClientId}] HidingPlayerLocalActionsClientRpc for object {this.gameObject.name}");
         if (_localPlayerHideActionAudioSource != null && !string.IsNullOrEmpty(AudioClipKey) &&
             _localPlayerHideActionAudioDatas.audioClipDatasWithKey.ContainsKey(AudioClipKey))
@@ -184,16 +184,16 @@ public class TargetHideObject : NetworkBehaviour
             _localPlayerHideActionAudioSource.PlayOneShot(
                 _localPlayerHideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
         }
-        LocalHideAddEvent.Invoke(); // RaycastPermit = false ‚È‚Ç
+        LocalHideAddEvent.Invoke(); // RaycastPermit = false ãªã©
     }
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒNƒ‰ƒCƒAƒ“ƒg RPCFo‚½–{lŒü‚¯‚Ìƒ[ƒJƒ‹ˆ—
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ RPCï¼šå‡ºãŸæœ¬äººå‘ã‘ã®ãƒ­ãƒ¼ã‚«ãƒ«å‡¦ç†
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     [ClientRpc]
     private void UnhidingPlayerLocalActionsClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        // ‚±‚ÌRPC‚Íw’è‚³‚ê‚½ƒNƒ‰ƒCƒAƒ“ƒgio‚½–{lj‚Å‚Ì‚İÀs‚³‚ê‚é
+        // ã“ã®RPCã¯æŒ‡å®šã•ã‚ŒãŸã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆï¼ˆå‡ºãŸæœ¬äººï¼‰ã§ã®ã¿å®Ÿè¡Œã•ã‚Œã‚‹
         Debug.Log($"[Client {NetworkManager.Singleton.LocalClientId}] UnhidingPlayerLocalActionsClientRpc for object {this.gameObject.name}");
         if (_localPlayerHideActionAudioSource != null && !string.IsNullOrEmpty(AudioClipKey) &&
            _localPlayerHideActionAudioDatas.audioClipDatasWithKey.ContainsKey(AudioClipKey))
@@ -201,7 +201,7 @@ public class TargetHideObject : NetworkBehaviour
             _localPlayerHideActionAudioSource.PlayOneShot(
                 _localPlayerHideActionAudioDatas.audioClipDatasWithKey[AudioClipKey]);
         }
-        LocalUnHideAddEvent.Invoke(); // RaycastPermit = true ‚È‚Ç
+        LocalUnHideAddEvent.Invoke(); // RaycastPermit = true ãªã©
     }
 
 }

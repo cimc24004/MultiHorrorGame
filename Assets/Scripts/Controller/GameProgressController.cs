@@ -8,6 +8,7 @@ using Unity.Netcode;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
+using System.Linq;
 public class GameProgressController : NetworkBehaviour
 {
     [Header("お祈りが必要な数")]
@@ -22,11 +23,14 @@ public class GameProgressController : NetworkBehaviour
     public bool CanEscape = false;
     private GameProgressUIData game_progress_ui_data;
     private ScoreTimeManager scoreTimeManager;
+    private GameStateController gameStateController;
+    [SerializeField] private List<ulong> ArrivedExitPlayers;
     // Start is called before the first frame update
 
     public override void OnNetworkSpawn()
     {
         int index = 0;
+        gameStateController = GameStateController.instance;
         scoreTimeManager = ScoreTimeManager.Instance;
         game_progress_ui_data = this.gameObject.GetComponent<GameProgressUIData>();
         game_progress_ui_data.ButsudanCountNowTextUI.text = $"{PrayCountNow.Value}/{NeedPrayCount}";
@@ -42,6 +46,7 @@ public class GameProgressController : NetworkBehaviour
             }
             index++;
         }
+        this.GameStart();
         this.PrayCountNow.OnValueChanged += PrayCountNowOnValueChanged;
     }
     public void GameStart()
@@ -92,9 +97,35 @@ public class GameProgressController : NetworkBehaviour
         DeliveredToSakura = true;
         OnDeliverSakuraUIChangeAllClientRpc();
     }
+    public void ExitGateArrived(ulong _PlayerClientId)
+    {
+        //サーバー側で実行
+        ArrivedExitPlayers.Add(_PlayerClientId);
+        var sendParams = new ClientRpcSendParams
+        {
+            TargetClientIds = new ulong[] { _PlayerClientId }
+        };
+        NetworkObject ExitGateArrivedPlayer_NetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(_PlayerClientId);
+        ExitGateArrivedPlayer_NetworkObject.gameObject.SetActive(false);
+        
+        //脱出した人だけに送る。
+        ExitGateArrivedRequestForArrivedPlayerClientRpc(new ClientRpcParams{Send = sendParams});
 
+        if (ArrivedExitPlayers.Count >= NetworkManager.Singleton.ConnectedClients.Count)
+        {
+            this.GameClear();
+        }
+    }
+    [ClientRpc]
+    private void ExitGateArrivedRequestForArrivedPlayerClientRpc(ClientRpcParams clientRpcParams)
+    {
+        NetworkObject ExitGateArrivedPlayer_NetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(NetworkManager.Singleton.LocalClientId);
+        ExitGateArrivedPlayer_NetworkObject.gameObject.SetActive(false);
+    }
     public void GameClear()
     {
+        Time.timeScale = 0;
+        gameStateController.MenuOnGamePlayMode(true);
         GameClearUI();
     }
     public void ProgressAfterGameClear()
@@ -102,6 +133,7 @@ public class GameProgressController : NetworkBehaviour
         //ゲームをクリアした後次に進むを押した後のイベント。
         NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
+    
     private void GameClearUI()
     {
         TimeSpan time = TimeSpan.FromSeconds(scoreTimeManager.ScoreTimeNow.Value);
@@ -109,10 +141,11 @@ public class GameProgressController : NetworkBehaviour
         // "分:秒:ミリ秒" のフォーマットで文字列に変換
         // "mm"は2桁の分、"ss"は2桁の秒、"ff"はミリ秒の上位2桁
         string timeText = time.ToString(@"mm\:ss\:ff");
-        
+
         game_progress_ui_data.scoreTimeTextUI.SetText($"{timeText}");
         game_progress_ui_data.GameClearPanel.SetActive(true);
     }
+    
     [ClientRpc]
     private void OnDeliverSakuraUIChangeAllClientRpc()
     {

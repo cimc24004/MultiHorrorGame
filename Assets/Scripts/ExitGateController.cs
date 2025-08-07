@@ -6,6 +6,7 @@ using UnityEngine;
 public class ExitGateController : NetworkSingleton<ExitGateController>
 {
     private Animator m_Animator;
+    private CollideredForPlayers m_players_collidered;
     private PrayController pray_controller;
     [SerializeField] private GameObject ThroughPreventCollider;
 
@@ -23,6 +24,21 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
         m_Animator = this.gameObject.GetComponent<Animator>();
         pray_controller = this.gameObject.GetComponent<PrayController>();
         game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
+        m_players_collidered = this.gameObject.GetComponent<CollideredForPlayers>();
+        m_players_collidered.OnTriggerStayEvent.AddListener(() =>
+        {
+            if (OnCompleteDoorOpen.Value)
+            {
+                foreach (GameObject collidered_player in m_players_collidered.CollideredObjes)
+                {
+                    //完全に開いているかつ、ドアに触れていたらクリア
+                    NetworkObject collidered_player_networkObject = collidered_player.GetComponent<NetworkObject>();
+
+                    game_progress_controller.ExitGateArrived(collidered_player_networkObject.OwnerClientId);
+                }
+
+            }
+        });
     }
 
     // Update is called once per frame

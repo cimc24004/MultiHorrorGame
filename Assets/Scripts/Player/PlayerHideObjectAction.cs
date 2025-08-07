@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,8 +8,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerHideObjectAction : NetworkBehaviour
 {
-    //ƒvƒŒƒCƒ„[‚ª‰B‚ê‚éƒAƒNƒVƒ‡ƒ“
-    private TargetHideObject target_hide_object; // ‰B‚ê‚é‘ÎÛƒIƒuƒWƒFƒNƒg‚ÌQÆ
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒéš ã‚Œã‚‹ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+    private TargetHideObject target_hide_object; // éš ã‚Œã‚‹å¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‚ç…§
     private PlayerStatus player_status;
     private CharacterMovePermit charactor_move_permit;
     public NetworkVariable<TargetHideObject.HideType> hide_type_target_object = new NetworkVariable<TargetHideObject.HideType>();
@@ -16,7 +17,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     private CharacterController player_character_controller;
     private PlayerInput player_input;
     private PlayerMoveScript player_move_script;
-    private CrossHairEvent cross_hair_event; // CrossHairEvent ‚ğg‚¤ê‡
+    private CrossHairEvent cross_hair_event; // CrossHairEvent ã‚’ä½¿ã†å ´åˆ
 
     public NetworkVariable<bool> HidingPermit = new NetworkVariable<bool>(true);
     public bool layLookDownTriggered = false;
@@ -29,9 +30,9 @@ public class PlayerHideObjectAction : NetworkBehaviour
         charactor_move_permit = this.gameObject.GetComponent<CharacterMovePermit>();
         player_input = player_status.player_input;
         player_move_script = this.gameObject.GetComponent<PlayerMoveScript>();
-        cross_hair_event = player_status.cross_hair_event; // PlayerStatus‚©‚çæ“¾
+        cross_hair_event = player_status.cross_hair_event; // PlayerStatusã‹ã‚‰å–å¾—
 
-        hide_type_target_object.OnValueChanged += OnHideTypeChanged; // ’l•ÏX‚ÌƒR[ƒ‹ƒoƒbƒN“o˜^
+        hide_type_target_object.OnValueChanged += OnHideTypeChanged; // å€¤å¤‰æ›´æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ç™»éŒ²
 
         if (IsOwner)
         {
@@ -45,7 +46,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
         {
             hide_type_target_object.OnValueChanged -= OnHideTypeChanged;
         }
-        // player_input ‚Ì‰ğœ‚à•K—v‚È‚ç‚±‚±‚Ås‚¤
+        // player_input ã®è§£é™¤ã‚‚å¿…è¦ãªã‚‰ã“ã“ã§è¡Œã†
         if (IsOwner && player_input != null)
         {
              player_input.actions["RaycastAction"].performed -= PerfomedHideRaycastAction;
@@ -54,9 +55,9 @@ public class PlayerHideObjectAction : NetworkBehaviour
 
     private void OnHideTypeChanged(TargetHideObject.HideType previousValue, TargetHideObject.HideType newValue)
     {
-        // NetworkVariable‚Ì’l‚ªƒNƒ‰ƒCƒAƒ“ƒg‘¤‚Å•ÏX‚³‚ê‚½‚Æ‚«‚ÉŒÄ‚Ño‚³‚ê‚é
-        // •K—v‚Å‚ ‚ê‚ÎA‚±‚±‚ÅUIXV‚âŒ©‚½–Ú‚Ì’²®‚È‚ÇA
-        // RPCˆø”‚Å“n‚³‚ê‚½’l‚ÉŠî‚Ã‚­‘¦ˆ—ˆÈŠO‚ÌA’x‰„‚ª‹–—e‚³‚ê‚éˆ—‚ğs‚¤
+        // NetworkVariableã®å€¤ãŒã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå´ã§å¤‰æ›´ã•ã‚ŒãŸã¨ãã«å‘¼ã³å‡ºã•ã‚Œã‚‹
+        // å¿…è¦ã§ã‚ã‚Œã°ã€ã“ã“ã§UIæ›´æ–°ã‚„è¦‹ãŸç›®ã®èª¿æ•´ãªã©ã€
+        // RPCå¼•æ•°ã§æ¸¡ã•ã‚ŒãŸå€¤ã«åŸºã¥ãå³æ™‚å‡¦ç†ä»¥å¤–ã®ã€é…å»¶ãŒè¨±å®¹ã•ã‚Œã‚‹å‡¦ç†ã‚’è¡Œã†
         if (IsOwner)
         {
             Debug.Log($"[Client] hide_type_target_object changed from {previousValue} to {newValue}");
@@ -64,57 +65,57 @@ public class PlayerHideObjectAction : NetworkBehaviour
     }
 
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒNƒ‰ƒCƒAƒ“ƒg RPCF‰B‚ê‚éÛ‚Ì©•ª‘¤ˆ—
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ RPCï¼šéš ã‚Œã‚‹éš›ã®è‡ªåˆ†å´å‡¦ç†
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     [ClientRpc]
     public void HideClientRpc(TargetHideObject.HideType actualHideType)
     {
-        PlayerDeformedByHideType(actualHideType); // ˆø”‚Å“n‚³‚ê‚½HideType‚ğg—p
+        PlayerDeformedByHideType(actualHideType); // å¼•æ•°ã§æ¸¡ã•ã‚ŒãŸHideTypeã‚’ä½¿ç”¨
         player_character_controller.enabled = false;
         this.gameObject.layer = LayerMask.NameToLayer("HidePlayer");
         if (IsOwner)
         {
             HidingNowChangeServerRpc(true);
-            // target_hide_object ‚ª null ‚Å‚È‚¢‚±‚Æ‚ğŠm”F‚µ‚Ä‚©‚çÀs
+            // target_hide_object ãŒ null ã§ãªã„ã“ã¨ã‚’ç¢ºèªã—ã¦ã‹ã‚‰å®Ÿè¡Œ
             if (target_hide_object != null)
             {
-                // HideForClientsClientRpc ‚Í TargetHideObject ‘¤‚ÅŒÄ‚Ño‚³‚ê‚é‚Ì‚ÅA
-                // PlayerHideObjectAction ‚©‚ç’¼ÚŒÄ‚Ô•K—v‚Í‚È‚¢‚©‚à‚µ‚ê‚Ü‚¹‚ñB
-                // target_hide_object.HideTargetForClientsForSender(); // TargetHideObject‘¤‚Ìƒƒ\ƒbƒhŒÄ‚Ño‚µ
+                // HideForClientsClientRpc ã¯ TargetHideObject å´ã§å‘¼ã³å‡ºã•ã‚Œã‚‹ã®ã§ã€
+                // PlayerHideObjectAction ã‹ã‚‰ç›´æ¥å‘¼ã¶å¿…è¦ã¯ãªã„ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã€‚
+                // target_hide_object.HideTargetForClientsForSender(); // TargetHideObjectå´ã®ãƒ¡ã‚½ãƒƒãƒ‰å‘¼ã³å‡ºã—
             }
         }
     }
 
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-    // ƒNƒ‰ƒCƒAƒ“ƒg RPCFo‚éÛ‚Ì©•ª‘¤ˆ—
-    // „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ RPCï¼šå‡ºã‚‹éš›ã®è‡ªåˆ†å´å‡¦ç†
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     [ClientRpc]
     public void UnHideClientRpc()
     {
         player_character_controller.enabled = true;
-        // ƒJƒƒ‰ˆÊ’u‚âƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒŠƒZƒbƒg
+        // ã‚«ãƒ¡ãƒ©ä½ç½®ã‚„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒªã‚»ãƒƒãƒˆ
         player_status.HeadPos.position = player_status.StandHeadPos.position;
         player_status.CameraRoot.position = player_status.StandHeadPos.position;
         player_anim.SetBool("FaceDown", false);
         player_anim.SetBool("Crouch", false);
         this.gameObject.layer = LayerMask.NameToLayer("Player");
-        charactor_move_permit.Move(); // ˆÚ“®‹–‰Â
+        charactor_move_permit.Move(); // ç§»å‹•è¨±å¯
 
         if (IsOwner)
         {
             HidingNowChangeServerRpc(false);
-            // target_hide_object ‚ª null ‚Å‚È‚¢‚±‚Æ‚ğŠm”F‚µ‚Ä‚©‚çÀs
+            // target_hide_object ãŒ null ã§ãªã„ã“ã¨ã‚’ç¢ºèªã—ã¦ã‹ã‚‰å®Ÿè¡Œ
             if (target_hide_object != null)
             {
-                 // target_hide_object.UnHideTargetForClientsForSender(); // TargetHideObject‘¤‚Ìƒƒ\ƒbƒhŒÄ‚Ño‚µ
+                 // target_hide_object.UnHideTargetForClientsForSender(); // TargetHideObjectå´ã®ãƒ¡ã‚½ãƒƒãƒ‰å‘¼ã³å‡ºã—
             }
         }
     }
 
     private void PlayerDeformedByHideType(TargetHideObject.HideType typeToDeform)
     {
-        if (IsOwner) // ƒJƒƒ‰‚âƒ[ƒJƒ‹‚ÈŒ©‚½–Ú‚Ì•ÏX‚ÍƒI[ƒi[‚Ì‚İ
+        if (IsOwner) // ã‚«ãƒ¡ãƒ©ã‚„ãƒ­ãƒ¼ã‚«ãƒ«ãªè¦‹ãŸç›®ã®å¤‰æ›´ã¯ã‚ªãƒ¼ãƒŠãƒ¼ã®ã¿
         {
             Debug.Log($"[Client Owner] PlayerDeformedByHideType called with type: {typeToDeform}");
             if (typeToDeform == TargetHideObject.HideType.Stand)
@@ -133,8 +134,8 @@ public class PlayerHideObjectAction : NetworkBehaviour
                 player_status.CameraRoot.position = player_status.FaceDownHeadPos.position;
             }
         }
-        // ƒAƒjƒ[ƒVƒ‡ƒ““¯Šú‚Ì‚½‚ß‚ÌƒT[ƒo[RPCŒÄ‚Ño‚µ (ƒI[ƒi[‚©‚ç‚Ì‚İƒŠƒNƒGƒXƒg)
-        // ‚±‚ÌRPC‚ÍƒT[ƒo[‘¤‚Ì hide_type_target_object.Value ‚ğQÆ‚µ‚ÄƒAƒjƒ[ƒVƒ‡ƒ“‚ğŒˆ’è‚·‚é
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åŒæœŸã®ãŸã‚ã®ã‚µãƒ¼ãƒãƒ¼RPCå‘¼ã³å‡ºã— (ã‚ªãƒ¼ãƒŠãƒ¼ã‹ã‚‰ã®ã¿ãƒªã‚¯ã‚¨ã‚¹ãƒˆ)
+        // ã“ã®RPCã¯ã‚µãƒ¼ãƒãƒ¼å´ã® hide_type_target_object.Value ã‚’å‚ç…§ã—ã¦ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ±ºå®šã™ã‚‹
         if (IsOwner)
         {
            PlayerDeformedByHideTypeRequestServerRpc();
@@ -144,8 +145,8 @@ public class PlayerHideObjectAction : NetworkBehaviour
     [ServerRpc]
     private void PlayerDeformedByHideTypeRequestServerRpc()
     {
-        // ƒT[ƒo[‘¤‚Åhide_type_target_object.ValueiTargetHideObjectSet‚Åİ’èÏ‚İj‚ÉŠî‚Ã‚¢‚ÄƒAƒjƒ[ƒVƒ‡ƒ“‚ğXV
-        // ‚±‚Ì’l‚Í‘SƒNƒ‰ƒCƒAƒ“ƒg‚É“¯Šú‚³‚ê‚é
+        // ã‚µãƒ¼ãƒãƒ¼å´ã§hide_type_target_object.Valueï¼ˆTargetHideObjectSetã§è¨­å®šæ¸ˆã¿ï¼‰ã«åŸºã¥ã„ã¦ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ›´æ–°
+        // ã“ã®å€¤ã¯å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«åŒæœŸã•ã‚Œã‚‹
         player_move_script.UpdateCrouchNetworkChangeServerRpc(false);
         if (hide_type_target_object.Value == TargetHideObject.HideType.Crouch)
         {
@@ -167,7 +168,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
     [ServerRpc]
     private void HidingNowChangeServerRpc(bool _HidingNow)
     {
-        player_status.HidingNow.Value = _HidingNow; // NetworkVariable‚ÌXV
+        player_status.HidingNow.Value = _HidingNow; // NetworkVariableã®æ›´æ–°
         player_status.CrouchPermit.Value = !_HidingNow;        
         if (_HidingNow)
         {
@@ -177,7 +178,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
         }
         else
         {
-            player_move_script.NowSpeed = player_move_script.WalkSpeed; // ’Êí‘¬“x‚É–ß‚·
+            player_move_script.NowSpeed = player_move_script.WalkSpeed; // é€šå¸¸é€Ÿåº¦ã«æˆ»ã™
             charactor_move_permit.Move();
         }
 
@@ -187,12 +188,12 @@ public class PlayerHideObjectAction : NetworkBehaviour
     {
         if (!IsOwner || !HidingPermit.Value) return;
 
-        if (player_status.HidingNow.Value) // ‚·‚Å‚É‰B‚ê‚Ä‚¢‚éê‡ -> o‚é
+        if (player_status.HidingNow.Value) // ã™ã§ã«éš ã‚Œã¦ã„ã‚‹å ´åˆ -> å‡ºã‚‹
         {
-            // o‚é‚Íƒ^[ƒQƒbƒgƒIƒuƒWƒFƒNƒgID‚Í•s—viƒT[ƒo[‘¤‚ÅŠÖ˜A•t‚¯‚ç‚ê‚½ƒIƒuƒWƒFƒNƒg‚©‚ço‚é‘z’èj
-            HideUnHideRayCastActionPerformedRequestServerRpc(0); // 0 ‚Íƒ^[ƒQƒbƒg‚È‚µ‚ğ¦‚·
+            // å‡ºã‚‹æ™‚ã¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDã¯ä¸è¦ï¼ˆã‚µãƒ¼ãƒãƒ¼å´ã§é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‹ã‚‰å‡ºã‚‹æƒ³å®šï¼‰
+            HideUnHideRayCastActionPerformedRequestServerRpc(0); // 0 ã¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãªã—ã‚’ç¤ºã™
         }
-        else // ‰B‚ê‚Ä‚¢‚È‚¢ê‡ -> ‰B‚ê‚é
+        else // éš ã‚Œã¦ã„ãªã„å ´åˆ -> éš ã‚Œã‚‹
         {
             if (cross_hair_event != null && cross_hair_event.cross_hair_status.RaycastHitedExistsByCrossHairEvent && cross_hair_event.cross_hair_status.HitedTag == "Hide")
             {
@@ -213,43 +214,44 @@ public class PlayerHideObjectAction : NetworkBehaviour
             else
             {
                 Debug.Log("Cannot hide: No valid 'Hide' object targeted by crosshair.");
-                // player_status.sub_noticed_ui_controller.Notice("‰B‚ê‚ç‚ê‚éêŠ‚ª‚ ‚è‚Ü‚¹‚ñ"); // •K—v‚È‚ç’Ê’m
+                // player_status.sub_noticed_ui_controller.Notice("éš ã‚Œã‚‰ã‚Œã‚‹å ´æ‰€ãŒã‚ã‚Šã¾ã›ã‚“"); // å¿…è¦ãªã‚‰é€šçŸ¥
             }
         }
     }
 
     public void GetCoughtWhenHidingByEnemy(GameObject _SightningEnemy)
     {
-        // ‚±‚Ìƒƒ\ƒbƒh‚ÍƒT[ƒo[‘¤‚ÅŒÄ‚Ño‚³‚ê‚é‚±‚Æ‚ğ‘z’è
+        // ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã‚µãƒ¼ãƒãƒ¼å´ã§å‘¼ã³å‡ºã•ã‚Œã‚‹ã“ã¨ã‚’æƒ³å®š
         if (!IsServer) return;
 
         Animator enemy_anim = _SightningEnemy.GetComponent<Animator>();
         // DiscoveryPlayerController discoveryPlayerController = enemy_anim.gameObject.GetComponent<DiscoveryPlayerController>();
-        if (player_status.HidingNow.Value && !player_status.Dead.Value && !layLookDownTriggered) // ‰B‚ê‚Ä‚¢‚é‚Ì‚İ
+        if (player_status.HidingNow.Value && !player_status.Dead.Value && !layLookDownTriggered) // éš ã‚Œã¦ã„ã‚‹æ™‚ã®ã¿
         {
             // discoveryPlayerController.PlayersVisibilityMapStatuesWithKey[player_status.gameObject].DiscoveryPlayerNow = false;
             // discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(player_status.gameObject);
-            if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown)
+            if (hide_type_target_object.Value == TargetHideObject.HideType.FaceDown && enemy_anim.parameters.Any(p => p.name == "LayLookDown"))
             {
                 Debug.Log("Enemy found player hiding (FaceDown). Triggering enemy animation.");
-                enemy_anim.SetTrigger("LayLookDown"); // “G‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
-                // ‚±‚±‚ÅƒAƒjƒ[ƒVƒ‡ƒ“I—¹Œã‚ÉƒvƒŒƒCƒ„[‚ğ€–S‚³‚¹‚éƒCƒxƒ“ƒg‚ğŒÄ‚Ô‚È‚Ç‚Ìˆ—‚ª•K—v
-                // —á: StartCoroutine(PlayerDeathAfterAnimation(_SightningEnemy, enemy_anim));
-                // HidingPermit.Value = false; // ‚È‚Ç
+                enemy_anim.SetTrigger("LayLookDown"); // æ•µã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+                // ã“ã“ã§ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å¾Œã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ­»äº¡ã•ã›ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã‚’å‘¼ã¶ãªã©ã®å‡¦ç†ãŒå¿…è¦
+                // ä¾‹: StartCoroutine(PlayerDeathAfterAnimation(_SightningEnemy, enemy_anim));
+                // HidingPermit.Value = false; // ãªã©
                 layLookDownTriggered = true;
             }
             else
             {
                 Debug.Log("Enemy found player hiding (Not FaceDown). Player unhides and dies.");
                 target_hide_object.UnHideRequestServerRpc(this.NetworkObjectId);
-                UnHideClientRpc(); // ‚Ü‚¸‰B‚ê‚é‚Ì‚ğ‚â‚ß‚³‚¹‚é
-                player_status.DeadEvent(_SightningEnemy); // €–SƒCƒxƒ“ƒg
+                UnHideClientRpc(); // ã¾ãšéš ã‚Œã‚‹ã®ã‚’ã‚„ã‚ã•ã›ã‚‹
+                player_status.DeadEvent(_SightningEnemy); // æ­»äº¡ã‚¤ãƒ™ãƒ³ãƒˆ
             }
+            player_status.cross_hair_event.CrossHairEventRaycastPermit.Value = true;
         }
     }
     public void LayLookDownAnimationEndDeathOnServer()
     {
-        //“G‚ªLayLookDown‚µ‚½Œã‚ÌƒCƒxƒ“ƒg ƒT[ƒo[‘¤‚ÅÀs
+        //æ•µãŒLayLookDownã—ãŸå¾Œã®ã‚¤ãƒ™ãƒ³ãƒˆ ã‚µãƒ¼ãƒãƒ¼å´ã§å®Ÿè¡Œ
         target_hide_object.UnHideRequestServerRpc(this.NetworkObjectId);
         player_status.player_hide_object_action.UnHideClientRpc();
     }
@@ -259,7 +261,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
         if (!HidingPermit.Value) return;
 
         ulong requestingClientId = rpcParams.Receive.SenderClientId;
-        // ”O‚Ì‚½‚ßA‚±‚ÌRPC‚ğŒÄ‚Ño‚µ‚½ƒNƒ‰ƒCƒAƒ“ƒg‚ª‚±‚ÌPlayerƒIƒuƒWƒFƒNƒg‚ÌƒI[ƒi[‚©Šm”F
+        // å¿µã®ãŸã‚ã€ã“ã®RPCã‚’å‘¼ã³å‡ºã—ãŸã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãŒã“ã®Playerã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚ªãƒ¼ãƒŠãƒ¼ã‹ç¢ºèª
         if (this.OwnerClientId != requestingClientId)
         {
             Debug.LogError($"Security: Client {requestingClientId} tried to call Hide/UnHide for player {this.OwnerClientId}. Denied.");
@@ -267,7 +269,7 @@ public class PlayerHideObjectAction : NetworkBehaviour
         }
 
 
-        if (!player_status.HidingNow.Value) // ‚Ü‚¾‰B‚ê‚Ä‚¢‚È‚¢ -> ‰B‚ê‚éˆ—
+        if (!player_status.HidingNow.Value) // ã¾ã éš ã‚Œã¦ã„ãªã„ -> éš ã‚Œã‚‹å‡¦ç†
         {
             if (_TargetNetworkObjectId == 0) {
                 Debug.LogError("Hide action initiated without a target object ID on server.");
@@ -276,67 +278,67 @@ public class PlayerHideObjectAction : NetworkBehaviour
 
             if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(_TargetNetworkObjectId, out NetworkObject hideNetworkObj))
             {
-                 Debug.LogError($"Could not find NetworkObject with ID: {_TargetNetworkObjectId} on server.");
+                Debug.LogError($"Could not find NetworkObject with ID: {_TargetNetworkObjectId} on server.");
                 return;
             }
             GameObject hideObjGO = hideNetworkObj.gameObject;
 
 
-            TargetHideObject.HideType typeOfHideObject = TargetHideObjectSet(hideObjGO); // ƒT[ƒo[‘¤‚Å target_hide_object ‚Æ hide_type_target_object.Value ‚ğİ’è
+            TargetHideObject.HideType typeOfHideObject = TargetHideObjectSet(hideObjGO); // ã‚µãƒ¼ãƒãƒ¼å´ã§ target_hide_object ã¨ hide_type_target_object.Value ã‚’è¨­å®š
 
             if (target_hide_object.SomeoneHided.Value == false)
             {
-                // ’N‚à‰B‚ê‚Ä‚¢‚È‚¯‚ê‚Î‰B‚ê‚ç‚ê‚é
+                // èª°ã‚‚éš ã‚Œã¦ã„ãªã‘ã‚Œã°éš ã‚Œã‚‰ã‚Œã‚‹
                 player_status.cross_hair_event.CrossHairEventRaycastPermit.Value = false;
-                target_hide_object.HideRequestServerRpc(this.NetworkObject.NetworkObjectId); // ‘ÎÛƒIƒuƒWƒFƒNƒg‚Éu‚±‚ÌƒvƒŒƒCƒ„[‚ª‰B‚ê‚½v‚Æ’Ê’m
-                HideClientRpc(typeOfHideObject); // ƒNƒ‰ƒCƒAƒ“ƒg‚É‰B‚ê‚é“®ì‚ğw¦ (³‚µ‚¢HideType‚ğ“n‚·)
-                // player_status.HidingNow.Value = true; // ‚±‚ê‚ÍHideClientRpc -> HidingNowChangeServerRpc‚Ås‚í‚ê‚é
+                target_hide_object.HideRequestServerRpc(this.NetworkObject.NetworkObjectId); // å¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã€Œã“ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒéš ã‚ŒãŸã€ã¨é€šçŸ¥
+                HideClientRpc(typeOfHideObject); // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«éš ã‚Œã‚‹å‹•ä½œã‚’æŒ‡ç¤º (æ­£ã—ã„HideTypeã‚’æ¸¡ã™)
+                // player_status.HidingNow.Value = true; // ã“ã‚Œã¯HideClientRpc -> HidingNowChangeServerRpcã§è¡Œã‚ã‚Œã‚‹
             }
             else
             {
-                // ’N‚©‰B‚ê‚Ä‚¢‚½‚ç’Ê’m
+                // èª°ã‹éš ã‚Œã¦ã„ãŸã‚‰é€šçŸ¥
                 Debug.Log($"[Server] Player {OwnerClientId} tried to hide in occupied object {_TargetNetworkObjectId}.");
                 ClientRpcParams clientRpcParams = new ClientRpcParams {
                     Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { OwnerClientId } }
                 };
-                NotifyClientActionFailedClientRpc("’N‚©‚ª‰B‚ê‚Ä‚¢‚é...", clientRpcParams);
+                NotifyClientActionFailedClientRpc("èª°ã‹ãŒéš ã‚Œã¦ã„ã‚‹...", clientRpcParams);
             }
         }
-        else // ‚·‚Å‚É‰B‚ê‚Ä‚¢‚é -> o‚éˆ—
+        else // ã™ã§ã«éš ã‚Œã¦ã„ã‚‹ -> å‡ºã‚‹å‡¦ç†
         {
-            if (target_hide_object != null) // ‰B‚ê‚½ƒIƒuƒWƒFƒNƒg‚ÌQÆ‚ªƒT[ƒo[‚É‚ ‚ê‚Î
+            if (target_hide_object != null) // éš ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‚ç…§ãŒã‚µãƒ¼ãƒãƒ¼ã«ã‚ã‚Œã°
             {
                 player_status.cross_hair_event.CrossHairEventRaycastPermit.Value = true;
                 target_hide_object.UnHideRequestServerRpc(this.NetworkObject.NetworkObjectId);
-                 // o‚éˆ—‚ªI‚í‚Á‚½ŒãAƒT[ƒo[‘¤‚Ì target_hide_object ‚ÌQÆ‚ğƒNƒŠƒA‚µ‚Ä‚à—Ç‚¢‚©‚à‚µ‚ê‚È‚¢
+                 // å‡ºã‚‹å‡¦ç†ãŒçµ‚ã‚ã£ãŸå¾Œã€ã‚µãƒ¼ãƒãƒ¼å´ã® target_hide_object ã®å‚ç…§ã‚’ã‚¯ãƒªã‚¢ã—ã¦ã‚‚è‰¯ã„ã‹ã‚‚ã—ã‚Œãªã„
                  // target_hide_object = null;
             } else {
                 Debug.LogWarning($"[Server] Player {OwnerClientId} is trying to unhide, but target_hide_object is not set on server.");
-                // ‹­§“I‚Éo‚éˆ—‚¾‚¯s‚¤ê‡
+                // å¼·åˆ¶çš„ã«å‡ºã‚‹å‡¦ç†ã ã‘è¡Œã†å ´åˆ
             }
             UnHideClientRpc();
-            // player_status.HidingNow.Value = false; // ‚±‚ê‚ÍUnHideClientRpc -> HidingNowChangeServerRpc‚Ås‚í‚ê‚é
+            // player_status.HidingNow.Value = false; // ã“ã‚Œã¯UnHideClientRpc -> HidingNowChangeServerRpcã§è¡Œã‚ã‚Œã‚‹
         }
     }
 
-    // ƒT[ƒo[‚Å‚Ì‚İÀs‚³‚ê‚éB‰B‚ê‚é‘ÎÛƒIƒuƒWƒFƒNƒg‚Ìî•ñ‚ğİ’èB
+    // ã‚µãƒ¼ãƒãƒ¼ã§ã®ã¿å®Ÿè¡Œã•ã‚Œã‚‹ã€‚éš ã‚Œã‚‹å¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æƒ…å ±ã‚’è¨­å®šã€‚
     private TargetHideObject.HideType TargetHideObjectSet(GameObject _TargetObject)
     {
         target_hide_object = _TargetObject.GetComponent<TargetHideObject>();
         if (target_hide_object != null)
         {
-            hide_type_target_object.Value = target_hide_object.hide_type; // ƒT[ƒo[‚ÅNetworkVariable‚ğXV
+            hide_type_target_object.Value = target_hide_object.hide_type; // ã‚µãƒ¼ãƒãƒ¼ã§NetworkVariableã‚’æ›´æ–°
             return target_hide_object.hide_type;
         }
         Debug.LogError("TargetHideObject component not found on the target object.");
-        return TargetHideObject.HideType.Stand; // ƒfƒtƒHƒ‹ƒg’l‚ğ•Ô‚·‚©ƒGƒ‰[ˆ—
+        return TargetHideObject.HideType.Stand; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã‚’è¿”ã™ã‹ã‚¨ãƒ©ãƒ¼å‡¦ç†
     }
 
     [ClientRpc]
     private void NotifyClientActionFailedClientRpc(string message, ClientRpcParams clientRpcParams = default)
     {
-        // ‚±‚ÌRPC‚Íw’è‚³‚ê‚½ƒNƒ‰ƒCƒAƒ“ƒg(TargetClientIds)‚Å‚Ì‚İÀs‚³‚ê‚é
-        // ‚»‚ÌƒNƒ‰ƒCƒAƒ“ƒg‚Ìplayer_status (‚Â‚Ü‚è©•ª©g) ‚ÌUIƒRƒ“ƒgƒ[ƒ‰[‚ğŒÄ‚Ño‚·
+        // ã“ã®RPCã¯æŒ‡å®šã•ã‚ŒãŸã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ(TargetClientIds)ã§ã®ã¿å®Ÿè¡Œã•ã‚Œã‚‹
+        // ãã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®player_status (ã¤ã¾ã‚Šè‡ªåˆ†è‡ªèº«) ã®UIã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’å‘¼ã³å‡ºã™
         if (player_status != null && player_status.sub_noticed_ui_controller != null)
         {
             player_status.sub_noticed_ui_controller.Notice(message);
