@@ -82,8 +82,8 @@ public class EnemyShitaitekiController : NetworkBehaviour
             m_FollowObjectByNav.MovePermit = true;
             enemyToPlayerKillController.enabled = true;
             enemyActionForDoorController.enabled = true;
-            enemyStatus.foot_step_sound_controller.AutoFootStepSoundLevelChange = true;
-
+            enemyStatus.foot_step_sound_controller.enabled = true;
+            MoveNow = true;
         });
         ScreamSound.Play();
     }
@@ -101,12 +101,12 @@ public class EnemyShitaitekiController : NetworkBehaviour
         {
             enemyToPlayerKillController.enabled = false;
             enemyStatus.enemy_move_state = EnemyStatus.EnemyMoveState.Stop;
-            enemyStatus.foot_step_sound_controller.AutoFootStepSoundLevelChange = false;
-            enemyStatus.foot_step_sound_controller.FootStepSoundLevel.Value = 0;
             playerNearSensor.IsNearToKillEffect = false;
             discoveryPlayerController.DiscoveryPlayerBySightning = false;
+            enemyStatus.foot_step_sound_controller.enabled = false;
             discoveryPlayerController.ForceLostSight();
             m_FollowObjectByNav.MovePermit = false;
+            MoveNow = false;
             enemyActionForDoorController.enabled = false;
         });
     }

@@ -35,7 +35,7 @@ public class LobbyNetworkController : NetworkBehaviour
                 NetworkManager.Singleton.SceneManager.LoadScene("Main", LoadSceneMode.Single);
         });
 
-
+        
     }
     
     // ──────────────────────────────────────
@@ -83,6 +83,11 @@ public class LobbyNetworkController : NetworkBehaviour
         this.m_joinLobbyID_Field.text = SteamLobby.Instance.LobbyID.ToString();
         if (IsServer)
         {
+            // 既に接続済みのクライアント ID を NetworkList に突っ込む
+            foreach (var id in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                connectedMembers.Add(id);
+            }
             NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             connectedMembers.OnListChanged += OnMemberListChanged;
         }

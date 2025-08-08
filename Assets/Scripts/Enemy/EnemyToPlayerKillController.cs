@@ -11,12 +11,10 @@ public class EnemyToPlayerKillController : NetworkBehaviour
     
     private DiscoveryPlayerController discovery_player_controller;
     private Collider[] hitBuffer = new Collider[4];   // Å‘åƒqƒbƒg”‚ğŒˆ‚ß‘Å‚¿‚ÅŠm•Û
-    private GameNetworkController game_network_controller;
     private PlayerAllController player_all_controller;
     public UnityEvent<GameObject> KillPlayerEvent;
     public override void OnNetworkSpawn()
     {
-        game_network_controller = GameNetworkController.instance;
         player_all_controller = PlayerAllController.instance;
         discovery_player_controller = this.gameObject.GetComponent<DiscoveryPlayerController>();
     }

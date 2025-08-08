@@ -13,7 +13,6 @@ public class HousesController : NetworkBehaviour
     public int TotalButsudanToSpawn = 5;
     public List<HouseDirector> house_directors;
     public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers = new List<SilhouetteChangeController>();
-    private GameNetworkController game_network_controller;
     public static HousesController Instance { get; private set; }
     [ShowInInspector] public NetworkList<ulong> TargetHideNetworkLists = new NetworkList<ulong>();
     private PlayerStatus player_status;
@@ -81,8 +80,6 @@ public class HousesController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         house_directors = FindObjectsOfType<HouseDirector>().ToList();
-        game_network_controller = GameNetworkController.instance;
-
     }
 
     // 遅延実行用コルーチン
