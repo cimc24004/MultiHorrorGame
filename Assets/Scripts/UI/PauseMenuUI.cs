@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -28,6 +29,20 @@ public class PauseMenuUI : Singleton<PauseMenuUI>
         });
         ReturnToMainMenuButton.onClick.AddListener(() =>
         {
+            // --- ネットワーク終了 ---
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+            {
+                NetworkManager.Singleton.Shutdown();   // これ一本でホスト／クライアント両対応
+            }
+            // 2) Steam ロビーから抜ける
+            if (SteamLobby.Instance != null && SteamLobby.Instance.LobbyID != 0)
+            {
+                SteamLobby.Instance.LeaveCurrentLobby();   // ←後述するメソッド
+            }
+
+            // 3) タイトルシーンへ
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+
             //ゲーム終了です
         });
     }
