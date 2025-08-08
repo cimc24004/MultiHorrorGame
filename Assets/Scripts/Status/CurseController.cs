@@ -13,7 +13,7 @@ public class CurseController : NetworkSingleton<CurseController>
     public enum CurseEventType
     {
         MikoInstantiate,
-        ItemLock,
+        ShitaitekiMove,
         PlayerStamina
     }
 
@@ -33,7 +33,6 @@ public class CurseController : NetworkSingleton<CurseController>
     private PlayerStatus player_status;
     private SubNoticedUIController sub_noticed_ui_controller;
     private PlayerStaminaController player_stamina_controller;
-    private ItemBelongingsController item_belongings_controller;
     public bool CurseMaxedEventNow;
     [SerializeField]
     //呪いゲージがマックスになった時イベントが起こり続ける時間
@@ -42,9 +41,9 @@ public class CurseController : NetworkSingleton<CurseController>
     private float CurseMaxEventWhileTimeNow;
     [SerializeField]
     private CurseEventType curse_event_type;
-
-    private ItemStatus locked_item_status;
     private HorrorDirector horror_director;
+    public UnityEvent ShitaitekiMovingEvent;
+    public UnityEvent ShitaitekiStoppingEvent;
     [SerializeField] public AudioClip AppearanceMikoBGM;
 
     void OnEnable()
@@ -58,7 +57,6 @@ public class CurseController : NetworkSingleton<CurseController>
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         player_status = _playerStatus;
-        item_belongings_controller = player_status.ItemController.GetComponent<ItemBelongingsController>();
         player_stamina_controller = player_status.gameObject.GetComponent<PlayerStaminaController>();
         sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
         this.CurseValueNow.OnValueChanged += OnValueChangeCurseEvent;
@@ -98,7 +96,7 @@ public class CurseController : NetworkSingleton<CurseController>
         this.CurseMaxEventWhileTime = _CurseMaxEventWhileTime;
         this.CurseMaxEventWhileTimeNow = 0;
         // int i = UnityEngine.Random.Range(0, 3);
-        int i = 0;
+        int i = 1;
         //ランダムで何かの関数を実行するとする
         CurseMaxedEventNow = true;
         if (i == 0)
@@ -109,7 +107,7 @@ public class CurseController : NetworkSingleton<CurseController>
         }
         else if (i == 1)
         {
-            ItemLock();
+            ShitaitekiMove();
         }
         else if (i == 2)
         {
@@ -138,12 +136,9 @@ public class CurseController : NetworkSingleton<CurseController>
                 InstantiatedMiko = null;
             }
         }
-        if (curse_event_type == CurseEventType.ItemLock)
+        if (curse_event_type == CurseEventType.ShitaitekiMove)
         {
-
-            //リセットされるときにしっかりとアイテムはロック解除しておく。
-            ItemUnlockClientRpc();
-            // item_belongings_controller.RequestCanUseItem(true, locked_item_status);
+            ShitaitekiStop();
         }
         if (curse_event_type == CurseEventType.PlayerStamina)
         {
@@ -163,14 +158,6 @@ public class CurseController : NetworkSingleton<CurseController>
         InstantiatedMiko.GetComponent<NetworkObject>().Spawn();
         horror_director.MikoApperance();
 
-    }
-    private void ItemLock()
-    {
-        //サーバー側で実行される。
-
-        //アイテムを使えなくする。
-        ItemLockClientRpc();
-        curse_event_type = CurseEventType.ItemLock;
     }
     private void PlayerStaminaZero()
     {
@@ -257,72 +244,26 @@ public class CurseController : NetworkSingleton<CurseController>
             sub_noticed_ui_controller.Notice("闇に潜む巫女が目を覚ました……");
         });
     }
-    [ClientRpc]
-    private void ItemLockClientRpc(ClientRpcParams rpcParams = default)
-    {
-        var ibc = player_status.ItemController
-                    .GetComponent<ItemBelongingsController>();
-        var targets = ibc.belonging_items.Keys
-            .Where(x => x.item_type == ItemStatus.ItemType.Consumable
-                     || x.item_type == ItemStatus.ItemType.CanThrow)
-            .ToList();
-        if (targets.Count == 0) return;
 
-        var chosen = targets[UnityEngine.Random.Range(0, targets.Count)];
-        ibc.RequestCanUseItem(false, chosen);
+    private void ShitaitekiMove()
+    {
+        curse_event_type = CurseEventType.ShitaitekiMove;
+        ShitaitekiMovingEvent.Invoke();
+        ShitaitekiMoveClientRpc();
+    }
+    private void ShitaitekiStop()
+    {
+        ShitaitekiStoppingEvent.Invoke();
+    }
+    [ClientRpc]
+    private void ShitaitekiMoveClientRpc()
+    {
         sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
         DOVirtual.DelayedCall(1, () =>
         {
-            sub_noticed_ui_controller.Notice($"{chosen.ItemName}は呪いによって\nしばらくの間使用不能になった……");
+            sub_noticed_ui_controller.Notice("すべての腐り人が動き出した……");
         });
-        locked_item_status = chosen;
     }
-    [ClientRpc]
-    private void ItemUnlockClientRpc(ClientRpcParams rpcParams = default)
-    {
-
-        if (locked_item_status != null)
-        {
-            item_belongings_controller.RequestCanUseItem(true, locked_item_status);
-            sub_noticed_ui_controller.Notice(
-                $"「{locked_item_status.ItemName}」の封印が解けた……"
-            );
-        }
-    }
-    // [ClientRpc]
-    // private void CurseMaxedOfItemLockClientRpc()
-    // {
-    //     //すべてのプレイヤーで実行される。 
-    //     CurseMaxedRequestToAllPlayerServerRpc();
 
 
-    // sub_noticed_ui_controller.Notice("呪いの力が溢れ出した……！");
-    // DOVirtual.DelayedCall(1, () =>
-    // {
-    //     sub_noticed_ui_controller.Notice($"{locked_item_status.ItemName}は呪いによって\nしばらくの間使用不能になった……");
-    // });
-
-
-
-    // }
-    // [ServerRpc]
-    // private void CurseMaxedRequestToAllPlayerServerRpc()
-    // {
-    //     //すべてのプレイヤーをサーバーがチェックする。
-
-    //     if (!item_belongings_controller.ExistsItems()) return;
-    //     List<ItemStatus> target_item_statues = item_belongings_controller.belonging_items.Keys.Where(x => x.item_type == ItemStatus.ItemType.Consumable || x.item_type == ItemStatus.ItemType.CanThrow).ToList();
-    //     if (target_item_statues.Count == 0)
-    //     {
-    //         //もし該当するアイテムなかったらもう一回。
-    //         CurseMaxed(CurseMaxEventWhileTime);
-    //         return;
-    //     }
-    //     int item_lock_random = UnityEngine.Random.Range(0, target_item_statues.Count);
-
-    //     ItemStatus taget_item_status = target_item_statues.ElementAt(item_lock_random);
-    //     locked_item_status = taget_item_status;
-
-    //     item_belongings_controller.RequestCanUseItem(false, locked_item_status);
-    // }
 }

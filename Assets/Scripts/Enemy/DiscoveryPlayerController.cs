@@ -65,7 +65,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
         public float SightOutPlayerTimeNow;
         public UnityEvent<bool> DiscoveryPlayerFlagChanged = new UnityEvent<bool>();
         // バックアップ用フィールド
-        [SerializeField]private bool _discoveryPlayerNow;
+        [SerializeField] private bool _discoveryPlayerNow;
         // プロパティ化
         public bool DiscoveryPlayerNow
         {
@@ -123,7 +123,8 @@ public class DiscoveryPlayerController : NetworkBehaviour
         }
         DictionarySetted = true;
     }
-    private void OnChangedDiscoveryPlayerNow(bool _discoveryPlayerNow) {
+    private void OnChangedDiscoveryPlayerNow(bool _discoveryPlayerNow)
+    {
         //切り替わった瞬間だけ実行される。
         if (_discoveryPlayerNow)
         {
@@ -356,11 +357,11 @@ public class DiscoveryPlayerController : NetworkBehaviour
                         if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
                         {
                             //プレイヤーが隠れていて敵にばれていなかったらストップ距離は大きめに。。
-                            if (DiscoveriedPlayers.Count > 2 )
+                            if (DiscoveriedPlayers.Count > 2)
                             {
                                 if (!PlayersVisibilityMapStatuesWithKey[DiscoveriedPlayers[1]].player_status.HidingNow.Value)
                                 {
-                                    RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);   
+                                    RemovePlayerOfDiscoveryPlayerLists(FirstKeyOfDiscoveriedPlayers);
                                 }
                             }
                             follow_object_nav.StoppingDistance = 4;
@@ -456,7 +457,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
                     TargetClientIds = new ulong[] { _Player.GetComponent<NetworkObject>().OwnerClientId }
                 };
 
-                NonDiscoveriedClientRpc(new ClientRpcParams{Send = sendParams});
+                NonDiscoveriedClientRpc(new ClientRpcParams { Send = sendParams });
             }
         }
 
@@ -520,5 +521,12 @@ public class DiscoveryPlayerController : NetworkBehaviour
     private void NonDiscoveriedClientRpc(ClientRpcParams rpcParams = default)
     {
         horror_director.EnemyLostPlayer();
+    }
+    public void ForceLostSight()
+    {
+        for(int i = 0; i < DiscoveriedPlayers.Count; i++)
+        {
+            RemovePlayerOfDiscoveryPlayerLists(DiscoveriedPlayers[i]);
+        }
     }
 }
