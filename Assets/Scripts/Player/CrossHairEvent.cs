@@ -200,26 +200,28 @@ public class CrossHairEvent : NetworkBehaviour
                     SceneManager.LoadScene("GameClear");
                 }
             }
-
-
-
-            if (player_input.actions["RaycastAction"].IsPressed())
-            {
-                //こっちはUpdate関数内で設定した
-                if(raycast_hit.collider.gameObject.tag == "Pray")
-                {
-                    Debug.Log("Pray------------COl");
-                    if (pray_controller != null)
-                    {
-                        pray_controller.Pushing();
-                    }
-                }
-            }
         }
         else
         {
             cross_hair_status.RaycastHitedExistsByCrossHairEvent = false;
             RaycasstedObj = null;
+        }
+
+        if (player_input.actions["RaycastAction"].IsPressed())
+        {
+            if (RaycasstedObj != null && RaycasstedObj.tag == "Pray")
+            {
+                Debug.Log("Pray------------COl");
+                if (pray_controller != null)
+                {
+                    pray_controller.Pushing();
+                }
+            }
+            else if (pushing_raycasted_pray_controller != null)
+            {
+                pushing_raycasted_pray_controller.PrayNowFalseRequestServerRpc();
+                pushing_raycasted_pray_controller = null;
+            }
         }
     }
     private void RaycastActionStart(InputAction.CallbackContext ctx) {
