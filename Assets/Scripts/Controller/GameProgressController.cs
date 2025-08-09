@@ -20,7 +20,7 @@ public class GameProgressController : NetworkBehaviour
     public bool DeliverItemGeted;
     
     public bool DeliveredToSakura;
-    public bool CanEscape = false;
+    public NetworkVariable<bool> CanEscape = new NetworkVariable<bool>(false);
     private GameProgressUIData game_progress_ui_data;
     private ScoreTimeManager scoreTimeManager;
     private GameStateController gameStateController;
@@ -93,7 +93,7 @@ public class GameProgressController : NetworkBehaviour
     }
     public void OnDeliverSakura()
     {
-        CanEscape = true;
+        CanEscape.Value = true;
         DeliveredToSakura = true;
         OnDeliverSakuraUIChangeAllClientRpc();
     }

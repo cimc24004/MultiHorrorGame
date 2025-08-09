@@ -48,7 +48,7 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     {
         if (!OnCompleteDoorOpen.Value == true)
         {
-            if (game_progress_controller.CanEscape)
+            if (game_progress_controller.CanEscape.Value)
             {
                 //すでにサクラの木に納めてるならドアを開けられる
                 this.gameObject.tag = "Pray";
