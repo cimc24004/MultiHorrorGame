@@ -22,7 +22,7 @@ public class ScoreTimeManager : NetworkSingleton<ScoreTimeManager>
     {
         MeasureTimeStartRequestServerRpc();
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void MeasureTimeStartRequestServerRpc()
     {
         MeasureNow = true;
