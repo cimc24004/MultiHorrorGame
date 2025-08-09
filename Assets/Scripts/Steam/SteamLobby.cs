@@ -11,7 +11,7 @@ public class SteamLobby : MonoBehaviour
 
     // ── 既存イベント（そのまま） ──
     public static event Action LobbyFull;
-    public static event Action LobbyConnectionError;
+    public static event Action<string> LobbyConnectionError;
     public static event Action<string> ApprovalDenied;
     public static event Action<ConnectionFailReason,string> ConnectionFailed;
     public static event Action<ulong> PlayerLeft; 
@@ -31,7 +31,7 @@ public class SteamLobby : MonoBehaviour
         if (!SteamManager.Initialized)
         {
             Debug.LogError("SteamLobby: SteamManager が初期化されていない！");
-            LobbyConnectionError?.Invoke();
+            LobbyConnectionError?.Invoke("SteamManager is not initialized");
             return;
         }
 
@@ -64,7 +64,7 @@ public class SteamLobby : MonoBehaviour
         if (ioFailure || cb.m_eResult != EResult.k_EResultOK)
         {
             Debug.LogError($"SteamLobby: ロビー作成エラー {cb.m_eResult}");
-            LobbyConnectionError?.Invoke();
+            LobbyConnectionError?.Invoke("An error occurred while creating the lobby");
             return;
         }
 
@@ -105,7 +105,7 @@ public class SteamLobby : MonoBehaviour
             != EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess)
         {
             Debug.LogError("SteamLobby: ロビー入室失敗");
-            LobbyConnectionError?.Invoke();
+            LobbyConnectionError?.Invoke("Unable to join the lobby.\n Please verify the lobby ID.");
             return;
         }
 

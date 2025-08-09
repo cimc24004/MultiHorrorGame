@@ -14,7 +14,8 @@ public class LobbyNetworkController : NetworkBehaviour
     [SerializeField] private GameObject PlayerClientContents; // 各プレイヤー行のプレハブ
     [SerializeField] private Transform PlayerClientsAll;      // 行を並べる親
     [SerializeField] private TMP_InputField m_joinLobbyID_Field; // LobbyID表示/入力
-
+    [SerializeField] private GameObject LobbyNetworkErrorMessageCanvasObject;
+    [SerializeField] private TextMeshProUGUI errorTextMessageUI; //エラー表示用TextUI
     // クライアントID→UI行の対応表（重複生成防止＆Remove用）
     private readonly Dictionary<ulong, GameObject> _rows = new();
 
@@ -32,6 +33,7 @@ public class LobbyNetworkController : NetworkBehaviour
                 NetworkManager.Singleton.SceneManager.LoadScene("Main", UnityEngine.SceneManagement.LoadSceneMode.Single);
             }
         });
+        SteamLobby.LobbyConnectionError += OnLobbyConnectionError;
     }
 
     public override void OnNetworkSpawn()
@@ -79,7 +81,15 @@ public class LobbyNetworkController : NetworkBehaviour
             m_joinLobbyID_Field.text = SteamLobby.Instance.LobbyID.ToString();
         }
     }
-
+    private void OnLobbyConnectionError(string _Message)
+    {
+        ShowLobbyConnectErrorUI(_Message);
+    }
+    private void ShowLobbyConnectErrorUI(string _message)
+    {
+        errorTextMessageUI.SetText(_message);
+        LobbyNetworkErrorMessageCanvasObject.gameObject.SetActive(true);
+    }
     private bool ContainsId(NetworkList<ulong> list, ulong id)
     {
         for (int i = 0; i < list.Count; i++)
@@ -100,6 +110,7 @@ public class LobbyNetworkController : NetworkBehaviour
 
     private void OnMemberListChangedClient(NetworkListEvent<ulong> e)
     {
+        this.LobbyNetworkErrorMessageCanvasObject.gameObject.SetActive(false);
         Debug.Log($"[Lobby] OnListChanged: {e.Type} / {e.Value}");
         switch (e.Type)
         {

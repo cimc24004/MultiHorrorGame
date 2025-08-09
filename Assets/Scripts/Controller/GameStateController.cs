@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 public class GameStateController : Singleton<GameStateController>
 {
     public enum GameState
     {
         Gameplay,
         MenuOnGamePlay,
-
+        Menu
     }
 
     [Header("現在のゲームの状態 メニュー画面だったり、スタート画面ならUIが選択")]
@@ -17,7 +18,7 @@ public class GameStateController : Singleton<GameStateController>
     private PlayerInput player_input;
     void Start()
     {
-        
+
     }
     void OnEnable()
     {
@@ -26,6 +27,7 @@ public class GameStateController : Singleton<GameStateController>
         {
             OnPlayerSpawnInit(PlayerStatus.LocalInstance);
         }
+        SceneManager.sceneLoaded += SceneLoaded;
     }
     void OnDisable()
     {
@@ -37,10 +39,11 @@ public class GameStateController : Singleton<GameStateController>
     }
     public void ActionByModeSelect(GameState game_state, bool cursor_display)
     {
-        if(game_state == GameState.Gameplay)
+        if (game_state == GameState.Gameplay)
         {
             GameplayMode();
-        }else if(game_state == GameState.MenuOnGamePlay)
+        }
+        else if (game_state == GameState.MenuOnGamePlay)
         {
             MenuOnGamePlayMode(cursor_display);
         }
@@ -82,7 +85,7 @@ public class GameStateController : Singleton<GameStateController>
         player_input.actions.FindActionMap("Player").Disable();
         player_input.actions.FindActionMap("MenuOnGamePlay").Disable();
         player_input.actions.FindActionMap("ReadEvent").Enable();
-        
+
         player_input.actions.FindActionMap("GamePlayAndMenuCommon").Disable();
         if (visibleCursor)
         {
@@ -96,5 +99,16 @@ public class GameStateController : Singleton<GameStateController>
     {
         //ゲームオーバーやスタート画面など
 
+    }
+    private void SceneLoaded(Scene _scene, LoadSceneMode sceneMode)
+    {
+        if (_scene.name.Contains("Main") || _scene.name.Contains("Stage"))
+        {
+            game_state = GameState.Gameplay;
+        }
+        else if (_scene.name.Contains("Lobby") || _scene.name.Contains("Title") || _scene.name.Contains("GameStart"))
+        {
+            game_state = GameState.Menu;
+        }
     }
 }

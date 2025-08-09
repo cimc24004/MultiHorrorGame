@@ -25,6 +25,7 @@ public class SessionController : NetworkSingleton<SessionController>
     protected void Start()
     {
         DontDestroyOnLoad(gameObject);
+        gameStateController = GameStateController.instance;
         errorMessageController = this.gameObject.GetComponent<ErrorMessageController>();
         /*--- SteamLobby のイベント購読 ---*/
         SteamLobby.ConnectionFailed += OnConnectionFailed;
@@ -83,9 +84,11 @@ public class SessionController : NetworkSingleton<SessionController>
     {
         // TODO: 各理由ごとにメッセージ切り替え
         // ここでポップアップやロビー画面へ遷移
-        gameStateController = GameStateController.instance;
         string errorMessage = _errorMessage;
-        gameStateController?.ActionByModeSelect(GameStateController.GameState.MenuOnGamePlay, true);
+        if (gameStateController.game_state == GameStateController.GameState.Gameplay)
+        {
+            gameStateController?.ActionByModeSelect(GameStateController.GameState.MenuOnGamePlay, true);
+        }
         errorMessageController.ShowErrorUI(errorMessage);
         // ReturnToTitle();
     }

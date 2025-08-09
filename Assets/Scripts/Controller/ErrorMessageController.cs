@@ -19,6 +19,7 @@ public class ErrorMessageController : MonoBehaviour
     }
     public void ShowErrorUI(string _errorMessage)
     {
+        //エラーメッセージポップアップを出す
         ErrorMessageTextUI.SetText(_errorMessage);
         ErrorCanvasObject.gameObject.SetActive(true);
     }
