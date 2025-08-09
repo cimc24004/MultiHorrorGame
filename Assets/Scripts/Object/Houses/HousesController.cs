@@ -37,6 +37,7 @@ public class HousesController : NetworkBehaviour
     void OnDisable()
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
+        TargetHideNetworkLists.OnListChanged -= OnTargetHideListChanged;
     }
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
@@ -62,7 +63,7 @@ public class HousesController : NetworkBehaviour
             // if (IsHost) return;
             Debug.Log("Not HousesController.IsServer && Not IsHost");
             // クライアント側は NetworkList の変更を監視
-            // TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
+            TargetHideNetworkLists.OnListChanged += OnTargetHideListChanged;
             // 遅延接続したクライアント用：既にNetworkListにデータがある場合は即座に適用
             if (TargetHideNetworkLists.Count > 0)
             {
@@ -284,10 +285,9 @@ public class HousesController : NetworkBehaviour
 
     private void OnDestroy()
     {
-        // イベントリスナーを解除
         if (TargetHideNetworkLists != null)
         {
-            // TargetHideNetworkLists.OnListChanged -= OnTargetHideListChanged;
+            TargetHideNetworkLists.OnListChanged -= OnTargetHideListChanged;
         }
     }
 }
