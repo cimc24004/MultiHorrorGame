@@ -214,7 +214,7 @@ public class CrossHairEvent : NetworkBehaviour
                 Debug.Log("Pray------------COl");
                 if (pray_controller != null)
                 {
-                    pray_controller.Pushing();
+                    pray_controller.PushingRequestServerRpc();
                 }
             }
             else if (pushing_raycasted_pray_controller != null)
