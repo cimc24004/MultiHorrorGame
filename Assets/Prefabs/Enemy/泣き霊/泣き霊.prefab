@@ -1739,6 +1739,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7372631580060494052}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c12ce116e91db2942997c0f86c510d1d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -9099628391385447817}
     - targetCorrespondingSourceObject: {fileID: 257067661740533036, guid: c12ce116e91db2942997c0f86c510d1d,
         type: 3}
       insertIndex: -1
@@ -3379,12 +3383,28 @@ MonoBehaviour:
   alternativeRouteRadius: 10
   maxAlternativeAttempts: 3
   waypointReachDistance: 2
+  useTeleportOnStuck: 0
+  teleportRadius: 8
+  maxTeleportAttempts: 5
+  minTeleportDistance: 3
   showDebugInfo: 1
   currentStuckTime: 0
   distanceMoved: 0
   isCurrentlyStuck: 0
   isUsingAltRoute: 0
   currentWaypoint: 0
+--- !u!114 &-9099628391385447817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7214472519949709180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b73908fbda06701469916061fe411c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7284378391866051382 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 993275526042048795, guid: c12ce116e91db2942997c0f86c510d1d,

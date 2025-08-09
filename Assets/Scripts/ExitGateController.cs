@@ -17,11 +17,12 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     [SerializeField] private AudioSource OpenAudioSource;
     [SerializeField] private AudioSource CloseAudioSource;
     [SerializeField] private AudioSource OpenCompletedAudioSource;
-    private NetworkVariable<float> AnimatorSpeed = new NetworkVariable<float>();
+    private AnimSpeedSync_ServerAuth animSpeedSync_ServerAuth;
 
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+        animSpeedSync_ServerAuth = this.gameObject.GetComponent<AnimSpeedSync_ServerAuth>();
         m_Animator = this.gameObject.GetComponent<Animator>();
         pray_controller = this.gameObject.GetComponent<PrayController>();
         game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
@@ -42,9 +43,6 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
         });
 
     }
-    void OnEnable() => AnimatorSpeed.OnValueChanged += (_, v) => m_Animator.speed = v;
-    void OnDisable() => AnimatorSpeed.OnValueChanged -= (_, v) => m_Animator.speed = v;
-
     // Update is called once per frame
     void Update()
     {
@@ -85,17 +83,15 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     public void ExitGateOpen()
     {
         //ゲートがオープンする。
-        m_Animator.speed = 1;
+        animSpeedSync_ServerAuth.SetAnimSpeed(1);
         OpenAudioSource.enabled = true;
-        AnimatorSpeed.Value = 1;
     }
 
     public void ExitGateOpenPause()
     {
         //ゲートがオープンするのをpauseする。
-        m_Animator.speed = 0;
         OpenAudioSource.enabled = false;
-        AnimatorSpeed.Value = 0;
+        animSpeedSync_ServerAuth.SetAnimSpeed(0);
     } 
 
     public void OnCanThroughDoor(){
@@ -106,7 +102,7 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     
     public void OnCompleteDoorOpended(){
         //Animation Eventから実行される サーバーから実行されると思う
-        m_Animator.speed = 0;
+        animSpeedSync_ServerAuth.SetAnimSpeed(0);
         this.gameObject.tag = "Untagged";
         this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         OpenCompletedAudioSource.enabled = true;

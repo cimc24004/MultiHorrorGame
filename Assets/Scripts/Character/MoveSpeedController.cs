@@ -9,6 +9,7 @@ public class MoveSpeedController : NetworkBehaviour
     public float RunSpeed;
     private EnemyAllController enemy_all_controller;
     private Animator m_Animator;
+    private AnimSpeedSync_ServerAuth animSpeedSync_ServerAuth;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,7 @@ public class MoveSpeedController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         Debug.Log("MoveSpeeDController Obj: " + this.gameObject.name);
+        animSpeedSync_ServerAuth = this.gameObject.GetComponent<AnimSpeedSync_ServerAuth>();
         PlayerStatus.OnLocalPlayerSpawned += InitWhenPlayerSpawned;
         if (PlayerStatus.LocalInstance != null)
         {
@@ -49,7 +51,8 @@ public class MoveSpeedController : NetworkBehaviour
         {
             this.RunSpeed += _runSpeed;
             this.WalkSpeed += _walkSpeed;
-            m_Animator.speed += _animationSpeed;
+            float NowAnimatorSpeed = animSpeedSync_ServerAuth.GetAnimSpeed();
+            animSpeedSync_ServerAuth.SetAnimSpeed(NowAnimatorSpeed + _animationSpeed);
         }
 
     }

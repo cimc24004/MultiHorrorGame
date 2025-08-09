@@ -74,6 +74,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -218,6 +219,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 4c2fe3392a9c45341af70c6b6e4411a8, type: 3}
+  m_Resource: {fileID: 8300000, guid: 4c2fe3392a9c45341af70c6b6e4411a8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.808
   m_Pitch: 1
@@ -361,6 +363,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -520,7 +525,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5627550536026561981, guid: e62958d56543f1a4fadcfe7171f41ffa,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 3ee4b92be997995439b4cf067f308e90, type: 2}
     - target: {fileID: -2144990787317247848, guid: e62958d56543f1a4fadcfe7171f41ffa,
@@ -566,12 +571,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395661069393561081, guid: e62958d56543f1a4fadcfe7171f41ffa,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 3ee4b92be997995439b4cf067f308e90, type: 2}
     - target: {fileID: 7986814019933463497, guid: e62958d56543f1a4fadcfe7171f41ffa,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 49f5dc3c003ea4a4ca5ba0920379652a, type: 2}
     m_RemovedComponents: []
@@ -658,6 +663,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6978439316611316020}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e62958d56543f1a4fadcfe7171f41ffa,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7059872596566643686}
   m_SourcePrefab: {fileID: 100100000, guid: e62958d56543f1a4fadcfe7171f41ffa, type: 3}
 --- !u!1 &1177497115699282786 stripped
 GameObject:
@@ -680,7 +689,6 @@ CharacterController:
     serializedVersion: 2
     m_Bits: 192
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -725,6 +733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d120e34e6c9d034aaa2512000d58ac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   ChaseToTargetMode: 0
   speed: 0
   StoppingDistance: 0.5
@@ -745,19 +754,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cae649fc2659ef94b8e0edda69d3a37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DiscoveryPlayerNow: 0
+  ShowTopMostFoldoutHeaderGroup: 1
   DiscoveryPlayerBySightning: 1
   EyePosition: {fileID: 5631376417828003804}
   original_discovery_player_status: {fileID: 11400000, guid: a471b8f764bacc2489838ef4d0c0b857,
     type: 2}
   discovery_player_status: {fileID: 11400000, guid: a471b8f764bacc2489838ef4d0c0b857,
     type: 2}
-  SightningPlayer: 0
+  IsAudioPlayOnChase: 0
   SightningPlayerWhenHidePlayer: 0
-  InsidePlayer: 0
   direction: {x: 0, y: 0, z: 0}
-  raycasted_obj: {fileID: 0}
-  SightOutPlayerTimeNow: 0
+  DiscoveriedPlayers: []
+  FirstKeyOfDiscoveriedPlayers: {fileID: 0}
 --- !u!114 &342802353945137613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -770,7 +778,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a246c2b2a29eece429eb2eb31f71ced8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   NoticedSound: 0
+  InSoundRange: 0
+  sound_object_event_with_sensor: {fileID: 0}
+  before_sound_object_event_with_sensor: {fileID: 0}
+  hited_collider: {fileID: 0}
+  boxHalfSize: {x: 2, y: 1, z: 2}
+  soundObjectLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &2930302681295763697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -783,9 +800,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e242665cfecc294cb8c270b1c5e1368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   foot_step_sound_controller: {fileID: 0}
   FaceExpandingCamera: {fileID: 0}
   EyePosition: {fileID: 5631376417828003804}
+  character_audio_controller: {fileID: 0}
   enemy_flinch_controller: {fileID: 0}
   StopEnemyByPlayerNow: 0
   ground_check: {fileID: 5829618268210088838}
@@ -804,15 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f0d5a3c7b25934c84630448bc83b87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   FaceExpandingCameraObj: {fileID: 1177497115699282786}
 --- !u!114 &2958251293941608832
 MonoBehaviour:
@@ -826,12 +837,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e498105b98fc434c9d1b4c92ba1f969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layer_mask:
+  ShowTopMostFoldoutHeaderGroup: 1
+  boxCenter: {fileID: 0}
+  boxHalfExtents: {x: 0.3, y: 0.6, z: 0.4}
+  layerMask:
     serializedVersion: 2
-    m_Bits: 266824
-  StartPos: {fileID: 7743394612945110419}
-  RaycastDistance: 1
-  ray_obj: {fileID: 0}
+    m_Bits: 0
+  KillPlayerEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3795056790472901039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -862,27 +876,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f1cd1e3cf1b094181823f8e80b2d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   RaycastDistance: 1
   BrokeDoorPlusCount: 3
   door_open_close_controller: {fileID: 0}
   the_door_controller: {fileID: 0}
-  RaycastStartTransform: {fileID: 5631376417828003804}
+  door_attacked_controller: {fileID: 0}
+  rayStarts: []
   raycast_hit_obj: {fileID: 0}
   layer_mask:
     serializedVersion: 2
     m_Bits: 4616
+  DoorTouchNow: 0
+  DoorAttackNow: 0
+  DoorOpenClosePermit: 1
   DoorAttackSource: {fileID: 1855684198045528382}
   DoorAttackClip: {fileID: 8300000, guid: 03eca9926bb108f418a5793f6a581777, type: 3}
   DoorBrokenClip: {fileID: 8300000, guid: 2feb94a928460904caf8c8cdcfe30ebd, type: 3}
+  AutoDoorAttack: 1
+  DoorBroken: 0
   AttackedDoorEffectPrefab: {fileID: 9106265002187385468, guid: e3bc59c5b786c904c8e4917940946e74,
     type: 3}
 --- !u!114 &1162641761715432471
@@ -897,6 +909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943dd1ad765af247928a156a38b5162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   FlinchNow: 0
   FlinchTime: 0
   FlinchTimeNow: 0
@@ -1977,6 +1990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae2e57a0b867a074586b21d4a0e0f550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   MaterialChange: 0
   ToReturnDefaultTimeFromStartChanged: 2
 --- !u!114 &6978439316611316020
@@ -1991,15 +2005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4695cbbb645358547b8df649759c0c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
+  ShowTopMostFoldoutHeaderGroup: 1
   ToNextRouteDistance: 0
   WaitToMoveNextPointTime: 0
   RoutingWalkSpeed: 1
@@ -2013,15 +2019,21 @@ MonoBehaviour:
   OriginalRouting: 1
   Routings:
   - {fileID: 0}
+--- !u!114 &7059872596566643686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177497115699282786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b73908fbda06701469916061fe411c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1953612053067192792 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e62958d56543f1a4fadcfe7171f41ffa,
-    type: 3}
-  m_PrefabInstance: {fileID: 2059876428689751603}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &7743394612945110419 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -585407558126863456, guid: e62958d56543f1a4fadcfe7171f41ffa,
     type: 3}
   m_PrefabInstance: {fileID: 2059876428689751603}
   m_PrefabAsset: {fileID: 0}

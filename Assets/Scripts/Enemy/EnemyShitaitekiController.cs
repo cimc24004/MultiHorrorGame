@@ -10,6 +10,7 @@ public class EnemyShitaitekiController : NetworkBehaviour
     [SerializeField] private AudioSource ScreamSound;
     private CurseController curseController;
     private DiscoveryPlayerController discoveryPlayerController;
+    private AnimSpeedSync_ServerAuth animSpeedSync_ServerAuth;
     private Animator m_Animator;
     private FollowObjectByNav m_FollowObjectByNav;
     private EnemyStatus enemyStatus;
@@ -34,7 +35,7 @@ public class EnemyShitaitekiController : NetworkBehaviour
         // 走行中の tween があれば止める
         if (speedTweenSeq != null && speedTweenSeq.IsActive())
             speedTweenSeq.Kill();
-
+        
         speedTweenSeq = DOTween.Sequence()
             .Join(DOTween.To(() => moveSpeedController.RunSpeed,
                             x => moveSpeedController.RunSpeed = x,
@@ -42,12 +43,13 @@ public class EnemyShitaitekiController : NetworkBehaviour
             .Join(DOTween.To(() => moveSpeedController.WalkSpeed,
                             x => moveSpeedController.WalkSpeed = x,
                             targetWalk, duration).SetEase(ease))
-            .Join(DOTween.To(() => m_Animator.speed, x => m_Animator.speed = x,targetAnimator, duration))
+            .Join(DOTween.To(() => m_Animator.speed, x => animSpeedSync_ServerAuth.SetAnimSpeed(x),targetAnimator, duration))
             .OnComplete(onComplete);       // ★ 完了時に呼ぶ
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void OnNetworkSpawn()
     {
+        animSpeedSync_ServerAuth = this.gameObject.GetComponent<AnimSpeedSync_ServerAuth>();
         discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
         m_Animator = this.gameObject.GetComponent<Animator>();
         enemyToPlayerKillController = this.gameObject.GetComponent<EnemyToPlayerKillController>();
