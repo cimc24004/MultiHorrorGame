@@ -89,6 +89,7 @@ public class SteamLobby : MonoBehaviour
         SteamMatchmaking.LeaveLobby(new CSteamID(LobbyID));
         Debug.Log($"SteamLobby: LeaveLobby({LobbyID})");
         LobbyID = 0;
+        m_clientStarted = false; // allow future joins/hosts
     }
     // ──────────────────────────────────────
     // クライアントとして参加
@@ -178,6 +179,7 @@ public class SteamLobby : MonoBehaviour
     private void OnTransportFailure()
     {
         Debug.LogError("SteamLobby: TransportFailure 検知");
+        m_clientStarted = false;
         ConnectionFailed?.Invoke(ConnectionFailReason.TransportError,"TransportFailure");
     }
 
@@ -185,6 +187,7 @@ public class SteamLobby : MonoBehaviour
     {
         ServerStopped?.Invoke(wasHost);
         Debug.Log("SteamLobby: ホスト（自分）がサーバー停止");
+        m_clientStarted = false;
         // ConnectionFailed?.Invoke(ConnectionFailReason.Unknown,"ServerStopped");
     }
 
@@ -199,6 +202,7 @@ public class SteamLobby : MonoBehaviour
         {
             Debug.LogWarning("SteamLobby: ホスト切断を検知");
             PlayerLeft?.Invoke(clientId);
+            m_clientStarted = false;
         }
     }
 
