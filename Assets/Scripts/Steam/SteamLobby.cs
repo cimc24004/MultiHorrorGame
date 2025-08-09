@@ -185,7 +185,7 @@ public class SteamLobby : MonoBehaviour
     {
         ServerStopped?.Invoke(wasHost);
         Debug.Log("SteamLobby: ホスト（自分）がサーバー停止");
-        ConnectionFailed?.Invoke(ConnectionFailReason.Unknown,"ServerStopped");
+        // ConnectionFailed?.Invoke(ConnectionFailReason.Unknown,"ServerStopped");
     }
 
     private void OnClientDisconnect(ulong clientId)

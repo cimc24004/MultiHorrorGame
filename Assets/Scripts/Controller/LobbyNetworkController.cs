@@ -1,55 +1,196 @@
-using Unity.Netcode;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Sirenix.OdinInspector;
+using Unity.Netcode;
 using TMPro;
+
 public class LobbyNetworkController : NetworkBehaviour
 {
-    [SerializeField] Button StartHostButton;
-    [SerializeField] Button StartClientButton;
-    [SerializeField] Button GameStartButton;
-    [SerializeField] GameObject PlayerClientContents;
-    [SerializeField] GameObject PlayerClientsAll;
-    [SerializeField] Button MapStartButton;
-    private NetworkList<ulong> connectedMembers = new NetworkList<ulong>();
-    [SerializeField] private TMP_InputField m_joinLobbyID_Field;    // LobbyID入力
+    [Header("UI Refs")]
+    [SerializeField] private Button StartHostButton;
+    [SerializeField] private Button StartClientButton;
+    [SerializeField] private Button GameStartButton;
+    [SerializeField] private GameObject PlayerClientContents; // 各プレイヤー行のプレハブ
+    [SerializeField] private Transform PlayerClientsAll;      // 行を並べる親
+    [SerializeField] private TMP_InputField m_joinLobbyID_Field; // LobbyID表示/入力
+
+    // クライアントID→UI行の対応表（重複生成防止＆Remove用）
+    private readonly Dictionary<ulong, GameObject> _rows = new();
+
+    private SessionController sessionController; // SessionController 参照
 
     void Start()
     {
-        Debug.Log("Start");
-        StartHostButton.onClick.AddListener(() =>
+        // ボタン系（ローカルUI）
+        if (StartHostButton) StartHostButton.onClick.AddListener(StartHost);
+        if (StartClientButton) StartClientButton.onClick.AddListener(StartClient);
+        if (GameStartButton) GameStartButton.onClick.AddListener(() =>
         {
-            this.StartHost();
-        });
-
-        StartClientButton.onClick.AddListener(() =>
-        {
-            this.StartClient();
-        });
-
-        GameStartButton.onClick.AddListener(() =>
-        {
-            // シーン遷移はサーバーがまとめて行う
             if (IsServer)
-                NetworkManager.Singleton.SceneManager.LoadScene("Main", LoadSceneMode.Single);
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene("Main", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            }
         });
-
-        
     }
-    
+
+    public override void OnNetworkSpawn()
+    {
+        StartCoroutine(InitAfterSessionController());
+    }
+
+    private IEnumerator InitAfterSessionController()
+    {
+        // SessionController 検索＆待機
+        while (sessionController == null)
+        {
+            var go = GameObject.FindWithTag("SessionController");
+            if (go != null) sessionController = go.GetComponent<SessionController>();
+            yield return null;
+        }
+
+        // ★ ここでNetworkList購読（クライアント/サーバー両方）
+        sessionController.connectedMembers.OnListChanged += OnMemberListChangedClient;
+
+        // 既存メンバー分をまずUIへ反映
+        foreach (var id in sessionController.connectedMembers)
+        {
+            SpawnOrUpdateRow(id);
+        }
+
+        if (IsServer)
+        {
+            // 既に繋がっているクライアントIDをNetworkListへ反映（重複防止チェック）
+            foreach (var id in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (!ContainsId(sessionController.connectedMembers, id))
+                {
+                    sessionController.connectedMembers.Add(id);
+                }
+            }
+
+            // 接続イベント（サーバー側のみ）
+            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+        }
+
+        // 表示用：ロビーID
+        if (m_joinLobbyID_Field && SteamLobby.Instance != null)
+        {
+            m_joinLobbyID_Field.text = SteamLobby.Instance.LobbyID.ToString();
+        }
+    }
+
+    private bool ContainsId(NetworkList<ulong> list, ulong id)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i] == id) return true;
+        }
+        return false;
+    }
+
+    private void HandleClientConnected(ulong clientId)
+    {
+        // サーバーがNetworkListを唯一のソースとしてAdd
+        if (sessionController != null && sessionController.connectedMembers != null && !ContainsId(sessionController.connectedMembers, clientId))
+        {
+            sessionController.connectedMembers.Add(clientId);
+        }
+    }
+
+    private void OnMemberListChangedClient(NetworkListEvent<ulong> e)
+    {
+        Debug.Log($"[Lobby] OnListChanged: {e.Type} / {e.Value}");
+        switch (e.Type)
+        {
+            case NetworkListEvent<ulong>.EventType.Add:
+                SpawnOrUpdateRow(e.Value);
+                break;
+            case NetworkListEvent<ulong>.EventType.Remove:
+                RemoveRow(e.Value);
+                break;
+            case NetworkListEvent<ulong>.EventType.Insert:
+            case NetworkListEvent<ulong>.EventType.RemoveAt:
+            case NetworkListEvent<ulong>.EventType.Value:
+            case NetworkListEvent<ulong>.EventType.Clear:
+                // 必要に応じてハンドリング
+                break;
+        }
+    }
+
+    private void SpawnOrUpdateRow(ulong clientId)
+    {
+        if (_rows.TryGetValue(clientId, out var row) && row != null)
+        {
+            // 既存更新
+            var box = row.GetComponent<PlayerClientBox>();
+            if (box) box.PlayerOnClientConnectedSetText($"プレイヤーID: {clientId}");
+            return;
+        }
+
+        if (PlayerClientContents == null || PlayerClientsAll == null)
+        {
+            Debug.LogError("[Lobby] PlayerClientContents / PlayerClientsAll が未設定");
+            return;
+        }
+
+        // 新規生成
+        var go = GameObject.Instantiate(PlayerClientContents, PlayerClientsAll);
+        var pcb = go.GetComponent<PlayerClientBox>();
+        if (pcb) pcb.PlayerOnClientConnectedSetText($"プレイヤーID: {clientId}");
+        _rows[clientId] = go;
+    }
+
+    private void RemoveRow(ulong clientId)
+    {
+        if (_rows.TryGetValue(clientId, out var row) && row != null)
+        {
+            GameObject.Destroy(row);
+        }
+        _rows.Remove(clientId);
+    }
+
+    private void ClearAllRows()
+    {
+        foreach (var kv in _rows)
+        {
+            if (kv.Value) GameObject.Destroy(kv.Value);
+        }
+        _rows.Clear();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        // クリーンアップ（OnDestroyより先に呼ばれるケースもある）
+        CleanupSubscriptions();
+    }
+
+    private void OnDestroy()
+    {
+        CleanupSubscriptions();
+        ClearAllRows();
+    }
+
+    private void CleanupSubscriptions()
+    {
+        if (sessionController != null && sessionController.connectedMembers != null)
+        {
+            sessionController.connectedMembers.OnListChanged -= OnMemberListChangedClient;
+        }
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+        }
+    }
+
     // ──────────────────────────────────────
     // ボタン：ロビー作成（ホスト）
     // ──────────────────────────────────────
     public void StartHost()
     {
-        // byte[] handshake = { 0x01 };
-        // NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
         SteamLobby.Instance.CreateLobby();
         ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
         Debug.Log($"ConfigHash={hash:X8}");
-
-        Debug.Log("GameNetworkController: StartHost() → CreateLobby() 呼んだ");
     }
 
     // ──────────────────────────────────────
@@ -57,66 +198,23 @@ public class LobbyNetworkController : NetworkBehaviour
     // ──────────────────────────────────────
     public void StartClient()
     {
-        string id = m_joinLobbyID_Field.text.Trim();
-        if (!ulong.TryParse(id, out ulong lobbyId))
+        if (m_joinLobbyID_Field == null)
         {
-            Debug.LogError($"GameNetworkController: JoinLobbyID パース失敗 → {id}");
+            Debug.LogError("JoinLobbyID Field 未設定");
             return;
         }
-        // byte[] handshake = { 0x01 };
-        // NetworkManager.Singleton.NetworkConfig.ConnectionData = handshake;
+
+        string idText = m_joinLobbyID_Field.text.Trim();
+        if (!ulong.TryParse(idText, out ulong lobbyId))
+        {
+            Debug.LogError($"JoinLobbyID パース失敗 → {idText}");
+            return;
+        }
+
         ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
         Debug.Log($"ConfigHash={hash:X8}");
 
         SteamLobby.Instance.JoinLobby(lobbyId);
-        Debug.Log($"GameNetworkController: StartClient() → JoinLobby({lobbyId}) 呼んだ");
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        Debug.Log("OnNetworkSpawn");
-        foreach (ulong clientid in connectedMembers)
-        {
-            Debug.Log("foreachないです");
-            SpawnLocalUI(clientid);
-        }
-        this.m_joinLobbyID_Field.text = SteamLobby.Instance.LobbyID.ToString();
-        if (IsServer)
-        {
-            // 既に接続済みのクライアント ID を NetworkList に突っ込む
-            foreach (var id in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                connectedMembers.Add(id);
-            }
-            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-            connectedMembers.OnListChanged += OnMemberListChanged;
-        }
-        // ホスト自身の UI もここで生成
-        // SpawnLocalUI(NetworkManager.Singleton.LocalClientId);
-    }
-
-    private void HandleClientConnected(ulong clientId)
-    {
-        connectedMembers.Add(clientId);
-    }
-    private void OnMemberListChanged(NetworkListEvent<ulong> e){
-        Debug.Log("OnMemberListChanged: " + e.Value);
-        if (e.Type == NetworkListEvent<ulong>.EventType.Add)
-            SpawnLocalUIClientRpc(e.Value);
-        else if (e.Type == NetworkListEvent<ulong>.EventType.Remove)
-            Debug.Log("");
-            // RemoveUi(e.Value);
-    }
-    [ClientRpc]
-    private void SpawnLocalUIClientRpc(ulong clientId)
-    {
-        Debug.Log("ここはClientRPCないです");
-        SpawnLocalUI(clientId);
-    }
-    private void SpawnLocalUI(ulong clientId){
-        Debug.Log("SpawnLocalUIが呼ばれています");
-        var go = Instantiate(PlayerClientContents, PlayerClientsAll.transform);
-        go.GetComponent<PlayerClientBox>()
-           .PlayerOnClientConnectedSetText($"プレイヤーID: {clientId}");
+        Debug.Log($"StartClient() → JoinLobby({lobbyId})");
     }
 }
