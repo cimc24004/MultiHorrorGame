@@ -165,7 +165,7 @@ public class PrayController : NetworkBehaviour
         AlreadyPrayCompleted.Value = false;
         PrayPermit.Value = true;
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void PushingRequestServerRpc()
     {
         PushingAction = true;
