@@ -13,7 +13,7 @@ public class FirstAidKitForPlayer : NetworkBehaviour
     private PlayerStatus myPlayerStatus;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    void OnEnable()
+    public override void OnNetworkSpawn()
     {
         PlayerStatus.OnLocalPlayerSpawned += InItOnPlayerSpawn;
         if (PlayerStatus.LocalInstance != null)
@@ -21,7 +21,7 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             InItOnPlayerSpawn(PlayerStatus.LocalInstance);
         }
     }
-    void OnDisable()
+    public override void OnNetworkDespawn()
     {
         PlayerStatus.OnLocalPlayerSpawned -= InItOnPlayerSpawn;
     }
