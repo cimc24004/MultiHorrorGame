@@ -47,8 +47,19 @@ public class KubinashiMikoController : NetworkBehaviour
                 TargetPlayers.Add(targetPlayer);
             });
         }
+        PlayerStatus.OnDestroyPlayer += OnDestroyPlayer;
     }
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        PlayerStatus.OnDestroyPlayer -= OnDestroyPlayer;
+    }
+    private void OnDestroyPlayer(PlayerStatus p)
+    {
+        TargetPlayers.Remove(p.gameObject);
+        ChaseTargetPlayer = TargetPlayers[Random.Range(0, TargetPlayers.Count)];
 
+    }
     // Update is called once per frame
     void Update()
     {

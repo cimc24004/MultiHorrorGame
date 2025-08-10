@@ -22,8 +22,10 @@ public class PlayerStatus : NetworkBehaviour
     public NetworkVariable<FixedString64Bytes> SteamUserName = new NetworkVariable<FixedString64Bytes>();
     // ローカルの人を取得するためのinstance
     public static PlayerStatus LocalInstance { get; private set; }
+    
     public static event Action<PlayerStatus> OnLocalPlayerSpawned;
     public static event Action<PlayerStatus> OnLocalPlayerDeaded;
+    public static event Action<PlayerStatus> OnDestroyPlayer;
     [SerializeField] private TextMeshProUGUI steamUserNameTextUI;
     // 値の受け渡しやスタミナなどの管理。プレイヤーの状態などを保存
     public Transform CameraRoot;
@@ -121,7 +123,6 @@ public class PlayerStatus : NetworkBehaviour
         player_move_script = GetComponent<PlayerMoveScript>();
         item_databases = ItemDatabases.instance;
         InitPlayer = true;
-
         if (IsOwner)
         {
             LocalInstance = this;
@@ -168,6 +169,10 @@ public class PlayerStatus : NetworkBehaviour
         MoveX = 0;
         MoveY = 0;
         MoveSpeed = 0;
+    }
+    private void OnDestroy()
+    {
+        OnDestroyPlayer?.Invoke(this);
     }
     [ServerRpc]
     private void PlayerNameSetRequestServerRpc(string _SteamUserName)

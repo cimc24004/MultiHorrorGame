@@ -14,8 +14,16 @@ public class PlayerAllController : Singleton<PlayerAllController>
     void Start()
     {
         StartCoroutine(SpawnedPlayerSet());
+        PlayerStatus.OnDestroyPlayer += OnDestroyPlayer;
 
-
+    }
+    void OnDestroy()
+    {
+        PlayerStatus.OnDestroyPlayer -= OnDestroyPlayer;
+    }
+    private void OnDestroyPlayer(PlayerStatus p) {
+        SpawnedPlayers.Remove(p.gameObject);
+        SpawnedPlayersWithPlayerStatuses.Remove(p.gameObject);
     }
     IEnumerator SpawnedPlayerSet()
     {
@@ -27,9 +35,5 @@ public class PlayerAllController : Singleton<PlayerAllController>
         }
 
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

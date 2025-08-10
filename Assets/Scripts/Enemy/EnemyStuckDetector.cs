@@ -421,9 +421,9 @@ public class EnemyStuckDetector : NetworkBehaviour
         if (discovery_player_controller.DiscoveryPlayerNowCheck())
         {
             var discoveredPlayers = new List<GameObject>(discovery_player_controller.DiscoveriedPlayers);
-            foreach (var player in discoveredPlayers)
+            for(int i = 0; i < discoveredPlayers.Count; i++)
             {
-                discovery_player_controller.RemovePlayerOfDiscoveryPlayerLists(player);
+                discovery_player_controller.RemovePlayerOfDiscoveryPlayerLists(discoveredPlayers[i]);
             }
             
             if (showDebugInfo)

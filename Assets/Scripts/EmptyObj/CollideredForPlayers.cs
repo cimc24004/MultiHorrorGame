@@ -25,8 +25,15 @@ public class CollideredForPlayers : MonoBehaviour
     void Start()
     {
         PlayerStatus.OnLocalPlayerDeaded += OnlocalPlayerDeaded;
+        PlayerStatus.OnDestroyPlayer += OnlocalPlayerDeaded;
     }
-    private void OnlocalPlayerDeaded(PlayerStatus playerStatus) {
+    void OnDestroy()
+    {
+        PlayerStatus.OnLocalPlayerDeaded -= OnlocalPlayerDeaded;
+        PlayerStatus.OnDestroyPlayer -= OnlocalPlayerDeaded;
+    }
+    private void OnlocalPlayerDeaded(PlayerStatus playerStatus)
+    {
         if (CollideredObjes.Count != 0)
         {
             if (CollideredObjes.Contains(playerStatus.gameObject))

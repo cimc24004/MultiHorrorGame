@@ -93,6 +93,7 @@ public class DiscoveryPlayerController : NetworkBehaviour
     {
         horror_director = HorrorDirector.instance;
         if (!IsServer) return;
+        PlayerStatus.OnDestroyPlayer += OnPlayerDestroyed;
         player_all_controller = PlayerAllController.instance;
         to_players_distance_tracker = this.gameObject.GetComponent<ToPlayersDistanceTracker>();
         //visible_through_the_wall_controller = this.gameObject.GetComponent<VisibleThroughTheWallController>();
@@ -107,6 +108,10 @@ public class DiscoveryPlayerController : NetworkBehaviour
         discovery_player_status = original_discovery_player_status;
 
         StartCoroutine(DisctionarySet());
+    }
+    public override void OnNetworkDespawn()
+    {
+        PlayerStatus.OnDestroyPlayer -= OnPlayerDestroyed;
     }
     IEnumerator DisctionarySet()
     {
@@ -522,9 +527,23 @@ public class DiscoveryPlayerController : NetworkBehaviour
     {
         horror_director.EnemyLostPlayer();
     }
+    private void OnPlayerDestroyed(PlayerStatus p)
+    {
+        if (DiscoveriedPlayers.Contains(p.gameObject))
+        {
+            RemovePlayerOfDiscoveryPlayerLists(p.gameObject);
+        }
+        if (PlayersVisibilityMapStatuesWithKey.TryGetValue(p.gameObject, out var vis))
+        {
+            vis.DiscoveryPlayerFlagChanged.RemoveListener(OnChangedDiscoveryPlayerNow);
+        }
+
+        PlayersVisibilityMapStatuesWithKey.Remove(p.gameObject);
+    }
+
     public void ForceLostSight()
     {
-        for(int i = 0; i < DiscoveriedPlayers.Count; i++)
+        for (int i = 0; i < DiscoveriedPlayers.Count; i++)
         {
             RemovePlayerOfDiscoveryPlayerLists(DiscoveriedPlayers[i]);
         }

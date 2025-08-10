@@ -91,9 +91,18 @@ public class DarumasanKorondaGameController : NetworkBehaviour
             OnColliderEventClientRpc(false,rpcParams);
             // KorondaVolumeVoiceClientRpc(0f, rpcParams);
         });
+        PlayerStatus.OnDestroyPlayer += OnPlayerDestroy;
         discovery_player_controller = DarumasanParent.GetComponent<DiscoveryPlayerController>();
     }
-
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        PlayerStatus.OnDestroyPlayer -= OnPlayerDestroy;
+    }
+    private void OnPlayerDestroy(PlayerStatus p)
+    {
+        collideredForPlayers.OnCollideredRemovedObjectEvent.Invoke(p.gameObject);
+    }
     void Update()
     {
         if (!IsServer) 
@@ -164,9 +173,9 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                         {
                             discovery_player_controller.AddPlayerToDiscoveryPlayerLists(player);
                         });
-                        foreach (GameObject g in collideredForPlayers.CollideredObjes)
+                        for(int j = 0; j < collideredForPlayers.CollideredObjes.Count; j++)
                         {
-                            collideredForPlayers.OnCollideredRemovedObjectEvent.Invoke(g);
+                            collideredForPlayers.OnCollideredRemovedObjectEvent.Invoke(collideredForPlayers.CollideredObjes[j]);
                         }
                         DarumasanParent.transform.SetParent(null);
                         this.NetworkObject.Despawn(true);
@@ -311,6 +320,9 @@ public class DarumasanKorondaGameController : NetworkBehaviour
                 currentLookTargetIndex.Value = i;
             }
 
+            if (!playerAllController
+                .SpawnedPlayersWithPlayerStatuses.ContainsKey(collideredForPlayers.CollideredObjes[i])) continue;
+            
             var targetPos = playerAllController
                 .SpawnedPlayersWithPlayerStatuses[collideredForPlayers.CollideredObjes[i]]
                 .CameraRoot.transform.position;

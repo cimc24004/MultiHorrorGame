@@ -10,12 +10,24 @@ public class ToPlayersDistanceTracker : NetworkBehaviour
     [SerializeField, ShowInInspector] public Dictionary<GameObject, float> ToPlayerDistanceLists = new Dictionary<GameObject, float>();
 
     private List<GameObject> Players = new List<GameObject>();
+    private PlayerAllController playerAllController;
     private int i = 0;
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
-
+        playerAllController = PlayerAllController.instance;
         StartCoroutine(DictionarySet());
+        PlayerStatus.OnDestroyPlayer += OnDestroyPlayer;
+    }
+    public override void OnNetworkDespawn()
+    {
+        PlayerStatus.OnDestroyPlayer -= OnDestroyPlayer;
+    }
+    private void OnDestroyPlayer(PlayerStatus p)
+    {
+        Players.Remove(p.gameObject);
+        ToPlayerDistanceLists.Remove(p.gameObject);
+
     }
     IEnumerator DictionarySet()
     {
@@ -25,6 +37,7 @@ public class ToPlayersDistanceTracker : NetworkBehaviour
             ToPlayerDistanceLists.Add(PlayerNetworkObject.gameObject, 0f);
             Players.Add(PlayerNetworkObject.gameObject);
         }
+
     }
 
     void Update()

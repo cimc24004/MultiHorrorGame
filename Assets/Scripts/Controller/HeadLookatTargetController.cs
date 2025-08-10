@@ -72,7 +72,17 @@ public class HeadLookatTargetController : NetworkBehaviour
         playerAllController = PlayerAllController.instance;
         m_collidered_for_players.OnCollideredAddedObjectEvent.AddListener(AddTarget);
         m_collidered_for_players.OnCollideredRemovedObjectEvent.AddListener(RemoveTarget);
-
+        PlayerStatus.OnDestroyPlayer += OnDestroyPlayer;
+    }
+    public override void OnNetworkDespawn()
+    {
+        PlayerStatus.OnDestroyPlayer -= OnDestroyPlayer;
+    }
+    private void OnDestroyPlayer(PlayerStatus p) {
+        if (lookPlayers.Contains(p.gameObject))
+        {
+            RemoveTarget(p.gameObject);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -152,6 +162,10 @@ public class HeadLookatTargetController : NetworkBehaviour
         if (this.lookPlayers.Count != 0)
         {
             this.FirstPlayerKey = this.lookPlayers.Last();
+        }
+        else
+        {
+            this.FirstPlayerKey = null;
         }
         if (m_collidered_for_players.CollideredObjes.Count == 1)
         {
