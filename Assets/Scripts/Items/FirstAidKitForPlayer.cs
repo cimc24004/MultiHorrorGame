@@ -39,20 +39,29 @@ public class FirstAidKitForPlayer : NetworkBehaviour
         {
             if (parentPlayerStatus.Dead.Value)
             {
-                if (_playerStatus == parentPlayerStatus)
-                {
-                    OnCompletedPrayRequestServerRpc();
-                }
-                Debug.Log("prayController.PrayNowPlayers.Count: " + prayController.PrayNowPlayers.Count);
-                Debug.Log("myPlayerStatus.OwnerClientId: " + myPlayerStatus.OwnerClientId);
-                Debug.Log("PrayNowPlayers[0]: " + prayController.PrayNowPlayers[0]);
-                Debug.Log("parentPlayerStatus: " + parentPlayerStatus.OwnerClientId);
 
-                Debug.Log("----------------FirstAidKitForPlayer 111111-----------------");
-                NetworkObject playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(prayController.PrayNowPlayers[0]);
-                PrayerItemBelongingsController = playerAllController.SpawnedPlayersWithPlayerStatuses[playerNetworkObject.gameObject].item_menu_controller.item_belongings_controller;
-                PrayerItemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
+                OnCompletedPrayRequestServerRpc();
             }
+
+        });
+        prayController.PrayCompletedEventForServer.AddListener(() =>
+        {
+            // ★ ここはサーバーで実行される前提（Server側イベント）
+            if (prayController.PrayNowPlayers == null || prayController.PrayNowPlayers.Count == 0)
+            {
+                Debug.LogWarning("PrayNowPlayersが空。payerを決められない");
+                return;
+            }
+
+            ulong prayerId = prayController.PrayNowPlayers[0]; // 先頭を代表者に（好きにルール変更OK）
+
+            // 代表者クライアントにだけRPCを送る
+            var rpcParams = new ClientRpcParams {
+                Send = new ClientRpcSendParams {
+                    TargetClientIds = new ulong[] { prayerId }
+                }
+            };
+            ConsumeFirstAidClientRpc(rpcParams);
 
         });
 
@@ -92,11 +101,24 @@ public class FirstAidKitForPlayer : NetworkBehaviour
         }
         return false;
     }
-
     [ClientRpc]
-    private void FirstAidUsedClientRpc()
+    private void ConsumeFirstAidClientRpc(ClientRpcParams rpcParams = default)
     {
-        myPlayerStatus.sub_noticed_ui_controller.Notice($"{parentPlayerStatus.SteamUserName}");
+        // 念のため初期化遅延対策
+        if (MyItemBelongingsController == null && PlayerStatus.LocalInstance != null)
+        {
+            MyItemBelongingsController = PlayerStatus.LocalInstance.item_menu_controller.item_belongings_controller;
+        }
+
+        if (MyItemBelongingsController != null && CheckItem())
+        {
+            MyItemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
+            myPlayerStatus?.sub_noticed_ui_controller?.Notice($"{parentPlayerStatus.SteamUserName} を応急処置した");
+        }
+        else
+        {
+            Debug.LogWarning("FirstAid消費できない（所持なし or 未初期化）");
+        }
     }
     [ServerRpc]
     private void OnCompletedPrayRequestServerRpc()
