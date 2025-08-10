@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-
+using Sirenix.OdinInspector;
 public class PrayController : NetworkBehaviour
 {
     [Header("Prayするときに表示するメッセージ")]
@@ -11,7 +12,7 @@ public class PrayController : NetworkBehaviour
 
     [Header("祈るのに必要な時間(秒)")]
     [SerializeField] public float NeedToPrayTime = 3f;
-
+    [SerializeField, ShowInInspector]public NetworkList<ulong> PrayNowPlayers = new NetworkList<ulong>();
     // 進行状況（サーバー書き込み / 全員読み取り）
     public NetworkVariable<float> PrayTimeNow = new NetworkVariable<float>(
         0f,
@@ -43,7 +44,8 @@ public class PrayController : NetworkBehaviour
     [SerializeField] private UnityEvent2 PrayStartEvent;
 
     // 入力状態（サーバー書き込み / 全員読み取り）
-    [SerializeField] private NetworkVariable<bool> PrayNow = new NetworkVariable<bool>(
+    [SerializeField]
+    private NetworkVariable<bool> PrayNow = new NetworkVariable<bool>(
         false,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
@@ -77,11 +79,11 @@ public class PrayController : NetworkBehaviour
 
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
-        playerStatus   = _playerStatus;
+        playerStatus = _playerStatus;
         crossHairStatus = playerStatus.cross_hair_event.cross_hair_status;
-        gageCanvas     = playerStatus.GageCanvas;
-        gageImageUI    = playerStatus.GageImage;
-        noticeUI       = playerStatus.main_noticed_ui_controller;
+        gageCanvas = playerStatus.GageCanvas;
+        gageImageUI = playerStatus.GageImage;
+        noticeUI = playerStatus.main_noticed_ui_controller;
         inited = true;
 
         // 最初は非表示
@@ -159,8 +161,15 @@ public class PrayController : NetworkBehaviour
                 PrayStartEvent?.Invoke();
                 prayStartInvoked = true;
             }
+            float SpeedPerExtraPlayer = 0.1f; // 追加1人ごとに+10%
+            int n = (PrayNowPlayers != null) ? PrayNowPlayers.Count : 0;
 
-            PrayTimeNow.Value += Time.deltaTime;
+            float factor;
+            if (n == 0)       factor = 0f;                         // 誰も祈ってない→進まない
+            else if (n == 1)  factor = 1f;                         // 1人→等速
+            else              factor = 1f + (n - 1) * SpeedPerExtraPlayer; // 2人以上→加速
+
+            PrayTimeNow.Value += Time.deltaTime * factor;
 
             if (PrayTimeNow.Value >= NeedToPrayTime)
             {
@@ -183,18 +192,19 @@ public class PrayController : NetworkBehaviour
 
     /*━━━━━━━━ ServerRpc ━━━━━━━━*/
     [ServerRpc(RequireOwnership = false)]
-    public void PrayNowTrueRequestServerRpc()
+    public void PrayNowTrueRequestServerRpc(ulong _requestClientId)
     {
         if (!PrayPermit.Value || AlreadyPrayCompleted.Value) return;
-        PrayNow.Value = true;
+        PrayNowPlayersSet(_requestClientId, true);
+        RefreshPrayNowFlag();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PrayNowFalseRequestServerRpc()
+    public void PrayNowFalseRequestServerRpc(ulong _requestClientId)
     {
-        PrayNow.Value = false;
-        // 押し直した時に開始イベントが再度出るように
-        prayStartInvoked = false;
+        PrayNowPlayersSet(_requestClientId, false);
+        RefreshPrayNowFlag();
+        if (!PrayNow.Value) prayStartInvoked = false; // 全員離したら次回開始イベントを再解放
     }
 
     /*━━━━━━━━ 内部（サーバー） ━━━━━━━━*/
@@ -207,7 +217,7 @@ public class PrayController : NetworkBehaviour
         PrayNow.Value = false;
         PrayTimeNow.Value = 0f;
         prayStartInvoked = false;
-
+        PrayNowPlayers?.Clear(); 
         // 全クライアントで完了演出
         PrayCompletedClientRpc();
     }
@@ -234,4 +244,29 @@ public class PrayController : NetworkBehaviour
     {
         // 必要ならここでローカル演出
     }
+    private void PrayNowPlayersSet(ulong clientId, bool _set)
+    {
+        //サーバー側で実行
+        if (!IsServer) return;
+        if (!_set)
+        {
+            if (PrayNowPlayers.Contains(clientId))
+            {
+                PrayNowPlayers.Remove(clientId);
+            }
+        }
+        else
+        {
+            if (!PrayNowPlayers.Contains(clientId))
+            {
+                PrayNowPlayers.Add(clientId);
+            }
+        }
+
+    }
+    private void RefreshPrayNowFlag()
+    {
+        PrayNow.Value = PrayNowPlayers != null && PrayNowPlayers.Count > 0;
+    }
+
 }

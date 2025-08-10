@@ -30,7 +30,6 @@ public class CrossHairEvent : NetworkBehaviour
     // 許可フラグ（ネット経由で外から無効にできる）
     public NetworkVariable<bool> CrossHairEventRaycastPermit = new NetworkVariable<bool>(true);
     public NetworkVariable<bool> CrossHairEventPermitForDeath = new NetworkVariable<bool>(true);
-
     // 内部
     private Camera mainCam;
     private RaycastHit hit;
@@ -227,7 +226,7 @@ public class CrossHairEvent : NetworkBehaviour
             if (currentPray != null &&
                 (RaycasstedObj == null || RaycasstedObj != currentPray.gameObject))
             {
-                currentPray.PrayNowFalseRequestServerRpc();
+                currentPray.PrayNowFalseRequestServerRpc(this.OwnerClientId);
                 currentPray = null;
             }
 
@@ -238,7 +237,7 @@ public class CrossHairEvent : NetworkBehaviour
                 if (pc != null)
                 {
                     currentPray = pc;
-                    currentPray.PrayNowTrueRequestServerRpc();
+                    currentPray.PrayNowTrueRequestServerRpc(this.OwnerClientId);
                 }
             }
         }
@@ -247,7 +246,7 @@ public class CrossHairEvent : NetworkBehaviour
             // 離した瞬間：ロック中の対象へFalseを1回だけ送って解除
             if (currentPray != null)
             {
-                currentPray.PrayNowFalseRequestServerRpc();
+                currentPray.PrayNowFalseRequestServerRpc(this.OwnerClientId);
                 currentPray = null;
             }
         }
@@ -263,7 +262,7 @@ public class CrossHairEvent : NetworkBehaviour
             if (pc != null)
             {
                 currentPray = pc;
-                currentPray.PrayNowTrueRequestServerRpc();
+                currentPray.PrayNowTrueRequestServerRpc(this.OwnerClientId);
             }
         }
     }
@@ -273,7 +272,7 @@ public class CrossHairEvent : NetworkBehaviour
         // 離したらFalseを一回だけ送って解除
         if (currentPray != null)
         {
-            currentPray.PrayNowFalseRequestServerRpc();
+            currentPray.PrayNowFalseRequestServerRpc(this.OwnerClientId);
             currentPray = null;
         }
     }

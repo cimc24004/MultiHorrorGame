@@ -38,8 +38,11 @@ public class FirstAidKitForPlayer : NetworkBehaviour
                 if (_playerStatus == parentPlayerStatus)
                 {
                     OnCompletedPrayRequestServerRpc();
+                }
+                if (prayController.PrayNowPlayers[0] == myPlayerStatus.OwnerClientId) {
                     MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
                 }
+
             }
 
         });
@@ -48,6 +51,7 @@ public class FirstAidKitForPlayer : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (parentPlayerStatus.Dead.Value)
         {
             if (CheckItem())
