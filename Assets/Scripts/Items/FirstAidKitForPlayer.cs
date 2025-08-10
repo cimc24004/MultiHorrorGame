@@ -11,7 +11,6 @@ public class FirstAidKitForPlayer : NetworkBehaviour
     private PlayerStatus parentPlayerStatus;
     public bool CanFirstAid;
     private PlayerStatus myPlayerStatus;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void OnEnable()
     {
@@ -21,83 +20,69 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             InItOnPlayerSpawn(PlayerStatus.LocalInstance);
         }
     }
+
     void OnDisable()
     {
         PlayerStatus.OnLocalPlayerSpawned -= InItOnPlayerSpawn;
+
+        // 購読解除（nullチェック）
+        if (prayController != null)
+        {
+            prayController.OnPrayCompletedWithWinner -= OnPrayCompletedWithWinner;
+        }
     }
+
     private void InItOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         parentPlayerStatus = this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>();
         MyitemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
         prayController = this.gameObject.GetComponent<PrayController>();
         myPlayerStatus = _playerStatus;
-        prayController.PrayCompletedEvent.AddListener(() =>
+
+        // ★ 代表者ID付きイベントを購読
+        if (prayController != null)
         {
-            if (parentPlayerStatus.Dead.Value)
-            {
-                if (_playerStatus == parentPlayerStatus)
-                {
-                    OnCompletedPrayRequestServerRpc();
-                }
-                Debug.Log("prayController.PrayNowPlayers.Count: " + prayController.PrayNowPlayers.Count);
-                Debug.Log("myPlayerStatus.OwnerClientId: " + myPlayerStatus.OwnerClientId);
-                Debug.Log("PrayNowPlayers[0]: " + prayController.PrayNowPlayers[0]);
-                Debug.Log("parentPlayerStatus: " + parentPlayerStatus.OwnerClientId);
-                if (prayController.PrayNowPlayers[0] == myPlayerStatus.OwnerClientId)
-                {
-                    Debug.Log("----------------FirstAidKitForPlayer 111111-----------------");
-                    MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
-                }
+            prayController.OnPrayCompletedWithWinner -= OnPrayCompletedWithWinner;
+            prayController.OnPrayCompletedWithWinner += OnPrayCompletedWithWinner;
+        }
 
-            }
-
-        });
-
+        // 既存の引数なしイベント購読や、PrayNowPlayers[0] 判定は不要
+        // prayController.PrayCompletedEvent.AddListener(...); ←消してOK
     }
-    // Update is called once per frame
-    void Update()
+
+    private void OnPrayCompletedWithWinner(ulong winnerClientId)
     {
-        
-        if (parentPlayerStatus.Dead.Value)
+        // 死体に対する応急処置だけに限定（必要なら）
+        if (!parentPlayerStatus.Dead.Value) return;
+
+        // 自分が代表者なら消費
+        if (winnerClientId == myPlayerStatus.OwnerClientId)
         {
             if (CheckItem())
             {
-                this.gameObject.tag = "Pray";
-                CanFirstAid = true;
+                MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
+
+                // ここはローカルUIで十分。全体に出したいなら別途UI系のClientRpc用意してもいい
+                myPlayerStatus.sub_noticed_ui_controller.Notice($"{parentPlayerStatus.SteamUserName} を応急処置した");
             }
             else
             {
-                this.gameObject.tag = "CantFirstAidKit";
-                CanFirstAid = false;
+                Debug.LogWarning("FirstAidKitが手持ちにないため消費できず");
             }
         }
-        else
-        {
-            this.gameObject.tag = "Untagged";
-            CanFirstAid = false;
-        }
-
     }
+
     private bool CheckItem()
     {
-        if (MyitemBelongingsController.belonging_items.Count != 0)
-        {
-            if (MyitemBelongingsController.belonging_items.ContainsKey(FirstAidKitItemStatus))
-            {
-                return true;
-            }
-        }
-        return false;
+        return MyitemBelongingsController.belonging_items.Count != 0
+            && MyitemBelongingsController.belonging_items.ContainsKey(FirstAidKitItemStatus);
     }
 
-    [ClientRpc]
-    private void FirstAidUsedClientRpc()
-    {
-        myPlayerStatus.sub_noticed_ui_controller.Notice($"{parentPlayerStatus.SteamUserName}");
-    }
-    [ServerRpc]
-    private void OnCompletedPrayRequestServerRpc()
-    {
-        prayController.PrayReset();
-    }
+    // これもう不要（サーバー側で完了処理やってる）
+    //[ServerRpc]
+    //private void OnCompletedPrayRequestServerRpc() { prayController.PrayReset(); }
+
+    // これも自分通知だけなら不要。どうしてもRPCでやりたいなら残してOK
+    //[ClientRpc]
+    //private void FirstAidUsedClientRpc(){ ... }
 }

@@ -10,6 +10,9 @@ public class PrayController : NetworkBehaviour
     [Header("Prayするときに表示するメッセージ")]
     [SerializeField] public string NoticeMessage = "祈る（長押し）";
 
+    // 代表者ID付きの完了イベント（クライアントで発火）
+    public event Action<ulong> OnPrayCompletedWithWinner;
+
     [Header("祈るのに必要な時間(秒)")]
     [SerializeField] public float NeedToPrayTime = 3f;
     [SerializeField, ShowInInspector]public NetworkList<ulong> PrayNowPlayers = new NetworkList<ulong>();
@@ -76,7 +79,16 @@ public class PrayController : NetworkBehaviour
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-
+    // 祈りに参加していたクライアントの中から代表者を選ぶ（好きにルール変えてOK）
+    private ulong SelectWinner()
+    {
+        // サーバー権威のリストなので、ここで決めるのが一番ズレない
+        if (PrayNowPlayers != null && PrayNowPlayers.Count > 0)
+        {
+            return PrayNowPlayers[0]; // 例：先頭を代表者にする
+        }
+        return NetworkManager.ServerClientId; // フォールバック（誰もいない場合）
+    }
     private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         playerStatus = _playerStatus;
@@ -211,24 +223,29 @@ public class PrayController : NetworkBehaviour
     private void CompletePrayServer()
     {
         PrayCompletedEventForServer?.Invoke();
-
+        ulong winner = SelectWinner();
         AlreadyPrayCompleted.Value = true;
         PrayPermit.Value = false;
         PrayNow.Value = false;
         PrayTimeNow.Value = 0f;
         prayStartInvoked = false;
-        PrayNowPlayers?.Clear(); 
+        PrayNowPlayers?.Clear();
         // 全クライアントで完了演出
-        PrayCompletedClientRpc();
+        PrayCompletedClientRpc(winner);
+        
     }
 
     [ClientRpc]
-    private void PrayCompletedClientRpc(ClientRpcParams rpcParams = default)
+    private void PrayCompletedClientRpc(ulong winnerClientId, ClientRpcParams rpcParams = default)
     {
         if (gageImageUI != null) gageImageUI.fillAmount = 0f;
+        Debug.Log("PrayCompletedClientRpc-------------------------------");
         PrayCompletedEvent?.Invoke();
         // 以降ターゲットにならないように
         gameObject.tag = "Untagged";
+        // 代表者ID付きイベント
+        OnPrayCompletedWithWinner?.Invoke(winnerClientId);
+
     }
 
     /*━━━━━━━━ 変更通知 ━━━━━━━━*/
