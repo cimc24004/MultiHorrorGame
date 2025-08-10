@@ -113,7 +113,7 @@ public class FirstAidKitForPlayer : NetworkBehaviour
         if (MyItemBelongingsController != null && CheckItem())
         {
             MyItemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
-            myPlayerStatus?.sub_noticed_ui_controller?.Notice($"{parentPlayerStatus.SteamUserName} を応急処置した");
+            myPlayerStatus?.sub_noticed_ui_controller?.Notice($"{parentPlayerStatus.SteamUserName.Value} を応急処置した");
         }
         else
         {
