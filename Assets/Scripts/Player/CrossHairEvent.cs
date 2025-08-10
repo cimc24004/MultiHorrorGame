@@ -110,18 +110,18 @@ public class CrossHairEvent : NetworkBehaviour
             }
 
             // クロスヘア状態を共有
-            if (CrossHairEventPermitForDeath.Value &&
-               (RaycasstedObj.layer == LayerMask.NameToLayer("Item") ||
-                RaycasstedObj.CompareTag("HideActionObject") ||
+            if (
+               RaycasstedObj.layer == LayerMask.NameToLayer("Item") && CrossHairEventPermitForDeath.Value ||
+                RaycasstedObj.CompareTag("HideActionObject")  && CrossHairEventPermitForDeath.Value ||
                 RaycasstedObj.CompareTag("Door") ||
                 RaycasstedObj.CompareTag("Drawer") ||
                 RaycasstedObj.CompareTag("Light") ||
-                RaycasstedObj.CompareTag("Pray") ||
-                RaycasstedObj.CompareTag("DeliverPlace") ||
+                RaycasstedObj.CompareTag("Pray") && CrossHairEventPermitForDeath.Value ||
+                RaycasstedObj.CompareTag("DeliverPlace") && CrossHairEventPermitForDeath.Value ||
                 RaycasstedObj.CompareTag("ReadEvent") ||
                 RaycasstedObj.CompareTag("Window") ||
                 RaycasstedObj.CompareTag("Cabinet") ||
-                RaycasstedObj.CompareTag("GameClear")))
+                RaycasstedObj.CompareTag("GameClear") && CrossHairEventPermitForDeath.Value)
             {
                 cross_hair_status.HitedTag = RaycasstedObj.tag;
                 cross_hair_status.HitedObj = RaycasstedObj;

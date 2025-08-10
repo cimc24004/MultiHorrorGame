@@ -34,16 +34,6 @@ public class FirstAidKitForPlayer : NetworkBehaviour
         myPlayerStatus = _playerStatus;
         playerAllController = PlayerAllController.instance;
         MyItemBelongingsController = myPlayerStatus.item_menu_controller.item_belongings_controller;
-        Debug.Log("InitOnPlayerSpawn: " + _playerStatus.OwnerClientId);
-        prayController.PrayCompletedEvent.AddListener(() =>
-        {
-            if (parentPlayerStatus.Dead.Value)
-            {
-
-                OnCompletedPrayRequestServerRpc();
-            }
-
-        });
         prayController.PrayCompletedEventForServer.AddListener(() =>
         {
             // ★ ここはサーバーで実行される前提（Server側イベント）
@@ -54,6 +44,7 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             }
 
             ulong prayerId = prayController.PrayNowPlayers[0]; // 先頭を代表者に（好きにルール変更OK）
+            prayController.PrayReset();
 
             // 代表者クライアントにだけRPCを送る
             var rpcParams = new ClientRpcParams {
@@ -120,9 +111,8 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             Debug.LogWarning("FirstAid消費できない（所持なし or 未初期化）");
         }
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void OnCompletedPrayRequestServerRpc()
     {
-        prayController.PrayReset();
     }
 }
