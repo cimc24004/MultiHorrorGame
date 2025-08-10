@@ -6,11 +6,13 @@ using UnityEngine.UI;
 public class FirstAidKitForPlayer : NetworkBehaviour
 {
     public ItemStatus FirstAidKitItemStatus;
-    private ItemBelongingsController MyitemBelongingsController;
+    private ItemBelongingsController PrayerItemBelongingsController;
+    private ItemBelongingsController MyItemBelongingsController;
     private PrayController prayController;
     private PlayerStatus parentPlayerStatus;
     public bool CanFirstAid;
     private PlayerStatus myPlayerStatus;
+    private PlayerAllController playerAllController;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public override void OnNetworkSpawn()
@@ -28,9 +30,10 @@ public class FirstAidKitForPlayer : NetworkBehaviour
     private void InItOnPlayerSpawn(PlayerStatus _playerStatus)
     {
         parentPlayerStatus = this.gameObject.transform.parent.gameObject.GetComponent<PlayerStatus>();
-        MyitemBelongingsController = _playerStatus.item_menu_controller.item_belongings_controller;
         prayController = this.gameObject.GetComponent<PrayController>();
         myPlayerStatus = _playerStatus;
+        playerAllController = PlayerAllController.instance;
+        MyItemBelongingsController = myPlayerStatus.item_menu_controller.item_belongings_controller;
         Debug.Log("InitOnPlayerSpawn: " + _playerStatus.OwnerClientId);
         prayController.PrayCompletedEvent.AddListener(() =>
         {
@@ -43,13 +46,12 @@ public class FirstAidKitForPlayer : NetworkBehaviour
                 Debug.Log("prayController.PrayNowPlayers.Count: " + prayController.PrayNowPlayers.Count);
                 Debug.Log("myPlayerStatus.OwnerClientId: " + myPlayerStatus.OwnerClientId);
                 Debug.Log("PrayNowPlayers[0]: " + prayController.PrayNowPlayers[0]);
-                Debug.Log("parentPlayerStatus: " + parentPlayerStatus);
-                if (prayController.PrayNowPlayers[0] == myPlayerStatus.OwnerClientId)
-                {
-                    Debug.Log("----------------FirstAidKitForPlayer 111111-----------------");
-                    MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
-                }
+                Debug.Log("parentPlayerStatus: " + parentPlayerStatus.OwnerClientId);
 
+                Debug.Log("----------------FirstAidKitForPlayer 111111-----------------");
+                NetworkObject playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(prayController.PrayNowPlayers[0]);
+                PrayerItemBelongingsController = playerAllController.SpawnedPlayersWithPlayerStatuses[playerNetworkObject.gameObject].item_menu_controller.item_belongings_controller;
+                PrayerItemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
             }
 
         });
@@ -81,9 +83,9 @@ public class FirstAidKitForPlayer : NetworkBehaviour
     }
     private bool CheckItem()
     {
-        if (MyitemBelongingsController.belonging_items.Count != 0)
+        if (MyItemBelongingsController.belonging_items.Count != 0)
         {
-            if (MyitemBelongingsController.belonging_items.ContainsKey(FirstAidKitItemStatus))
+            if (MyItemBelongingsController.belonging_items.ContainsKey(FirstAidKitItemStatus))
             {
                 return true;
             }
