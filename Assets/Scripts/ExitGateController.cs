@@ -91,6 +91,7 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
         Debug.Log("ExitGateOpen-------------------------------------------");
         animSpeedSync_ServerAuth.SetAnimSpeed(1);
         OpenAudioSource.enabled = true;
+        
     }
 
     public void ExitGateOpenPause()
