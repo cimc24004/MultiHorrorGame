@@ -703,10 +703,8 @@ MonoBehaviour:
   PrayStartEvent:
     m_PersistentCalls:
       m_Calls: []
-  Inited: 0
   PrayNow:
     m_InternalValue: 0
-  PushingAction: 0
 --- !u!65 &5169522218118614318
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8740,7 +8738,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000029802322, y: 0.000000014901161, z: 0.00000010430813,
     w: 1}
-  m_LocalPosition: {x: -0, y: 1.382, z: 0.0085}
+  m_LocalPosition: {x: -0, y: 1.382, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17953,6 +17951,11 @@ PrefabInstance:
       propertyPath: player_hide_object_action
       value: 
       objectReference: {fileID: 7228379173649806129}
+    - target: {fileID: 8204214372993340261, guid: 484eb64d9afb0a646ac814640b81aabf,
+        type: 3}
+      propertyPath: TargetLayerMaskViewToPoint.m_Bits
+      value: 406088
+      objectReference: {fileID: 0}
     - target: {fileID: 8917486507067517297, guid: 484eb64d9afb0a646ac814640b81aabf,
         type: 3}
       propertyPath: m_Name

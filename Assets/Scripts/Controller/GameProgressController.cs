@@ -126,15 +126,15 @@ public class GameProgressController : NetworkBehaviour
     {
         Time.timeScale = 0;
         gameStateController.MenuOnGamePlayMode(true);
-        GameClearUI();
+        GameClearUIClientRpc();
     }
     public void ProgressAfterGameClear()
     {
         //ゲームをクリアした後次に進むを押した後のイベント。
         NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
-    
-    private void GameClearUI()
+    [ClientRpc]
+    private void GameClearUIClientRpc()
     {
         TimeSpan time = TimeSpan.FromSeconds(scoreTimeManager.ScoreTimeNow.Value);
 

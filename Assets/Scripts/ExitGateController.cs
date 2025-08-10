@@ -83,6 +83,7 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     public void ExitGateOpen()
     {
         //ゲートがオープンする。
+        Debug.Log("ExitGateOpen-------------------------------------------");
         animSpeedSync_ServerAuth.SetAnimSpeed(1);
         OpenAudioSource.enabled = true;
     }
@@ -90,17 +91,13 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     public void ExitGateOpenPause()
     {
         //ゲートがオープンするのをpauseする。
+        Debug.Log("ExitGateOpenPause-------------------------------------------");
         OpenAudioSource.enabled = false;
         animSpeedSync_ServerAuth.SetAnimSpeed(0);
     } 
 
-    public void OnCanThroughDoor(){
-        //アニメーション再生中ですでにゲートを通れるとこを指定
-        ThroughPreventCollider.SetActive(false);
-    }
-
-    
     public void OnCompleteDoorOpended(){
+        Debug.Log("OnCompleteDoorOpended");
         //Animation Eventから実行される サーバーから実行されると思う
         animSpeedSync_ServerAuth.SetAnimSpeed(0);
         this.gameObject.tag = "Untagged";

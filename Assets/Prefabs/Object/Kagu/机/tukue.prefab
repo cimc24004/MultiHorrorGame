@@ -1,5 +1,58 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2723227539429939841
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7987854592156064553}
+  - component: {fileID: 7610700233295683689}
+  m_Layer: 3
+  m_Name: Col (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7987854592156064553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2723227539429939841}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.5693405, y: 0.394, z: 0.19709563}
+  m_LocalScale: {x: 1, y: 0.113890216, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8245890555960402995}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7610700233295683689
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2723227539429939841}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.6542138, y: 1.0121796, z: 1.0355666}
+  m_Center: {x: -0.5545526, y: 0.5511539, z: -0.1810404}
 --- !u!1 &4355141485179242522
 GameObject:
   m_ObjectHideFlags: 0
@@ -73,7 +126,7 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -186,17 +239,17 @@ PrefabInstance:
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5171008405812951541, guid: 5baa18b1931387b4fa45f01652e79015,
         type: 3}
@@ -384,6 +437,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2536328804153563186}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 576ebc6b5618d4644aa0343c43fc4188,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7987854592156064553}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 576ebc6b5618d4644aa0343c43fc4188,
         type: 3}
@@ -429,12 +486,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.5970482, y: 0.10704768, z: 0.9957881}
-  m_Center: {x: 0.0014758706, y: 0.42871892, z: 0.0021059513}
+  m_Size: {x: 1.6494296, y: 0.44133413, z: 1.0777681}
+  m_Center: {x: -0.0029175282, y: 0.59586227, z: -0.01473105}
 --- !u!114 &1570620731082357413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,7 +504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 759711630
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -478,12 +535,17 @@ MonoBehaviour:
   SomeoneHided:
     m_InternalValue: 0
   hide_type: 2
-  TargetObjectOfAngle: {x: 0, y: 0, z: 0}
   AudioClipKey: Tukue
   HideAddEvent:
     m_PersistentCalls:
       m_Calls: []
   UnHideAddEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  LocalHideAddEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  LocalUnHideAddEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!208 &1613129133387363804
