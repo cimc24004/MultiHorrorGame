@@ -42,6 +42,7 @@ public class FirstAidKitForPlayer : NetworkBehaviour
                 Debug.Log("prayController.PrayNowPlayers.Count: " + prayController.PrayNowPlayers.Count);
                 Debug.Log("myPlayerStatus.OwnerClientId: " + myPlayerStatus.OwnerClientId);
                 Debug.Log("PrayNowPlayers[0]: " + prayController.PrayNowPlayers[0]);
+                Debug.Log("parentPlayerStatus: " + parentPlayerStatus.OwnerClientId);
                 if (prayController.PrayNowPlayers[0] == myPlayerStatus.OwnerClientId)
                 {
                     Debug.Log("----------------FirstAidKitForPlayer 111111-----------------");
