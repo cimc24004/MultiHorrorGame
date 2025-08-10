@@ -23,4 +23,5 @@ public class GameProgressUIData : SerializedMonoBehaviour
     [SerializeField] public TextMeshProUGUI scoreTimeTextUI;
     [SerializeField] public GameObject GameClearPanel;
     [SerializeField] public Button ProgressButtonAfterGameClear;
+    [SerializeField] public GameObject PlayerArrivedExitPanel;
 }

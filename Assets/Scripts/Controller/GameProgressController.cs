@@ -121,16 +121,18 @@ public class GameProgressController : NetworkBehaviour
     {
         NetworkObject ExitGateArrivedPlayer_NetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(NetworkManager.Singleton.LocalClientId);
         ExitGateArrivedPlayer_NetworkObject.gameObject.SetActive(false);
+        game_progress_ui_data.PlayerArrivedExitPanel.gameObject.SetActive(true);
+
     }
     public void GameClear()
     {
         Time.timeScale = 0;
-        gameStateController.MenuOnGamePlayMode(true);
         GameClearUIClientRpc();
     }
     public void ProgressAfterGameClear()
     {
         //ゲームをクリアした後次に進むを押した後のイベント。
+        gameStateController.MenuOnGamePlayMode(true);
         NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
     [ClientRpc]
@@ -141,7 +143,7 @@ public class GameProgressController : NetworkBehaviour
         // "分:秒:ミリ秒" のフォーマットで文字列に変換
         // "mm"は2桁の分、"ss"は2桁の秒、"ff"はミリ秒の上位2桁
         string timeText = time.ToString(@"mm\:ss\:ff");
-
+        game_progress_ui_data.PlayerArrivedExitPanel.gameObject.SetActive(false);
         game_progress_ui_data.scoreTimeTextUI.SetText($"{timeText}");
         game_progress_ui_data.GameClearPanel.SetActive(true);
     }

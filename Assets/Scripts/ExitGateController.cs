@@ -41,7 +41,12 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
 
             }
         });
-
+        pray_controller.PrayCompletedEventForServer.AddListener(OnCompleteDoorOpended);
+    }
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        pray_controller.PrayCompletedEventForServer.RemoveListener(OnCompleteDoorOpended);
     }
     // Update is called once per frame
     void Update()
@@ -60,7 +65,7 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
                 this.gameObject.tag = "Untagged";
                 this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
-            } 
+            }
         }
 
         // if(this.gameObject.name == "Gate"){
@@ -94,16 +99,22 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
         Debug.Log("ExitGateOpenPause-------------------------------------------");
         OpenAudioSource.enabled = false;
         animSpeedSync_ServerAuth.SetAnimSpeed(0);
-    } 
+    }
 
-    public void OnCompleteDoorOpended(){
-        Debug.Log("OnCompleteDoorOpended");
-        //Animation Eventから実行される サーバーから実行されると思う
+    public void OnCompleteDoorOpended()
+    {
+        //サーバーから実行される
         animSpeedSync_ServerAuth.SetAnimSpeed(0);
+        OnCompleteDoorOpendedAllClientRpc();
+        OnCompleteDoorOpen.Value = true;
+    }
+    [ClientRpc]
+    private void OnCompleteDoorOpendedAllClientRpc()
+    {
         this.gameObject.tag = "Untagged";
         this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        OpenCompletedAudioSource.enabled = true;
-        OnCompleteDoorOpen.Value = true;
         OpenCompletedAudioSource.gameObject.SetActive(true);
+        OpenCompletedAudioSource.enabled = true;
     }
+
 }
