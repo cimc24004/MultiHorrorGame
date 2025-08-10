@@ -3,6 +3,11 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Unity.Entities.UniversalDelegates;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.UI;
+
 public class FirstAidKitForPlayer : NetworkBehaviour
 {
     public ItemStatus FirstAidKitItemStatus;
@@ -85,4 +90,31 @@ public class FirstAidKitForPlayer : NetworkBehaviour
     // これも自分通知だけなら不要。どうしてもRPCでやりたいなら残してOK
     //[ClientRpc]
     //private void FirstAidUsedClientRpc(){ ... }
+    // Update is called once per frame
+    void Update()
+    {
+        
+        if (parentPlayerStatus.Dead.Value)
+        {
+            if (CheckItem())
+            {
+                this.gameObject.tag = "Pray";
+                CanFirstAid = true;
+            }
+            else
+            {
+                this.gameObject.tag = "CantFirstAidKit";
+                CanFirstAid = false;
+            }
+        }
+        else
+        {
+            this.gameObject.tag = "Untagged";
+            CanFirstAid = false;
+        }
+
+    }
 }
+
+
+
