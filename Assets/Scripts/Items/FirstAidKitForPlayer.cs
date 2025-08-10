@@ -39,7 +39,11 @@ public class FirstAidKitForPlayer : NetworkBehaviour
                 {
                     OnCompletedPrayRequestServerRpc();
                 }
-                if (prayController.PrayNowPlayers[0] == myPlayerStatus.OwnerClientId) {
+                Debug.Log("prayController.PrayNowPlayers.Count: " + prayController.PrayNowPlayers.Count);
+                Debug.Log("myPlayerStatus.OwnerClientId: " + myPlayerStatus.OwnerClientId);
+                Debug.Log("PrayNowPlayers[0]: " + prayController.PrayNowPlayers[0]);
+                if (prayController.PrayNowPlayers[0] == myPlayerStatus.OwnerClientId)
+                {
                     Debug.Log("----------------FirstAidKitForPlayer 111111-----------------");
                     MyitemBelongingsController.ItemUseFromBelonging(FirstAidKitItemStatus);
                 }
