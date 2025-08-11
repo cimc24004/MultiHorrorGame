@@ -72,13 +72,13 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
 
         if (pray_controller.PrayTimeNow.Value == BeforePrayNow)
         {
-            OpenAudioSource.enabled = true;
+            OpenAudioSource.enabled = false;
             if (IsServer)
             ExitGateOpenPause();
         }
         else
         {
-            OpenAudioSource.enabled = false;
+            OpenAudioSource.enabled = true;
             if (IsServer)
             ExitGateOpen();
         }
