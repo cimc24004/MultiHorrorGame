@@ -2,37 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-public class JapaneseNingyoPlace : SerializedMonoBehaviour
+using Netcode;
+using Unity.Netcode;
+public class JapaneseNingyoPlace : NetworkBehaviour
 {
     [SerializeField] private GameObject EnemyNingyoPrefab;
     private DiscoveryPlayerController discovery_player_controller;
-    private FollowObjectByNav follow_object_by_nav;
     [SerializeField] private Transform EnemyNingyoApperancePlaceTransform;
     private GameObject EnemyNingyo;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
     [Button]
-    public void EnemyNingyoApperance(){
+    public void EnemyNingyoApperance()
+    {
+        //Server Only
         EnemyNingyo = Instantiate(EnemyNingyoPrefab, EnemyNingyoApperancePlaceTransform.transform.position, Quaternion.identity);
         discovery_player_controller = EnemyNingyo.GetComponent<DiscoveryPlayerController>();
-        discovery_player_controller.DiscoveryPlayerBySightning = false;
-
-        Destroy(EnemyNingyoApperancePlaceTransform.gameObject, 0.1f);
+        discovery_player_controller.NetworkObject.Spawn();
+        discovery_player_controller.DiscoveryPlayerBySightning = true;
+        EnemyNingyoApperanceAllClientRpc();
         EnemyNingyoApperancePlaceTransform = null;
     }
-    [Button]
-    public void EnemyNingyoDiscoveryPlayer()
+    [ClientRpc]
+    private void EnemyNingyoApperanceAllClientRpc()
     {
-        // discovery_player_controller.DiscoveryPlayerNow = true;
-        discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = true;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Destroy(EnemyNingyoApperancePlaceTransform.gameObject, 0.1f);
     }
 }

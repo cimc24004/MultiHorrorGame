@@ -135,7 +135,11 @@ public class GameProgressController : NetworkBehaviour
     public void ProgressAfterGameClear()
     {
         //ゲームをクリアした後次に進むを押した後のイベント。
-        NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        if (IsServer)
+        {
+            Time.timeScale = 1;
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
     }
     [ClientRpc]
     private void GameClearUIClientRpc()
