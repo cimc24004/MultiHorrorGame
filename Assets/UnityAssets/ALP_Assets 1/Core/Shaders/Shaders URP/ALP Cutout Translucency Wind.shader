@@ -379,7 +379,7 @@ Shader "ALP/Cutout Translucency Wind"
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_COLOR
 			#define ASE_NEEDS_FRAG_SHADOWCOORDS
-			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+			// #pragma multi_compile_fragment _ _SHADOWS_SOFT
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
