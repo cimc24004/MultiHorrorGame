@@ -75,7 +75,7 @@ public class PrayToDeliverItemAppearPlace : NetworkBehaviour
             GameProgressOnItemGetedRequestServerRpc();
         });
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void GameProgressOnItemGetedRequestServerRpc()
     {
         game_progress_controller.OnItemGeted();

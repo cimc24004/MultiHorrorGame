@@ -76,7 +76,7 @@ public class DeliverMemoryPlace : NetworkBehaviour
         CompletedItemsDeliveredRequestServerRpc();
 
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void CompletedItemsDeliveredRequestServerRpc()
     {
         //アイテムがすべて納められたら？
