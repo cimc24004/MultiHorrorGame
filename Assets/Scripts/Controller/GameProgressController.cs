@@ -100,6 +100,9 @@ public class GameProgressController : NetworkBehaviour
     public void ExitGateArrived(ulong _PlayerClientId)
     {
         //サーバー側で実行
+        if(ArrivedExitPlayers.Contains(_PlayerClientId)){
+            return;
+        }
         ArrivedExitPlayers.Add(_PlayerClientId);
         var sendParams = new ClientRpcSendParams
         {

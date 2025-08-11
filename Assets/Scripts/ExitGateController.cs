@@ -6,7 +6,7 @@ using UnityEngine;
 public class ExitGateController : NetworkSingleton<ExitGateController>
 {
     private Animator m_Animator;
-    private CollideredForPlayers m_players_collidered;
+    [SerializeField] private CollideredForPlayers m_players_collidered;
     private PrayController pray_controller;
     [SerializeField] private GameObject ThroughPreventCollider;
 
@@ -26,8 +26,7 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
         m_Animator = this.gameObject.GetComponent<Animator>();
         pray_controller = this.gameObject.GetComponent<PrayController>();
         game_progress_controller = GameController.instance.gameObject.GetComponent<GameProgressController>();
-        m_players_collidered = this.gameObject.GetComponent<CollideredForPlayers>();
-        m_players_collidered.OnTriggerStayEvent.AddListener(() =>
+        m_players_collidered.OnTriggerEnterEvent.AddListener(() =>
         {
             if (OnCompleteDoorOpen.Value)
             {
@@ -101,7 +100,8 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
         OpenAudioSource.enabled = false;
         animSpeedSync_ServerAuth.SetAnimSpeed(0);
     }
-
+ 
+        
     public void OnCompleteDoorOpended()
     {
         //サーバーから実行される
