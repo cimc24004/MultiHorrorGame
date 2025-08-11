@@ -11,7 +11,6 @@ using Sirenix.OdinInspector;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using Autodesk.Fbx;
 using System.Linq;
 using System.Security.Cryptography;
 using Steamworks;
