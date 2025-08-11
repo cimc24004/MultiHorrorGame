@@ -89,6 +89,7 @@ public class SessionController : NetworkSingleton<SessionController>
         {
             gameStateController?.ActionByModeSelect(GameStateController.GameState.MenuOnGamePlay, true);
         }
+
         errorMessageController.ShowErrorUI(errorMessage);
         // ReturnToTitle();
     }
@@ -108,6 +109,7 @@ public class SessionController : NetworkSingleton<SessionController>
         {
             SteamLobby.Instance.LeaveCurrentLobby();   // ←後述するメソッド
         }
+        Destroy(gameObject);
         SceneManager.LoadScene("Lobby");
     }
 }
