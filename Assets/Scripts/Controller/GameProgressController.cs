@@ -135,14 +135,13 @@ public class GameProgressController : NetworkBehaviour
     public void ProgressAfterGameClear()
     {
         //ゲームをクリアした後次に進むを押した後のイベント。
-        gameStateController.MenuOnGamePlayMode(true);
         NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
     [ClientRpc]
     private void GameClearUIClientRpc()
     {
         TimeSpan time = TimeSpan.FromSeconds(scoreTimeManager.ScoreTimeNow.Value);
-
+        gameStateController.MenuOnGamePlayMode(true);
         // "分:秒:ミリ秒" のフォーマットで文字列に変換
         // "mm"は2桁の分、"ss"は2桁の秒、"ff"はミリ秒の上位2桁
         string timeText = time.ToString(@"mm\:ss\:ff");

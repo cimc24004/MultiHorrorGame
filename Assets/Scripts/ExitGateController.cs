@@ -69,16 +69,18 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
 
         // if(this.gameObject.name == "Gate"){
         // }
-        if (IsServer)
+
+        if (pray_controller.PrayTimeNow.Value == BeforePrayNow)
         {
-            if (pray_controller.PrayTimeNow.Value == BeforePrayNow)
-            {
-                ExitGateOpenPause();
-            }
-            else
-            {
-                ExitGateOpen();
-            }
+            OpenAudioSource.enabled = true;
+            if (IsServer)
+            ExitGateOpenPause();
+        }
+        else
+        {
+            OpenAudioSource.enabled = false;
+            if (IsServer)
+            ExitGateOpen();
         }
 
         BeforePrayNow = pray_controller.PrayTimeNow.Value;
@@ -89,7 +91,6 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
         //ゲートがオープンする。
         Debug.Log("ExitGateOpen-------------------------------------------");
         animSpeedSync_ServerAuth.SetAnimSpeed(1);
-        OpenAudioSource.enabled = true;
         
     }
 
@@ -97,7 +98,6 @@ public class ExitGateController : NetworkSingleton<ExitGateController>
     {
         //ゲートがオープンするのをpauseする。
         Debug.Log("ExitGateOpenPause-------------------------------------------");
-        OpenAudioSource.enabled = false;
         animSpeedSync_ServerAuth.SetAnimSpeed(0);
     }
  
