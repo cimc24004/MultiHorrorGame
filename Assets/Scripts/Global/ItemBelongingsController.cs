@@ -228,7 +228,6 @@ public class ItemBelongingsController : NetworkBehaviour
     {
         Debug.Log("ItemDumpSpawnServerRpc^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         ItemStatus status = ItemDatabases.instance.GetStatusByGlobalId(itemGlobalId);
-        if (status == null) return;
         GameObject obj = Instantiate(status.ItemPutObjectPrefab, position, Quaternion.identity);
         var netObj = obj.GetComponent<NetworkObject>();
         if (netObj != null)

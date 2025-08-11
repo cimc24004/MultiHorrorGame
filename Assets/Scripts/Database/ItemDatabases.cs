@@ -54,15 +54,15 @@ public class ItemDatabases : Singleton<ItemDatabases>
 #endif
     public ItemStatus GetStatusByGlobalId(uint _gid)
     {   
-        return ForPutItems.Find((x) => x.GlobalId == _gid);
+        return AllItems.Find((x) => x.GlobalId == _gid);
     }
     public ItemStatus ItemFindByType(ItemStatus.ItemType item_type)
     {
-        return ForPutItems.Find((x) => x.item_type == item_type);
+        return AllItems.Find((x) => x.item_type == item_type);
     }
     public ItemStatus ItemFindByGlobalId(uint _item_globalId)
     {
-        return ForPutItems.Find((x) => x.GlobalId == _item_globalId);
+        return AllItems.Find((x) => x.GlobalId == _item_globalId);
     }
     public GameObject ItemCreate(ItemStatus item_status, Transform Parent, Vector3 Position)
     {
