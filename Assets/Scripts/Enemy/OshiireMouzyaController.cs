@@ -123,10 +123,10 @@ public class OshiireMouzyaController : NetworkBehaviour
         if (BrokenOshiire)
         {
             ToDeathWaitTimeNowFromBrokeOshiire += Time.deltaTime;
-            if(ToDeathWaitTimeNowFromBrokeOshiire > ToDeathWaitTimeFromBrokeOshiire)
+            if (ToDeathWaitTimeNowFromBrokeOshiire > ToDeathWaitTimeFromBrokeOshiire)
             {
                 enemy_death_controller.DeadStart();
-                discovery_player_controller.PlayersVisibilityMapStatuesWithKey[discovery_player_controller.FirstKeyOfDiscoveriedPlayers].DiscoveryPlayerNow = false;
+                //EnemyDeathController側でremoveDIscoveryPlayersしてる。
             }
         }
     }

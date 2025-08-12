@@ -16,6 +16,7 @@ public class EnemyDeathController : SerializedMonoBehaviour
     private NavMeshAgent nav_mesh_agent;
     private CharacterController character_controller;
     private FollowObjectByNav follow_object_by_nav;
+    private DiscoveryPlayerController discoveryPlayerController;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +24,7 @@ public class EnemyDeathController : SerializedMonoBehaviour
         character_controller = this.gameObject.GetComponent<CharacterController>();
         m_Animator = this.gameObject.GetComponent<Animator>();
         follow_object_by_nav = this.gameObject.GetComponent<FollowObjectByNav>();
+        discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
     }
 
     // Update is called once per frame
@@ -41,6 +43,10 @@ public class EnemyDeathController : SerializedMonoBehaviour
         character_controller.Move(Vector3.zero);
         follow_object_by_nav.MovePermit = false;
         m_Animator.SetBool("Death", Death);
+        for (int i = 0; i < discoveryPlayerController.DiscoveriedPlayers.Count; i++)
+        {
+            discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(discoveryPlayerController.DiscoveriedPlayers[i]);
+        }
     }
     public void DeathAnimationEnd()
     {
