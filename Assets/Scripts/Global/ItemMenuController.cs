@@ -13,8 +13,8 @@ using System.Linq;
 using Cinemachine;
 public class ItemMenuController : SerializedMonoBehaviour
 {
-    //ƒAƒCƒeƒ€‚Ìƒƒjƒ…[ƒRƒ“ƒgƒ[ƒ‰[@
-    //ƒAƒCƒeƒ€‚ğƒZƒŒƒNƒg‚µ‚½‚èAƒAƒCƒeƒ€‚ğg—p‚µ‚½‚è‚·‚éB
+    //ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã€€
+    //ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚»ãƒ¬ã‚¯ãƒˆã—ãŸã‚Šã€ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ç”¨ã—ãŸã‚Šã™ã‚‹ã€‚
 
     public GameObject ItemGroup;
     private PlayerInput player_input;
@@ -22,10 +22,10 @@ public class ItemMenuController : SerializedMonoBehaviour
 
     public CanvasGroup ItemCanvasGroup;
 
-    //Œ»İ‘I‘ğ‚µ‚Ä‚¢‚éƒAƒCƒeƒ€B
+    //ç¾åœ¨é¸æŠã—ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã€‚
     public GameObject NowSelectItemUIObject;
 
-    //Œ»İ‚Ì‘I‘ğƒCƒ“ƒfƒbƒNƒXB
+    //ç¾åœ¨ã®é¸æŠã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã€‚
     public int NowItemSelectIndexX;
     private float scroll_value_float;
     [SerializeField] public ItemBelongingsController item_belongings_controller;
@@ -67,7 +67,7 @@ public class ItemMenuController : SerializedMonoBehaviour
     private void Update()
     {
         if(!InitPlayer) return;
-        //ƒzƒC[ƒ‹‚Ì’l‚ğæ“¾‚·‚éB
+        //ãƒ›ã‚¤ãƒ¼ãƒ«ã®å€¤ã‚’å–å¾—ã™ã‚‹ã€‚
         scroll_value_float = player_input.actions["ItemSelectWheel"].ReadValue<float>();
 
         if (!item_belongings_controller.ExistsItems())
@@ -80,35 +80,35 @@ public class ItemMenuController : SerializedMonoBehaviour
         }
 
 
-        //ƒzƒC[ƒ‹‚Ì’l‚ğ1,-1,0‚Å•Ô‚·‚æ‚¤‚É‚·‚éˆ×‚Ì‚â‚ÂB
+        //ãƒ›ã‚¤ãƒ¼ãƒ«ã®å€¤ã‚’1,-1,0ã§è¿”ã™ã‚ˆã†ã«ã™ã‚‹ç‚ºã®ã‚„ã¤ã€‚
         if (scroll_value_float > 0) scroll_value = 1;
         else if (scroll_value_float == 0) scroll_value = 0;
         else scroll_value = -1;
         
         
-        //ƒAƒCƒeƒ€‚ğ1ŒÂˆÈã‚Á‚Ä‚¢‚½ê‡‚ÍH
+        //ã‚¢ã‚¤ãƒ†ãƒ ã‚’1å€‹ä»¥ä¸ŠæŒã£ã¦ã„ãŸå ´åˆã¯ï¼Ÿ
         if (ItemGroup.transform.childCount > 0)
         {
 
             if (scroll_value > 0)
             {
-                //ã‚ÉƒzƒC[ƒ‹ƒNƒ‹ƒNƒ‹‚µ‚½ê‡‚Í
-                //Index‚ğ‘‚â‚·B 
+                //ä¸Šã«ãƒ›ã‚¤ãƒ¼ãƒ«ã‚¯ãƒ«ã‚¯ãƒ«ã—ãŸå ´åˆã¯
+                //Indexã‚’å¢—ã‚„ã™ã€‚ 
                 NowItemSelectIndexX += 1;
                 if (ItemGroup.transform.childCount <= NowItemSelectIndexX)
                 {
-                    //Index‚ğ‘‚â‚µ‚½ê‡‚à‚µƒAƒCƒeƒ€”‚ğ’´‚¦‚½ê‡‚Í‚¢‚¿‚Î‚ñÅ‰‚ÌIndex‚É‚µ‚Ä‚¨‚­B
+                    //Indexã‚’å¢—ã‚„ã—ãŸå ´åˆã‚‚ã—ã‚¢ã‚¤ãƒ†ãƒ æ•°ã‚’è¶…ãˆãŸå ´åˆã¯ã„ã¡ã°ã‚“æœ€åˆã®Indexã«ã—ã¦ãŠãã€‚
                     NowItemSelectIndexX = 0;
                 }
             }
             else if(scroll_value < 0)
             {
-                //‰º‚ÉƒzƒC[ƒ‹ƒNƒ‹ƒNƒ‹‚µ‚½ê‡‚Í
-                //Index‚ğŒ¸‚ç‚·B
+                //ä¸‹ã«ãƒ›ã‚¤ãƒ¼ãƒ«ã‚¯ãƒ«ã‚¯ãƒ«ã—ãŸå ´åˆã¯
+                //Indexã‚’æ¸›ã‚‰ã™ã€‚
                 NowItemSelectIndexX -= 1;
                 if (NowItemSelectIndexX < 0)
                 {
-                    //Index‚ğŒ¸‚ç‚µ‚½Œ‹‰Êƒ}ƒCƒiƒX‚É‚È‚Á‚½ê‡‚ÍÅŒã‚ÌƒAƒCƒeƒ€‚ğƒZƒŒƒNƒg‚·‚é‚æ‚¤‚É‚·‚éB
+                    //Indexã‚’æ¸›ã‚‰ã—ãŸçµæœãƒã‚¤ãƒŠã‚¹ã«ãªã£ãŸå ´åˆã¯æœ€å¾Œã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚»ãƒ¬ã‚¯ãƒˆã™ã‚‹ã‚ˆã†ã«ã™ã‚‹ã€‚
                     NowItemSelectIndexX = ItemGroup.transform.childCount - 1;
                 }
             }
@@ -121,22 +121,26 @@ public class ItemMenuController : SerializedMonoBehaviour
  
             if (player_input.actions["ItemUse"].triggered)
             {
-                //ƒAƒCƒeƒ€g—pƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚çƒAƒCƒeƒ€‚ğg—p‚·‚éŠÖ”‚ğÀsB
-                if (item_belongings_controller.ExistsItems())
+                if (item_belongings_controller.ItemUsePermit.Value)
                 {
-                    if (item_belongings_controller.ExistItemUIItemStatusByFind(NowSelect_item_status))
+                    //ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ç”¨ã™ã‚‹é–¢æ•°ã‚’å®Ÿè¡Œã€‚
+                    if (item_belongings_controller.ExistsItems())
                     {
-                        //‘I‘ğ‚µ‚Ä‚¢‚éƒAƒCƒeƒ€‚ª‚ ‚Á‚½‚çƒAƒCƒeƒ€‚ğg—p‚·‚éB
-                        if (NowSelect_item_status && NowSelect_item_status.ItemUseFromClick)
+                        if (item_belongings_controller.ExistItemUIItemStatusByFind(NowSelect_item_status))
                         {
-                            ItemUseFromMenu(NowSelectItemUIObject);
+                            //é¸æŠã—ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ãŒã‚ã£ãŸã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ç”¨ã™ã‚‹ã€‚
+                            if (NowSelect_item_status && NowSelect_item_status.ItemUseFromClick)
+                            {
+                                ItemUseFromMenu(NowSelectItemUIObject);
+                            }
                         }
                     }
                 }
+
             }
             if (scroll_value != 0)
             {
-                //ƒXƒNƒ[ƒ‹‚µ‚Ä‚¢‚éÅ’†‚È‚Ì‚Å‚ ‚ê‚Î ƒAƒCƒeƒ€‚ğƒZƒŒƒNƒg‚µ‚Ü‚·B
+                //ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã—ã¦ã„ã‚‹æœ€ä¸­ãªã®ã§ã‚ã‚Œã° ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚»ãƒ¬ã‚¯ãƒˆã—ã¾ã™ã€‚
                 
                 ItemSelectByIndex(NowItemSelectIndexX);
 
@@ -149,15 +153,15 @@ public class ItemMenuController : SerializedMonoBehaviour
             }
             if (ItemMenuShowUpNow)
             {
-                //ƒAƒCƒeƒ€ƒƒjƒ…[‚ğ•\¦
+                //ã‚¢ã‚¤ãƒ†ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’è¡¨ç¤º
                 ItemMenuShowUp();
                 if (!ItemMenuShowUpCommand)
                 {
-                    //ƒAƒCƒeƒ€ƒƒjƒ…[•\¦ƒ‚[ƒh‚ª‚¸[‚Æfalse‚Å‚»‚ê‚ª10•bŠÔ‘±‚¢‚Ä‚µ‚Ü‚Á‚½‚çƒƒjƒ…[‚ğ•Â‚¶‚éB
+                    //ã‚¢ã‚¤ãƒ†ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼è¡¨ç¤ºãƒ¢ãƒ¼ãƒ‰ãŒãšãƒ¼ã¨falseã§ãã‚ŒãŒ10ç§’é–“ç¶šã„ã¦ã—ã¾ã£ãŸã‚‰ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‰ã˜ã‚‹ã€‚
                     WaitHideTimeNow += Time.deltaTime;
                     if (WaitHideTimeNow > 10)
                     {
-                        //ƒAƒCƒeƒ€ƒƒjƒ…[‚ğ”ñ•\¦B
+                        //ã‚¢ã‚¤ãƒ†ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’éè¡¨ç¤ºã€‚
                         ItemMenuHide();
                         ItemMenuShowUpNow = false;
                     }
@@ -183,10 +187,10 @@ public class ItemMenuController : SerializedMonoBehaviour
     }
     public void ItemSelectByIndex(int ItemIndex)
     {
-        //ƒAƒCƒeƒ€‚ğƒZƒŒƒNƒg‚·‚é‚ÌŠÖ”B(ƒZƒŒƒNƒg‚µ‚Ä‚¢‚éó‘Ô‚ğ¦‚·UI‚âindexASelectNowGameObject‚ğXV‚·‚éB)
+        //ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚»ãƒ¬ã‚¯ãƒˆã™ã‚‹æ™‚ã®é–¢æ•°ã€‚(ã‚»ãƒ¬ã‚¯ãƒˆã—ã¦ã„ã‚‹çŠ¶æ…‹ã‚’ç¤ºã™UIã‚„indexã€SelectNowGameObjectã‚’æ›´æ–°ã™ã‚‹ã€‚)
         
-        //Œ»İƒZƒŒƒNƒg‚µ‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg‚ğˆø”‚ÌItemIndex‚É‚æ‚Á‚Äæ“¾B 
-        //GetChild‚Å‰½”Ô–Ú‚ÌƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é‚Æ‚¢‚¤ƒR[ƒhB
+        //ç¾åœ¨ã‚»ãƒ¬ã‚¯ãƒˆã—ã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å¼•æ•°ã®ItemIndexã«ã‚ˆã£ã¦å–å¾—ã€‚ 
+        //GetChildã§ä½•ç•ªç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹ã¨ã„ã†ã‚³ãƒ¼ãƒ‰ã€‚
         NowSelectItemUIObject = ItemGroup.transform.GetChild(ItemIndex).gameObject;
         CommonItemSelect(NowSelectItemUIObject);
     }
@@ -203,7 +207,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         ItemUI item_ui = item_belongings_controller.belonging_item_uis[_item_status].ItemUI.GetComponent<ItemUI>();
         item_ui.CanItemUse = can;
         Debug.Log("OnCanItemUseChangeUI-------------: " + can);
-        //ƒAƒCƒeƒ€‚ªg‚¦‚é‚æ‚¤‚É‚È‚é‚Æ‚«‚ÉÀs‚·‚éŠÖ” UI‚È‚Ç‚Ì•ÏX‚à‰Á‚¦‚é•K—v‚ª‚ ‚é‚½‚ß‚±‚ÌŠÖ”‚ğÀs‚·‚é‚±‚Æ
+        //ã‚¢ã‚¤ãƒ†ãƒ ãŒä½¿ãˆã‚‹ã‚ˆã†ã«ãªã‚‹ã¨ãã«å®Ÿè¡Œã™ã‚‹é–¢æ•° UIãªã©ã®å¤‰æ›´ã‚‚åŠ ãˆã‚‹å¿…è¦ãŒã‚ã‚‹ãŸã‚ã“ã®é–¢æ•°ã‚’å®Ÿè¡Œã™ã‚‹ã“ã¨
         if(can){
             item_ui.LockedItemUI.SetActive(false);
         }else{
@@ -212,9 +216,9 @@ public class ItemMenuController : SerializedMonoBehaviour
     }
     public void OnItemGetChangeUI(bool NotHaveMore, ItemStatus _item_status){
         if(NotHaveMore){
-            sub_noticed_ui_controller.Notice("‚±‚êˆÈãA‚±‚ÌƒAƒCƒeƒ€‚Í‚Ä‚È‚¢B");
+            sub_noticed_ui_controller.Notice("ã“ã‚Œä»¥ä¸Šã€ã“ã®ã‚¢ã‚¤ãƒ†ãƒ ã¯æŒã¦ãªã„ã€‚");
         }else{
-            sub_noticed_ui_controller.Notice($"{_item_status.ItemName}‚ğè‚É“ü‚ê‚½B");
+            sub_noticed_ui_controller.Notice($"{_item_status.ItemName}ã‚’æ‰‹ã«å…¥ã‚ŒãŸã€‚");
         }
     }
 
@@ -226,17 +230,17 @@ public class ItemMenuController : SerializedMonoBehaviour
     private void CommonItemSelect(GameObject selectObj)
     {
         Debug.Log("CommonItemSelect");
-        //¡ô‘ó‚µ‚Ä‚¢‚é‚â‚Â‚ğButtonƒRƒ“ƒ|[ƒlƒ“ƒg‚Åæ“¾‚µA‘I‘ğ‚·‚éB
+        //ä»Šæ´—æ¿¯ã—ã¦ã„ã‚‹ã‚„ã¤ã‚’Buttonã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã§å–å¾—ã—ã€é¸æŠã™ã‚‹ã€‚
         NowSelectItemUIObject.gameObject.GetComponent<Button>().Select();
 
-        //‘I‘ğ‚µ‚Ä‚¢‚éƒAƒCƒeƒ€ƒXƒe[ƒ^ƒX‚àæ“¾‚µ‚Ä‚¨‚­B
+        //é¸æŠã—ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚‚å–å¾—ã—ã¦ãŠãã€‚
         NowSelect_item_status = NowSelectItemUIObject.GetComponent<ItemUI>().item_status;
         
         item_equip_controller.EquipChange(NowSelect_item_status);
 
         if(before_selected_item_ui != null)
         {
-            //‘O‚É‘I‘ğ‚µ‚Ä‚¢‚½ƒAƒCƒeƒ€‚ª‚ ‚Á‚½ê‡
+            //å‰ã«é¸æŠã—ã¦ã„ãŸã‚¢ã‚¤ãƒ†ãƒ ãŒã‚ã£ãŸå ´åˆ
             before_selected_item_ui.FocusUI.SetActive(false);
         }
         Debug.Log("item_belongings_controller: " + item_belongings_controller);
@@ -245,49 +249,49 @@ public class ItemMenuController : SerializedMonoBehaviour
         
         before_selected_item_ui.FocusUI.SetActive(true);
 
-        //•Ï”‚ÉIndex‚à“ü‚ê‚Ä‚¨‚­‚æB
+        //å¤‰æ•°ã«Indexã‚‚å…¥ã‚Œã¦ãŠãã‚ˆã€‚
         NowItemSelectIndexX = selectObj.transform.GetSiblingIndex();
 
         item_description_text_ui.SetText(NowSelect_item_status.ItemDescription);
         item_name_text_ui.SetText(NowSelect_item_status.ItemName);
         ItemMenuShowUpNow = true;
-        //‚±‚ÌŠÔ‚ğ0‚É‚µ‚Ä‚¨‚­‚±‚Æ‚Å‘I‘ğ‚µ‚½‚ç”ñ•\¦‚·‚é‚Ü‚Å‚ÌŠÔ‚ğL‚Î‚¹‚éB
+        //ã“ã®æ™‚é–“ã‚’0ã«ã—ã¦ãŠãã“ã¨ã§é¸æŠã—ãŸã‚‰éè¡¨ç¤ºã™ã‚‹ã¾ã§ã®æ™‚é–“ã‚’ä¼¸ã°ã›ã‚‹ã€‚
         WaitHideTimeNow = 0;
     }
     public void ItemUseFromMenu(GameObject item_ui_obj)
     {
-        //ƒAƒCƒeƒ€ƒƒjƒ…[‚©‚çƒAƒCƒeƒ€‚ğg‚¤ŠÖ”B
+        //ã‚¢ã‚¤ãƒ†ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ã†é–¢æ•°ã€‚
         ItemUI item_ui = item_ui_obj.GetComponent<ItemUI>();
-        //ItemStatus‚ğItemUIƒNƒ‰ƒX‚©‚çæ“¾‚·‚éB
+        //ItemStatusã‚’ItemUIã‚¯ãƒ©ã‚¹ã‹ã‚‰å–å¾—ã™ã‚‹ã€‚
         ItemStatus item_status = item_ui.item_status;
         if (!item_belongings_controller.WhichCanUseItem(item_status))
         {
-            //‚±‚Ì’n“_‚ÅƒAƒCƒeƒ€‚ªg‚¦‚È‚¢ó‘Ô‚È‚ç‚±‚ÌŠÖ”‚ğÀs‚µ‚È‚¢
-            sub_noticed_ui_controller.Notice($"{item_status.ItemName}‚Íg—p‚Å‚«‚Ü‚¹‚ñB");
+            //ã“ã®åœ°ç‚¹ã§ã‚¢ã‚¤ãƒ†ãƒ ãŒä½¿ãˆãªã„çŠ¶æ…‹ãªã‚‰ã“ã®é–¢æ•°ã‚’å®Ÿè¡Œã—ãªã„
+            sub_noticed_ui_controller.Notice($"{item_status.ItemName}ã¯ä½¿ç”¨ã§ãã¾ã›ã‚“ã€‚");
             return;
         }
         if(item_status.item_type != ItemStatus.ItemType.Key){
-            sub_noticed_ui_controller.Notice($"{item_status.ItemName}‚ğg—p‚µ‚½B");
+            sub_noticed_ui_controller.Notice($"{item_status.ItemName}ã‚’ä½¿ç”¨ã—ãŸã€‚");
         }
         int item_ui_index = item_ui_obj.transform.GetSiblingIndex();
-        //ItemSelectŠÖ”‚ÍIndex‚ğw’è‚µ‚È‚¯‚ê‚Î‚È‚ç‚È‚¢‚Ì‚ÅGetSiblingIndex(¡qƒIƒuƒWƒFƒNƒg‚Ì’†‚Å‚Í‰½”Ô–Ú‚É‚¢‚é‚Ì‚©‚ğ‹³‚¦‚Ä‚­‚ê‚é‚â‚Â)
-        //‚ğg—p‚µ‚Äindex‚ğæ“¾B
-        //ƒAƒCƒeƒ€‚ğg—p‚µ‚½‚Æ‚«‚ÍƒAƒCƒeƒ€‚ğƒZƒŒƒNƒg‚·‚éB
+        //ItemSelecté–¢æ•°ã¯Indexã‚’æŒ‡å®šã—ãªã‘ã‚Œã°ãªã‚‰ãªã„ã®ã§GetSiblingIndex(ä»Šå­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸­ã§ã¯ä½•ç•ªç›®ã«ã„ã‚‹ã®ã‹ã‚’æ•™ãˆã¦ãã‚Œã‚‹ã‚„ã¤)
+        //ã‚’ä½¿ç”¨ã—ã¦indexã‚’å–å¾—ã€‚
+        //ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ç”¨ã—ãŸã¨ãã¯ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚»ãƒ¬ã‚¯ãƒˆã™ã‚‹ã€‚
         ItemSelectByIndex(item_ui_index);
 
-        //item_status‚ğQÆ‚µ‚Äitem_belongings_controller‚ÌƒAƒCƒeƒ€‚ğg—p‚·‚éŠÖ”‚ğÀsB
+        //item_statusã‚’å‚ç…§ã—ã¦item_belongings_controllerã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ç”¨ã™ã‚‹é–¢æ•°ã‚’å®Ÿè¡Œã€‚
         item_belongings_controller.ItemUseFromBelonging(item_status);
         
         if (!item_belongings_controller.belonging_items.ContainsKey(item_status))
         {
-            //Á”ï‚µ‚½ƒAƒCƒeƒ€‚ª‚·‚Å‚É‘¶İ‚µ‚È‚©‚Á‚½‚çHH
-            //‘I‘ğ‚µ‚Ä‚¢‚½ƒAƒCƒeƒ€‚Ìˆê‚Â‘O‚ÌƒAƒCƒeƒ€‚ğ‘I‘ğ‚·‚éB
-            //ˆê‚Â‘O‚ÌƒAƒCƒeƒ€‚ª‚È‚©‚Á‚½ê‡(ƒAƒCƒeƒ€”‚ª1ŒÂ‚¾‚¯‚Ì‚Æ‚«)‚Í0”Ô–Ú‚ğ‘I‘ğ‚µ‚Ä‚¨‚­B
+            //æ¶ˆè²»ã—ãŸã‚¢ã‚¤ãƒ†ãƒ ãŒã™ã§ã«å­˜åœ¨ã—ãªã‹ã£ãŸã‚‰ï¼Ÿï¼Ÿ
+            //é¸æŠã—ã¦ã„ãŸã‚¢ã‚¤ãƒ†ãƒ ã®ä¸€ã¤å‰ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’é¸æŠã™ã‚‹ã€‚
+            //ä¸€ã¤å‰ã®ã‚¢ã‚¤ãƒ†ãƒ ãŒãªã‹ã£ãŸå ´åˆ(ã‚¢ã‚¤ãƒ†ãƒ æ•°ãŒ1å€‹ã ã‘ã®ã¨ã)ã¯0ç•ªç›®ã‚’é¸æŠã—ã¦ãŠãã€‚
 
-            //ƒAƒCƒeƒ€‚ªÁ‚³‚ê‚é‘O‚ÉÀs‚³‚ê‚Ä‚µ‚Ü‚¤‚Ì‚Å‚±‚Ì‚æ‚¤‚ÈƒR[ƒh‚É‚µ‚Ä‚éB
+            //ã‚¢ã‚¤ãƒ†ãƒ ãŒæ¶ˆã•ã‚Œã‚‹å‰ã«å®Ÿè¡Œã•ã‚Œã¦ã—ã¾ã†ã®ã§ã“ã®ã‚ˆã†ãªã‚³ãƒ¼ãƒ‰ã«ã—ã¦ã‚‹ã€‚
             if(item_belongings_controller.belonging_items.Count > 0)
             {
-                Debug.Log("item_ui_index‚Ì’l: " + item_ui_index);
+                Debug.Log("item_ui_indexã®å€¤: " + item_ui_index);
                 if ((item_ui_index - 1) >= 0)
                 {
                     Debug.Log("item_ui_index-1 >= 0");
@@ -311,7 +315,7 @@ public class ItemMenuController : SerializedMonoBehaviour
         int childCount = ItemGroup.transform.childCount;
         if (childCount == 0) return;
 
-        if (numberKey == 0) numberKey = childCount;      // 0 ¨ ÅŒã
+        if (numberKey == 0) numberKey = childCount;      // 0 â†’ æœ€å¾Œ
 
         ItemSelectByIndex(Mathf.Clamp(numberKey - 1, 0, childCount - 1));
     }

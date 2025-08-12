@@ -38,7 +38,7 @@ public class ItemBelongingsController : NetworkBehaviour
     [Header("関連コンポーネント")]
     public CrossHairEvent cross_hair_event;
     [HideInInspector] public ItemMenuController item_menu_controller;
-
+    public NetworkVariable<bool> ItemUsePermit = new NetworkVariable<bool>(true);
     //── ランタイム用 ───────────────────────────
     [ShowInInspector]public Dictionary<ItemStatus, ItemCountWithPermit> belonging_items    = new Dictionary<ItemStatus, ItemCountWithPermit>();
     [ShowInInspector]public Dictionary<ItemStatus, ItemStatusUI>        belonging_item_uis = new Dictionary<ItemStatus, ItemStatusUI>();

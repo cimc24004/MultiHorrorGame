@@ -187,7 +187,9 @@ public class PlayerStatus : NetworkBehaviour
     [Button]
     public void Revival()
     {
+        item_belonging_controller.ItemUsePermit.Value = true;
         Dead.Value = false;
+        this.CrouchStandCameraPosChange(!this.Crouch.Value);
         RevivalPlayerEvent.Invoke();
         anim.SetBool("AppearentDeath", false);
         player_hide_object_action.HidingPermit.Value = true;
@@ -221,6 +223,7 @@ public class PlayerStatus : NetworkBehaviour
     {
         if (this.Dead.Value) return;
         //サーバーから実行される。
+        item_belonging_controller.ItemUsePermit.Value = false;
         this.KillSequenceRunning.Value = true;
         Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
         var rpcParams = new ClientRpcParams
