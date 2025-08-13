@@ -99,6 +99,25 @@ public class SteamLobby : MonoBehaviour
         SteamMatchmaking.JoinLobby(new CSteamID(targetLobbyId));
         Debug.Log($"SteamLobby: JoinLobby リクエスト投げた -> {targetLobbyId}");
     }
+    public static string GetPersonaNameByClientId(ulong clientId)
+    {
+        // ホスト(サーバー)行
+        if (clientId == NetworkManager.ServerClientId)
+        {
+            var hostId = SteamUser.GetSteamID();
+            return SteamFriends.GetFriendPersonaName(hostId);
+        }
+
+        var steamId = new CSteamID(clientId); // SteamID64 → CSteamID
+        // たまにまだ情報未取得だと [unknown] が返るのでリクエストしておく
+        var name = SteamFriends.GetFriendPersonaName(steamId);
+        if (string.IsNullOrEmpty(name) || name == "[unknown]")
+        {
+            SteamFriends.RequestUserInformation(steamId, false);
+            name = $"Player {clientId}";
+        }
+        return name;
+    }
 
     private void OnLobbyEntered(LobbyEnter_t cb)
     {

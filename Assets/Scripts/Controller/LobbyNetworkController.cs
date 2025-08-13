@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
+using Steamworks;
+using Unity.Collections;
 
 public class LobbyNetworkController : NetworkBehaviour
 {
@@ -134,11 +136,13 @@ public class LobbyNetworkController : NetworkBehaviour
 
     private void SpawnOrUpdateRow(ulong clientId)
     {
+        FixedString64Bytes personaName = SteamLobby.GetPersonaNameByClientId(clientId);
+        string role = IsHost || IsServer ? "ホスト" : "クライアント";
         if (_rows.TryGetValue(clientId, out var row) && row != null)
         {
             // 既存更新
             var box = row.GetComponent<PlayerClientBox>();
-            if (box) box.PlayerOnClientConnectedSetText($"プレイヤーID: {clientId}");
+            if (box) box.PlayerOnClientConnectedSetText($"{personaName}", role);
             return;
         }
         StartHostButton.gameObject.SetActive(false);
@@ -152,7 +156,7 @@ public class LobbyNetworkController : NetworkBehaviour
         // 新規生成
         var go = GameObject.Instantiate(PlayerClientContents, PlayerClientsAll);
         var pcb = go.GetComponent<PlayerClientBox>();
-        if (pcb) pcb.PlayerOnClientConnectedSetText($"プレイヤーID: {clientId}");
+        if (pcb) pcb.PlayerOnClientConnectedSetText($"{personaName}", role);
         _rows[clientId] = go;
     }
 
