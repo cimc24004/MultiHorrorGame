@@ -7,9 +7,9 @@ using Unity.Netcode;
 public class TheDoorController : NetworkBehaviour
 {
 
-    //q—v‘f‚É‘¶İ‚·‚éƒhƒA‚½‚¿‚ğList‚Æ‚µ‚Ä“o˜^‚µAˆê‹C‚ÉŠJ‚¯‚éB@ˆê‹C‚É•Â‚ß‚é‚Æ‚©‚ğÀ‘•‚·‚éˆ×‚Ì‚â‚ÂB
-    //ˆê‚Â‚¾‚¯‚Å‚¢‚¢‚È‚çˆê‚Â‚¾‚¯‚Å‚à“ü‚ê‚éB
-    [Header("ƒhƒA‚²‚Æ‚É‚Â‚¢‚Ä‚¢‚éDoorOpenCloseControllerƒXƒNƒŠƒvƒg‚ğƒZƒbƒgB")]
+    //ï¿½qï¿½vï¿½fï¿½É‘ï¿½ï¿½İ‚ï¿½ï¿½ï¿½hï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Listï¿½Æ‚ï¿½ï¿½Ä“oï¿½^ï¿½ï¿½ï¿½Aï¿½ï¿½Cï¿½ÉŠJï¿½ï¿½ï¿½ï¿½Bï¿½@ï¿½ï¿½Cï¿½É•Â‚ß‚ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×‚Ì‚ï¿½ÂB
+    //ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+    [Header("ï¿½hï¿½Aï¿½ï¿½ï¿½Æ‚É‚Â‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½DoorOpenCloseControllerï¿½Xï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½B")]
     [RequiredListLength(1, null)]
     public List<DoorOpenCloseController> door_open_close_controllers;
 
@@ -20,11 +20,11 @@ public class TheDoorController : NetworkBehaviour
     }
 
     public NetworkVariable<DoorStatus> door_status_network;
-    [Header("ƒL[‚ª•K—v‚ÈƒhƒA‚©‚Ç‚¤‚©B")]
+    [Header("ï¿½Lï¿½[ï¿½ï¿½ï¿½Kï¿½vï¿½Èƒhï¿½Aï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½B")]
     public NetworkVariable<bool> NeededKey = new NetworkVariable<bool>();
 
 
-    //ƒvƒŒƒCƒ„[‚ª”à‚ğƒƒbƒN‚·‚é
+    //ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½
 
 
     public bool OpenedClosedCompletedAnimation = true;
@@ -33,7 +33,7 @@ public class TheDoorController : NetworkBehaviour
     private float CompletedWaitTimeNow;
     private NeedKeysController need_keys_controller;
     // [ShowIf("NeededKey")]
-    [Header("Œ®‚ğ‚©‚¯‚½‚¢ê‡‚Í‚±‚¿‚ç‚ğ“ü‚ê‚Ä‚­‚¾‚³‚¢")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     public OpenPermitByKeyController open_permit_by_key_controller;
 
     public DoorAttackedController door_attacked_controller;
@@ -67,29 +67,36 @@ public class TheDoorController : NetworkBehaviour
     
     public void DoorLock()
     {
-        //ƒhƒA‚ğ‹­§“I‚ÉƒƒbƒN‚·‚éŠÖ”
+        //ï¿½hï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½Éƒï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½Öï¿½
         NeededKey.Value = true;
-        open_permit_by_key_controller.OpenPermit.Value = false;
+        if (open_permit_by_key_controller != null)
+        {
+            open_permit_by_key_controller.OpenPermit.Value = false;
+        }
+        else
+        {
+            Debug.Log("this.gameObjectã¯open_permit_by_key_controllerãŒã‚ã‚Šã¾ã›ã‚“ : " + this.gameObject.transform.parent.gameObject.transform.parent.gameObject);
+        }
     }
     [ServerRpc(RequireOwnership = false)]
     public void DoorOpenClosedChangeByStatusServerRPC(ulong _ActionedNetworkObjectId, ServerRpcParams serverRpcParams = default)
     {
         ulong clientId = serverRpcParams.Receive.SenderClientId;
-        //EventActionMan: ‚±‚ÌŠÖ”‚ğs‚Á‚½Àsl•¨(ƒvƒŒƒCƒ„[‚â“G‚È‚Ç)
-        //ƒhƒA‚ğƒXƒe[ƒ^ƒX‚É‚æ‚Á‚Ä•Ï‰»‚³‚¹‚éB
-        //‹ó‚¢‚Ä‚¢‚éó‘Ô‚È‚ç•Â‚ß‚éB@ŠJ‚¢‚Ä‚¢‚éó‘Ô‚È‚çŠJ‚¯‚éB
+        //EventActionMan: ï¿½ï¿½ï¿½ÌŠÖï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½lï¿½ï¿½(ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½Gï¿½È‚ï¿½)
+        //ï¿½hï¿½Aï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½É‚ï¿½ï¿½ï¿½Ä•Ï‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+        //ï¿½ó‚¢‚Ä‚ï¿½ï¿½ï¿½ï¿½Ô‚È‚ï¿½Â‚ß‚ï¿½Bï¿½@ï¿½Jï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½Ô‚È‚ï¿½Jï¿½ï¿½ï¿½ï¿½B
         GameObject EventActionMan = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_ActionedNetworkObjectId].gameObject;
-        //Œ®‚ª•K—v‚ÈƒhƒA‚È‚ç‚Ü‚¸Œ®‚ğ‚±‚ÌƒhƒA‚Ég‚Á‚½‚©‚Ç‚¤‚©‚ğ”»’èB g‚Á‚Ä‚È‚©‚Á‚½‚çreturn; ŠJ‚¯‚È‚¢‚æB
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½vï¿½Èƒhï¿½Aï¿½È‚ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìƒhï¿½Aï¿½Égï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½ğ”»’ï¿½B ï¿½gï¿½ï¿½ï¿½Ä‚È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½return; ï¿½Jï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½B
         if (NeededKey.Value == true)
         {
-            //NeededKey‚ªtrue‚¾‚¯‚Å‚ÍƒƒbƒN‚³‚ê‚½‚±‚Æ‚É‚Í‚È‚ç‚È‚¢B
+            //NeededKeyï¿½ï¿½trueï¿½ï¿½ï¿½ï¿½ï¿½Å‚Íƒï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½Æ‚É‚Í‚È‚ï¿½È‚ï¿½ï¿½B
             if (!open_permit_by_key_controller.OpenPermit.Value == true)
             {
 
-                //Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
                 if (EventActionMan.tag == "Player")
                 {
-                    //Œ®‚ª‚©‚©‚Á‚Ä‚¢‚é‚±‚Æ‚ğ’m‚ç‚¹‚éB
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚±ï¿½Æ‚ï¿½mï¿½ç‚¹ï¿½ï¿½B
                     open_permit_by_key_controller.NeedKeyForPlayerClientRpc(new ClientRpcParams
                     {
                         Send = new ClientRpcSendParams
@@ -106,7 +113,7 @@ public class TheDoorController : NetworkBehaviour
 
         if (EventActionMan.tag == "Enemy")
         {
-            //“G‚ªƒvƒŒƒCƒ„[‚ğ”­Œ©‚µ‚Ä‚¢‚½‚çA•Â‚ß‚ç‚ê‚½”à‚Í‰ó‚µ‚ÄŠJ‚¯‚é‚æ‚¤‚É‚·‚éB
+            //ï¿½Gï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ğ”­Œï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Â‚ß‚ï¿½ê‚½ï¿½ï¿½ï¿½Í‰ó‚µ‚ÄŠJï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½B
             DiscoveryPlayerController discovery_player_controller = EventActionMan.GetComponent<DiscoveryPlayerController>();
             EnemySoundSensor enemy_sound_sensor = EventActionMan.GetComponent<EnemySoundSensor>();
             if (discovery_player_controller.DiscoveryPlayerNowCheck())
@@ -117,7 +124,7 @@ public class TheDoorController : NetworkBehaviour
         }
 
         Debug.Log("Door-----Open---------------------DoorOpenClosedChangeByStatusServerRPC");
-        //ŠJ‚¯‚Ä‚é•Â‚ß‚Ä‚éƒAƒjƒ[ƒVƒ‡ƒ“Ä¶’†‚È‚ç‚±‚ÌƒAƒNƒVƒ‡ƒ“‚ğÀs‚µ‚È‚¢B
+        //ï¿½Jï¿½ï¿½ï¿½Ä‚ï¿½Â‚ß‚Ä‚ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Äï¿½ï¿½ï¿½ï¿½È‚ç‚±ï¿½ÌƒAï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½È‚ï¿½ï¿½B
         if (!OpenedClosedCompleted) return;
         if (door_status_network.Value == DoorStatus.Opened)
         {

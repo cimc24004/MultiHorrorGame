@@ -28,6 +28,7 @@ public class LobbyNetworkController : NetworkBehaviour
         if (StartClientButton) StartClientButton.onClick.AddListener(StartClient);
         if (GameStartButton) GameStartButton.onClick.AddListener(() =>
         {
+            GameStartButton.gameObject.SetActive(false);
             if (IsServer)
             {
                 NetworkManager.Singleton.SceneManager.LoadScene("Main", UnityEngine.SceneManagement.LoadSceneMode.Single);
@@ -104,6 +105,7 @@ public class LobbyNetworkController : NetworkBehaviour
         // サーバーがNetworkListを唯一のソースとしてAdd
         if (sessionController != null && sessionController.connectedMembers != null && !ContainsId(sessionController.connectedMembers, clientId))
         {
+
             sessionController.connectedMembers.Add(clientId);
         }
     }
@@ -112,6 +114,7 @@ public class LobbyNetworkController : NetworkBehaviour
     {
         this.LobbyNetworkErrorMessageCanvasObject.gameObject.SetActive(false);
         Debug.Log($"[Lobby] OnListChanged: {e.Type} / {e.Value}");
+
         switch (e.Type)
         {
             case NetworkListEvent<ulong>.EventType.Add:
@@ -138,7 +141,8 @@ public class LobbyNetworkController : NetworkBehaviour
             if (box) box.PlayerOnClientConnectedSetText($"プレイヤーID: {clientId}");
             return;
         }
-
+        StartHostButton.gameObject.SetActive(false);
+        StartClientButton.gameObject.SetActive(false);
         if (PlayerClientContents == null || PlayerClientsAll == null)
         {
             Debug.LogError("[Lobby] PlayerClientContents / PlayerClientsAll が未設定");
@@ -199,6 +203,7 @@ public class LobbyNetworkController : NetworkBehaviour
     // ──────────────────────────────────────
     public void StartHost()
     {
+
         SteamLobby.Instance.CreateLobby();
         ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
         Debug.Log($"ConfigHash={hash:X8}");
@@ -209,6 +214,7 @@ public class LobbyNetworkController : NetworkBehaviour
     // ──────────────────────────────────────
     public void StartClient()
     {
+
         if (m_joinLobbyID_Field == null)
         {
             Debug.LogError("JoinLobbyID Field 未設定");
