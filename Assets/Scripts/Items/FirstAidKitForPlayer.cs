@@ -42,7 +42,7 @@ public class FirstAidKitForPlayer : NetworkBehaviour
                 Debug.LogWarning("PrayNowPlayersが空。payerを決められない");
                 return;
             }
-
+            Debug.Log("PrayCompletedEventForServer On FirstAidKitForPlayer");
             ulong prayerId = prayController.PrayNowPlayers[0]; // 先頭を代表者に（好きにルール変更OK）
             prayController.PrayReset();
 

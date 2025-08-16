@@ -184,8 +184,9 @@ public class PrayController : NetworkBehaviour
     [Button]
     public void PrayReset()
     {
+        Debug.Log("PrayReset--------");
         if (!IsServer) return;
-
+        Debug.Log("PrayReset-------- IsServer=true");
         prayStartInvoked = false;
         PrayNow.Value = false;
         PrayTimeNow.Value = 0f;
@@ -221,16 +222,16 @@ public class PrayController : NetworkBehaviour
     /*━━━━━━━━ 内部（サーバー） ━━━━━━━━*/
     private void CompletePrayServer()
     {
-        PrayCompletedEventForServer?.Invoke();
 
         AlreadyPrayCompleted.Value = true;
         PrayPermit.Value = false;
         PrayNow.Value = false;
         PrayTimeNow.Value = 0f;
         prayStartInvoked = false;
-        PrayNowPlayers?.Clear(); 
+        PrayNowPlayers?.Clear();
         // 全クライアントで完了演出
         PrayCompletedClientRpc();
+        PrayCompletedEventForServer?.Invoke();
     }
 
     [ClientRpc]
