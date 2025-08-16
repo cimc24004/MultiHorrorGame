@@ -13,6 +13,7 @@ public class PrayController : NetworkBehaviour
     [Header("祈るのに必要な時間(秒)")]
     [SerializeField] public float NeedToPrayTime = 3f;
     [SerializeField, ShowInInspector]public NetworkList<ulong> PrayNowPlayers = new NetworkList<ulong>();
+    private string DefaultLayerName;
     // 進行状況（サーバー書き込み / 全員読み取り）
     public NetworkVariable<float> PrayTimeNow = new NetworkVariable<float>(
         0f,
@@ -93,6 +94,7 @@ public class PrayController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         // クライアント側でもUI閉じたいので誰でもハンドラを付ける
+        DefaultLayerName = LayerMask.LayerToName(this.gameObject.layer);
         PrayPermit.OnValueChanged += OnPrayPermitChanged;
         AlreadyPrayCompleted.OnValueChanged += OnAlreadyPrayCompletedChanged;
     }
@@ -179,6 +181,7 @@ public class PrayController : NetworkBehaviour
     }
 
     /*━━━━━━━━ API ━━━━━━━━*/
+    [Button]
     public void PrayReset()
     {
         if (!IsServer) return;
@@ -188,8 +191,16 @@ public class PrayController : NetworkBehaviour
         PrayTimeNow.Value = 0f;
         AlreadyPrayCompleted.Value = false;
         PrayPermit.Value = true;
+        PrayResetAllClientRpc();
+        if (PrayNowPlayers != null) PrayNowPlayers.Clear();
+        
     }
-
+    [ClientRpc]
+    private void PrayResetAllClientRpc()
+    {
+        this.gameObject.layer = LayerMask.NameToLayer(DefaultLayerName);
+        
+    }
     /*━━━━━━━━ ServerRpc ━━━━━━━━*/
     [ServerRpc(RequireOwnership = false)]
     public void PrayNowTrueRequestServerRpc(ulong _requestClientId)
@@ -228,7 +239,6 @@ public class PrayController : NetworkBehaviour
         if (gageImageUI != null) gageImageUI.fillAmount = 0f;
         PrayCompletedEvent?.Invoke();
         // 以降ターゲットにならないように
-        gameObject.tag = "Untagged";
     }
 
     /*━━━━━━━━ 変更通知 ━━━━━━━━*/

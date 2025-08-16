@@ -47,14 +47,20 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             prayController.PrayReset();
 
             // 代表者クライアントにだけRPCを送る
-            var rpcParams = new ClientRpcParams {
-                Send = new ClientRpcSendParams {
+            var rpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
                     TargetClientIds = new ulong[] { prayerId }
                 }
             };
             ConsumeFirstAidClientRpc(rpcParams);
 
         });
+        // prayController.PrayCompletedEvent.AddListener(() =>
+        // {
+        //     prayController.ReopenPrayServerRpc();
+        // });
 
     }
     // Update is called once per frame

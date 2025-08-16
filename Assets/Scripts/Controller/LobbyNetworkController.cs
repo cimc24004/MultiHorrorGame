@@ -18,6 +18,7 @@ public class LobbyNetworkController : NetworkBehaviour
     [SerializeField] private TMP_InputField m_joinLobbyID_Field; // LobbyID表示/入力
     [SerializeField] private GameObject LobbyNetworkErrorMessageCanvasObject;
     [SerializeField] private TextMeshProUGUI errorTextMessageUI; //エラー表示用TextUI
+    [SerializeField] private Button errorOKButtonUI;
     // クライアントID→UI行の対応表（重複生成防止＆Remove用）
     private readonly Dictionary<ulong, GameObject> _rows = new();
 
@@ -33,8 +34,15 @@ public class LobbyNetworkController : NetworkBehaviour
             GameStartButton.gameObject.SetActive(false);
             if (IsServer)
             {
+                if (NetworkLoadingScreen.Instance != null)
+                NetworkLoadingScreen.Instance.Show();
+
                 NetworkManager.Singleton.SceneManager.LoadScene("Main", UnityEngine.SceneManagement.LoadSceneMode.Single);
             }
+        });
+        errorOKButtonUI.onClick.AddListener(() =>
+        {
+            LobbyNetworkErrorMessageCanvasObject.SetActive(false);
         });
         SteamLobby.LobbyConnectionError += OnLobbyConnectionError;
     }

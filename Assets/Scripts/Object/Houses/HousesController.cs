@@ -10,7 +10,7 @@ public class HousesController : NetworkBehaviour
 {
     [Header("必ず ON にする仏壇の総数")]
     [MinValue(1)]
-    public int TotalButsudanToSpawn = 5;
+    public int TotalButsudanToSpawn = 14;
     public List<HouseDirector> house_directors;
     public List<SilhouetteChangeController> ButudansSilhouetteChangeControllers = new List<SilhouetteChangeController>();
     public static HousesController Instance { get; private set; }
@@ -116,9 +116,11 @@ public class HousesController : NetworkBehaviour
         Debug.Log("TargetHideNetworkLists.Count: " + TargetHideNetworkLists.Count);
         foreach (ulong target_network_id in TargetHideNetworkLists)
         {
+
             // NetworkObjectが存在するかチェックしてからアクセス
             if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(target_network_id, out NetworkObject networkObject))
             {
+
                 if (networkObject != null && networkObject.gameObject != null && networkObject.gameObject.activeInHierarchy)
                 {
                     networkObject.gameObject.SetActive(false);
@@ -225,7 +227,7 @@ public class HousesController : NetworkBehaviour
             {
                 ButudansSilhouetteChangeControllers.Add(silhouetteController);
             }
-            
+
             // フラグ立て
             var hd = house_directors.FirstOrDefault(h => h.Groups.Contains(grp));
             if (hd != null)
@@ -240,9 +242,9 @@ public class HousesController : NetworkBehaviour
                 {
                     if (o == null) continue;
                     // 選ばれてないものだけ非表示対象に追加
+                    NetworkObject ExtraPackage_NetworkObject = o.GetComponent<NetworkObject>();
                     if (pkg != chosen)
                     {
-                        NetworkObject ExtraPackage_NetworkObject = o.GetComponent<NetworkObject>();
                         if (ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned)
                         {
                             Debug.Log("ExtraPackage_NetworkObject != null && ExtraPackage_NetworkObject.IsSpawned 2");
@@ -250,6 +252,21 @@ public class HousesController : NetworkBehaviour
                         }
                     }
                 }
+
+            //選ばれたやつは 削除しないで置く必ず
+            foreach (var pkg in grp.ExtraPackages)
+                foreach (var o in pkg.Objs)
+                {
+                    if (pkg == chosen)
+                    {
+                        NetworkObject ExtraPackage_NetworkObject = o.GetComponent<NetworkObject>();
+                        if (TargetHideNetworkLists.Contains(ExtraPackage_NetworkObject.NetworkObjectId))
+                        {
+                            TargetHideNetworkLists.Remove(ExtraPackage_NetworkObject.NetworkObjectId); // NetworkListに追加（自動同期）
+                        }
+                    }
+                }
+
             // 選ばれたパッケージ内のオブジェクトは SceneObject なので初期状態のまま（Spawn()/SetActive() 不要）
         }
     }
