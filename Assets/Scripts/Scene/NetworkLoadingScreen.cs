@@ -1,7 +1,7 @@
 // ============================
-// File: NetworkLoadingScreen.cs
+// File: NetworkLoadingScreen.cs (UniTask版)
 // ============================
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
@@ -9,7 +9,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
-using System;
+using System.Threading;
+
 [DefaultExecutionOrder(-10000)]
 public class NetworkLoadingScreen : MonoBehaviour
 {
@@ -21,24 +22,24 @@ public class NetworkLoadingScreen : MonoBehaviour
     [SerializeField] private TMP_Text percentText;
 
     [Header("Tuning")]
-    [SerializeField] private float fadeOutDelay = 0.15f;      // realtime
     [SerializeField] private float fakeProgressSpeed = 0.25f; // /sec →0.9
     [SerializeField] private float stuckTimeout = 0.5f;       // 実進捗が止まったらfakeへ
 
     [Header("UX")]
     [SerializeField] private float minShowTime = 0.6f;        // 最低表示時間
     [SerializeField] private float holdFullTime = 0.25f;      // 100%表示キープ
-    [SerializeField] private float finishFullSpeed = 3f;      // 100%への仕上げ速度
-    [SerializeField] private float resumeTweenDuration = 0.35f; // フリーズ復帰時の追いつき時間
-    [SerializeField] private float bigGapThreshold = 0.20f;     // これ以上フレームが空いたらTweenで追いつく
+    [SerializeField] private float resumeTweenDuration = 0.35f; // 復帰時の追いつき
+    [SerializeField] private float bigGapThreshold = 0.20f;     // 大きい隙間ならTween
 
-    private Coroutine trackRoutine;
-    private Coroutine fakeRoutine;
-    private Coroutine tweenRoutine;
     private bool isShowing;
     private float showStartRealtime;
     private float lastUpdateRealtime;
     private float displayed; // 実際に表示している値 (0..1)
+
+    // タスク制御
+    private CancellationTokenSource _sessionCts;   // この表示サイクル全体のCT
+    private CancellationTokenSource _tweenCts;     // 追いつきTween用
+    private CancellationTokenSource _fakeCts;      // フェイク進捗用
 
     void Awake()
     {
@@ -52,9 +53,7 @@ public class NetworkLoadingScreen : MonoBehaviour
         var nm = NetworkManager.Singleton;
         if (nm != null && nm.SceneManager != null)
         {
-            nm.SceneManager.OnSceneEvent += HandleOnSceneEvent;
-            nm.SceneManager.OnLoadComplete += OnLoadComplete;
-            nm.SceneManager.OnLoadEventCompleted += OnLoadEventCompleted; // 旧NGO 4引数版
+            nm.SceneManager.OnSceneEvent += OnSceneEventHandler;  // ←これ一本でOK
         }
     }
 
@@ -64,205 +63,197 @@ public class NetworkLoadingScreen : MonoBehaviour
         var nm = NetworkManager.Singleton;
         if (nm != null && nm.SceneManager != null)
         {
-            nm.SceneManager.OnSceneEvent -= HandleOnSceneEvent;
-            nm.SceneManager.OnLoadComplete -= OnLoadComplete;
-            nm.SceneManager.OnLoadEventCompleted -= OnLoadEventCompleted;
+            nm.SceneManager.OnSceneEvent -= OnSceneEventHandler;
         }
+        CancelAllTasks();
     }
 
-    // Unity フォールバック：シーン切替検知でクローズへ
+    // Unityフォールバック：アクティブシーンが切り替わったら閉じる方向へ
     private void OnActiveSceneChanged(Scene prev, Scene next)
     {
         if (!isShowing) return;
-        StartCoroutine(CloseAfterDelay());
+        _ = CloseAfterDelayAsync(); // fire-and-forget
     }
 
-    // NGO: ネットワーク遷移で開始
-    // private void OnSceneEvent(SceneEvent e)
-    // {
-    //     if (e.SceneEventType != SceneEventType.Load /* && e.SceneEventType != SceneEventType.Synchronize */) return;
-
-    //     if (trackRoutine != null) { StopCoroutine(trackRoutine); trackRoutine = null; }
-
-    //     var op = e.AsyncOperation;
-    //     if (op != null)
-    //     {
-    //         trackRoutine = StartCoroutine(TrackProgressWithFallback(op));
-    //     }
-    //     // op==null のときは Show() 側の fakeRoutine が動いている
-    // }
-    private async void HandleOnSceneEvent(SceneEvent sceneEvent)
+    // ★ポイント：ClientIdでフィルタしない（全端末でShowする）
+    private void OnSceneEventHandler(SceneEvent e)
     {
-        if (NetworkManager.Singleton.LocalClientId != sceneEvent.ClientId)
+        switch (e.SceneEventType)
         {
-            return;
-        }
-
-        if (sceneEvent.SceneEventType == SceneEventType.Load)
-        {
-            Show();
-            while (!sceneEvent.AsyncOperation.isDone)
+            case SceneEventType.Load:
             {
-                await UniTask.Yield();
-                loadingSlider.value = sceneEvent.AsyncOperation.progress;
-            }
-        }
-
-        if (sceneEvent.SceneEventType == SceneEventType.LoadComplete)
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(2));
-            Hide();
-        }
-    }
-    // 自分のロードが終わったらいずれ100%へ
-    private void OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode mode)
-    {
-        if (NetworkManager.Singleton != null && clientId == NetworkManager.Singleton.LocalClientId)
-        {
-            SmoothTo(1f); // いきなり跳ねないで必ず滑らかに1.0へ
-        }
-    }
-
-    // 全員完了（旧NGOのシグネチャ）
-    private void OnLoadEventCompleted(string sceneName, LoadSceneMode mode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
-    {
-        StartCoroutine(CloseAfterDelay());
-    }
-
-    // NGOを使わないローカル遷移だけこれを使う
-    public void ShowAndLoadLocally(string sceneName)
-    {
-        Show();
-        var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-        if (op != null)
-        {
-            if (trackRoutine != null) { StopCoroutine(trackRoutine); trackRoutine = null; }
-            trackRoutine = StartCoroutine(TrackProgressWithFallback(op));
-            StartCoroutine(CloseAfterDelayWhenDone(op));
-        }
-    }
-
-    // 実進捗 + フリーズ検知 → fakeへ、さらに復帰時の“追いつきTween”
-    private IEnumerator TrackProgressWithFallback(AsyncOperation op)
-    {
-        float theoretical = displayed; // 目標値（理論値）
-
-        while (op != null && !op.isDone)
-        {
-            float target = Mathf.Clamp01(op.progress / 0.9f);
-
-            // 実進捗が一定時間変化しない → fakeに切替
-            if (Mathf.Abs(target - theoretical) < 0.0001f)
-            {
-                theoretical = target;
-                yield return MonitorStuckOrAdvance(op);
-                continue;
+                Show(); // 全員表示
+                var op = e.AsyncOperation;
+                if (op != null)
+                {
+                    _ = TrackProgressWithFallbackAsync(op, _sessionCts.Token);
+                }
+                else
+                {
+                    // AsyncOperation取れないケースはフェイクで0.9まで
+                    StartFakeProgress();
+                }
+                break;
             }
 
-            theoretical = target;
-            SmoothTo(theoretical);
-            yield return null;
-        }
-
-        SmoothTo(1f);
-    }
-
-    private IEnumerator MonitorStuckOrAdvance(AsyncOperation op)
-    {
-        float timer = 0f;
-        while (op != null && !op.isDone)
-        {
-            float target = Mathf.Clamp01(op.progress / 0.9f);
-            if (Mathf.Abs(target - displayed) > 0.0001f) // 動いた
+            case SceneEventType.LoadComplete:
             {
-                SmoothTo(target);
-                yield break;
+                // 自分のロードが完了したら1.0へ寄せる
+                var nm = NetworkManager.Singleton;
+                if (nm != null && e.ClientId == nm.LocalClientId)
+                {
+                    SmoothTo(1f);
+                }
+                break;
             }
 
-            timer += Time.unscaledDeltaTime;
-            if (timer >= stuckTimeout)
+            case SceneEventType.LoadEventCompleted:
             {
-                // fakeへ（0.9までゆっくり、復帰時はSmoothに追いつく）
-                if (fakeRoutine == null) fakeRoutine = StartCoroutine(IndeterminateToNinety(displayed));
-                yield break;
+                // 全員完了でクローズ
+                _ = CloseAfterDelayAsync();
+                break;
             }
-
-            yield return null;
         }
     }
 
-    // fake進捗：0.9まで
-    private IEnumerator IndeterminateToNinety(float startFrom)
-    {
-        float theoretical = Mathf.Clamp(startFrom, 0f, 0.9f);
-        while (theoretical < 0.9f)
-        {
-            theoretical = Mathf.MoveTowards(theoretical, 0.9f, fakeProgressSpeed * Time.unscaledDeltaTime);
-            SmoothTo(theoretical);
-            yield return null;
-        }
-    }
-
-    private IEnumerator CloseAfterDelayWhenDone(AsyncOperation op)
-    {
-        while (op != null && !op.isDone) yield return null;
-        yield return StartCoroutine(CloseAfterDelay());
-    }
-
-    private IEnumerator CloseAfterDelay()
-    {
-        // 最低表示時間を保証
-        float elapsed = Time.realtimeSinceStartup - showStartRealtime;
-        if (elapsed < minShowTime)
-            yield return new WaitForSecondsRealtime(minShowTime - elapsed);
-
-        // 進捗コルーチン停止
-        if (trackRoutine != null) { StopCoroutine(trackRoutine); trackRoutine = null; }
-        if (fakeRoutine  != null) { StopCoroutine(fakeRoutine);  fakeRoutine  = null; }
-        if (tweenRoutine != null) { StopCoroutine(tweenRoutine); tweenRoutine = null; }
-
-        // 100%まで滑らかに到達して、少し見せてから閉じる
-        yield return TweenTo(1f, resumeTweenDuration);
-        if (holdFullTime > 0f)
-            yield return new WaitForSecondsRealtime(holdFullTime);
-
-        Hide();
-    }
-
+    // ──────────────────────────────────────
+    // 表示/非表示
+    // ──────────────────────────────────────
     public void Show()
     {
         if (!isShowing)
         {
             isShowing = true;
             if (loadingRoot && !loadingRoot.activeSelf) loadingRoot.SetActive(true);
-            showStartRealtime = Time.realtimeSinceStartup;
-            lastUpdateRealtime = showStartRealtime;
-            displayed = 0f;
-            ApplyUI();
+        }
 
-            if (fakeRoutine != null) { StopCoroutine(fakeRoutine); }
-            fakeRoutine = StartCoroutine(IndeterminateToNinety(displayed));
-        }
-        else
-        {
-            showStartRealtime = Time.realtimeSinceStartup;
-            lastUpdateRealtime = showStartRealtime;
-            displayed = 0f;
-            ApplyUI();
-        }
+        // セッション更新
+        _sessionCts?.Cancel();
+        _sessionCts?.Dispose();
+        _sessionCts = new CancellationTokenSource();
+
+        // リセット
+        showStartRealtime = Time.realtimeSinceStartup;
+        lastUpdateRealtime = showStartRealtime;
+        displayed = 0f;
+        ApplyUI();
+
+        // フェイク進捗開始（実進捗が来たらSmoothToが上書き）
+        StartFakeProgress();
     }
 
     private void Hide()
     {
         if (!isShowing) return;
-        if (trackRoutine != null) { StopCoroutine(trackRoutine); trackRoutine = null; }
-        if (fakeRoutine  != null) { StopCoroutine(fakeRoutine);  fakeRoutine  = null; }
-        if (tweenRoutine != null) { StopCoroutine(tweenRoutine); tweenRoutine = null; }
+        CancelAllTasks();
         if (loadingRoot && loadingRoot.activeSelf) loadingRoot.SetActive(false);
         isShowing = false;
     }
 
-    // 大きいフレーム隙間があっても瞬間ジャンプさせず、短時間で追いつく
+    private void CancelAllTasks()
+    {
+        _tweenCts?.Cancel(); _tweenCts?.Dispose(); _tweenCts = null;
+        _fakeCts ?.Cancel(); _fakeCts ?.Dispose(); _fakeCts  = null;
+        _sessionCts?.Cancel(); _sessionCts?.Dispose(); _sessionCts = null;
+    }
+
+    // ──────────────────────────────────────
+    // 進捗トラッキング（UniTask）
+    // ──────────────────────────────────────
+    private async UniTaskVoid TrackProgressWithFallbackAsync(AsyncOperation op, CancellationToken token)
+    {
+        float theoretical = displayed;
+
+        while (op != null && !op.isDone && !token.IsCancellationRequested)
+        {
+            // Unityのop.progressは0..0.9まで
+            float target = Mathf.Clamp01(op.progress / 0.9f);
+
+            if (Mathf.Abs(target - theoretical) < 0.0001f)
+            {
+                theoretical = target;
+                await MonitorStuckOrAdvanceAsync(op, token);
+            }
+            else
+            {
+                theoretical = target;
+                SmoothTo(theoretical);
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
+        }
+
+        if (!token.IsCancellationRequested)
+        {
+            SmoothTo(1f);
+        }
+    }
+
+    private async UniTask MonitorStuckOrAdvanceAsync(AsyncOperation op, CancellationToken token)
+    {
+        float start = Time.realtimeSinceStartup;
+        while (op != null && !op.isDone && !token.IsCancellationRequested)
+        {
+            float target = Mathf.Clamp01(op.progress / 0.9f);
+            if (Mathf.Abs(target - displayed) > 0.0001f)
+            {
+                SmoothTo(target);
+                return;
+            }
+
+            // 一定時間止まったらフェイク進捗
+            if (Time.realtimeSinceStartup - start >= stuckTimeout)
+            {
+                StartFakeProgress();
+                return;
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
+        }
+    }
+
+    private void StartFakeProgress()
+    {
+        // 既存フェイクをキャンセル
+        _fakeCts?.Cancel();
+        _fakeCts?.Dispose();
+        if (_sessionCts == null) return;
+
+        _fakeCts = CancellationTokenSource.CreateLinkedTokenSource(_sessionCts.Token);
+        _ = IndeterminateToNinetyAsync(displayed, _fakeCts.Token);
+    }
+
+    // フェイク進捗：0.9まで
+    private async UniTaskVoid IndeterminateToNinetyAsync(float startFrom, CancellationToken token)
+    {
+        float theoretical = Mathf.Clamp(startFrom, 0f, 0.9f);
+        while (theoretical < 0.9f && !token.IsCancellationRequested)
+        {
+            theoretical = Mathf.MoveTowards(theoretical, 0.9f, fakeProgressSpeed * Time.unscaledDeltaTime);
+            SmoothTo(theoretical);
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
+        }
+    }
+
+    private async UniTaskVoid CloseAfterDelayAsync()
+    {
+        if (!isShowing) return;
+
+        // 最低表示時間を保証（リアルタイム）
+        float elapsed = Time.realtimeSinceStartup - showStartRealtime;
+        if (elapsed < minShowTime)
+            await UniTask.Delay(TimeSpan.FromSeconds(minShowTime - elapsed), DelayType.Realtime);
+
+        // 100%まで滑らかに到達して、少し見せてから閉じる
+        await TweenToAsync(1f, resumeTweenDuration);
+        if (holdFullTime > 0f)
+            await UniTask.Delay(TimeSpan.FromSeconds(holdFullTime), DelayType.Realtime);
+
+        Hide();
+    }
+
+    // ──────────────────────────────────────
+    // スムージング/ツイーン
+    // ──────────────────────────────────────
     private void SmoothTo(float target)
     {
         target = Mathf.Clamp01(Mathf.Max(target, displayed)); // 後退しない
@@ -273,31 +264,39 @@ public class NetworkLoadingScreen : MonoBehaviour
 
         if (gap > bigGapThreshold)
         {
-            if (tweenRoutine != null) StopCoroutine(tweenRoutine);
-            tweenRoutine = StartCoroutine(TweenTo(target, resumeTweenDuration));
+            // 大きく止まってた → 短時間Tweenで追いつく
+            _tweenCts?.Cancel();
+            _tweenCts?.Dispose();
+            if (_sessionCts == null) return;
+
+            _tweenCts = CancellationTokenSource.CreateLinkedTokenSource(_sessionCts.Token);
+            _ = TweenToAsync(target, resumeTweenDuration, _tweenCts.Token);
         }
         else
         {
+            // その場で少しずつ追従
             displayed = Mathf.MoveTowards(displayed, target, Time.unscaledDeltaTime * 0.8f);
             ApplyUI();
         }
     }
 
-    private IEnumerator TweenTo(float target, float duration)
+    private async UniTask TweenToAsync(float target, float duration, CancellationToken token = default)
     {
         float start = displayed;
         float t = 0f;
-        while (t < duration)
+        while (t < duration && !token.IsCancellationRequested)
         {
             t += Time.unscaledDeltaTime;
             float u = Mathf.Clamp01(t / duration);
             displayed = Mathf.Lerp(start, target, u);
             ApplyUI();
-            yield return null;
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
-        displayed = target;
-        ApplyUI();
-        tweenRoutine = null;
+        if (!token.IsCancellationRequested)
+        {
+            displayed = target;
+            ApplyUI();
+        }
     }
 
     private void ApplyUI()
