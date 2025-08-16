@@ -33,9 +33,9 @@ public class PlayerCameraController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        // if (!InitPlayer || !IsOwner) return;
-        // float yaw = DirectionCamera.transform.eulerAngles.y;
-        // SendYawToServerRpc(yaw);
+        if (!InitPlayer || !IsOwner) return;
+        float yaw = DirectionCamera.transform.eulerAngles.y;
+        SendYawToServerRpc(yaw);
     }
 
     [ServerRpc]
