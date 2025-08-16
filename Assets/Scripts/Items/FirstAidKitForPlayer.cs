@@ -117,8 +117,5 @@ public class FirstAidKitForPlayer : NetworkBehaviour
             Debug.LogWarning("FirstAid消費できない（所持なし or 未初期化）");
         }
     }
-    [ServerRpc(RequireOwnership = false)]
-    private void OnCompletedPrayRequestServerRpc()
-    {
-    }
+
 }

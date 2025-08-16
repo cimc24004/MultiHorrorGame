@@ -189,7 +189,6 @@ public class PlayerStatus : NetworkBehaviour
     {
         item_belonging_controller.ItemUsePermit.Value = true;
         Dead.Value = false;
-        this.CrouchStandCameraPosChange(!this.Crouch.Value);
         RevivalPlayerEvent.Invoke();
         anim.SetBool("AppearentDeath", false);
         player_hide_object_action.HidingPermit.Value = true;
@@ -210,7 +209,7 @@ public class PlayerStatus : NetworkBehaviour
     private void RevivalClientRpc(ClientRpcParams rpcParams)
     {
         Vector3 src = CameraRoot.localPosition;
-        Transform tgt = HeadPos;
+        Transform tgt = StandHeadPos;
         float tgtY = tgt.localPosition.y;
         Tween StandTween = DOTween.To(
             () => src.y,
@@ -218,6 +217,7 @@ public class PlayerStatus : NetworkBehaviour
             tgtY,
             0.2f
         ).SetEase(Ease.OutQuad);
+        this.HeadPos.position = StandHeadPos.position;
     }
     public void DeadEvent(GameObject KilledMeEnemy)
     {
