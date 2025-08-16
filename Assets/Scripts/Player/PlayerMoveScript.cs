@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode.Components;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority; // ClientNetworkTransform
 
 public class PlayerMoveScript : NetworkBehaviour
 {
@@ -42,57 +44,114 @@ public class PlayerMoveScript : NetworkBehaviour
 
     private Vector2 moveInput;
 
-    // 前フレームの MoveState
+    private ClientNetworkTransform cnt;
+    private bool prevHasInput;
+    private OwnerSpawnLatch spawnLatch;
+
+    private bool inputBound;          // 入力バインド済みか
+    private bool controlReady;        // ラッチ解除後に true
+
     private PlayerStatus.PlayerMoveState prevMoveState;
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner || IsServer)
         {
-            playerStatus = this.gameObject.GetComponent<PlayerStatus>();
+            playerStatus = GetComponent<PlayerStatus>();
             anim = GetComponent<Animator>();
         }
 
         if (IsServer)
         {
-            defaultRunSpeed = RunSpeed;
-            defaultWalkSpeed = WalkSpeed;
+            defaultRunSpeed    = RunSpeed;
+            defaultWalkSpeed   = WalkSpeed;
             defaultCrouchSpeed = CrouchSpeed;
-            staminaController = GetComponent<PlayerStaminaController>();
+            staminaController  = GetComponent<PlayerStaminaController>();
             NowSpeed = WalkSpeed;
         }
 
-        // ★ Owner側の物理移動はオーナーが担当
         if (IsOwner)
         {
             characterController = GetComponent<CharacterController>();
-            playerInput = playerStatus.player_input;
-            subNoticedUI = playerStatus.sub_noticed_ui_controller;
-            prevMoveState = playerStatus.player_move_state_network.Value;
-            DirectionCamera = playerStatus.virtual_camera.VirtualCameraGameObject;
+            cnt         = GetComponent<ClientNetworkTransform>();
+            spawnLatch  = GetComponent<OwnerSpawnLatch>();
 
-            moveAction         = playerInput.actions["Move"];
-            runChangeAction    = playerInput.actions["RunChange"];
-            crouchChangeAction = playerInput.actions["CrouchChange"];
-
-            moveAction.Enable();
-            runChangeAction.Enable();
-            crouchChangeAction.Enable();
-
-            crouchChangeAction.performed += OnCrouchPerformed;
-            runChangeAction.started  += OnRunChangePerformed;
-            runChangeAction.canceled += OnRunChangePerformed;
+            TryBindInput(); // まず試す
         }
+    }
+
+    // ★ 外部（OwnerSpawnLatch）から呼ばれる：本格操作開始OK
+    public void OwnerGainedControl()
+    {
+        controlReady = true;
+        // サーバーへ「操作開始OK」を通知 → MoveStateをWalkに初期化
+        OwnerReadyServerRpc();
+    }
+
+    [ServerRpc]
+    private void OwnerReadyServerRpc()
+    {
+        // しゃがみ解除＆歩き状態にして速度を持たせる
+        playerStatus.Crouch.Value = false;
+        playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
+        NowSpeed = WalkSpeed;
+        playerStatus.MoveSpeed = WalkSpeed;
+    }
+
+    private void TryBindInput()
+    {
+        if (!IsOwner) return;
+        if (playerStatus == null) return;
+
+        // PlayerInputの取得
+        if (playerInput == null)
+            playerInput = playerStatus.player_input;
+
+        if (playerInput == null || playerInput.actions == null) return;
+
+        // 既にバインド済みならスキップ
+        if (inputBound) return;
+
+        DirectionCamera   = playerStatus.virtual_camera?.VirtualCameraGameObject;
+        subNoticedUI      = playerStatus.sub_noticed_ui_controller;
+        prevMoveState     = playerStatus.player_move_state_network.Value;
+
+        moveAction         = playerInput.actions["Move"];
+        runChangeAction    = playerInput.actions["RunChange"];
+        crouchChangeAction = playerInput.actions["CrouchChange"];
+
+        if (moveAction == null || runChangeAction == null || crouchChangeAction == null) return;
+
+        moveAction.Enable();
+        runChangeAction.Enable();
+        crouchChangeAction.Enable();
+
+        crouchChangeAction.performed += OnCrouchPerformed;
+        runChangeAction.started  += OnRunChangePerformed;
+        runChangeAction.canceled += OnRunChangePerformed;
+
+        inputBound = true;
+        // Debug.Log("[PlayerMoveScript] Input bound.");
     }
 
     void Update()
     {
-        // ───────────────────────────────────────────
-        // クライアント（オーナー）：入力と実移動を担当
-        // ───────────────────────────────────────────
+        // 入力がまだ拾えてなければ毎フレ試す（ビルド時の遅延対策）
+        if (IsOwner && !inputBound) TryBindInput();
+
+        // ── クライアント（オーナー）：入力と実移動 ──
         if (IsOwner)
         {
-            // 入力からワールド方向を作る
+            // ラッチ中 or CC無効 or 操作開始未通知 → まだ動かさない
+            if ((spawnLatch != null && spawnLatch.Latched) ||
+                characterController == null || !characterController.enabled ||
+                !controlReady ||
+                !inputBound ||
+                DirectionCamera == null)
+            {
+                goto ServerState;
+            }
+
             moveInput = moveAction.ReadValue<Vector2>();
 
             float yaw = DirectionCamera.transform.eulerAngles.y;
@@ -100,17 +159,17 @@ public class PlayerMoveScript : NetworkBehaviour
             Vector3 rgt = Quaternion.Euler(0, yaw, 0) * Vector3.right;
             Vector3 worldDir = (fwd * moveInput.y + rgt * moveInput.x).normalized;
 
-            // サーバーには入力と方向を送って「状態判定」だけしてもらう
+            // サーバーへ入力送信（状態決定用）
             SubmitMoveServerRpc(moveInput, worldDir);
 
             // 自分の移動用にも保持
             moveDirection = worldDir;
 
-            // アニメ同期用（ローカル即時）
+            // アニメ即時
             anim.SetFloat("MoveY", moveInput.y);
             anim.SetFloat("MoveX", moveInput.x);
 
-            // サーバーが決めた MoveState を参照してローカル速度を決定
+            // サーバーが決めた MoveState を参照して速度決定
             var state = playerStatus.player_move_state_network.Value;
             switch (state)
             {
@@ -121,24 +180,31 @@ public class PlayerMoveScript : NetworkBehaviour
                 default:                                  NowSpeed = 0f;          break;
             }
 
-            // 移動許可が無い/CC無効なら動かさない
-            if (!MovePermit || characterController == null || !characterController.enabled)
-                goto ServerState;
+            if (!MovePermit) goto ServerState;
 
             if (moveDirection != Vector3.zero)
                 characterController.Move(moveDirection * NowSpeed * Time.deltaTime);
             else
                 characterController.Move(Vector3.up * characterController.velocity.y * Time.deltaTime);
+
+            // 停止切替瞬間のスナップ（滑り対策）
+            bool hasInput = moveInput.sqrMagnitude > 0.0001f;
+            if (!hasInput && prevHasInput &&
+                cnt != null &&
+                characterController.enabled &&
+                (spawnLatch == null || !spawnLatch.Latched))
+            {
+                cnt.Teleport(transform.position, transform.rotation, transform.localScale);
+            }
+            prevHasInput = hasInput;
         }
 
-        // ───────────────────────────────────────────
-        // サーバー：状態（歩き/走り/しゃがみ等）だけ決める
-        // ───────────────────────────────────────────
+        // ── サーバー：状態だけ決める ──
         ServerState:
         if (IsServer && playerStatus.Dead.Value == false)
         {
             var currentState = playerStatus.player_move_state_network.Value;
-            var nowCrouch = playerStatus.Crouch;
+            var nowCrouch    = playerStatus.Crouch;
 
             if (prevMoveState == PlayerStatus.PlayerMoveState.Crouch && !nowCrouch.Value)
             {
@@ -227,8 +293,8 @@ public class PlayerMoveScript : NetworkBehaviour
     [ServerRpc]
     public void MoveSpeedUpRequestServerRpc(float addSpeed, float effectTime)
     {
-        RunSpeed += addSpeed;
-        WalkSpeed += addSpeed * 0.5f;
+        RunSpeed    += addSpeed;
+        WalkSpeed   += addSpeed * 0.5f;
         CrouchSpeed += addSpeed * 0.25f;
         moveSpeedUpDuration = effectTime;
         moveSpeedUpNow = true;
@@ -250,16 +316,12 @@ public class PlayerMoveScript : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SubmitMoveServerRpc(
-        Vector2 _moveInput,
-        Vector3 worldDir
-    )
+    private void SubmitMoveServerRpc(Vector2 _moveInput, Vector3 worldDir)
     {
-        // サーバーは「状態判定用」にだけ使う
-        moveInput            = _moveInput;
-        playerStatus.MoveY   = _moveInput.y;
-        playerStatus.MoveX   = _moveInput.x;
-        // moveDirection はサーバーでは使用しない（物理移動はクライアントが担当）
+        // サーバーは状態判定のために参照
+        moveInput          = _moveInput;
+        playerStatus.MoveY = _moveInput.y;
+        playerStatus.MoveX = _moveInput.x;
     }
 
     private void HandleRunWalk()
@@ -285,7 +347,7 @@ public class PlayerMoveScript : NetworkBehaviour
                     NowSpeed = WalkSpeed;
                 }
             }
-            else if (!runWalkTriggerChange)
+            else
             {
                 playerStatus.player_move_state_network.Value = PlayerStatus.PlayerMoveState.Walk;
                 NowSpeed = WalkSpeed;
