@@ -6772,8 +6772,8 @@ GameObject:
   - component: {fileID: 8402728259244179986}
   - component: {fileID: 8885107290759330572}
   - component: {fileID: 5136650747360679803}
-  - component: {fileID: 7982137146282675051}
-  - component: {fileID: 4084994899163776323}
+  - component: {fileID: 5536951015404267337}
+  - component: {fileID: 4531441789767291604}
   m_Layer: 6
   m_Name: PlayerUnityChan
   m_TagString: Player
@@ -8352,7 +8352,7 @@ MonoBehaviour:
   target_inactive_objects:
   - {fileID: 9198931759596475545}
   - {fileID: 3014746822508253678}
---- !u!114 &7982137146282675051
+--- !u!114 &5536951015404267337
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8361,19 +8361,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 7525078627656951602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 13b1c9e051351af4e8916940b845be17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 0
+  NetworkTransformExpanded: 1
   AutoOwnerAuthorityTickOffset: 1
-  PositionInterpolationType: 1
+  PositionInterpolationType: 0
   RotationInterpolationType: 0
   ScaleInterpolationType: 0
   PositionLerpSmoothing: 1
-  PositionMaxInterpolationTime: 0.01
+  PositionMaxInterpolationTime: 0.1
   RotationLerpSmoothing: 1
-  RotationMaxInterpolationTime: 0.01
+  RotationMaxInterpolationTime: 0.1
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 0
@@ -8398,7 +8398,7 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &4084994899163776323
+--- !u!114 &4531441789767291604
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
