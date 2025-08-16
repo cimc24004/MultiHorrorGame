@@ -145,7 +145,7 @@ public class LobbyNetworkController : NetworkBehaviour
     private void SpawnOrUpdateRow(ulong clientId)
     {
         FixedString64Bytes personaName = SteamLobby.GetPersonaNameByClientId(clientId);
-        string role = IsHost || IsServer ? "ホスト" : "クライアント";
+        string role = clientId == 0 ? "ホスト" : "クライアント";
         if (_rows.TryGetValue(clientId, out var row) && row != null)
         {
             // 既存更新
