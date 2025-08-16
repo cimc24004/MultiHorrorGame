@@ -1,6 +1,3 @@
-// ============================
-// NetworkLoadingScreen.cs  (UniTask / クリーン版)
-// ============================
 using System;
 using System.Threading;
 using TMPro;
@@ -16,7 +13,7 @@ public class NetworkLoadingScreen : MonoBehaviour
     public static NetworkLoadingScreen Instance { get; private set; }
 
     [Header("UI (必須参照)")]
-    [SerializeField] private GameObject loadingRoot;    // Canvas等
+    [SerializeField] private GameObject loadingRoot;
     [SerializeField] private Slider loadingSlider;      // Min=0, Max=1
     [SerializeField] private TMP_Text percentText;
 
@@ -33,9 +30,8 @@ public class NetworkLoadingScreen : MonoBehaviour
     private bool  isShowing;
     private float showStartRealtime;
     private float lastUpdateRealtime;
-    private float displayed; // 表示上の値 0..1
+    private float displayed; // 0..1
 
-    // タスク用CT
     private CancellationTokenSource sessionCts; // セッション全体
     private CancellationTokenSource tweenCts;   // Tween
     private CancellationTokenSource fakeCts;    // フェイク
@@ -88,7 +84,14 @@ public class NetworkLoadingScreen : MonoBehaviour
                 var op = e.AsyncOperation;
                 if (op != null)
                 {
-                    _ = TrackProgressWithFallbackAsync(op, sessionCts.Token);
+                    // ★ホストだけ一瞬アクティベーションを遅らせ、クライアントに指示を流す時間をつくる
+                    if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                    {
+                        op.allowSceneActivation = false;
+                        _ = ReleaseHostActivationNextTicks(op, sessionCts?.Token ?? default);
+                    }
+
+                    _ = TrackProgressWithFallbackAsync(op, sessionCts?.Token ?? default);
                 }
                 else
                 {
@@ -116,14 +119,23 @@ public class NetworkLoadingScreen : MonoBehaviour
         }
     }
 
+    // ── ホストのアクティベーションを数フレームだけ遅らせる（ネット送信のための余白）
+    private async UniTaskVoid ReleaseHostActivationNextTicks(AsyncOperation op, CancellationToken token)
+    {
+        // 今フレの送信完了 → 次フレでTransport反映 → さらに1フレ保険
+        await UniTask.WaitForEndOfFrame(token);
+        await UniTask.NextFrame(token);
+        await UniTask.NextFrame(token);
+
+        if (!token.IsCancellationRequested && op != null)
+            op.allowSceneActivation = true;
+    }
+
     // ───────── 表示/非表示 ─────────
     public void Show()
     {
         if (loadingRoot == null || loadingSlider == null || percentText == null)
-        {
-            // 参照未設定なら何もしない（要求通り非常用UIは作らない）
             return;
-        }
 
         if (!isShowing)
         {

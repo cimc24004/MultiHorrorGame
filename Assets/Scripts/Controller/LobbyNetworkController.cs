@@ -6,7 +6,7 @@ using Unity.Netcode;
 using TMPro;
 using Steamworks;
 using Unity.Collections;
-using Cysharp.Threading.Tasks; // ← 追加（オーケストレーションで使用）
+using Cysharp.Threading.Tasks; // 追加
 
 /* 名前エントリ（NetworkListで同期） */
 public struct ClientNameEntry : INetworkSerializable, System.IEquatable<ClientNameEntry>
@@ -35,10 +35,8 @@ public class LobbyNetworkController : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI errorTextMessageUI; //エラー表示用TextUI
     [SerializeField] private Button errorOKButtonUI;
 
-    // クライアントID→UI行の対応表（重複生成防止＆Remove用）
     private readonly Dictionary<ulong, GameObject> _rows = new();
-
-    private SessionController sessionController; // SessionController 参照
+    private SessionController sessionController;
 
     // ClientId→名前（サーバー権威で同期）
     public NetworkList<ClientNameEntry> ClientNames = new NetworkList<ClientNameEntry>();
@@ -52,10 +50,9 @@ public class LobbyNetworkController : NetworkBehaviour
         {
             GameStartButton.gameObject.SetActive(false);
 
-            // ホストだけがシーンロードを指示する
             if (IsServer)
             {
-                // ロード手前で全員にローディングUIを先出し → 1フレ待ち → NGOのLoadScene
+                // ホスト：まず全員にUI先出し → ネットワークを数フレーム回して送信フラッシュ → LoadScene
                 _ = OrchestratedSceneLoadAsync("Main");
             }
         });
@@ -93,7 +90,6 @@ public class LobbyNetworkController : NetworkBehaviour
 
         sessionController.connectedMembers.OnListChanged += OnMemberListChangedClient;
 
-        // 既存メンバーをUIへ
         foreach (var id in sessionController.connectedMembers)
             SpawnOrUpdateRow(id);
 
@@ -158,17 +154,13 @@ public class LobbyNetworkController : NetworkBehaviour
             case NetworkListEvent<ulong>.EventType.Remove:
                 RemoveRow(e.Value);
                 break;
-            case NetworkListEvent<ulong>.EventType.Insert:
-            case NetworkListEvent<ulong>.EventType.RemoveAt:
-            case NetworkListEvent<ulong>.EventType.Value:
-            case NetworkListEvent<ulong>.EventType.Clear:
+            default:
                 break;
         }
     }
 
     private void OnClientNamesChanged(NetworkListEvent<ClientNameEntry> e)
     {
-        // 追加/更新/挿入のときUI更新
         if (e.Type == NetworkListEvent<ClientNameEntry>.EventType.Add ||
             e.Type == NetworkListEvent<ClientNameEntry>.EventType.Value ||
             e.Type == NetworkListEvent<ClientNameEntry>.EventType.Insert)
@@ -201,7 +193,6 @@ public class LobbyNetworkController : NetworkBehaviour
             if (!string.IsNullOrEmpty(s)) return s;
         }
 
-        // フォールバック（同期前など）
         var alt = SteamLobby.GetPersonaNameByClientId(clientId).ToString();
         return string.IsNullOrEmpty(alt) ? $"Client {clientId}" : alt;
     }
@@ -333,24 +324,24 @@ public class LobbyNetworkController : NetworkBehaviour
     // ここから追加：ロードのオーケストレーション
     // ──────────────────────────────────────
 
-    // 全クライアントにローディングUIを“先に”出させる
     [ClientRpc]
     private void ShowLoadingClientRpc()
     {
         NetworkLoadingScreen.Instance?.Show();
     }
 
-    // ホスト側のロード手順を1か所に集約
     private async UniTaskVoid OrchestratedSceneLoadAsync(string sceneName)
     {
         // ① 全員にローディングUIを先出し
         ShowLoadingClientRpc();                 // クライアント
         NetworkLoadingScreen.Instance?.Show();  // ホスト自身
 
-        // ② 1フレ待ってUI描画を保証
-        await UniTask.Yield();
+        // ② ネットワーク送信を確実にフラッシュ（NGOはNetworkUpdateのタイミング依存）
+        await UniTask.WaitForEndOfFrame(); // 今フレームの送信を終わらせる
+        await UniTask.NextFrame();         // 次フレームでTransportに流れる
+        await UniTask.NextFrame();         // 念のためもう1フレ（重い環境でも安定）
 
-        // ③ NGOのシーンロード開始（以降は NetworkLoadingScreen の OnSceneEvent が処理）
+        // ③ NGOのシーンロード開始
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 }
