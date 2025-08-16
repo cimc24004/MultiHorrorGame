@@ -223,7 +223,6 @@ public class PlayerStatus : NetworkBehaviour
     {
         if (this.Dead.Value) return;
         //サーバーから実行される。
-        item_belonging_controller.ItemUsePermit.Value = false;
         this.KillSequenceRunning.Value = true;
         Debug.Log("あなたは死にました！" + "DeadEvent DeadPlayerClientRpcへ向かいたい");
         var rpcParams = new ClientRpcParams
@@ -324,7 +323,7 @@ public class PlayerStatus : NetworkBehaviour
         KillSequenceRunning.Value = false;
         this.CrouchPermit.Value = false;
         cross_hair_event.CrossHairEventPermitForDeath.Value = false;
-        
+        item_belonging_controller.ItemUsePermit.Value = false;
     }
     public void CrouchStandCameraPosChange(bool _Crouch)
     {

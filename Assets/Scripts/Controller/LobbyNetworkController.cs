@@ -6,6 +6,7 @@ using Unity.Netcode;
 using TMPro;
 using Steamworks;
 using Unity.Collections;
+using Cysharp.Threading.Tasks; // ← 追加（オーケストレーションで使用）
 
 /* 名前エントリ（NetworkListで同期） */
 public struct ClientNameEntry : INetworkSerializable, System.IEquatable<ClientNameEntry>
@@ -50,11 +51,12 @@ public class LobbyNetworkController : NetworkBehaviour
         if (GameStartButton) GameStartButton.onClick.AddListener(() =>
         {
             GameStartButton.gameObject.SetActive(false);
+
+            // ホストだけがシーンロードを指示する
             if (IsServer)
             {
-                if (NetworkLoadingScreen.Instance != null)
-                    NetworkLoadingScreen.Instance.Show();
-                NetworkManager.Singleton.SceneManager.LoadScene("Main", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                // ロード手前で全員にローディングUIを先出し → 1フレ待ち → NGOのLoadScene
+                _ = OrchestratedSceneLoadAsync("Main");
             }
         });
 
@@ -325,5 +327,30 @@ public class LobbyNetworkController : NetworkBehaviour
             ClientNames[idx] = entry;     // 更新
         else
             ClientNames.Add(entry);       // 追加
+    }
+
+    // ──────────────────────────────────────
+    // ここから追加：ロードのオーケストレーション
+    // ──────────────────────────────────────
+
+    // 全クライアントにローディングUIを“先に”出させる
+    [ClientRpc]
+    private void ShowLoadingClientRpc()
+    {
+        NetworkLoadingScreen.Instance?.Show();
+    }
+
+    // ホスト側のロード手順を1か所に集約
+    private async UniTaskVoid OrchestratedSceneLoadAsync(string sceneName)
+    {
+        // ① 全員にローディングUIを先出し
+        ShowLoadingClientRpc();                 // クライアント
+        NetworkLoadingScreen.Instance?.Show();  // ホスト自身
+
+        // ② 1フレ待ってUI描画を保証
+        await UniTask.Yield();
+
+        // ③ NGOのシーンロード開始（以降は NetworkLoadingScreen の OnSceneEvent が処理）
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 }
