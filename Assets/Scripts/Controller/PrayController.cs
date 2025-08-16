@@ -229,9 +229,9 @@ public class PrayController : NetworkBehaviour
         PrayTimeNow.Value = 0f;
         prayStartInvoked = false;
         PrayNowPlayers?.Clear();
+        PrayCompletedEventForServer?.Invoke();
         // 全クライアントで完了演出
         PrayCompletedClientRpc();
-        PrayCompletedEventForServer?.Invoke();
     }
 
     [ClientRpc]
