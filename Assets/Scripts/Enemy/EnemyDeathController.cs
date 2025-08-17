@@ -4,6 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using DG.Tweening;
 using UnityEngine.AI;
+using Unity.Netcode;
 public class EnemyDeathController : SerializedMonoBehaviour
 {
     public bool Death;
@@ -12,7 +13,7 @@ public class EnemyDeathController : SerializedMonoBehaviour
     private Dictionary<SkinnedMeshRenderer, Material> mesh_renderer_with_death_material;
     private float DeathAlpha;
     [SerializeField]
-    private AudioSource DeathAudioSource;
+    public AudioSource DeathAudioSource;
     private NavMeshAgent nav_mesh_agent;
     private CharacterController character_controller;
     private FollowObjectByNav follow_object_by_nav;
@@ -27,17 +28,11 @@ public class EnemyDeathController : SerializedMonoBehaviour
         discoveryPlayerController = this.gameObject.GetComponent<DiscoveryPlayerController>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     [Button]
     public void DeadStart()
     {
+        if (!NetworkManager.Singleton.IsServer) return;
         if (Death) return;
-        DeathAudioSource.Play();
         Death = true;
         nav_mesh_agent.enabled = false;
         character_controller.Move(Vector3.zero);
@@ -48,6 +43,7 @@ public class EnemyDeathController : SerializedMonoBehaviour
             discoveryPlayerController.RemovePlayerOfDiscoveryPlayerLists(discoveryPlayerController.DiscoveriedPlayers[i]);
         }
     }
+
     public void DeathAnimationEnd()
     {
         foreach (KeyValuePair<SkinnedMeshRenderer, Material> skin_mesh_with_material in mesh_renderer_with_death_material)
@@ -57,7 +53,8 @@ public class EnemyDeathController : SerializedMonoBehaviour
             skinned_mesh_renderer.material = DeathMaterial;
             Debug.Log("SkinnedMeshRenderer.Material=" + skinned_mesh_renderer.material.name);
             float startValue = skinned_mesh_renderer.material.GetFloat("_Threshold");
-            DOTween.To(() => startValue, x => skinned_mesh_renderer.material.SetFloat("_Threshold", x), 5f, 3f).SetLink(this.gameObject).SetEase(Ease.Linear).OnComplete(() => {
+            DOTween.To(() => startValue, x => skinned_mesh_renderer.material.SetFloat("_Threshold", x), 5f, 3f).SetLink(this.gameObject).SetEase(Ease.Linear).OnComplete(() =>
+            {
                 Destroy(this.gameObject);
             });
         }

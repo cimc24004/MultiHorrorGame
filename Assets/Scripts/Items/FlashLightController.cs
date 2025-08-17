@@ -7,19 +7,11 @@ using Unity.Netcode;
 
 public class FlashLightController : NetworkBehaviour
 {
-    private FlashLightBatteryUIController flash_light_battery_ui_controller;
     public bool HaveLight = true;
     public bool LightPermit = true;
     [ShowIf("HaveLight", true)]
     [Header("懐中電灯(?)オブジェクトをセット")]
     public Light Light;
-    public NetworkVariable<float> LightPower = new NetworkVariable<float>(100f);
-
-    [Header("~秒ごとに")]
-    [SerializeField] private float PerTimeForLightPowerDown = 1f;
-    [Header("~秒ごとに減る電池量")]
-    [SerializeField] private float LightPowerDown = 1f;
-    private float LightPowerDownTimeNow;
 
     [SerializeField] private AudioSource LightAudioSource;
     [SerializeField] private AudioClip LightOnClip;
@@ -61,56 +53,9 @@ public class FlashLightController : NetworkBehaviour
     {
         player_status = _playerStatus;
         player_input = player_status.player_input;
-        sub_noticed_ui_controller = player_status.sub_noticed_ui_controller;
-        flash_light_battery_ui_controller = FlashLightBatteryUIController.instance;
         InitPlayer = true;
 
         // 入力設定は OnNetworkSpawn でも行う
-    }
-
-    void Update()
-    {
-        if (!InitPlayer) return;
-
-        if (IsServer)
-        {
-            if (LightSwitchMode.Value)
-            {
-                LightPowerDownTimeNow += Time.deltaTime;
-                if (LightPowerDownTimeNow >= PerTimeForLightPowerDown)
-                {
-                    LightPowerDecrease();
-                    LightPowerDownTimeNow = 0f;
-                }
-            }
-
-            LightPermit = LightPower.Value > 0f;
-        }
-    }
-
-    private void LightPowerDecrease()
-    {
-        LightPower.Value -= LightPowerDown;
-        if (LightPower.Value <= 0f)
-        {
-            LightPower.Value = 0f;
-            // バッテリー切れたら自動でオフに
-            LightSwitchMode.Value = false;
-            sub_noticed_ui_controller.Notice("懐中電灯のバッテリーが切れた");
-        }
-
-        // 25% 単位で UI 更新
-        if (Mathf.Approximately(LightPower.Value % 25f, 0f))
-        {
-            flash_light_battery_ui_controller.UIChangeOnBatteryDecrease();
-        }
-    }
-
-    public void LightPowerToMax()
-    {
-        if (!IsServer) return;
-        LightPower.Value = 100f;
-        flash_light_battery_ui_controller.UIChangeOnBatteryToMax();
     }
 
     private void LightInputPerformed(InputAction.CallbackContext ctx)

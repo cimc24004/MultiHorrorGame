@@ -126,10 +126,15 @@ public class OshiireMouzyaController : NetworkBehaviour
             if (ToDeathWaitTimeNowFromBrokeOshiire > ToDeathWaitTimeFromBrokeOshiire)
             {
                 enemy_death_controller.DeadStart();
+                DeathAudioPlayAllClientRpc();
                 //EnemyDeathController側でremoveDIscoveryPlayersしてる。
             }
         }
     }
-
+    [ClientRpc]
+    private void DeathAudioPlayAllClientRpc()
+    {
+        enemy_death_controller.DeathAudioSource.Play();
+    }
 
 }

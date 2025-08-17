@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1995342765221307558}
   - component: {fileID: 2345158238862288550}
   - component: {fileID: 354142594618017943}
+  - component: {fileID: 6940745716785234528}
   m_Layer: 0
   m_Name: "\u3060\u308B\u307E\u3055\u3093\u304C\u8EE2\u3093\u3060GameController"
   m_TagString: Untagged
@@ -60,6 +61,11 @@ MonoBehaviour:
   DarumasanParent: {fileID: 0}
   DefaultLookAtTransform: {fileID: 6712952391040462276}
   character_move_permit: {fileID: 0}
+  darumasanPlayerNearSensor: {fileID: 0}
+  isLookingAtPlayers:
+    m_InternalValue: 0
+  currentLookTargetIndex:
+    m_InternalValue: -1
 --- !u!114 &2254365975483585366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,6 +307,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9fa5df7bf13f664f8704d8689d78d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6940745716785234528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2439053143237953184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a6af47787008347be8301b0312012a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowId: 0
 --- !u!1 &4632774620895992441
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,6 +333,7 @@ GameObject:
   - component: {fileID: 6749730743368921906}
   - component: {fileID: 3590980657480097124}
   - component: {fileID: 9026330519856019367}
+  - component: {fileID: 2312968879044694099}
   m_Layer: 0
   m_Name: GameRange
   m_TagString: Untagged
@@ -409,6 +429,43 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCollideredRemovedObjectEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2312968879044694099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4632774620895992441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb1a68dc43480f549807c7ea37067b9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetTags:
+  - Player
+  Collider: 0
+  CollideredObj: {fileID: 0}
+  OnTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6940745716785234528}
+        m_TargetAssemblyTypeName: MiniTutorialIndividual, Assembly-CSharp
+        m_MethodName: ShowMiniTutorialById
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnTriggerStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerExitEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &8442698438357571638

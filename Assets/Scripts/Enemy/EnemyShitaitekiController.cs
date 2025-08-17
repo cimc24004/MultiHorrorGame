@@ -28,14 +28,15 @@ public class EnemyShitaitekiController : NetworkBehaviour
         float targetRun,
         float targetWalk,
         float targetAnimator,
-        float duration  = 1f,
-        Ease  ease      = Ease.OutQuad,
+        float duration = 1f,
+        Ease ease = Ease.OutQuad,
         TweenCallback onComplete = null   // ★ 追加
-    ){
+    )
+    {
         // 走行中の tween があれば止める
         if (speedTweenSeq != null && speedTweenSeq.IsActive())
             speedTweenSeq.Kill();
-        
+
         speedTweenSeq = DOTween.Sequence()
             .Join(DOTween.To(() => moveSpeedController.RunSpeed,
                             x => moveSpeedController.RunSpeed = x,
@@ -43,7 +44,7 @@ public class EnemyShitaitekiController : NetworkBehaviour
             .Join(DOTween.To(() => moveSpeedController.WalkSpeed,
                             x => moveSpeedController.WalkSpeed = x,
                             targetWalk, duration).SetEase(ease))
-            .Join(DOTween.To(() => m_Animator.speed, x => animSpeedSync_ServerAuth.SetAnimSpeed(x),targetAnimator, duration))
+            .Join(DOTween.To(() => m_Animator.speed, x => animSpeedSync_ServerAuth.SetAnimSpeed(x), targetAnimator, duration))
             .OnComplete(onComplete);       // ★ 完了時に呼ぶ
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -72,6 +73,7 @@ public class EnemyShitaitekiController : NetworkBehaviour
     [Button]
     public void Move()
     {
+        MoveStartAllClientRpc();
         //徐々にSpeedをDefaultRunSpeedにする。
         TweenSpeed(DefaultRunSpeed, DefaultWalkSpeed, 1, 2f, Ease.OutQuad,
         () =>
@@ -87,6 +89,10 @@ public class EnemyShitaitekiController : NetworkBehaviour
             enemyStatus.foot_step_sound_controller.enabled = true;
             MoveNow = true;
         });
+    }
+    [ClientRpc]
+    private void MoveStartAllClientRpc()
+    {
         ScreamSound.Play();
     }
     [Button]
@@ -96,8 +102,7 @@ public class EnemyShitaitekiController : NetworkBehaviour
         // moveSpeedController.RunSpeed = 0;
         // moveSpeedController.WalkSpeed = 0;
         // m_Animator.speed = 0;
-
-        ScreamSound.Stop();
+        StopAllClientRpc();
         TweenSpeed(0, 0, 0, 2f, Ease.OutQuad,
         () =>
         {
@@ -111,5 +116,10 @@ public class EnemyShitaitekiController : NetworkBehaviour
             MoveNow = false;
             enemyActionForDoorController.enabled = false;
         });
+    }
+    [ClientRpc]
+    private void StopAllClientRpc()
+    {
+        ScreamSound.Stop();
     }
 }

@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PauseMenuUI : Singleton<PauseMenuUI>
@@ -29,7 +30,15 @@ public class PauseMenuUI : Singleton<PauseMenuUI>
         });
         ReturnToMainMenuButton.onClick.AddListener(() =>
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            SessionController sessionController = SessionController.Instance;
+            if (NetworkManager.Singleton.IsServer)
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            }
+            else if (NetworkManager.Singleton.IsClient)
+            {
+                sessionController.ReturnToTitle();
+            }
         });
     }
 
