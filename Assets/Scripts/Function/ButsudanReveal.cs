@@ -38,8 +38,8 @@ public class ButsudansReveal : NetworkBehaviour
 
     private void RevealButsudansForClients(ClientRpcParams rpcParams = default)
     {
-        sub_noticed_ui_controller?.Notice("仏壇の位置が明らかになった..!!");
-        houses_controller?.RevealButusdansRequestServerRpc(ButsudansRevealTime);
+        sub_noticed_ui_controller?.Notice("仏壇の位置が1つだけ明らかになった..!!");
+        houses_controller?.RevealButusdansRequestServerRpc(ButsudansRevealTime, 1);
         sub_noticed_ui_controller?.Notice(
             "仏壇の位置がわからなくなった....",
             ButsudansRevealTime

@@ -297,15 +297,20 @@ public class HousesController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void RevealButusdansRequestServerRpc(float RevealTime)
+    public void RevealButusdansRequestServerRpc(float RevealTime, int RevealCount)
     {
-        foreach (SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers)
+        for (int i = 0; i < RevealCount; i++)
         {
-            if (silhouette_change_controller != null)
-            {
-                silhouette_change_controller.SilhouetteChangeWithAutoReset(RevealTime);
-            }
+            int r = UnityEngine.Random.Range(0,RevealCount);
+            ButudansSilhouetteChangeControllers[r].SilhouetteChangeWithAutoReset(RevealTime);
         }
+        // foreach (SilhouetteChangeController silhouette_change_controller in ButudansSilhouetteChangeControllers)
+        // {
+        //     if (silhouette_change_controller != null)
+        //     {
+        //         silhouette_change_controller.SilhouetteChangeWithAutoReset(RevealTime);
+        //     }
+        // }
     }
 
     /*━━━━━━━━ Helper ━━━━━━━━*/
