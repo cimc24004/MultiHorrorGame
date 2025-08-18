@@ -31,7 +31,6 @@ public class NetworkLoadingScreen : MonoBehaviour
     private float showStartRealtime;
     private float lastUpdateRealtime;
     private float displayed; // 0..1
-    private float addressablesPercent; // 0..1
 
     private CancellationTokenSource sessionCts; // セッション全体
     private CancellationTokenSource tweenCts;   // Tween
@@ -151,7 +150,6 @@ public class NetworkLoadingScreen : MonoBehaviour
         showStartRealtime = Time.realtimeSinceStartup;
         lastUpdateRealtime = showStartRealtime;
         displayed = 0f;
-        addressablesPercent = 0f;
         ApplyUI();
 
         StartFakeProgress(); // 実進捗が来たらSmoothToで上書きされる
@@ -297,16 +295,9 @@ public class NetworkLoadingScreen : MonoBehaviour
         }
     }
 
-    public void SetAddressablesDownloadPercent(float percent)
-    {
-        addressablesPercent = Mathf.Clamp01(percent);
-        ApplyUI();
-    }
-
     private void ApplyUI()
     {
-        float combined = (addressablesPercent + displayed) * 0.5f;
-        if (loadingSlider) loadingSlider.value = combined;
-        if (percentText)  percentText.text  = Mathf.RoundToInt(combined * 100f) + "%";
+        if (loadingSlider) loadingSlider.value = displayed;
+        if (percentText)  percentText.text  = Mathf.RoundToInt(displayed * 100f) + "%";
     }
 }

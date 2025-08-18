@@ -7,8 +7,6 @@ using TMPro;
 using Steamworks;
 using Unity.Collections;
 using Cysharp.Threading.Tasks; // 追加
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 /* 名前エントリ（NetworkListで同期） */
 public struct ClientNameEntry : INetworkSerializable, System.IEquatable<ClientNameEntry>
@@ -48,23 +46,12 @@ public class LobbyNetworkController : NetworkBehaviour
         if (StartHostButton)   StartHostButton.onClick.AddListener(StartHost);
         if (StartClientButton) StartClientButton.onClick.AddListener(StartClient);
 
-        if (GameStartButton) GameStartButton.onClick.AddListener(async () =>
+        if (GameStartButton) GameStartButton.onClick.AddListener(() =>
         {
             GameStartButton.gameObject.SetActive(false);
 
             if (IsServer)
             {
-                ShowLoadingClientRpc();
-
-                AsyncOperationHandle handle = Addressables.DownloadDependenciesAsync("MainGroup");
-                while (!handle.IsDone)
-                {
-                    NetworkLoadingScreen.Instance?.SetAddressablesDownloadPercent(handle.GetDownloadStatus().Percent);
-                    await UniTask.Yield();
-                }
-                NetworkLoadingScreen.Instance?.SetAddressablesDownloadPercent(1f);
-                Addressables.Release(handle);
-
                 // ホスト：まず全員にUI先出し → ネットワークを数フレーム回して送信フラッシュ → LoadScene
                 _ = OrchestratedSceneLoadAsync("Main");
             }
@@ -345,12 +332,16 @@ public class LobbyNetworkController : NetworkBehaviour
 
     private async UniTaskVoid OrchestratedSceneLoadAsync(string sceneName)
     {
-        // ① ネットワーク送信を確実にフラッシュ（NGOはNetworkUpdateのタイミング依存）
+        // ① 全員にローディングUIを先出し
+        ShowLoadingClientRpc();                 // クライアント
+        NetworkLoadingScreen.Instance?.Show();  // ホスト自身
+
+        // ② ネットワーク送信を確実にフラッシュ（NGOはNetworkUpdateのタイミング依存）
         await UniTask.WaitForEndOfFrame(); // 今フレームの送信を終わらせる
         await UniTask.NextFrame();         // 次フレームでTransportに流れる
         await UniTask.NextFrame();         // 念のためもう1フレ（重い環境でも安定）
 
-        // ② NGOのシーンロード開始
+        // ③ NGOのシーンロード開始
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 }
