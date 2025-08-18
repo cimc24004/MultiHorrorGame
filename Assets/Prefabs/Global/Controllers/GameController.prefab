@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 7249805406758919115}
   - component: {fileID: 564485258932695814}
   - component: {fileID: 3360028368682638909}
+  - component: {fileID: 8543130705287922305}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -414,6 +415,23 @@ MonoBehaviour:
       Entry: 8
       Data: 
   SpawnedPlayers: []
+--- !u!114 &8543130705287922305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212090357542631498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68cabb9732e5044eaaf6a446e92c6f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reference: {fileID: 0}
+  shadowDist: 14
+  enableDist: 32
+  disableDist: 36
+  includeDirectional: 0
 --- !u!1 &226646246616265995
 GameObject:
   m_ObjectHideFlags: 0

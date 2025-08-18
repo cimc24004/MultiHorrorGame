@@ -299,8 +299,9 @@ public class DiscoveryPlayerController : NetworkBehaviour
             if (DiscoveryPlayerNowCheck())
             {
                 anim.SetBool("PlayerHidingNow", PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value);
-                if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightningPlayer)
+                if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].SightningPlayer || to_players_distance_tracker.ToPlayerDistanceLists[FirstKeyOfDiscoveriedPlayers] <= 0.5f)
                 {
+                    //近すぎ、もしくは視認されていたら 
                     if (PlayersVisibilityMapStatuesWithKey[FirstKeyOfDiscoveriedPlayers].player_status.HidingNow.Value)
                     {
                         //視認しているかつ隠れてる場合は隠れてること知ってるよー　変数をTrueに。
