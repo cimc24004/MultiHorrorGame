@@ -43,7 +43,7 @@ public class LobbyNetworkController : NetworkBehaviour
 
     void Start()
     {
-        if (StartHostButton)   StartHostButton.onClick.AddListener(StartHost);
+        if (StartHostButton) StartHostButton.onClick.AddListener(StartHost);
         if (StartClientButton) StartClientButton.onClick.AddListener(StartClient);
 
         if (GameStartButton) GameStartButton.onClick.AddListener(() =>
@@ -63,6 +63,7 @@ public class LobbyNetworkController : NetworkBehaviour
         });
 
         SteamLobby.LobbyConnectionError += OnLobbyConnectionError;
+        GameStartButton.gameObject.SetActive(false);
     }
 
     public override void OnNetworkSpawn()
@@ -276,6 +277,7 @@ public class LobbyNetworkController : NetworkBehaviour
     public void StartHost()
     {
         SteamLobby.Instance.CreateLobby();
+        GameStartButton.gameObject.SetActive(true);
         ulong hash = NetworkManager.Singleton.NetworkConfig.GetConfig(false);
         Debug.Log($"ConfigHash={hash:X8}");
     }

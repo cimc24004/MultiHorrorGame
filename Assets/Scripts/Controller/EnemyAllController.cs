@@ -44,7 +44,7 @@ public class EnemyAllController : Singleton<EnemyAllController>
         //すべての敵のスピードを上げる関数
         foreach (MoveSpeedController move_speed_controller in enemy_move_speed_controllers)
         {
-            move_speed_controller.MoveSpeedUpAndAnimSpeedUp(0.2f, 0.2f, 0.1f);
+            move_speed_controller.MoveSpeedUpAndAnimSpeedUp(0f, 0f, 0.1f);
         }
     }
 }
