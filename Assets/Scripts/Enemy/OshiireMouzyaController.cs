@@ -127,6 +127,7 @@ public class OshiireMouzyaController : NetworkBehaviour
             {
                 enemy_death_controller.DeadStart();
                 DeathAudioPlayAllClientRpc();
+                ToDeathWaitTimeNowFromBrokeOshiire = 0;
                 //EnemyDeathController側でremoveDIscoveryPlayersしてる。
             }
         }
