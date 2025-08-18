@@ -237,6 +237,37 @@ MonoBehaviour:
   bladeRotation:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-2409521753985407476
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4100329e4588497eb2079d472550f955, type: 3}
+  m_Name: AutoExposure
+  m_EditorClassIdentifier: 
+  active: 1
+  framesPerCompute:
+    m_OverrideState: 1
+    m_Value: 5
+  brightnessLimit:
+    m_OverrideState: 1
+    m_Value: 15
+  whitePoint:
+    m_OverrideState: 1
+    m_Value: 3
+  exposureRange:
+    m_OverrideState: 1
+    m_Value: {x: -2.5, y: 0.6}
+  increaseSpeed:
+    m_OverrideState: 1
+    m_Value: 5
+  decreaseSpeed:
+    m_OverrideState: 1
+    m_Value: 5
 --- !u!114 &-1295963866820630997
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -475,6 +506,7 @@ MonoBehaviour:
   - {fileID: -1295963866820630997}
   - {fileID: -8448712960269664721}
   - {fileID: 5933354377792795715}
+  - {fileID: -2409521753985407476}
 --- !u!114 &1197803034145681495
 MonoBehaviour:
   m_ObjectHideFlags: 3
