@@ -8,7 +8,7 @@ public class SmoothFollowCamera : NetworkBehaviour
     [SerializeField] float rotationSmoothTime = 0.1f;
     [SerializeField] Vector3 positionOffset;
     [SerializeField] Vector3 rotationOffset;
-
+    
     public override void OnNetworkSpawn()
     {
         if (!IsOwner)

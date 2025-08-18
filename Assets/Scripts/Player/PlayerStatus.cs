@@ -109,7 +109,12 @@ public class PlayerStatus : NetworkBehaviour
             PlayerNameSetRequestServerRpc(personaName.ToString());
             virtual_camera = CMFPSController.instance.GetComponent<CinemachineVirtualCamera>();
             steamUserNameTextUI.enabled = false;
+            if (player_input == null)
+            {
+                player_input = this.gameObject.GetComponent<PlayerInput>();
+            }
         }
+
         player_stamina_controller = GetComponent<PlayerStaminaController>();
         player_continue_controller = GameController.instance.GetComponent<PlayerContinueController>();
         player_move_permit = GetComponent<CharacterMovePermit>();
