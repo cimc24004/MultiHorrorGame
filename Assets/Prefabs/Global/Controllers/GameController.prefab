@@ -150,14 +150,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  NeedPrayCount: 5
+  Flow:
+  - enabled: 1
+    type: 0
+    prayTarget: 5
+    resetPrayCountOnEnter: 0
+    spawnItemOnEnter: 0
+    todoKey: OnPrayedButsudan
+  - enabled: 1
+    type: 3
+    prayTarget: 5
+    resetPrayCountOnEnter: 1
+    spawnItemOnEnter: 0
+    todoKey: Escape
   PrayCountNow:
     m_InternalValue: 0
+  NeedPrayCount: 5
   DeliverItemGeted: 0
   DeliveredToSakura: 0
   CanEscape:
     m_InternalValue: 0
   ArrivedExitPlayers: 
+  deliverItemSpawner: {fileID: 0}
 --- !u!114 &310270129932899514
 MonoBehaviour:
   m_ObjectHideFlags: 0
