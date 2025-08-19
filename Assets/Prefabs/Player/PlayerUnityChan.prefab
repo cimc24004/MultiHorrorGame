@@ -8444,12 +8444,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volume: {fileID: 0}
-  flashlight: {fileID: 0}
-  indoorIntensity: 25
-  outdoorIntensity: 150
-  indoorExposure: -0.05
-  outdoorExposure: 0
-  lerpSpeed: 2
+  flashlight: {fileID: 8388951965552184987}
+  rayOrigin: {fileID: 0}
+  outdoorIntensity: 60
+  indoorIntensity: 20
+  outdoorExposure: 0.5
+  indoorExposure: -0.5
+  dimStartDist: 1.5
+  dimEndDist: 0.8
+  maxProbeDist: 2
+  nearIntensityFactor: 0.068
+  nearExposureDelta: -3.25
+  normalFacingThreshold: 0.15
+  lerpSpeed: 5
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 393736
 --- !u!1 &7660362891355367674
 GameObject:
   m_ObjectHideFlags: 0
