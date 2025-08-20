@@ -90,11 +90,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e5c0ed23b00304d4baa23b148e039d96,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: -404862313828359619}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e5c0ed23b00304d4baa23b148e039d96,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 23512197918134010}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e5c0ed23b00304d4baa23b148e039d96,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: -404862313828359619}
+      addedObject: {fileID: 7719466532892920963}
     - targetCorrespondingSourceObject: {fileID: 2313642649688887216, guid: e5c0ed23b00304d4baa23b148e039d96,
         type: 3}
       insertIndex: -1
@@ -222,7 +226,7 @@ MonoBehaviour:
     m_InternalValue: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 7719466532892920963}
   door_attacked_controller: {fileID: 23512197918134010}
 --- !u!82 &6437424437254866707
 AudioSource:
@@ -403,7 +407,7 @@ MonoBehaviour:
     m_InternalValue: 0
   OpenedClosedCompletedAnimation: 1
   OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
+  open_permit_by_key_controller: {fileID: 7719466532892920963}
   door_attacked_controller: {fileID: 23512197918134010}
 --- !u!82 &8647896486654642503
 AudioSource:
@@ -508,23 +512,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 9109767326233583594}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &23512197918134010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8263274978763465403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  need_break_count: 3
-  break_count_now: 0
-  Doors:
-  - {fileID: 6807138770316071002}
-  - {fileID: 4842975545154108490}
 --- !u!114 &-404862313828359619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,7 +524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 2342090306
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -550,3 +537,36 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &23512197918134010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8263274978763465403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  need_break_count: 3
+  break_count_now: 0
+  Doors:
+  - {fileID: 6807138770316071002}
+  - {fileID: 4842975545154108490}
+--- !u!114 &7719466532892920963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8263274978763465403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1657c175730b89428524f1993c7bfba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  OpenPermit:
+    m_InternalValue: 0

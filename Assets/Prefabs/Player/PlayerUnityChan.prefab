@@ -6775,6 +6775,7 @@ GameObject:
   - component: {fileID: 5536951015404267337}
   - component: {fileID: 4531441789767291604}
   - component: {fileID: 4692849326139421435}
+  - component: {fileID: 7557453817195267202}
   m_Layer: 6
   m_Name: PlayerUnityChan
   m_TagString: Player
@@ -8430,6 +8431,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   failSafeSeconds: 2
+--- !u!114 &7557453817195267202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7525078627656951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5079fee0536edb4fb7677b4421b4f72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volume: {fileID: 0}
+  flashlight: {fileID: 8388951965552184987}
+  rayOrigin: {fileID: 0}
+  outdoorIntensity: 14
+  indoorIntensity: 6
+  outdoorExposure: 0.5
+  indoorExposure: -0.5
+  outdoorDimStartDist: 1.2
+  outdoorDimEndDist: 0.3
+  indoorDimStartDist: 0.9
+  indoorDimEndDist: 0.25
+  nearIntensityFactor: 0.5
+  nearExposureDelta: -0.7
+  maxProbeDist: 4
+  normalFacingThreshold: 0.6
+  lerpSpeed: 5
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 2147483647
+  excludeTags:
+  - Player
+  - IgnoreRaycast
 --- !u!1 &7660362891355367674
 GameObject:
   m_ObjectHideFlags: 0
@@ -18140,6 +18175,11 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.SerializedFormat
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1366553114579130384, guid: 7e60fe48001d7c04c94a4d727e2fb634,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2166455100295356253, guid: 7e60fe48001d7c04c94a4d727e2fb634,
         type: 3}

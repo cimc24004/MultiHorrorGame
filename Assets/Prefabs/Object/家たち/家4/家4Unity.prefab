@@ -15749,15 +15749,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7425411294859524215, guid: b0708f0d28d6bfc47972391409f1280e,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 987887316360134833}
-    - targetCorrespondingSourceObject: {fileID: 7425411294859524215, guid: b0708f0d28d6bfc47972391409f1280e,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6348012286125830647}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0708f0d28d6bfc47972391409f1280e, type: 3}
 --- !u!114 &479052989008358495 stripped
 MonoBehaviour:
@@ -15771,87 +15763,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab2d829c80b64284583731754a4381a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &568666249833752266 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5331450875642477909, guid: b0708f0d28d6bfc47972391409f1280e,
-    type: 3}
-  m_PrefabInstance: {fileID: 5627617866175306655}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1633272155135958185 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6391695275914626870, guid: b0708f0d28d6bfc47972391409f1280e,
-    type: 3}
-  m_PrefabInstance: {fileID: 5627617866175306655}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &2960286182010987496 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7425411294859524215, guid: b0708f0d28d6bfc47972391409f1280e,
-    type: 3}
-  m_PrefabInstance: {fileID: 5627617866175306655}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &987887316360134833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2960286182010987496}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8301d5f16a05bea4a8435ce30b0cb757, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  door_open_close_controllers:
-  - {fileID: 1633272155135958185}
-  door_status_network:
-    m_InternalValue: 0
-  NeededKey:
-    m_InternalValue: 0
-  OpenedClosedCompletedAnimation: 1
-  OpenedClosedCompleted: 1
-  open_permit_by_key_controller: {fileID: 0}
-  door_attacked_controller: {fileID: 0}
---- !u!114 &6348012286125830647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2960286182010987496}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b8728f332782f94b9c49389b064e289, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  TriggerChangeModeOpenClose: 1
-  open_type: 0
-  ToOpenTransform: {fileID: 568666249833752266}
-  TargetRotateVector: {x: 0, y: 0, z: 0}
-  the_door_controller: {fileID: 987887316360134833}
-  Duration: 0.5
-  OpenStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OpenCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  CloseCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OpenClip: {fileID: 0}
-  CloseClip: {fileID: 0}
-  CloseCompletedClip: {fileID: 0}
-  ItemAppearanceWhenOpened: 0
-  AlreadyOpened: 0
-  move_x_y_z: 2
 --- !u!4 &6372747603124673543 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1615064436357367704, guid: b0708f0d28d6bfc47972391409f1280e,

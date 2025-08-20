@@ -49,10 +49,15 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   HaveLight: 1
   LightPermit: 1
-  Light: {fileID: 0}
+  Light: {fileID: 1366553114579130384}
+  IntensitySteps:
+  - 10
+  - 20
+  - 40
   LightAudioSource: {fileID: 6225977896153975989}
   LightOnClip: {fileID: 8300000, guid: 1724365bc9af0ad46a8956f0921da778, type: 3}
   LightOffClip: {fileID: 8300000, guid: 4f803c1381d93dd4da0dc9a952b3d916, type: 3}
+  LightStepClip: {fileID: 8300000, guid: 1724365bc9af0ad46a8956f0921da778, type: 3}
 --- !u!1 &2166455100295356253
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +100,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2166455100295356253}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 0.778633, g: 0.9007128, b: 0.98490566, a: 1}

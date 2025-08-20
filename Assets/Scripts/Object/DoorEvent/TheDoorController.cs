@@ -6,34 +6,34 @@ using Unity.Netcode;
 
 public class TheDoorController : NetworkBehaviour
 {
-
-    //�q�v�f�ɑ��݂���h�A������List�Ƃ��ēo�^���A��C�ɊJ����B�@��C�ɕ߂�Ƃ�����������ׂ̂�B
-    //������ł����Ȃ������ł������B
-    [Header("�h�A���Ƃɂ��Ă���DoorOpenCloseController�X�N���v�g���Z�b�g�B")]
+    // 複数枚のドア（左右や両開きなど）をまとめて管理する。
+    // ここに DoorOpenCloseController を登録しておくと、開閉時に全てへ伝播する。
+    [Header("このドアを構成する DoorOpenCloseController をセット（1つ以上）")]
     [RequiredListLength(1, null)]
     public List<DoorOpenCloseController> door_open_close_controllers;
 
-
-    public enum DoorStatus{
+    public enum DoorStatus
+    {
         Closed,
         Opened
     }
 
-    public NetworkVariable<DoorStatus> door_status_network;
-    [Header("�L�[���K�v�ȃh�A���ǂ����B")]
+    // ネットワーク同期用のドア状態
+    public NetworkVariable<DoorStatus> door_status_network =
+        new NetworkVariable<DoorStatus>(DoorStatus.Closed, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    [Header("鍵が必要なドアかどうか")]
     public NetworkVariable<bool> NeededKey = new NetworkVariable<bool>();
 
-
-    //�v���C���[���������b�N����
-
-
+    // アニメ完了フラグ（多重入力を防ぐためのガード）
     public bool OpenedClosedCompletedAnimation = true;
     public bool OpenedClosedCompleted = true;
+
     private PlayerStatus player_status;
     private float CompletedWaitTimeNow;
     private NeedKeysController need_keys_controller;
-    // [ShowIf("NeededKey")]
-    [Header("�������������ꍇ�͂���������Ă�������")]
+
+    [Header("鍵が必要な場合は必ず設定してね")]
     public OpenPermitByKeyController open_permit_by_key_controller;
 
     public DoorAttackedController door_attacked_controller;
@@ -42,32 +42,46 @@ public class TheDoorController : NetworkBehaviour
     {
         PlayerStatus.OnLocalPlayerSpawned += InitOnPlayerSpawn;
     }
+
     void OnDisable()
     {
         PlayerStatus.OnLocalPlayerSpawned -= InitOnPlayerSpawn;
     }
-    private void InitOnPlayerSpawn(PlayerStatus _playerStatus){
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if (NeededKey.Value && open_permit_by_key_controller == null)
+        {
+            Debug.LogError("[TheDoorController] 鍵が必要だけど open_permit_by_key_controller が未設定です。", this);
+        }
+        // if (door_attacked_controller == null && this.gameObject.tag == "Door")
+        // {
+        //         // Debug.LogError("[DoorAttackedController]が存在しません！！！！ : " + this.gameObject.name, this);
+        // }
+    }
+    private void InitOnPlayerSpawn(PlayerStatus _playerStatus)
+    {
         player_status = _playerStatus;
         need_keys_controller = NeedKeysController.instance;
     }
 
     private void Update()
     {
+        // 開閉アニメ後のディレイ。一定時間で入力受付を再開
         if (OpenedClosedCompletedAnimation)
         {
             CompletedWaitTimeNow += Time.deltaTime;
-            if(CompletedWaitTimeNow > 0.3f)
+            if (CompletedWaitTimeNow > 0.3f)
             {
                 OpenedClosedCompleted = true;
                 CompletedWaitTimeNow = 0;
             }
         }
-
     }
-    
+
+    /// <summary>ドアを強制的にロックする（鍵必須にする）</summary>
     public void DoorLock()
     {
-        //�h�A�������I�Ƀ��b�N����֐�
         NeededKey.Value = true;
         if (open_permit_by_key_controller != null)
         {
@@ -75,28 +89,32 @@ public class TheDoorController : NetworkBehaviour
         }
         else
         {
-            Debug.Log("this.gameObjectはopen_permit_by_key_controllerがありません : " + this.gameObject.transform.parent.gameObject.transform.parent.gameObject);
+            Debug.LogError("open_permit_by_key_controller が未設定です: " +
+                      this.gameObject.transform.parent.gameObject.transform.parent.gameObject, this);
         }
     }
+
+    /// <summary>
+    /// ドアの開閉トグル要求（サーバ実行）
+    /// _ActionedNetworkObjectId: 実行者（プレイヤー/敵）の NetworkObjectId
+    /// </summary>
     [ServerRpc(RequireOwnership = false)]
     public void DoorOpenClosedChangeByStatusServerRPC(ulong _ActionedNetworkObjectId, ServerRpcParams serverRpcParams = default)
     {
         ulong clientId = serverRpcParams.Receive.SenderClientId;
-        //EventActionMan: ���̊֐����s�������s�l��(�v���C���[��G�Ȃ�)
-        //�h�A���X�e�[�^�X�ɂ���ĕω�������B
-        //�󂢂Ă����ԂȂ�߂�B�@�J���Ă����ԂȂ�J����B
+
+        // このRPCを投げた実行者（EventActionMan）を取得（プレイヤー or 敵）
         GameObject EventActionMan = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_ActionedNetworkObjectId].gameObject;
-        //�����K�v�ȃh�A�Ȃ�܂��������̃h�A�Ɏg�������ǂ����𔻒�B �g���ĂȂ�������return; �J���Ȃ���B
+
+        // 鍵が必要なドアなら、開ける権限があるか確認。なければプレイヤーに通知して中断
         if (NeededKey.Value == true)
         {
-            //NeededKey��true�����ł̓��b�N���ꂽ���Ƃɂ͂Ȃ�Ȃ��B
-            if (!open_permit_by_key_controller.OpenPermit.Value == true)
+            // OpenPermit が true でなければ開けられない
+            if (!open_permit_by_key_controller.OpenPermit.Value)
             {
-
-                //�����������Ă���
                 if (EventActionMan.tag == "Player")
                 {
-                    //�����������Ă��邱�Ƃ�m�点��B
+                    // このプレイヤーに「鍵が必要」を通知
                     open_permit_by_key_controller.NeedKeyForPlayerClientRpc(new ClientRpcParams
                     {
                         Send = new ClientRpcSendParams
@@ -104,28 +122,28 @@ public class TheDoorController : NetworkBehaviour
                             TargetClientIds = new ulong[] { clientId }
                         }
                     });
-                    // open_permit_by_key_controller.NeedKeyForPlayerRequestServerRpc();
                 }
-
                 return;
             }
         }
 
+        // 実行者が敵の場合、追跡中など開閉を抑制したい条件があれば中断
         if (EventActionMan.tag == "Enemy")
         {
-            //�G���v���C���[�𔭌����Ă�����A�߂�ꂽ���͉󂵂ĊJ����悤�ɂ���B
-            DiscoveryPlayerController discovery_player_controller = EventActionMan.GetComponent<DiscoveryPlayerController>();
-            EnemySoundSensor enemy_sound_sensor = EventActionMan.GetComponent<EnemySoundSensor>();
+            var discovery_player_controller = EventActionMan.GetComponent<DiscoveryPlayerController>();
+            var enemy_sound_sensor = EventActionMan.GetComponent<EnemySoundSensor>();
             if (discovery_player_controller.DiscoveryPlayerNowCheck())
             {
+                // 追跡中などは開閉しない
                 return;
             }
-
         }
 
-        Debug.Log("Door-----Open---------------------DoorOpenClosedChangeByStatusServerRPC");
-        //�J���Ă�߂Ă�A�j���[�V�����Đ����Ȃ炱�̃A�N�V���������s���Ȃ��B
+        Debug.Log("Door-----Open/Close Toggle-----DoorOpenClosedChangeByStatusServerRPC");
+
+        // 多重実行防止（アニメ中は無視）
         if (!OpenedClosedCompleted) return;
+
         if (door_status_network.Value == DoorStatus.Opened)
         {
             DoorsClose();
@@ -136,33 +154,35 @@ public class TheDoorController : NetworkBehaviour
         }
     }
 
+    /// <summary>鍵での開放許可があるか</summary>
     public bool DoorOpenPermitCheck()
     {
         return open_permit_by_key_controller.OpenPermit.Value;
     }
 
-
     private void DoorsOpen()
     {
-        this.OpenedClosedCompleted = false;
-        this.OpenedClosedCompletedAnimation = false;
-        foreach (DoorOpenCloseController door_open_close_controller in door_open_close_controllers)
+        OpenedClosedCompleted = false;
+        OpenedClosedCompletedAnimation = false;
+
+        foreach (var door_open_close_controller in door_open_close_controllers)
         {
             door_open_close_controller.Open();
         }
 
         door_status_network.Value = DoorStatus.Opened;
     }
+
     private void DoorsClose()
     {
-        this.OpenedClosedCompleted = false;
-        this.OpenedClosedCompletedAnimation = false;
-        foreach (DoorOpenCloseController door_open_close_controller in door_open_close_controllers)
+        OpenedClosedCompleted = false;
+        OpenedClosedCompletedAnimation = false;
+
+        foreach (var door_open_close_controller in door_open_close_controllers)
         {
             door_open_close_controller.Close();
         }
 
         door_status_network.Value = DoorStatus.Closed;
     }
-
 }
